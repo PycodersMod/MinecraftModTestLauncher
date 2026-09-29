@@ -7,8 +7,10 @@ function New-MmtlSession {
     $path=Join-Path $sessions $id
     New-Item -ItemType Directory -Path (Join-Path $path 'logs') -Force | Out-Null
     New-Item -ItemType Directory -Path (Join-Path $path 'mods') -Force | Out-Null
-    $players=@('Dev')
-    1..([Math]::Max(0,[int]$Metadata.players-1)) | ForEach-Object {$players += "Dev_$_"}
+    $hostName=if($Metadata.hostUsername){[string]$Metadata.hostUsername}else{'Dev'}
+    $clientPrefix=if($Metadata.clientPrefix){[string]$Metadata.clientPrefix}else{'Dev_'}
+    $players=@($hostName)
+    for($i=1;$i -lt [int]$Metadata.players;$i++){$players+=("$clientPrefix$i")}
     foreach($player in $players){New-Item -ItemType Directory -Path (Join-Path $path $player) -Force | Out-Null}
     $record=[ordered]@{sessionId=$id;createdUtc=(Get-Date).ToUniversalTime().ToString('o');metadata=$Metadata;players=$players;ports=@();processes=@()}
     $record | ConvertTo-Json -Depth 20 | Set-Content -LiteralPath (Join-Path $path 'session.json') -Encoding utf8

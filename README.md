@@ -2,11 +2,13 @@
 
 Minecraft Java Edition 模组开发环境多实例测试启动器（MMTL），面向 Windows 10/11。支持 Forge、NeoForge、Fabric 的 Gradle 开发运行配置。
 
+PowerShell 7 优先；未安装 PowerShell 7 时，批处理入口和 Gradle Runner 回退到 Windows PowerShell 5.1。
+
 ## 当前实现状态
 
 - 已实现 Forge、NeoForge、Fabric 项目元数据识别、Java 主版本映射、Profile、兼容性预检和 build/run Gradle Wrapper 调用。
 - 支持 Single、IntegratedLAN 引导式 Host/Client，以及 Dedicated Server 加本地客户端；多项目构建结果按 SHA-256 汇入独立 Session。
-- IntegratedLAN 由用户在 Host 游戏中创建或打开世界并手动发布 LAN；启动器检测游戏日志端口后启动本地客户端，不模拟鼠标点击。
+- IntegratedLAN 由用户在 Host 游戏中创建或打开世界并手动发布 LAN；Host 是否允许命令以游戏中创建/发布世界时的选项为准，启动器检测游戏日志端口后启动本地客户端，不模拟鼠标点击。
 - Dedicated 默认拒绝启动。用户必须在本机 Profile 明确设置 `acceptEula: true`；Server 绑定 `127.0.0.1`，离线用户名只用于本地开发测试，不能连接需要正版认证的在线服务器。
 - 每个 Session 保存运行目录、stdout/stderr、构建日志、进程登记和 Markdown 报告。停止操作只结束当前 Session 记录的进程树。
 - 首次运行或不传参数时提供交互向导和启动摘要。临时配置仅写入系统临时目录，持久配置 `launcher.config.json` 不纳入 Git。

@@ -76,7 +76,8 @@ function Start-MmtlGradleInstance {
     $logName=if($Plan.Role -eq 'Server'){'server'}else{"$($Plan.Role)-$($Plan.Username)"}
     $helper=Join-Path $PSScriptRoot 'Invoke-GradleTask.ps1'
     if(-not(Test-Path -LiteralPath $helper -PathType Leaf)){throw '缺少 Gradle Session Runner。'}
-    $pwsh=(Get-Command pwsh -ErrorAction Stop).Source
+    $powerShellHost=Get-Command pwsh -ErrorAction SilentlyContinue
+    if(-not $powerShellHost){$powerShellHost=Get-Command powershell.exe -ErrorAction Stop}
     $runtimeLink=$null;$arguments=@($Plan.Arguments)
     if($Project.Loader -eq 'Fabric'){
         $runtimeLink=New-MmtlFabricRuntimeLink -ProjectRoot $Project.Root -SessionPath $session -TargetPath $runtime -Name $logName
@@ -92,7 +93,7 @@ function Start-MmtlGradleInstance {
     try{
         $env:JAVA_HOME=$javaHome;$env:Path=(Join-Path $javaHome 'bin')+';'+$oldPath
         $args=@('-NoProfile','-NonInteractive','-File',('"'+$helper+'"'),'-LaunchPlanB64',$payloadB64)
-        $processId=Start-MmtlTrackedProcess -SessionPath $session -FilePath $pwsh -ArgumentList $args -WorkingDirectory $Project.Root -LogPath $log -Role $Plan.Role -Username $Plan.Username -RuntimeLinkPath $runtimeLink -RuntimeTargetPath $(if($runtimeLink){$runtime}else{''})
+        $processId=Start-MmtlTrackedProcess -SessionPath $session -FilePath $powerShellHost.Source -ArgumentList $args -WorkingDirectory $Project.Root -LogPath $log -Role $Plan.Role -Username $Plan.Username -RuntimeLinkPath $runtimeLink -RuntimeTargetPath $(if($runtimeLink){$runtime}else{''})
     }catch{if($runtimeLink){Remove-MmtlFabricRuntimeLink -ProjectRoot $Project.Root -LinkPath $runtimeLink -TargetPath $runtime|Out-Null};throw
     }finally{$env:JAVA_HOME=$oldHome;$env:Path=$oldPath}
     [pscustomobject]@{ProcessId=[int]$processId;Role=$Plan.Role;Username=$Plan.Username;Project=$Project.Root;Task=$Plan.Task;RuntimeDirectory=$runtime;LogPath=$log;ErrorLogPath=($log+'.err')}
@@ -124,7 +125,7 @@ function Initialize-MmtlDedicatedServerRuntime {
         $host=if($Profile.hostUsername){[string]$Profile.hostUsername}else{'Dev'};$prefix=if($Profile.clientPrefix){[string]$Profile.clientPrefix}else{'Dev_'}
         if($host -notmatch '^[A-Za-z0-9_]{1,16}$' -or $prefix -notmatch '^[A-Za-z0-9_]{1,15}$'){throw 'Dedicated 测试玩家用户名或前缀无效。'}
         $names=@($host);for($i=1;$i -lt $players;$i++){$names+=($prefix+$i)}
-        foreach($name in $names){$bytes=[Security.Cryptography.MD5]::HashData([Text.Encoding]::UTF8.GetBytes("OfflinePlayer:$name"));$bytes[6]=($bytes[6] -band 0x0f) -bor 0x30;$bytes[8]=($bytes[8] -band 0x3f) -bor 0x80;$hex=[Convert]::ToHexString($bytes).ToLowerInvariant();$uuid=$hex.Substring(0,8)+'-'+$hex.Substring(8,4)+'-'+$hex.Substring(12,4)+'-'+$hex.Substring(16,4)+'-'+$hex.Substring(20,12);$ops+=@{uuid=$uuid;name=$name;level=$permission;bypassesPlayerLimit=$false}}
+        foreach($name in $names){$md5=[Security.Cryptography.MD5]::Create();try{$bytes=$md5.ComputeHash([Text.Encoding]::UTF8.GetBytes("OfflinePlayer:$name"))}finally{$md5.Dispose()};$bytes[6]=($bytes[6] -band 0x0f) -bor 0x30;$bytes[8]=($bytes[8] -band 0x3f) -bor 0x80;$hex=([BitConverter]::ToString($bytes).Replace('-','')).ToLowerInvariant();$uuid=$hex.Substring(0,8)+'-'+$hex.Substring(8,4)+'-'+$hex.Substring(12,4)+'-'+$hex.Substring(16,4)+'-'+$hex.Substring(20,12);$ops+=@{uuid=$uuid;name=$name;level=$permission;bypassesPlayerLimit=$false}}
     }
     [IO.File]::WriteAllText($eula,"# 用户已通过本机 Profile 明确接受 Minecraft EULA`neula=true`n",[Text.UTF8Encoding]::new($false))
     [IO.File]::WriteAllLines($properties,$lines,[Text.UTF8Encoding]::new($false))

@@ -56,6 +56,11 @@ Describe 'MMTL 安全与项目检测' {
         (Test-MmtlInsideRoot -Root $runtime -Target $session) | Should -BeTrue
         (Test-Path (Join-Path $session 'logs')) | Should -BeTrue
         (Test-Path (Join-Path $session 'Dev_1')) | Should -BeTrue
+        $stored=Get-Content (Join-Path $session 'session.json') -Raw|ConvertFrom-Json
+        @($stored.players) | Should -Be @('Dev','Dev_1')
+        (Test-Path (Join-Path $session 'Dev_0')) | Should -BeFalse
+        $single=New-MmtlSession -RuntimeRoot $runtime -Name 'one_player' -Metadata ([pscustomobject]@{players=1})
+        @((Get-Content (Join-Path $single 'session.json') -Raw|ConvertFrom-Json).players).Count | Should -Be 1
     }
     It '同名 Session 在短时间内创建时仍使用独立目录' {
         $runtime=Join-Path $TestDrive 'unique-runtime'
