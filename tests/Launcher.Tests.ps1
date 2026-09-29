@@ -188,7 +188,7 @@ Describe 'MMTL 安全与项目检测' {
         $project=Get-MmtlProject $projectPath
         $session=Join-Path $TestDrive 'run-plan-session'
         New-Item -ItemType Directory $session|Out-Null
-        $profile=[pscustomobject]@{gameArgs=@('--demo');jvmArgs=@('-Dfixture=true');memoryMb=2048;hostMemoryMb=3072;clientMemoryMb=2048;serverMemoryMb=4096;resolution='1280x720'}
+        $profile=[pscustomobject]@{gameArgs=@('--demo');jvmArgs=@('-Dfixture=true');memoryMb=2048;hostMemoryMb=3072;clientMemoryMb=2048;serverMemoryMb=4096;resolution='1280x720';guiScale=1}
         $single=New-MmtlGradleRunPlan -Project $project -Mode Single -RuntimeRoot $session -Role Client -Username 'Dev' -Profile $profile
         $single.Task | Should -Be 'runClient'
         $single.RuntimeDirectory | Should -BeLike "$session*"
@@ -207,6 +207,7 @@ Describe 'MMTL 安全与项目检测' {
         $client.GameArguments | Should -Not -Contain '--server'
         $client.GameArguments | Should -Not -Contain '--port'
         $lanHostPlan.JvmArguments | Should -Contain '-Xmx3072M'
+        (New-MmtlGradleRunPlan -Project $project -Mode IntegratedLAN -RuntimeRoot $session -Role Host -Username 'Dev' -Profile $profile).GuiScale | Should -Be 1
         $client.JvmArguments | Should -Contain '-Xmx2048M'
         $server=New-MmtlGradleRunPlan -Project $project -Mode Dedicated -RuntimeRoot $session -Role Server -Profile $profile
         $server.JvmArguments | Should -Contain '-Xmx4096M'
@@ -231,6 +232,23 @@ Describe 'MMTL 安全与项目检测' {
         $server.Task | Should -Be 'runServer'
         @($server.Arguments|Where-Object{$_ -like '-PpycodersRuntimeDir=*'}).Count | Should -Be 1
     }
+    It '为 GUI 缩放设置创建 Session 私有 options.txt' {
+        $session=New-MmtlSession -RuntimeRoot (Join-Path $TestDrive 'gui-scale-runtime') -Name 'gui_scale' -Metadata ([pscustomobject]@{players=1})
+        $runtime=Join-Path $session 'Dev'
+        (Set-MmtlClientGuiScale -SessionPath $session -RuntimeDirectory $runtime -GuiScale 1) | Should -BeTrue
+        (Get-Content -LiteralPath (Join-Path $runtime 'options.txt') -Raw).Trim() | Should -Be 'guiScale:1'
+        'language:en_us','guiScale:4' | Set-Content -LiteralPath (Join-Path $runtime 'options.txt')
+        (Set-MmtlClientGuiScale -SessionPath $session -RuntimeDirectory $runtime -GuiScale 'Auto') | Should -BeTrue
+        $options=Get-Content -LiteralPath (Join-Path $runtime 'options.txt')
+        $options | Should -Contain 'language:en_us'
+        $options | Should -Contain 'guiScale:0'
+        $options | Should -Not -Contain 'guiScale:4'
+    }
+    It '拒绝超出 Minecraft GUI 缩放范围的配置' {
+        $file=Join-Path $TestDrive 'gui-scale-invalid.json'
+        '{"defaultProfile":"a","javaHomes":{"21":"C:/jdk"},"profiles":{"a":{"project":"demo","mode":"Single","players":1,"guiScale":5}}}' | Set-Content $file
+        { Read-MmtlConfig -Path $file } | Should -Throw '*guiScale*'
+    }
     It '按玩家进程数拒绝超出物理内存预算的配置' {
         $profile=[pscustomobject]@{players=4;memoryMb=4096}
         (Get-MmtlMemoryBudget -Profile $profile -Mode IntegratedLAN -PhysicalMemoryMb 16384).ExceedsLimit | Should -BeTrue
@@ -248,7 +266,7 @@ Describe 'MMTL 安全与项目检测' {
         $project=Get-MmtlProject $projectPath
         $runtime=Join-Path $TestDrive 'run-runtime'
         $session=New-MmtlSession -RuntimeRoot $runtime -Name 'fake_run' -Metadata ([pscustomobject]@{players=1})
-        $profile=[pscustomobject]@{gameArgs=@();jvmArgs=@();memoryMb=1024}
+        $profile=[pscustomobject]@{gameArgs=@();jvmArgs=@();memoryMb=1024;guiScale=1}
         $plan=New-MmtlGradleRunPlan -Project $project -Mode Single -RuntimeRoot $session -Role Client -Username 'Dev' -Profile $profile
         $java=Join-Path $TestDrive 'jdk/bin/java.exe';New-Item -ItemType File -Path $java -Force|Out-Null
         $javaHome=Split-Path (Split-Path $java -Parent) -Parent
@@ -257,6 +275,7 @@ Describe 'MMTL 安全与项目检测' {
             $deadline=(Get-Date).AddSeconds(8)
             while(-not (Select-String -Path $started.LogPath -Pattern 'fake-gradle-start' -Quiet -ErrorAction SilentlyContinue) -and (Get-Date) -lt $deadline){Start-Sleep -Milliseconds 100}
             (Select-String -Path $started.LogPath -Pattern 'fake-gradle-start' -Quiet) | Should -BeTrue
+            (Get-Content -LiteralPath (Join-Path $started.RuntimeDirectory 'options.txt') -Raw).Trim() | Should -Be 'guiScale:1'
             (Test-MmtlInsideRoot -Root $session -Target $started.LogPath) | Should -BeTrue
             $entry=Get-Content (Join-Path $session 'pids.json') -Raw|ConvertFrom-Json|Where-Object PID -eq $started.ProcessId
             $entry.Role | Should -Be 'Client'
@@ -301,8 +320,10 @@ Describe 'MMTL 安全与项目检测' {
         $properties.hostMemoryMb.minimum | Should -Be 1024
         $properties.clientMemoryMb.minimum | Should -Be 1024
         $properties.serverMemoryMb.minimum | Should -Be 1024
+        $properties.guiScale.oneOf[0].enum | Should -Contain 4
         $example=Get-Content (Join-Path $script:root 'launcher.config.example.json') -Raw|ConvertFrom-Json
         $example.profiles.'single-test'.acceptEula | Should -BeFalse
+        $example.profiles.'single-test'.guiScale | Should -Be 'Auto'
     }
     It '拒绝未登记的进程 PID' {
         $session=Join-Path $TestDrive 'pid-session'; New-Item -ItemType Directory -Path $session | Out-Null
@@ -369,7 +390,7 @@ Start-Sleep -Seconds 60
     }
     It '交互向导识别项目并生成完整 Single Profile 默认值' {
         $project=New-TestModProject -Name 'wizard-fixture' -Loader Fabric -MinecraftVersion '1.21.6' -JavaMajor 21
-        $global:MmtlWizardAnswers=[Collections.Generic.Queue[string]]::new();$global:MmtlWizardAnswers.Enqueue($project);1..25|ForEach-Object{$global:MmtlWizardAnswers.Enqueue('')}
+        $global:MmtlWizardAnswers=[Collections.Generic.Queue[string]]::new();$global:MmtlWizardAnswers.Enqueue($project);1..26|ForEach-Object{$global:MmtlWizardAnswers.Enqueue('')}
         Set-Item Function:\global:Read-Host {param([string]$Prompt)$global:MmtlWizardAnswers.Dequeue()}
         try{
             $profile=Read-MmtlWizardProfile -Defaults $null
@@ -379,6 +400,7 @@ Start-Sleep -Seconds 60
             $profile.acceptEula | Should -BeFalse
             $profile.clientPermissionLevel | Should -Be 0
             $profile.resolution | Should -Be '1280x720'
+            $profile.guiScale | Should -Be 'Auto'
             $profile.hostMemoryMb | Should -Be 4096
             $profile.clientMemoryMb | Should -Be 4096
             $profile.serverMemoryMb | Should -Be 4096

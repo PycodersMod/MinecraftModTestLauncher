@@ -51,13 +51,15 @@ function Read-MmtlWizardProfile {
     $serverMemoryText=Read-MmtlPromptValue 'Dedicated Server 内存 MB' (& $value 'serverMemoryMb' $memory);$serverMemory=0;if(-not[int]::TryParse([string]$serverMemoryText,[ref]$serverMemory) -or $serverMemory -lt 1024 -or $serverMemory -gt 65536){throw 'Dedicated Server 内存需为 1024 至 65536 MB。'}
     $resolution=Read-MmtlPromptValue '窗口分辨率（宽x高）' (& $value 'resolution' '1280x720')
     if($resolution -notmatch '^\d{3,5}x\d{3,5}$'){throw '分辨率格式应为例如 1280x720。'}
+    $guiScaleText=Read-MmtlPromptValue 'GUI 缩放：Auto 或 0 至 4（1 最小）' (& $value 'guiScale' 'Auto')
+    $guiScale=0;if([string]$guiScaleText -ine 'Auto' -and (-not[int]::TryParse([string]$guiScaleText,[ref]$guiScale) -or $guiScale -lt 0 -or $guiScale -gt 4)){throw 'GUI 缩放必须为 Auto 或 0 至 4。'}
     $layout=Read-MmtlPromptValue '窗口布局：Auto / Tile / Cascade / None' (& $value 'windowLayout' 'Auto')
     if($layout -notin @('Auto','Tile','Cascade','None')){throw '窗口布局无效。'}
     $jvm=ConvertTo-MmtlPromptList (Read-MmtlPromptValue '额外 JVM 参数，以分号分隔' ((@(& $value 'jvmArgs' @())) -join ';'))
     $game=ConvertTo-MmtlPromptList (Read-MmtlPromptValue '额外游戏参数，以分号分隔' ((@(& $value 'gameArgs' @())) -join ';'))
     $acceptEula=$false
     if($mode -eq 'Dedicated'){$acceptEula=(Read-MmtlPromptValue 'Dedicated Server EULA：输入 Y 表示你已阅读并接受；其他输入为否' $(if((& $value 'acceptEula' $false)){'Y'}else{'N'})) -match '^(?i:y|yes|true|1)$'}
-    return [pscustomobject]@{project=$project;linkedProjects=@($linked);mode=$mode;players=$players;hostUsername=$host;clientPrefix=$prefix;hostCheats=$hostCheats;clientPermissionLevel=$permission;gameMode=$gameMode;difficulty=$difficulty;worldName=$world;seed=$seed;newWorld=$newWorld;resetWorld=$reset;port=$port;autoBuild=$autoBuild;cleanBuild=$clean;extraMods=@($extra);memoryMb=$memory;hostMemoryMb=$hostMemory;clientMemoryMb=$clientMemory;serverMemoryMb=$serverMemory;resolution=$resolution;windowLayout=$layout;jvmArgs=@($jvm);gameArgs=@($game);acceptEula=$acceptEula}
+    return [pscustomobject]@{project=$project;linkedProjects=@($linked);mode=$mode;players=$players;hostUsername=$host;clientPrefix=$prefix;hostCheats=$hostCheats;clientPermissionLevel=$permission;gameMode=$gameMode;difficulty=$difficulty;worldName=$world;seed=$seed;newWorld=$newWorld;resetWorld=$reset;port=$port;autoBuild=$autoBuild;cleanBuild=$clean;extraMods=@($extra);memoryMb=$memory;hostMemoryMb=$hostMemory;clientMemoryMb=$clientMemory;serverMemoryMb=$serverMemory;resolution=$resolution;guiScale=$(if([string]$guiScaleText -ieq 'Auto'){'Auto'}else{$guiScale});windowLayout=$layout;jvmArgs=@($jvm);gameArgs=@($game);acceptEula=$acceptEula}
 }
 function Show-MmtlLaunchSummary {
     param([Parameter(Mandatory)]$Profile,[Parameter(Mandatory)]$Config)
@@ -71,7 +73,7 @@ function Show-MmtlLaunchSummary {
     Write-Host '========================================';Write-Host 'Minecraft Mod Test Launcher';Write-Host '========================================'
     Write-Host "Minecraft: $($primary.MinecraftVersion)";Write-Host "Loader: $($primary.Loader) $($primary.LoaderVersion)";Write-Host "Java: $($primary.JavaMajor) ($javaPath)";Write-Host "Mode: $($Profile.mode)";Write-Host "Players: $($Profile.players)";Write-Host "Host: $($Profile.hostUsername) / $($Profile.gameMode) / Cheats=$($Profile.hostCheats)"
     if([int]$Profile.players -gt 1){Write-Host "Clients: $($Profile.clientPrefix)1 .. $($Profile.clientPrefix)$([int]$Profile.players-1); Dedicated permission level=$($Profile.clientPermissionLevel)"}
-    Write-Host "Projects: $((@($primary.Root)+@($linked.Root))-join ', ')";Write-Host "Build: $($Profile.autoBuild); Clean: $($Profile.cleanBuild); Reset world: $($Profile.resetWorld)";Write-Host "Runtime: $($Profile.resolution), layout=$($Profile.windowLayout); memory Host=$($Profile.hostMemoryMb) MB, Client=$($Profile.clientMemoryMb) MB, Server=$($Profile.serverMemoryMb) MB"
+    Write-Host "Projects: $((@($primary.Root)+@($linked.Root))-join ', ')";Write-Host "Build: $($Profile.autoBuild); Clean: $($Profile.cleanBuild); Reset world: $($Profile.resetWorld)";Write-Host "Runtime: $($Profile.resolution), GUI scale=$($Profile.guiScale), layout=$($Profile.windowLayout); memory Host=$($Profile.hostMemoryMb) MB, Client=$($Profile.clientMemoryMb) MB, Server=$($Profile.serverMemoryMb) MB"
     if($Profile.mode -eq 'Dedicated' -and $Profile.acceptEula -ne $true){Write-Warning '尚未接受 EULA；Dedicated 启动会被拒绝。'}
 }
 function Invoke-MmtlConsoleMenu {

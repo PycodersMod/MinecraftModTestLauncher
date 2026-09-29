@@ -37,6 +37,7 @@
         "clientMemoryMb": {"type": "integer", "minimum": 1024},
         "serverMemoryMb": {"type": "integer", "minimum": 1024},
         "resolution": {"type": "string"},
+        "guiScale": {"oneOf": [{"enum": [0, 1, 2, 3, 4]}, {"const": "Auto"}]},
         "windowLayout": {"enum": ["Auto", "Tile", "Cascade", "None"]},
         "jvmArgs": {"type": "array", "items": {"type": "string"}},
         "gameArgs": {"type": "array", "items": {"type": "string"}}

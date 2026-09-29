@@ -11,6 +11,7 @@ function Read-MmtlConfig {
         $profile=$profileProperty.Value
         if($profile.mode -notin @('Single','IntegratedLAN','Dedicated')){throw "Profile $($profileProperty.Name) 的 mode 无效。"}
         $players=0;if(-not[int]::TryParse([string]$profile.players,[ref]$players) -or $players -lt 1 -or $players -gt 8){throw "Profile $($profileProperty.Name) 的 players 必须为 1 至 8。"}
+        if($null -ne $profile.PSObject.Properties['guiScale']){$guiScale=0;if([string]$profile.guiScale -ine 'Auto' -and (-not[int]::TryParse([string]$profile.guiScale,[ref]$guiScale) -or $guiScale -lt 0 -or $guiScale -gt 4)){throw "Profile $($profileProperty.Name) 的 guiScale 必须为 Auto 或 0 至 4。"}}
         if($profile.port -and [string]$profile.port -ne 'Auto'){$port=0;if(-not[int]::TryParse([string]$profile.port,[ref]$port) -or $port -lt 1 -or $port -gt 65535){throw "Profile $($profileProperty.Name) 的 port 必须是 Auto 或 1 至 65535。"}}
     }
     return $config
@@ -29,6 +30,7 @@ function Assert-MmtlProfile {
     if (-not $Profile.project) { throw 'Profile 缺少 project。' }
     if ($Profile.mode -notin @('Single','IntegratedLAN','Dedicated')) { throw "不支持的运行模式：$($Profile.mode)" }
     if ([int]$Profile.players -lt 1) { throw 'players 必须大于 0。' }
+    if($null -ne $Profile.PSObject.Properties['guiScale']){$guiScale=0;if([string]$Profile.guiScale -ine 'Auto' -and (-not[int]::TryParse([string]$Profile.guiScale,[ref]$guiScale) -or $guiScale -lt 0 -or $guiScale -gt 4)){throw 'guiScale 必须为 Auto 或 0 至 4。'}}
     return $true
 }
 

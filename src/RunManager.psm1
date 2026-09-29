@@ -66,6 +66,22 @@ function Remove-MmtlFabricRuntimeLink {
     Remove-Item -LiteralPath $link -Force
     return $true
 }
+function Set-MmtlClientGuiScale {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][string]$RuntimeDirectory,[Parameter(Mandatory)][object]$GuiScale)
+    $scale=0
+    if([string]$GuiScale -ine 'Auto' -and (-not[int]::TryParse([string]$GuiScale,[ref]$scale) -or $scale -lt 0 -or $scale -gt 4)){throw 'guiScale 必须为 Auto 或 0 至 4。'}
+    $session=[IO.Path]::GetFullPath($SessionPath);$runtime=[IO.Path]::GetFullPath($RuntimeDirectory)
+    if(-not(Test-MmtlInsideRoot -Root $session -Target $runtime) -or $runtime -eq $session){throw '客户端 Runtime 必须位于当前 Session 内。'}
+    Assert-MmtlNoReparsePath -Path $session|Out-Null;Assert-MmtlNoReparsePath -Path $runtime|Out-Null
+    $options=Join-Path $runtime 'options.txt'
+    if(Test-Path -LiteralPath $options){$item=Get-Item -LiteralPath $options -Force;if($item.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'options.txt 不得是 junction 或 symlink。'};$lines=@([IO.File]::ReadAllLines($options))}else{$lines=@()}
+    $updated=$false
+    for($i=0;$i -lt $lines.Count;$i++){if($lines[$i] -match '^guiScale:'){$lines[$i]="guiScale:$scale";$updated=$true}}
+    if(-not $updated){$lines+= "guiScale:$scale"}
+    [IO.File]::WriteAllLines($options,[string[]]$lines,[Text.UTF8Encoding]::new($false))
+    return $true
+}
 function Start-MmtlGradleInstance {
     [CmdletBinding()]
     param([Parameter(Mandatory)]$Project,[Parameter(Mandatory)]$Plan,[Parameter(Mandatory)][string]$JavaPath,[Parameter(Mandatory)][string]$SessionPath,[string[]]$ModJars=@())
@@ -76,6 +92,7 @@ function Start-MmtlGradleInstance {
     Assert-MmtlNoReparsePath -Path $runtime|Out-Null
     $mods=Join-Path $runtime 'mods';New-Item -ItemType Directory -Path $mods -Force|Out-Null
     Assert-MmtlNoReparsePath -Path $mods|Out-Null
+    if($Plan.Role -ne 'Server' -and $null -ne $Plan.GuiScale -and [string]$Plan.GuiScale -ne ''){Set-MmtlClientGuiScale -SessionPath $session -RuntimeDirectory $runtime -GuiScale $Plan.GuiScale|Out-Null}
     foreach($jar in $ModJars){
         if(-not(Test-Path -LiteralPath $jar -PathType Leaf) -or [IO.Path]::GetExtension($jar) -ne '.jar'){throw "模组文件无效：$jar"}
         $destination=Join-Path $mods ([IO.Path]::GetFileName($jar))
@@ -141,4 +158,4 @@ function Initialize-MmtlDedicatedServerRuntime {
     if($ops.Count){[IO.File]::WriteAllText((Join-Path $server 'ops.json'),($ops|ConvertTo-Json -Depth 5),[Text.UTF8Encoding]::new($false))}
     [pscustomobject]@{ServerDirectory=$server;EulaPath=$eula;PropertiesPath=$properties;Port=$Port;WorldName=$world;Players=$players;Ops=$ops}
 }
-Export-ModuleMember -Function Invoke-MmtlGradleBuild,Get-MmtlMemoryBudget,Assert-MmtlMemoryBudget,Start-MmtlGradleInstance,Initialize-MmtlDedicatedServerRuntime,New-MmtlFabricRuntimeLink,Remove-MmtlFabricRuntimeLink
+Export-ModuleMember -Function Invoke-MmtlGradleBuild,Get-MmtlMemoryBudget,Assert-MmtlMemoryBudget,Start-MmtlGradleInstance,Initialize-MmtlDedicatedServerRuntime,New-MmtlFabricRuntimeLink,Remove-MmtlFabricRuntimeLink,Set-MmtlClientGuiScale

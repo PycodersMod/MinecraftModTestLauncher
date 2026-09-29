@@ -37,6 +37,7 @@ function New-MmtlGradleRunPlan {
     if($gamePayload){$arguments+="-PpycodersGameArgsB64=$gamePayload"}
     if($jvmPayload){$arguments+="-PpycodersJavaArgsB64=$jvmPayload"}
     $arguments+=$task
-    return [pscustomobject]@{Project=$Project.Root;Mode=$Mode;Role=$Role;Username=$Username;Task=$task;RuntimeDirectory=$runtimeDirectory;GameArguments=$gameArgs;JvmArguments=$jvmArgs;Arguments=$arguments}
+    $guiScale=if($Profile.PSObject.Properties['guiScale']){$Profile.guiScale}else{$null}
+    return [pscustomobject]@{Project=$Project.Root;Mode=$Mode;Role=$Role;Username=$Username;Task=$task;RuntimeDirectory=$runtimeDirectory;GameArguments=$gameArgs;JvmArguments=$jvmArgs;GuiScale=$guiScale;Arguments=$arguments}
 }
 Export-ModuleMember -Function Get-MmtlGradleCommand,ConvertTo-MmtlArgumentPayload,New-MmtlGradleRunPlan

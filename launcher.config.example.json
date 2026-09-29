@@ -32,6 +32,7 @@
       "clientMemoryMb": 4096,
       "serverMemoryMb": 4096,
       "resolution": "1280x720",
+      "guiScale": "Auto",
       "windowLayout": "Auto",
       "jvmArgs": [],
       "gameArgs": []
