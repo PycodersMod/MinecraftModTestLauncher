@@ -12,7 +12,7 @@ PowerShell 7 优先；未安装 PowerShell 7 时，批处理入口和 Gradle Run
 - Dedicated 默认拒绝启动。用户必须在本机 Profile 明确设置 `acceptEula: true`；Server 绑定 `127.0.0.1`，离线用户名只用于本地开发测试，不能连接需要正版认证的在线服务器。
 - 每个 Session 保存运行目录、stdout/stderr、构建日志、进程登记和 Markdown 报告。停止操作只结束当前 Session 记录的进程树。
 - 首次运行或不传参数时提供交互向导和启动摘要。临时配置仅写入系统临时目录，持久配置 `launcher.config.json` 不纳入 Git。
-- 窗口自动平铺当前安全降级为不调整窗口；IntegratedLAN 自动创建世界、旧世界导入及 Reset World 暂未实现，现有 Session 清理仅限其 Runtime 沙箱目录。
+- Windows 窗口布局只枚举本 Session 登记进程树中的 Minecraft 客户端；Auto 在多个客户端时平铺，Tile/Cascade 按配置排列，None 不调整。IntegratedLAN 自动创建世界、旧世界导入及 Reset World 暂未实现，现有 Session 清理仅限其 Runtime 沙箱目录。
 
 ## 使用
 

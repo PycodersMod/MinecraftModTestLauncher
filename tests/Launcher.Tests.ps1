@@ -142,8 +142,16 @@ Describe 'MMTL 安全与项目检测' {
             (Test-Path $session) | Should -BeTrue
         } finally {Stop-MmtlTrackedProcess -SessionPath $session -ProcessId $processId -Confirm:$false|Out-Null}
     }
-    It '窗口平铺不可用时安全降级' {
-        (Get-MmtlWindowLayout -Mode Tile) | Should -Be 'UnavailableFallbackNone'
+    It '只计算当前客户端窗口的平铺和层叠矩形' {
+        (Get-MmtlWindowLayout -Mode Tile) | Should -Be 'Available'
+        $tile=Get-MmtlTileRectangles -Count 4 -ScreenWidth 1920 -ScreenHeight 1080
+        $tile.Count | Should -Be 4
+        $tile[0].X | Should -Be 0;$tile[0].Y | Should -Be 0;$tile[0].Width | Should -Be 960;$tile[0].Height | Should -Be 540
+        $tile[3].X | Should -Be 960;$tile[3].Y | Should -Be 540;$tile[3].Width | Should -Be 960;$tile[3].Height | Should -Be 540
+        $cascade=Get-MmtlCascadeRectangles -Count 3 -ScreenWidth 1920 -ScreenHeight 1080
+        $cascade.Count | Should -Be 3
+        $cascade[0].X | Should -Be 0
+        (Set-MmtlSessionWindowLayout -SessionPath $TestDrive -Mode None).Status | Should -Be 'Skipped'
     }
     It '分别识别 Forge、NeoForge、Fabric 及其 Java 主版本' {
         $cases=@(

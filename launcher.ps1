@@ -152,9 +152,13 @@ function Start-MmtlConfiguredRun {
             $metadata.processes+=@([pscustomobject]@{PID=$started.ProcessId;role='Client';username=$hostName;log=$started.LogPath})
             Write-Host "Single 客户端已启动；日志：$($started.LogPath)"
         }
+        if($Profile.windowLayout -and $Profile.windowLayout -ne 'None' -and ($Profile.mode -ne 'Single' -or $Profile.windowLayout -ne 'Auto')){
+            try{$layoutResult=Set-MmtlSessionWindowLayout -SessionPath $session -Mode $Profile.windowLayout -TimeoutSeconds 90;$metadata.windowLayoutStatus=$layoutResult.Status;if($layoutResult.Status -in @('Partial','UnavailableFallbackNone')){Write-Warning "窗口布局结果：$($layoutResult.Status) ($($layoutResult.Reason))"}else{Write-Host "窗口布局：$($layoutResult.Status) ($($layoutResult.Windows) 个窗口)"}}
+            catch{$metadata.windowLayoutStatus='UnavailableFallbackNone';Write-Warning "窗口布局失败并安全跳过：$($_.Exception.Message)"}
+        }else{$metadata.windowLayoutStatus='Skipped'}
         $metadata.builds=@($builds)
         $statePath=Join-Path $session 'session.json';$state=Get-Content -LiteralPath $statePath -Raw|ConvertFrom-Json;$state.metadata=$metadata;$state|ConvertTo-Json -Depth 30|Set-Content -LiteralPath $statePath -Encoding utf8
-        $report=@("# Session $sessionId",'',"- Mode: $($Profile.mode)","- Project: $($Primary.Root)","- Minecraft: $($Primary.MinecraftVersion)","- Loader: $($Primary.Loader) $($Primary.LoaderVersion)","- Java: $($Primary.JavaMajor)","- Players: $($metadata.processes.username -join ', ')","- Port: $($metadata.port)","- Runtime: $session",'', '## Builds')
+        $report=@("# Session $sessionId",'',"- Mode: $($Profile.mode)","- Project: $($Primary.Root)","- Minecraft: $($Primary.MinecraftVersion)","- Loader: $($Primary.Loader) $($Primary.LoaderVersion)","- Java: $($Primary.JavaMajor)","- Players: $($metadata.processes.username -join ', ')","- Port: $($metadata.port)","- Window layout: $($metadata.windowLayoutStatus)","- Runtime: $session",'', '## Builds')
         foreach($build in $builds){$report+=@("- Project: $($build.Project)","  - Git SHA: $($build.GitSha)","  - Jar: $($build.JarPath)","  - SHA-256: $($build.JarSha256)","  - Log: $($build.LogPath)")}
         $report+=@('','## Processes');foreach($process in $metadata.processes){$report+="- $($process.role) $($process.username) PID $($process.PID): $($process.log)"};Set-Content -LiteralPath (Join-Path $session 'report.md') -Value $report -Encoding utf8
         Write-Host "会话清单：$session`n停止命令：launcher.cmd --stop $sessionId`n清理命令：launcher.cmd --clean-session $sessionId"
