@@ -1,0 +1,35 @@
+{
+  "defaultProfile": "single-test",
+  "javaHomes": {
+    "17": "C:/Java/jdk-17",
+    "21": "C:/Java/jdk-21",
+    "25": "C:/Java/jdk-25"
+  },
+  "runtimeRoot": "%LOCALAPPDATA%/MinecraftModTestLauncher",
+  "profiles": {
+    "single-test": {
+      "project": "",
+      "linkedProjects": [],
+      "mode": "Single",
+      "players": 1,
+      "hostUsername": "Dev",
+      "clientPrefix": "Dev_",
+      "hostCheats": true,
+      "gameMode": "creative",
+      "difficulty": "normal",
+      "worldName": "MMTL-Test",
+      "seed": "",
+      "newWorld": true,
+      "resetWorld": false,
+      "port": "Auto",
+      "autoBuild": true,
+      "cleanBuild": false,
+      "extraMods": [],
+      "memoryMb": 4096,
+      "resolution": "1280x720",
+      "windowLayout": "Auto",
+      "jvmArgs": [],
+      "gameArgs": []
+    }
+  }
+}

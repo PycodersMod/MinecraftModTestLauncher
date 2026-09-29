@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["defaultProfile", "javaHomes", "profiles"],
+  "properties": {
+    "defaultProfile": {"type": "string", "minLength": 1},
+    "javaHomes": {"type": "object", "additionalProperties": {"type": "string"}},
+    "runtimeRoot": {"type": "string"},
+    "profiles": {"type": "object", "minProperties": 1, "additionalProperties": {"$ref": "#/$defs/profile"}}
+  },
+  "$defs": {
+    "profile": {
+      "type": "object",
+      "required": ["project", "mode"],
+      "properties": {
+        "project": {"type": "string"},
+        "linkedProjects": {"type": "array", "items": {"type": "string"}},
+        "mode": {"enum": ["Single", "IntegratedLAN", "Dedicated"]},
+        "players": {"type": "integer", "minimum": 1},
+        "hostUsername": {"type": "string"},
+        "clientPrefix": {"type": "string"},
+        "hostCheats": {"type": "boolean"},
+        "gameMode": {"enum": ["survival", "creative", "adventure", "spectator"]},
+        "difficulty": {"enum": ["peaceful", "easy", "normal", "hard"]},
+        "worldName": {"type": "string"},
+        "seed": {"type": "string"},
+        "newWorld": {"type": "boolean"},
+        "resetWorld": {"type": "boolean", "default": false},
+        "port": {"oneOf": [{"const": "Auto"}, {"type": "integer", "minimum": 1, "maximum": 65535}]},
+        "autoBuild": {"type": "boolean"},
+        "cleanBuild": {"type": "boolean"},
+        "extraMods": {"type": "array", "items": {"type": "string"}},
+        "memoryMb": {"type": "integer", "minimum": 1024},
+        "resolution": {"type": "string"},
+        "windowLayout": {"enum": ["Auto", "Tile", "Cascade", "None"]},
+        "jvmArgs": {"type": "array", "items": {"type": "string"}},
+        "gameArgs": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

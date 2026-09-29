@@ -1,0 +1,9 @@
+launcher.config.json
+.runtime/
+sessions/
+logs/
+*.log
+.idea/
+.vscode/
+*.user
+*.tmp
