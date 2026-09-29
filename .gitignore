@@ -8,3 +8,4 @@ logs/
 *.user
 *.tmp
 testResults.xml
+testResults.xml
