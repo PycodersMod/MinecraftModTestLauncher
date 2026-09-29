@@ -1,13 +1,30 @@
 BeforeAll {
     $script:root=Split-Path -Parent $PSScriptRoot
     Get-ChildItem (Join-Path $script:root 'src') -Filter '*.psm1' -Recurse | ForEach-Object { Import-Module $_.FullName -Force }
+    function New-TestModProject {
+        param([string]$Name,[string]$Loader,[string]$MinecraftVersion,[int]$JavaMajor)
+        $path=Join-Path $TestDrive $Name
+        New-Item -ItemType Directory -Path (Join-Path $path 'src/main/resources') -Force | Out-Null
+        "minecraft_version=$MinecraftVersion`njava_version=$JavaMajor" | Set-Content (Join-Path $path 'gradle.properties')
+        'plugins {}' | Set-Content (Join-Path $path 'build.gradle')
+        New-Item -ItemType File -Path (Join-Path $path 'gradlew.bat') | Out-Null
+        $metadata=switch($Loader){
+            'Fabric' {'fabric.mod.json'}
+            'NeoForge' {'META-INF/neoforge.mods.toml'}
+            'Forge' {'META-INF/mods.toml'}
+        }
+        $metadataPath=Join-Path (Join-Path $path 'src/main/resources') $metadata
+        New-Item -ItemType Directory -Path (Split-Path $metadataPath -Parent) -Force | Out-Null
+        '{}' | Set-Content $metadataPath
+        return $path
+    }
 }
 Describe 'MMTL 安全与项目检测' {
     It '拒绝 Runtime Root 外的删除目标' {
         { Remove-MmtlSession -RuntimeRoot 'C:\mmtl' -SessionPath (Join-Path $TestDrive 'outside-session') } | Should -Throw
     }
     It '识别当前 Carpet Fabric 项目并拒绝未知类型' {
-        $repo=Join-Path (Split-Path -Parent $script:root) 'carpet假人功能添加mod（CarpetPlayerAddition）\CarpetPlayerAddition'
+        $repo=New-TestModProject -Name 'carpet-fixture' -Loader Fabric -MinecraftVersion '1.21.6' -JavaMajor 21
         $project=Get-MmtlProject -Path $repo
         $project.Loader | Should -Be 'Fabric'
         $project.MinecraftVersion | Should -Not -BeNullOrEmpty
@@ -45,12 +62,13 @@ Describe 'MMTL 安全与项目检测' {
     }
     It '分别识别 Forge、NeoForge、Fabric 及其 Java 主版本' {
         $cases=@(
-            @{path='建筑白板方块mod（Facade）\Facade';loader='Forge';java=17},
-            @{path='机械动力：概率调校（CreateProbabilityTuning）\CreateProbabilityTuning';loader='NeoForge';java=21},
-            @{path='carpet假人功能添加mod（CarpetPlayerAddition）\CarpetPlayerAddition';loader='Fabric';java=21}
+            @{name='forge-fixture';loader='Forge';version='1.20.1';java=17},
+            @{name='neoforge-fixture';loader='NeoForge';version='1.21.1';java=21},
+            @{name='fabric-fixture';loader='Fabric';version='1.21.6';java=21}
         )
         foreach($case in $cases){
-            $project=Get-MmtlProject (Join-Path (Split-Path -Parent $script:root) $case.path)
+            $fixture=New-TestModProject -Name $case.name -Loader $case.loader -MinecraftVersion $case.version -JavaMajor $case.java
+            $project=Get-MmtlProject $fixture
             $project.Loader | Should -Be $case.loader
             $project.JavaMajor | Should -Be $case.java
             $project.Wrapper | Should -BeTrue
