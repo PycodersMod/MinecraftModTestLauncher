@@ -5,4 +5,33 @@ function Get-MmtlGradleCommand {
     $tasks=if($Clean -and $Task -eq 'build'){@('clean','build')}else{@($Task)}
     return [pscustomobject]@{ File=$wrapper; Arguments=@('--no-daemon')+$tasks; WorkingDirectory=$Project.Root }
 }
-Export-ModuleMember -Function Get-MmtlGradleCommand
+function ConvertTo-MmtlArgumentPayload {
+    param([string[]]$Values=@())
+    return (@($Values|ForEach-Object{if([string]::IsNullOrEmpty([string]$_)){'_'}else{[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes([string]$_))}})-join '.')
+}
+function New-MmtlGradleRunPlan {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)]$Project,[Parameter(Mandatory)][ValidateSet('Single','IntegratedLAN','Dedicated')][string]$Mode,[Parameter(Mandatory)][string]$RuntimeRoot,[Parameter(Mandatory)][ValidateSet('Host','Client','Server')][string]$Role,[string]$Username,[int]$Port=0,[Parameter(Mandatory)]$Profile)
+    if($Role -ne 'Server' -and $Username -notmatch '^[A-Za-z0-9_]{1,16}$'){throw '测试玩家名必须为 1 到 16 位 ASCII 字母、数字或下划线。'}
+    if($Role -eq 'Server' -and $Mode -ne 'Dedicated'){throw '只有 Dedicated 模式支持 Server 角色。'}
+    if($Role -eq 'Host' -and $Mode -ne 'IntegratedLAN'){throw 'Host 角色只能用于 IntegratedLAN 模式。'}
+    $networkClient=($Mode -eq 'Dedicated' -and $Role -eq 'Client') -or ($Mode -eq 'IntegratedLAN' -and $Role -eq 'Client')
+    if($networkClient -and $Port -notin 1..65535){throw '联机客户端必须提供有效服务端口。'}
+    $safeName=if($Role -eq 'Server'){'Server'}else{$Username}
+    $runtimeDirectory=[IO.Path]::GetFullPath((Join-Path $RuntimeRoot $safeName))
+    $gameArgs=@($Profile.gameArgs|Where-Object{$null -ne $_}|ForEach-Object{[string]$_})
+    if($Role -ne 'Server' -and [string]$Profile.resolution -match '^(\d{3,5})x(\d{3,5})$'){$gameArgs+=@('--width',$Matches[1],'--height',$Matches[2])}
+    if($networkClient){$gameArgs+=@('--server','127.0.0.1','--port',[string]$Port)}
+    $jvmArgs=@($Profile.jvmArgs|Where-Object{$null -ne $_}|ForEach-Object{[string]$_})
+    if($Profile.memoryMb -and [int]$Profile.memoryMb -gt 0){$jvmArgs+=('-Xmx{0}M' -f [int]$Profile.memoryMb)}
+    $task=if($Role -eq 'Server'){'runServer'}else{'runClient'}
+    $arguments=@('--no-daemon','--console=plain',"-PpycodersRuntimeDir=$runtimeDirectory")
+    if($Role -ne 'Server'){$arguments+="-PpycodersUsername=$Username"}
+    $gamePayload=ConvertTo-MmtlArgumentPayload $gameArgs
+    $jvmPayload=ConvertTo-MmtlArgumentPayload $jvmArgs
+    if($gamePayload){$arguments+="-PpycodersGameArgsB64=$gamePayload"}
+    if($jvmPayload){$arguments+="-PpycodersJavaArgsB64=$jvmPayload"}
+    $arguments+=$task
+    return [pscustomobject]@{Project=$Project.Root;Mode=$Mode;Role=$Role;Username=$Username;Task=$task;RuntimeDirectory=$runtimeDirectory;GameArguments=$gameArgs;JvmArguments=$jvmArgs;Arguments=$arguments}
+}
+Export-ModuleMember -Function Get-MmtlGradleCommand,ConvertTo-MmtlArgumentPayload,New-MmtlGradleRunPlan

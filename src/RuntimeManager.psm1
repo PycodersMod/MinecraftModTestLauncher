@@ -32,11 +32,23 @@ function Remove-MmtlSession {
     Assert-MmtlNoReparsePath -Path $target | Out-Null
     $item=Get-Item -LiteralPath $target -Force -ErrorAction Stop
     if (-not $item.PSIsContainer -or $item.Attributes -band [IO.FileAttributes]::ReparsePoint) { throw '拒绝删除非目录、junction 或 symlink。' }
+    $nestedLinks=@(Get-ChildItem -LiteralPath $target -Recurse -Force -ErrorAction Stop|Where-Object{$_.Attributes -band [IO.FileAttributes]::ReparsePoint})
+    if($nestedLinks.Count){throw "Session 内含 junction/symlink，拒绝递归删除：$($nestedLinks[0].FullName)"}
     $registry=Join-Path $target 'pids.json'
     if(Test-Path $registry){
-        foreach($entry in @(Get-Content $registry -Raw | ConvertFrom-Json)){
-            try{$proc=Get-Process -Id ([int]$entry.PID) -ErrorAction Stop}catch{continue}
-            if($proc.StartTime.ToUniversalTime().ToString('o') -eq [string]$entry.StartTimeUtc -and $proc.Path -eq [string]$entry.Executable){throw "Session 仍有启动器登记进程 PID $($entry.PID)，请先停止。"}
+        $entries=@(Get-Content $registry -Raw | ConvertFrom-Json)
+        foreach($entry in $entries){
+            $current=Get-CimInstance -ClassName Win32_Process -Filter "ProcessId=$([int]$entry.PID)" -ErrorAction SilentlyContinue
+            if($current -and (Test-MmtlProcessIdentity -Process $current -Record $entry)){throw "Session 仍有启动器登记进程 PID $($entry.PID)，请先停止。"}
+            foreach($tracked in @($entry.ProcessTree)){
+                $descendant=Get-CimInstance -ClassName Win32_Process -Filter "ProcessId=$([int]$tracked.PID)" -ErrorAction SilentlyContinue
+                if($descendant -and (Test-MmtlProcessIdentity -Process $descendant -Record $tracked)){throw "Session 仍有登记子进程 PID $($tracked.PID)，请先停止。"}
+            }
+        }
+        foreach($entry in $entries){
+            if($entry.RuntimeLinkPath -and (Get-Command Remove-MmtlFabricRuntimeLink -ErrorAction SilentlyContinue)){
+                Remove-MmtlFabricRuntimeLink -ProjectRoot $entry.WorkingDirectory -LinkPath $entry.RuntimeLinkPath -TargetPath $entry.RuntimeTargetPath|Out-Null
+            }
         }
     }
     Remove-Item -LiteralPath $target -Recurse -Force
