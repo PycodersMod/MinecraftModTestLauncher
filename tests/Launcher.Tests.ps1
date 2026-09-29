@@ -202,14 +202,31 @@ Describe 'MMTL 安全与项目检测' {
         $client=New-MmtlGradleRunPlan -Project $project -Mode IntegratedLAN -RuntimeRoot $session -Role Client -Username 'Dev_1' -Port 25566 -Profile $profile
         $lanHostPlan.Task | Should -Be 'runClient'
         $client.RuntimeDirectory | Should -Not -Be $lanHostPlan.RuntimeDirectory
-        $client.GameArguments | Should -Contain '--server'
-        $client.GameArguments | Should -Contain '127.0.0.1'
-        $client.GameArguments | Should -Contain '--port'
+        $client.GameArguments | Should -Contain '--quickPlayMultiplayer'
+        $client.GameArguments | Should -Contain '127.0.0.1:25566'
+        $client.GameArguments | Should -Not -Contain '--server'
+        $client.GameArguments | Should -Not -Contain '--port'
         $lanHostPlan.JvmArguments | Should -Contain '-Xmx3072M'
         $client.JvmArguments | Should -Contain '-Xmx2048M'
         $server=New-MmtlGradleRunPlan -Project $project -Mode Dedicated -RuntimeRoot $session -Role Server -Profile $profile
         $server.JvmArguments | Should -Contain '-Xmx4096M'
-        $client.GameArguments | Should -Contain '25566'
+        $dedicatedClient=New-MmtlGradleRunPlan -Project $project -Mode Dedicated -RuntimeRoot $session -Role Client -Username 'Dev' -Port 25567 -Profile $profile
+        $dedicatedClient.GameArguments | Should -Contain '--quickPlayMultiplayer'
+        $dedicatedClient.GameArguments | Should -Contain '127.0.0.1:25567'
+        $modernProjectPath=New-TestModProject -Name 'run-plan-modern-fixture' -Loader Fabric -MinecraftVersion '1.21.6' -JavaMajor 21
+        $modernProject=Get-MmtlProject $modernProjectPath
+        $modernClient=New-MmtlGradleRunPlan -Project $modernProject -Mode IntegratedLAN -RuntimeRoot $session -Role Client -Username 'Dev_2' -Port 25568 -Profile $profile
+        $modernClient.GameArguments | Should -Contain '--quickPlayMultiplayer'
+        $modernClient.GameArguments | Should -Contain '127.0.0.1:25568'
+        $modernClient.GameArguments | Should -Not -Contain '--server'
+        $modernClient.GameArguments | Should -Not -Contain '--port'
+        $legacyProjectPath=New-TestModProject -Name 'run-plan-legacy-fixture' -Loader Forge -MinecraftVersion '1.19.4' -JavaMajor 17
+        $legacyProject=Get-MmtlProject $legacyProjectPath
+        $legacyClient=New-MmtlGradleRunPlan -Project $legacyProject -Mode IntegratedLAN -RuntimeRoot $session -Role Client -Username 'Dev_3' -Port 25569 -Profile $profile
+        $legacyClient.GameArguments | Should -Contain '--server'
+        $legacyClient.GameArguments | Should -Contain '127.0.0.1'
+        $legacyClient.GameArguments | Should -Contain '--port'
+        $legacyClient.GameArguments | Should -Contain '25569'
         $server=New-MmtlGradleRunPlan -Project $project -Mode Dedicated -RuntimeRoot $session -Role Server -Username '' -Profile $profile
         $server.Task | Should -Be 'runServer'
         @($server.Arguments|Where-Object{$_ -like '-PpycodersRuntimeDir=*'}).Count | Should -Be 1

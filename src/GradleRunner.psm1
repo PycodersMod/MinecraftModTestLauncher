@@ -21,7 +21,10 @@ function New-MmtlGradleRunPlan {
     $runtimeDirectory=[IO.Path]::GetFullPath((Join-Path $RuntimeRoot $safeName))
     $gameArgs=@($Profile.gameArgs|Where-Object{$null -ne $_}|ForEach-Object{[string]$_})
     if($Role -ne 'Server' -and [string]$Profile.resolution -match '^(\d{3,5})x(\d{3,5})$'){$gameArgs+=@('--width',$Matches[1],'--height',$Matches[2])}
-    if($networkClient){$gameArgs+=@('--server','127.0.0.1','--port',[string]$Port)}
+    if($networkClient){
+        if([version]$Project.MinecraftVersion -ge [version]'1.20.0'){$gameArgs+=@('--quickPlayMultiplayer',('127.0.0.1:{0}' -f $Port))}
+        else{$gameArgs+=@('--server','127.0.0.1','--port',[string]$Port)}
+    }
     $jvmArgs=@($Profile.jvmArgs|Where-Object{$null -ne $_}|ForEach-Object{[string]$_})
     $memoryProperty=if($Role -eq 'Server'){'serverMemoryMb'}elseif($Mode -eq 'Single' -or $Role -eq 'Host'){'hostMemoryMb'}else{'clientMemoryMb'}
     $instanceMemory=if($Profile.$memoryProperty){[int]$Profile.$memoryProperty}elseif($Profile.memoryMb){[int]$Profile.memoryMb}else{0}
