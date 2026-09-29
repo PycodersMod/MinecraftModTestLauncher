@@ -87,8 +87,8 @@ function Stop-MmtlTrackedProcess {
         if(-not $current -or -not(Test-MmtlProcessIdentity -Process $current -Record $record)){continue}
         try{$proc=Get-Process -Id ([int]$record.PID) -ErrorAction Stop;$proc.Kill();if([int]$record.PID -eq $ProcessId){$null=$proc.WaitForExit(5000)}}catch{continue}
     }
-    $survivors=[Collections.Generic.List[int]]::new()
-    foreach($record in $snapshot){$current=Get-CimInstance -ClassName Win32_Process -Filter "ProcessId=$([int]$record.PID)" -ErrorAction SilentlyContinue;if($current -and (Test-MmtlProcessIdentity -Process $current -Record $record)){$survivors.Add([int]$record.PID)}}
+    $survivors=[Collections.Generic.List[int]]::new();$deadline=[DateTime]::UtcNow.AddSeconds(5)
+    do{$survivors.Clear();foreach($record in $snapshot){$current=Get-CimInstance -ClassName Win32_Process -Filter "ProcessId=$([int]$record.PID)" -ErrorAction SilentlyContinue;if($current -and (Test-MmtlProcessIdentity -Process $current -Record $record)){$survivors.Add([int]$record.PID)}};if($survivors.Count){Start-Sleep -Milliseconds 100}}while($survivors.Count -and [DateTime]::UtcNow -lt $deadline)
     if($survivors.Count){throw "仍有登记进程无法停止：$($survivors -join ', ')。Session 保持活动状态。"}
     $stopped=[pscustomobject]@{PID=$ProcessId;ExitCode=$null;FinishedUtc=[DateTimeOffset]::UtcNow.ToString('o');Error='Stopped by launcher request';StopRequested=$true}
     [IO.File]::WriteAllText([string]$entry.StatePath,($stopped|ConvertTo-Json -Compress),[Text.UTF8Encoding]::new($false))
