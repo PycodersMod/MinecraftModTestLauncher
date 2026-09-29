@@ -19,16 +19,25 @@ function Invoke-MmtlGradleBuild {
     $gitSha=(& git -C $Project.Root rev-parse HEAD 2>$null);if($LASTEXITCODE -ne 0){$gitSha=$null}
     [pscustomobject]@{Project=$Project.Root;JavaPath=$JavaPath;BuildStartedUtc=$started.ToString('o');BuildFinishedUtc=[DateTimeOffset]::UtcNow.ToString('o');ExitCode=$exitCode;JarPath=$jars[0].FullName;JarSha256=(Get-FileHash -LiteralPath $jars[0].FullName -Algorithm SHA256).Hash;GitSha=([string]$gitSha).Trim();LogPath=$log}
 }
+function Get-MmtlMemoryBudget {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)]$Profile,[ValidateSet('Single','IntegratedLAN','Dedicated')][string]$Mode='Single',[long]$PhysicalMemoryMb=0)
+    $players=if($Profile.players){[int]$Profile.players}else{1}
+    $fallback=if($Profile.memoryMb){[int]$Profile.memoryMb}else{0}
+    $hostMemory=if($Profile.hostMemoryMb){[int]$Profile.hostMemoryMb}else{$fallback}
+    $clientMemory=if($Profile.clientMemoryMb){[int]$Profile.clientMemoryMb}else{$fallback}
+    $serverMemory=if($Profile.serverMemoryMb){[int]$Profile.serverMemoryMb}else{$fallback}
+    $requested=switch($Mode){'Single'{$hostMemory};'IntegratedLAN'{$hostMemory+[Math]::Max(0,$players-1)*$clientMemory};'Dedicated'{$serverMemory+$players*$clientMemory}}
+    if($requested -le 0){return [pscustomobject]@{RequestedMb=0;LimitMb=0;ExceedsLimit=$false;PhysicalMemoryMb=$PhysicalMemoryMb;Mode=$Mode}}
+    if($PhysicalMemoryMb -le 0){try{$PhysicalMemoryMb=[long][Math]::Floor((Get-CimInstance Win32_ComputerSystem -ErrorAction Stop).TotalPhysicalMemory/1MB)}catch{throw '无法确定本机物理内存；拒绝估算多实例内存预算。'}}
+    $requested=[long]$requested;$limit=[long][Math]::Floor($PhysicalMemoryMb*0.8)
+    return [pscustomobject]@{RequestedMb=$requested;LimitMb=$limit;ExceedsLimit=($requested -gt $limit);PhysicalMemoryMb=$PhysicalMemoryMb;Mode=$Mode}
+}
 function Assert-MmtlMemoryBudget {
     [CmdletBinding()]
     param([Parameter(Mandatory)]$Profile,[ValidateSet('Single','IntegratedLAN','Dedicated')][string]$Mode='Single',[long]$PhysicalMemoryMb=0)
-    $perProcess=if($Profile.memoryMb){[int]$Profile.memoryMb}else{0}
-    if($perProcess -le 0){return $true}
-    $players=if($Profile.players){[int]$Profile.players}else{1}
-    $processCount=switch($Mode){'Single'{1};'IntegratedLAN'{$players};'Dedicated'{$players+1}}
-    if($PhysicalMemoryMb -le 0){try{$PhysicalMemoryMb=[long][Math]::Floor((Get-CimInstance Win32_ComputerSystem -ErrorAction Stop).TotalPhysicalMemory/1MB)}catch{throw '无法确定本机物理内存；拒绝估算多实例内存预算。'}}
-    $requested=[long]$perProcess*$processCount;$limit=[long][Math]::Floor($PhysicalMemoryMb*0.8)
-    if($requested -gt $limit){throw "实例内存预算超限：请求 $requested MB（$perProcess MB × $processCount 个进程），上限为物理内存的 80%（$limit MB）。请降低单实例内存或玩家数量。"}
+    $budget=Get-MmtlMemoryBudget -Profile $Profile -Mode $Mode -PhysicalMemoryMb $PhysicalMemoryMb
+    if($budget.ExceedsLimit){throw "实例内存预算超限：请求 $($budget.RequestedMb) MB，上限为物理内存的 80%（$($budget.LimitMb) MB；$Mode 模式按各角色内存预算汇总）。请降低实例内存或玩家数量。"}
     return $true
 }
 function New-MmtlFabricRuntimeLink {
@@ -132,4 +141,4 @@ function Initialize-MmtlDedicatedServerRuntime {
     if($ops.Count){[IO.File]::WriteAllText((Join-Path $server 'ops.json'),($ops|ConvertTo-Json -Depth 5),[Text.UTF8Encoding]::new($false))}
     [pscustomobject]@{ServerDirectory=$server;EulaPath=$eula;PropertiesPath=$properties;Port=$Port;WorldName=$world;Players=$players;Ops=$ops}
 }
-Export-ModuleMember -Function Invoke-MmtlGradleBuild,Assert-MmtlMemoryBudget,Start-MmtlGradleInstance,Initialize-MmtlDedicatedServerRuntime,New-MmtlFabricRuntimeLink,Remove-MmtlFabricRuntimeLink
+Export-ModuleMember -Function Invoke-MmtlGradleBuild,Get-MmtlMemoryBudget,Assert-MmtlMemoryBudget,Start-MmtlGradleInstance,Initialize-MmtlDedicatedServerRuntime,New-MmtlFabricRuntimeLink,Remove-MmtlFabricRuntimeLink

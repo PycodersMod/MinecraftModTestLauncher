@@ -53,4 +53,23 @@ function Remove-MmtlSession {
     }
     Remove-Item -LiteralPath $target -Recurse -Force
 }
-Export-ModuleMember -Function Resolve-MmtlRuntimeRoot,Test-MmtlInsideRoot,Assert-MmtlNoReparsePath,Remove-MmtlSession
+function Reset-MmtlSessionWorld {
+    [CmdletBinding(SupportsShouldProcess)]
+    param([Parameter(Mandatory)][string]$RuntimeRoot,[Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][string]$PlayerName,[Parameter(Mandatory)][string]$WorldName,[switch]$Reset)
+    if(-not $Reset){return $false}
+    if($PlayerName -notmatch '^[A-Za-z0-9_]{1,16}$'){throw '测试玩家名无效。'}
+    if($WorldName -notmatch '^[A-Za-z0-9._ -]{1,64}$' -or $WorldName -in @('.','..')){throw '世界名称无效。'}
+    $runtime=[IO.Path]::GetFullPath($RuntimeRoot);$session=[IO.Path]::GetFullPath($SessionPath)
+    if(-not(Test-MmtlInsideRoot -Root (Join-Path $runtime 'sessions') -Target $session) -or [IO.Path]::GetFullPath((Split-Path $session -Parent)) -ne [IO.Path]::GetFullPath((Join-Path $runtime 'sessions'))){throw '世界重置目标 Session 不在 Runtime Root 内。'}
+    $target=[IO.Path]::GetFullPath((Join-Path $session (Join-Path $PlayerName (Join-Path 'saves' $WorldName))))
+    if(-not(Test-MmtlInsideRoot -Root $session -Target $target)){throw '世界重置目标越出当前 Session。'}
+    Assert-MmtlNoReparsePath -Path $session|Out-Null
+    if(-not(Test-Path -LiteralPath $target)){return $false}
+    $item=Get-Item -LiteralPath $target -Force
+    if(-not $item.PSIsContainer -or $item.Attributes -band [IO.FileAttributes]::ReparsePoint){throw '拒绝重置非目录或链接世界。'}
+    $nested=@(Get-ChildItem -LiteralPath $target -Recurse -Force -ErrorAction Stop|Where-Object{$_.Attributes -band [IO.FileAttributes]::ReparsePoint})
+    if($nested.Count){throw '世界目录内含 junction/symlink，拒绝重置。'}
+    if($PSCmdlet.ShouldProcess($target,'重置当前 Session 测试世界')){Remove-Item -LiteralPath $target -Recurse -Force;return $true}
+    return $false
+}
+Export-ModuleMember -Function Resolve-MmtlRuntimeRoot,Test-MmtlInsideRoot,Assert-MmtlNoReparsePath,Remove-MmtlSession,Reset-MmtlSessionWorld

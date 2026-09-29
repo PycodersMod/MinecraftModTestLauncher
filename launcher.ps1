@@ -77,7 +77,8 @@ function Start-MmtlConfiguredRun {
     if($players -gt 8){throw 'v1 单次最多运行 8 个游戏客户端。'}
     if($Profile.mode -eq 'Single' -and $players -ne 1){throw 'Single 模式的 players 必须为 1。'}
     if($Profile.mode -eq 'IntegratedLAN' -and $players -lt 2){throw 'IntegratedLAN 的 players 包含 Host，至少为 2。'}
-    Assert-MmtlMemoryBudget -Profile $Profile -Mode $Profile.mode|Out-Null
+    $memoryBudget=Get-MmtlMemoryBudget -Profile $Profile -Mode $Profile.mode;$memoryOverageConfirmed=$false
+    if($memoryBudget.ExceedsLimit){Write-Warning "预计 Xmx 总和 $($memoryBudget.RequestedMb) MB，超过物理内存 80% 预算 $($memoryBudget.LimitMb) MB。";$memoryApproval=Read-Host '继续可能造成系统变慢或实例崩溃。输入 Y 明确继续，其他输入取消';if($memoryApproval -notmatch '^(?i:y|yes)$'){throw '用户未确认超额内存预算，已取消启动。'};$memoryOverageConfirmed=$true}
     $hostName=if($Profile.hostUsername){[string]$Profile.hostUsername}else{'Dev'}
     $prefix=if($Profile.clientPrefix){[string]$Profile.clientPrefix}else{'Dev_'}
     if($hostName -notmatch '^[A-Za-z0-9_]{1,16}$'){throw 'hostUsername 必须为 1 到 16 位 ASCII 字母、数字或下划线。'}
@@ -88,12 +89,13 @@ function Start-MmtlConfiguredRun {
     if([string]$portSetting -ne 'Auto'){$requestedPort=[int]$portSetting}
     if($requestedPort -and $Profile.mode -in @('Dedicated','IntegratedLAN')){$null=Get-MmtlPort -Port $requestedPort}
     $name=[IO.Path]::GetFileName($Primary.Root)-replace '[^A-Za-z0-9_-]','_'
-    $metadata=[pscustomobject]@{project=$Primary.Root;linkedProjects=@($linked.Root);minecraft=$Primary.MinecraftVersion;loader=$Primary.Loader;loaderVersion=$Primary.LoaderVersion;javaMajor=$Primary.JavaMajor;mode=$Profile.mode;players=$players;hostUsername=$hostName;clientPrefix=$prefix;hostCheats=[bool]$Profile.hostCheats;clientPermissionLevel=[int]$Profile.clientPermissionLevel;gameMode=$Profile.gameMode;difficulty=$Profile.difficulty;worldName=$Profile.worldName;seed=$Profile.seed;newWorld=[bool]$Profile.newWorld;resetWorld=[bool]$Profile.resetWorld;resolution=$Profile.resolution;windowLayout=$Profile.windowLayout;memoryMb=$Profile.memoryMb;port=$requestedPort;builds=@();processes=@();createdBy='MinecraftModTestLauncher'}
+    $metadata=[pscustomobject]@{project=$Primary.Root;linkedProjects=@($linked.Root);minecraft=$Primary.MinecraftVersion;loader=$Primary.Loader;loaderVersion=$Primary.LoaderVersion;javaMajor=$Primary.JavaMajor;mode=$Profile.mode;players=$players;hostUsername=$hostName;clientPrefix=$prefix;hostCheats=[bool]$Profile.hostCheats;clientPermissionLevel=[int]$Profile.clientPermissionLevel;gameMode=$Profile.gameMode;difficulty=$Profile.difficulty;worldName=$Profile.worldName;seed=$Profile.seed;newWorld=[bool]$Profile.newWorld;resetWorld=[bool]$Profile.resetWorld;worldResetCount=0;resolution=$Profile.resolution;windowLayout=$Profile.windowLayout;windowLayoutStatus='Pending';memoryMb=$Profile.memoryMb;hostMemoryMb=$Profile.hostMemoryMb;clientMemoryMb=$Profile.clientMemoryMb;serverMemoryMb=$Profile.serverMemoryMb;memoryBudget=$memoryBudget;memoryOverageConfirmed=$memoryOverageConfirmed;port=$requestedPort;builds=@();processes=@();createdBy='MinecraftModTestLauncher'}
     $session=New-MmtlSession -RuntimeRoot $RuntimeRoot -Name $name -Metadata $metadata
     $sessionId=Split-Path $session -Leaf
     $builds=[Collections.Generic.List[object]]::new();$linkedJars=[Collections.Generic.List[string]]::new()
     try{
         Write-Host "Session: $sessionId`nMinecraft: $($Primary.MinecraftVersion)`nLoader: $($Primary.Loader) $($Primary.LoaderVersion)`nJava: $($Primary.JavaMajor)`nMode: $($Profile.mode)`nPlayers: $players`nRuntime: $session"
+        if($Profile.resetWorld -eq $true){$resetWorldCount=0;foreach($username in @($hostName)+@(for($i=1;$i -lt $players;$i++){$prefix+$i})){if(Reset-MmtlSessionWorld -RuntimeRoot $RuntimeRoot -SessionPath $session -PlayerName $username -WorldName ([string]$Profile.worldName) -Reset -Confirm:$false){$resetWorldCount++}};$metadata.worldResetCount=$resetWorldCount;Write-Host "当前 Session 测试世界重置数：$resetWorldCount"}
         if($Profile.autoBuild -ne $false){
             foreach($candidate in $projects){
                 $projectJava=Resolve-MmtlJava -Config $Config -Major ([int]$candidate.JavaMajor)
@@ -158,7 +160,7 @@ function Start-MmtlConfiguredRun {
         }else{$metadata.windowLayoutStatus='Skipped'}
         $metadata.builds=@($builds)
         $statePath=Join-Path $session 'session.json';$state=Get-Content -LiteralPath $statePath -Raw|ConvertFrom-Json;$state.metadata=$metadata;$state|ConvertTo-Json -Depth 30|Set-Content -LiteralPath $statePath -Encoding utf8
-        $report=@("# Session $sessionId",'',"- Mode: $($Profile.mode)","- Project: $($Primary.Root)","- Minecraft: $($Primary.MinecraftVersion)","- Loader: $($Primary.Loader) $($Primary.LoaderVersion)","- Java: $($Primary.JavaMajor)","- Players: $($metadata.processes.username -join ', ')","- Port: $($metadata.port)","- Window layout: $($metadata.windowLayoutStatus)","- Runtime: $session",'', '## Builds')
+        $report=@("# Session $sessionId",'',"- Mode: $($Profile.mode)","- Project: $($Primary.Root)","- Minecraft: $($Primary.MinecraftVersion)","- Loader: $($Primary.Loader) $($Primary.LoaderVersion)","- Java: $($Primary.JavaMajor)","- Players: $($metadata.processes.username -join ', ')","- Port: $($metadata.port)","- Memory budget MB: $($memoryBudget.RequestedMb) / $($memoryBudget.LimitMb); overage confirmed=$memoryOverageConfirmed","- World reset count: $($metadata.worldResetCount)","- Window layout: $($metadata.windowLayoutStatus)","- Runtime: $session",'', '## Builds')
         foreach($build in $builds){$report+=@("- Project: $($build.Project)","  - Git SHA: $($build.GitSha)","  - Jar: $($build.JarPath)","  - SHA-256: $($build.JarSha256)","  - Log: $($build.LogPath)")}
         $report+=@('','## Processes');foreach($process in $metadata.processes){$report+="- $($process.role) $($process.username) PID $($process.PID): $($process.log)"};Set-Content -LiteralPath (Join-Path $session 'report.md') -Value $report -Encoding utf8
         Write-Host "会话清单：$session`n停止命令：launcher.cmd --stop $sessionId`n清理命令：launcher.cmd --clean-session $sessionId"
@@ -170,15 +172,28 @@ if($Arguments -contains '--validate') {
     $java=if($project.JavaMajor){Resolve-MmtlJava -Config $config -Major $project.JavaMajor}else{'未能自动判断 Java 主版本'}
     $linked=@($profile.linkedProjects|Where-Object{$_}|ForEach-Object{Get-MmtlProject -Path $_})
     if($linked.Count){Assert-MmtlCompatible -Projects (@($project)+$linked)|Out-Null}
-    [pscustomobject]@{Project=$project.Root;LinkedProjects=($linked.Root -join '; ');Loader=$project.Loader;Minecraft=$project.MinecraftVersion;Java=$java;Wrapper=$project.Wrapper;Mode=$profile.mode;RuntimeRoot=$runtimeRoot;Port=$profile.port} | Format-List
+    Assert-MmtlNoReparsePath -Path $runtimeRoot|Out-Null
+    $extra=@();foreach($item in @($profile.extraMods|Where-Object{$_})){$path=[string]$item;if(-not[IO.Path]::IsPathRooted($path)){$path=Join-Path $here $path};$resolved=(Resolve-Path -LiteralPath $path -ErrorAction Stop).Path;if([IO.Path]::GetExtension($resolved) -ne '.jar'){throw "Extra Mod 必须为 JAR：$item"};$extra+=$resolved}
+    $portStatus='Not required'
+    if($profile.mode -in @('IntegratedLAN','Dedicated')){if([string]$profile.port -eq 'Auto'){$portStatus='Auto (assigned at launch)'}else{$fixed=[int]$profile.port;$null=Get-MmtlPort -Port $fixed;$portStatus="Available: $fixed"}}
+    [pscustomobject]@{Project=$project.Root;LinkedProjects=($linked.Root -join '; ');ExtraMods=($extra -join '; ');Loader=$project.Loader;LoaderVersion=$project.LoaderVersion;Minecraft=$project.MinecraftVersion;Java=$java;Wrapper=$project.Wrapper;Mode=$profile.mode;Players=$profile.players;RuntimeRoot=$runtimeRoot;Port=$portStatus} | Format-List
     exit 0
 }
 if($Arguments -contains '--dry-run') {
-    $task=if($profile.mode -eq 'Dedicated'){'runServer'}else{'runClient'}
-    $cmd=Get-MmtlGradleCommand -Project $project -Task $task
-    Write-Host "模式：$($profile.mode)；项目：$($project.Root)；Loader：$($project.Loader)；Minecraft：$($project.MinecraftVersion)"
-    Write-Host "命令预览：$($cmd.File) $($cmd.Arguments -join ' ')"
-    Write-Host '安全说明：当前 dry-run 不执行 Gradle，也不启动 Minecraft。'
+    $linked=@($profile.linkedProjects|Where-Object{$_}|ForEach-Object{Get-MmtlProject -Path $_});if($linked.Count){Assert-MmtlCompatible -Projects (@($project)+$linked)|Out-Null}
+    $java=Resolve-MmtlJava -Config $config -Major ([int]$project.JavaMajor);$resolvedProfileName=if($profileName){$profileName}else{[string]$config.defaultProfile};$previewRoot=Join-Path (Join-Path $runtimeRoot 'sessions') ('preview-'+$resolvedProfileName);$players=[int]$profile.players;$hostName=if($profile.hostUsername){[string]$profile.hostUsername}else{'Dev'};$prefix=if($profile.clientPrefix){[string]$profile.clientPrefix}else{'Dev_'}
+    $autoPort=([string]$profile.port -eq 'Auto');$port=if($autoPort){25565}else{[int]$profile.port};$roles=[Collections.Generic.List[object]]::new()
+    if($profile.mode -eq 'Single'){$roles.Add([pscustomobject]@{Role='Client';Username=$hostName})}
+    elseif($profile.mode -eq 'IntegratedLAN'){$roles.Add([pscustomobject]@{Role='Host';Username=$hostName});for($i=1;$i -lt $players;$i++){$roles.Add([pscustomobject]@{Role='Client';Username=($prefix+$i)})}}
+    else{$roles.Add([pscustomobject]@{Role='Server';Username=''});$roles.Add([pscustomobject]@{Role='Client';Username=$hostName});for($i=1;$i -lt $players;$i++){$roles.Add([pscustomobject]@{Role='Client';Username=($prefix+$i)})}}
+    Write-Host "模式：$($profile.mode)；Minecraft：$($project.MinecraftVersion)；Loader：$($project.Loader) $($project.LoaderVersion)；Java：$java"
+    $budget=Get-MmtlMemoryBudget -Profile $profile -Mode $profile.mode
+    Write-Host "Runtime：$previewRoot；玩家数：$players；项目：$((@($project.Root)+@($linked.Root))-join '; ')；Build：$($profile.autoBuild -ne $false)；Clean：$([bool]$profile.cleanBuild)；内存：$($budget.RequestedMb)/$($budget.LimitMb) MB"
+    if($autoPort -and $profile.mode -ne 'Single'){Write-Host '端口：Auto（命令预览中的 25565 仅占位，运行时会实际分配或读取端口）'}elseif($profile.mode -ne 'Single'){Write-Host "端口：$port"}
+    if($profile.autoBuild -ne $false){foreach($candidate in @($project)+@($linked)){$buildCmd=Get-MmtlGradleCommand -Project $candidate -Task build -Clean:([bool]$profile.cleanBuild);Write-Host "[Build] $($buildCmd.File) $($buildCmd.Arguments -join ' ')"}}
+    Write-Host "额外 Mod：$(@($profile.extraMods) -join '; ')"
+    foreach($role in $roles){$plan=New-MmtlGradleRunPlan -Project $project -Mode $profile.mode -RuntimeRoot $previewRoot -Role $role.Role -Username $role.Username -Port $port -Profile $profile;Write-Host "[$($role.Role) $($role.Username)] $($project.Root)\gradlew.bat $($plan.Arguments -join ' ')"}
+    Write-Host '安全说明：dry-run 不创建 Runtime、不执行 Gradle，也不启动 Minecraft。'
     exit 0
 }
 if($Arguments -contains '--launch') { Start-MmtlConfiguredRun -Primary $project -Profile $profile -Config $config -RuntimeRoot $runtimeRoot;exit 0 }

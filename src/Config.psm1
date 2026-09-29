@@ -6,6 +6,13 @@ function Read-MmtlConfig {
     catch { throw "配置 JSON 无效：$($_.Exception.Message)" }
     if (-not $config.profiles) { throw '配置必须包含 profiles。' }
     if (-not $config.javaHomes) { throw '配置必须包含 javaHomes。' }
+    if(-not $config.defaultProfile -or -not $config.profiles.PSObject.Properties[$config.defaultProfile]){throw 'defaultProfile 必须引用 profiles 中存在的配置。'}
+    foreach($profileProperty in $config.profiles.PSObject.Properties){
+        $profile=$profileProperty.Value
+        if($profile.mode -notin @('Single','IntegratedLAN','Dedicated')){throw "Profile $($profileProperty.Name) 的 mode 无效。"}
+        $players=0;if(-not[int]::TryParse([string]$profile.players,[ref]$players) -or $players -lt 1 -or $players -gt 8){throw "Profile $($profileProperty.Name) 的 players 必须为 1 至 8。"}
+        if($profile.port -and [string]$profile.port -ne 'Auto'){$port=0;if(-not[int]::TryParse([string]$profile.port,[ref]$port) -or $port -lt 1 -or $port -gt 65535){throw "Profile $($profileProperty.Name) 的 port 必须是 Auto 或 1 至 65535。"}}
+    }
     return $config
 }
 

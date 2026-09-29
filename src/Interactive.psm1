@@ -44,8 +44,11 @@ function Read-MmtlWizardProfile {
     $autoBuild=(Read-MmtlPromptValue '自动构建项目？Y/N' $(if((& $value 'autoBuild' $true)){'Y'}else{'N'})) -match '^(?i:y|yes|true|1)$'
     $clean=(Read-MmtlPromptValue '构建前 clean？Y/N' $(if((& $value 'cleanBuild' $false)){'Y'}else{'N'})) -match '^(?i:y|yes|true|1)$'
     $extra=ConvertTo-MmtlPromptList (Read-MmtlPromptValue '额外 Mod JAR 路径，多个以分号分隔' ((@(& $value 'extraMods' @())) -join ';'))
-    $memoryText=Read-MmtlPromptValue '每客户端内存 MB' (& $value 'memoryMb' 4096)
+    $memoryText=Read-MmtlPromptValue '通用回退内存 MB' (& $value 'memoryMb' 4096)
     $memory=0;if(-not[int]::TryParse([string]$memoryText,[ref]$memory) -or $memory -lt 1024 -or $memory -gt 65536){throw '内存需为 1024 至 65536 MB。'}
+    $hostMemoryText=Read-MmtlPromptValue 'Host 内存 MB' (& $value 'hostMemoryMb' $memory);$hostMemory=0;if(-not[int]::TryParse([string]$hostMemoryText,[ref]$hostMemory) -or $hostMemory -lt 1024 -or $hostMemory -gt 65536){throw 'Host 内存需为 1024 至 65536 MB。'}
+    $clientMemoryText=Read-MmtlPromptValue '每个本地客户端内存 MB' (& $value 'clientMemoryMb' $memory);$clientMemory=0;if(-not[int]::TryParse([string]$clientMemoryText,[ref]$clientMemory) -or $clientMemory -lt 1024 -or $clientMemory -gt 65536){throw '客户端内存需为 1024 至 65536 MB。'}
+    $serverMemoryText=Read-MmtlPromptValue 'Dedicated Server 内存 MB' (& $value 'serverMemoryMb' $memory);$serverMemory=0;if(-not[int]::TryParse([string]$serverMemoryText,[ref]$serverMemory) -or $serverMemory -lt 1024 -or $serverMemory -gt 65536){throw 'Dedicated Server 内存需为 1024 至 65536 MB。'}
     $resolution=Read-MmtlPromptValue '窗口分辨率（宽x高）' (& $value 'resolution' '1280x720')
     if($resolution -notmatch '^\d{3,5}x\d{3,5}$'){throw '分辨率格式应为例如 1280x720。'}
     $layout=Read-MmtlPromptValue '窗口布局：Auto / Tile / Cascade / None' (& $value 'windowLayout' 'Auto')
@@ -54,7 +57,7 @@ function Read-MmtlWizardProfile {
     $game=ConvertTo-MmtlPromptList (Read-MmtlPromptValue '额外游戏参数，以分号分隔' ((@(& $value 'gameArgs' @())) -join ';'))
     $acceptEula=$false
     if($mode -eq 'Dedicated'){$acceptEula=(Read-MmtlPromptValue 'Dedicated Server EULA：输入 Y 表示你已阅读并接受；其他输入为否' $(if((& $value 'acceptEula' $false)){'Y'}else{'N'})) -match '^(?i:y|yes|true|1)$'}
-    return [pscustomobject]@{project=$project;linkedProjects=@($linked);mode=$mode;players=$players;hostUsername=$host;clientPrefix=$prefix;hostCheats=$hostCheats;clientPermissionLevel=$permission;gameMode=$gameMode;difficulty=$difficulty;worldName=$world;seed=$seed;newWorld=$newWorld;resetWorld=$reset;port=$port;autoBuild=$autoBuild;cleanBuild=$clean;extraMods=@($extra);memoryMb=$memory;resolution=$resolution;windowLayout=$layout;jvmArgs=@($jvm);gameArgs=@($game);acceptEula=$acceptEula}
+    return [pscustomobject]@{project=$project;linkedProjects=@($linked);mode=$mode;players=$players;hostUsername=$host;clientPrefix=$prefix;hostCheats=$hostCheats;clientPermissionLevel=$permission;gameMode=$gameMode;difficulty=$difficulty;worldName=$world;seed=$seed;newWorld=$newWorld;resetWorld=$reset;port=$port;autoBuild=$autoBuild;cleanBuild=$clean;extraMods=@($extra);memoryMb=$memory;hostMemoryMb=$hostMemory;clientMemoryMb=$clientMemory;serverMemoryMb=$serverMemory;resolution=$resolution;windowLayout=$layout;jvmArgs=@($jvm);gameArgs=@($game);acceptEula=$acceptEula}
 }
 function Show-MmtlLaunchSummary {
     param([Parameter(Mandatory)]$Profile,[Parameter(Mandatory)]$Config)
@@ -68,7 +71,7 @@ function Show-MmtlLaunchSummary {
     Write-Host '========================================';Write-Host 'Minecraft Mod Test Launcher';Write-Host '========================================'
     Write-Host "Minecraft: $($primary.MinecraftVersion)";Write-Host "Loader: $($primary.Loader) $($primary.LoaderVersion)";Write-Host "Java: $($primary.JavaMajor) ($javaPath)";Write-Host "Mode: $($Profile.mode)";Write-Host "Players: $($Profile.players)";Write-Host "Host: $($Profile.hostUsername) / $($Profile.gameMode) / Cheats=$($Profile.hostCheats)"
     if([int]$Profile.players -gt 1){Write-Host "Clients: $($Profile.clientPrefix)1 .. $($Profile.clientPrefix)$([int]$Profile.players-1); Dedicated permission level=$($Profile.clientPermissionLevel)"}
-    Write-Host "Projects: $((@($primary.Root)+@($linked.Root))-join ', ')";Write-Host "Build: $($Profile.autoBuild); Clean: $($Profile.cleanBuild); Reset world: $($Profile.resetWorld)";Write-Host "Runtime: $($Profile.resolution), layout=$($Profile.windowLayout), memory=$($Profile.memoryMb) MB"
+    Write-Host "Projects: $((@($primary.Root)+@($linked.Root))-join ', ')";Write-Host "Build: $($Profile.autoBuild); Clean: $($Profile.cleanBuild); Reset world: $($Profile.resetWorld)";Write-Host "Runtime: $($Profile.resolution), layout=$($Profile.windowLayout); memory Host=$($Profile.hostMemoryMb) MB, Client=$($Profile.clientMemoryMb) MB, Server=$($Profile.serverMemoryMb) MB"
     if($Profile.mode -eq 'Dedicated' -and $Profile.acceptEula -ne $true){Write-Warning '尚未接受 EULA；Dedicated 启动会被拒绝。'}
 }
 function Invoke-MmtlConsoleMenu {

@@ -23,7 +23,9 @@ function New-MmtlGradleRunPlan {
     if($Role -ne 'Server' -and [string]$Profile.resolution -match '^(\d{3,5})x(\d{3,5})$'){$gameArgs+=@('--width',$Matches[1],'--height',$Matches[2])}
     if($networkClient){$gameArgs+=@('--server','127.0.0.1','--port',[string]$Port)}
     $jvmArgs=@($Profile.jvmArgs|Where-Object{$null -ne $_}|ForEach-Object{[string]$_})
-    if($Profile.memoryMb -and [int]$Profile.memoryMb -gt 0){$jvmArgs+=('-Xmx{0}M' -f [int]$Profile.memoryMb)}
+    $memoryProperty=if($Role -eq 'Server'){'serverMemoryMb'}elseif($Mode -eq 'Single' -or $Role -eq 'Host'){'hostMemoryMb'}else{'clientMemoryMb'}
+    $instanceMemory=if($Profile.$memoryProperty){[int]$Profile.$memoryProperty}elseif($Profile.memoryMb){[int]$Profile.memoryMb}else{0}
+    if($instanceMemory -gt 0){$jvmArgs+=('-Xmx{0}M' -f $instanceMemory)}
     $task=if($Role -eq 'Server'){'runServer'}else{'runClient'}
     $arguments=@('--no-daemon','--console=plain',"-PpycodersRuntimeDir=$runtimeDirectory")
     if($Role -ne 'Server'){$arguments+="-PpycodersUsername=$Username"}

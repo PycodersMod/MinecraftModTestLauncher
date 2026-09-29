@@ -36,6 +36,15 @@ Describe 'MMTL 安全与项目检测' {
             Test-Path -LiteralPath $session|Should -BeTrue
         }finally{Remove-Item -LiteralPath $link -Force -ErrorAction SilentlyContinue}
     }
+    It 'Reset World 只删除当前 Session 中指定玩家的测试世界' {
+        $runtime=Join-Path $TestDrive 'reset-runtime';$session=New-MmtlSession -RuntimeRoot $runtime -Name 'reset-world' -Metadata ([pscustomobject]@{players=1})
+        $world=Join-Path $session 'Dev\saves\MMTL-Test';New-Item -ItemType Directory -Path $world -Force|Out-Null;Set-Content (Join-Path $world 'level.dat') 'session-world'
+        $outside=Join-Path $TestDrive '.minecraft\saves\MMTL-Test';New-Item -ItemType Directory -Path $outside -Force|Out-Null;Set-Content (Join-Path $outside 'level.dat') 'keep'
+        (Reset-MmtlSessionWorld -RuntimeRoot $runtime -SessionPath $session -PlayerName 'Dev' -WorldName 'MMTL-Test' -Reset) | Should -BeTrue
+        Test-Path $world | Should -BeFalse
+        (Get-Content (Join-Path $outside 'level.dat') -Raw).Trim() | Should -Be 'keep'
+        {Reset-MmtlSessionWorld -RuntimeRoot $runtime -SessionPath $session -PlayerName 'Dev' -WorldName '..' -Reset}|Should -Throw
+    }
     It '识别当前 Carpet Fabric 项目并拒绝未知类型' {
         $repo=New-TestModProject -Name 'carpet-fixture' -Loader Fabric -MinecraftVersion '1.21.6' -JavaMajor 21
         $project=Get-MmtlProject -Path $repo
@@ -83,6 +92,11 @@ Describe 'MMTL 安全与项目检测' {
         $port=Get-MmtlPort
         $port | Should -BeGreaterThan 0
         $port | Should -BeLessThan 65536
+    }
+    It '固定端口已被占用时拒绝继续' {
+        $listener=[Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback,0);$listener.Start()
+        try{$port=[int]$listener.LocalEndpoint.Port;{Get-MmtlPort -Port $port}|Should -Throw}
+        finally{$listener.Stop()}
     }
     It '从 IntegratedLAN 启动日志检测端口并等待 Dedicated 就绪标记' {
         $log=Join-Path $TestDrive 'minecraft-startup.log'
@@ -174,7 +188,7 @@ Describe 'MMTL 安全与项目检测' {
         $project=Get-MmtlProject $projectPath
         $session=Join-Path $TestDrive 'run-plan-session'
         New-Item -ItemType Directory $session|Out-Null
-        $profile=[pscustomobject]@{gameArgs=@('--demo');jvmArgs=@('-Dfixture=true');memoryMb=2048;resolution='1280x720'}
+        $profile=[pscustomobject]@{gameArgs=@('--demo');jvmArgs=@('-Dfixture=true');memoryMb=2048;hostMemoryMb=3072;clientMemoryMb=2048;serverMemoryMb=4096;resolution='1280x720'}
         $single=New-MmtlGradleRunPlan -Project $project -Mode Single -RuntimeRoot $session -Role Client -Username 'Dev' -Profile $profile
         $single.Task | Should -Be 'runClient'
         $single.RuntimeDirectory | Should -BeLike "$session*"
@@ -183,6 +197,7 @@ Describe 'MMTL 安全与项目检测' {
         $single.GameArguments | Should -Contain '1280'
         $single.GameArguments | Should -Contain '--height'
         $single.GameArguments | Should -Contain '720'
+        $single.JvmArguments | Should -Contain '-Xmx3072M'
         $lanHostPlan=New-MmtlGradleRunPlan -Project $project -Mode IntegratedLAN -RuntimeRoot $session -Role Host -Username 'Dev' -Profile $profile
         $client=New-MmtlGradleRunPlan -Project $project -Mode IntegratedLAN -RuntimeRoot $session -Role Client -Username 'Dev_1' -Port 25566 -Profile $profile
         $lanHostPlan.Task | Should -Be 'runClient'
@@ -190,6 +205,10 @@ Describe 'MMTL 安全与项目检测' {
         $client.GameArguments | Should -Contain '--server'
         $client.GameArguments | Should -Contain '127.0.0.1'
         $client.GameArguments | Should -Contain '--port'
+        $lanHostPlan.JvmArguments | Should -Contain '-Xmx3072M'
+        $client.JvmArguments | Should -Contain '-Xmx2048M'
+        $server=New-MmtlGradleRunPlan -Project $project -Mode Dedicated -RuntimeRoot $session -Role Server -Profile $profile
+        $server.JvmArguments | Should -Contain '-Xmx4096M'
         $client.GameArguments | Should -Contain '25566'
         $server=New-MmtlGradleRunPlan -Project $project -Mode Dedicated -RuntimeRoot $session -Role Server -Username '' -Profile $profile
         $server.Task | Should -Be 'runServer'
@@ -197,9 +216,13 @@ Describe 'MMTL 安全与项目检测' {
     }
     It '按玩家进程数拒绝超出物理内存预算的配置' {
         $profile=[pscustomobject]@{players=4;memoryMb=4096}
+        (Get-MmtlMemoryBudget -Profile $profile -Mode IntegratedLAN -PhysicalMemoryMb 16384).ExceedsLimit | Should -BeTrue
         {Assert-MmtlMemoryBudget -Profile $profile -Mode IntegratedLAN -PhysicalMemoryMb 16384}|Should -Throw '*内存预算超限*'
         (Assert-MmtlMemoryBudget -Profile $profile -Mode Single -PhysicalMemoryMb 16384)|Should -BeTrue
         {Assert-MmtlMemoryBudget -Profile $profile -Mode Dedicated -PhysicalMemoryMb 16384}|Should -Throw '*内存预算超限*'
+        $profile=[pscustomobject]@{players=4;hostMemoryMb=2048;clientMemoryMb=1024;serverMemoryMb=4096}
+        (Assert-MmtlMemoryBudget -Profile $profile -Mode IntegratedLAN -PhysicalMemoryMb 8192)|Should -BeTrue
+        {Assert-MmtlMemoryBudget -Profile $profile -Mode Dedicated -PhysicalMemoryMb 8192}|Should -Throw '*内存预算超限*'
     }
     It '把 Gradle 实例日志和进程登记限制在 Session 内' {
         $projectPath=New-TestModProject -Name 'fake-gradle-project' -Loader Forge -MinecraftVersion '1.20.1' -JavaMajor 17
@@ -250,6 +273,19 @@ Describe 'MMTL 安全与项目检测' {
     It '拒绝畸形配置 JSON' {
         $file=Join-Path $TestDrive 'broken.json'; '{broken' | Set-Content $file
         { Read-MmtlConfig -Path $file } | Should -Throw
+    }
+    It 'JSON Schema 覆盖本机配置中的关键门禁与分角色内存项' {
+        $schema=Get-Content (Join-Path $script:root 'schemas\launcher-config.schema.json') -Raw|ConvertFrom-Json
+        $schema.required | Should -Contain 'defaultProfile'
+        $schema.required | Should -Contain 'javaHomes'
+        $properties=$schema.'$defs'.profile.properties
+        $properties.acceptEula.type | Should -Be 'boolean'
+        $properties.clientPermissionLevel.maximum | Should -Be 4
+        $properties.hostMemoryMb.minimum | Should -Be 1024
+        $properties.clientMemoryMb.minimum | Should -Be 1024
+        $properties.serverMemoryMb.minimum | Should -Be 1024
+        $example=Get-Content (Join-Path $script:root 'launcher.config.example.json') -Raw|ConvertFrom-Json
+        $example.profiles.'single-test'.acceptEula | Should -BeFalse
     }
     It '拒绝未登记的进程 PID' {
         $session=Join-Path $TestDrive 'pid-session'; New-Item -ItemType Directory -Path $session | Out-Null
@@ -316,7 +352,7 @@ Start-Sleep -Seconds 60
     }
     It '交互向导识别项目并生成完整 Single Profile 默认值' {
         $project=New-TestModProject -Name 'wizard-fixture' -Loader Fabric -MinecraftVersion '1.21.6' -JavaMajor 21
-        $global:MmtlWizardAnswers=[Collections.Generic.Queue[string]]::new();$global:MmtlWizardAnswers.Enqueue($project);1..22|ForEach-Object{$global:MmtlWizardAnswers.Enqueue('')}
+        $global:MmtlWizardAnswers=[Collections.Generic.Queue[string]]::new();$global:MmtlWizardAnswers.Enqueue($project);1..25|ForEach-Object{$global:MmtlWizardAnswers.Enqueue('')}
         Set-Item Function:\global:Read-Host {param([string]$Prompt)$global:MmtlWizardAnswers.Dequeue()}
         try{
             $profile=Read-MmtlWizardProfile -Defaults $null
@@ -326,6 +362,9 @@ Start-Sleep -Seconds 60
             $profile.acceptEula | Should -BeFalse
             $profile.clientPermissionLevel | Should -Be 0
             $profile.resolution | Should -Be '1280x720'
+            $profile.hostMemoryMb | Should -Be 4096
+            $profile.clientMemoryMb | Should -Be 4096
+            $profile.serverMemoryMb | Should -Be 4096
             $profile.autoBuild | Should -BeTrue
         }finally{Remove-Item Function:\global:Read-Host -ErrorAction SilentlyContinue;Remove-Variable MmtlWizardAnswers -Scope Global -ErrorAction SilentlyContinue}
     }
