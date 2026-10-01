@@ -8,7 +8,7 @@ jobs:
   windows-tests:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
       - name: Install Pester
         shell: pwsh
         run: Install-Module Pester -MinimumVersion 5.0 -Scope CurrentUser -Force -SkipPublisherCheck
@@ -19,30 +19,50 @@ jobs:
         shell: pwsh
         run: Invoke-Pester ./tests -CI
 
-  ubuntu-pure-smoke:
-    runs-on: ubuntu-latest
+  ubuntu-platform-tests:
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
       - name: Install Pester
         shell: pwsh
         run: Install-Module Pester -MinimumVersion 5.0 -Scope CurrentUser -Force -SkipPublisherCheck
       - name: PowerShell syntax
         shell: pwsh
         run: Get-ChildItem -Recurse -Include *.ps1,*.psm1 | ForEach-Object { $tokens=$null; $errors=$null; [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$tokens,[ref]$errors) | Out-Null; if($errors){throw ($errors | Out-String)} }
-      - name: Architecture and schema smoke only
+      - name: Platform, runtime, Java, wrapper and Linux process tests
         shell: pwsh
-        run: Invoke-Pester -Path ./tests/Architecture.Tests.ps1,./tests/Schema.Tests.ps1 -CI
+        run: Invoke-Pester -Path ./tests/Architecture.Tests.ps1,./tests/Schema.Tests.ps1,./tests/Platform.Tests.ps1,./tests/RuntimeManager.Tests.ps1,./tests/JavaResolver.Tests.ps1,./tests/GradleRunner.Tests.ps1,./tests/ProcessManager.Linux.Tests.ps1,./tests/CrossPlatformCli.Tests.ps1 -CI
+      - name: launcher.sh smoke
+        shell: bash
+        run: ./launcher.sh --help
 
-  macos-pure-smoke:
-    runs-on: macos-latest
+  macos-arm64-tests:
+    runs-on: macos-26
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
       - name: Install Pester
         shell: pwsh
         run: Install-Module Pester -MinimumVersion 5.0 -Scope CurrentUser -Force -SkipPublisherCheck
       - name: PowerShell syntax
         shell: pwsh
         run: Get-ChildItem -Recurse -Include *.ps1,*.psm1 | ForEach-Object { $tokens=$null; $errors=$null; [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$tokens,[ref]$errors) | Out-Null; if($errors){throw ($errors | Out-String)} }
-      - name: Architecture and schema smoke only
+      - name: Platform/build-path Pester tests
         shell: pwsh
-        run: Invoke-Pester -Path ./tests/Architecture.Tests.ps1,./tests/Schema.Tests.ps1 -CI
+        run: Invoke-Pester -Path ./tests/Architecture.Tests.ps1,./tests/Schema.Tests.ps1,./tests/Platform.Tests.ps1,./tests/RuntimeManager.Tests.ps1,./tests/JavaResolver.Tests.ps1,./tests/GradleRunner.Tests.ps1,./tests/CrossPlatformCli.Tests.ps1 -CI
+      - name: launcher.sh smoke
+        shell: bash
+        run: sh ./launcher.sh --help
+
+  macos-intel-tests:
+    runs-on: macos-26-intel
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Install Pester
+        shell: pwsh
+        run: Install-Module Pester -MinimumVersion 5.0 -Scope CurrentUser -Force -SkipPublisherCheck
+      - name: Platform/build-path Pester tests
+        shell: pwsh
+        run: Invoke-Pester -Path ./tests/Architecture.Tests.ps1,./tests/Schema.Tests.ps1,./tests/Platform.Tests.ps1,./tests/RuntimeManager.Tests.ps1,./tests/JavaResolver.Tests.ps1,./tests/GradleRunner.Tests.ps1,./tests/CrossPlatformCli.Tests.ps1 -CI
+      - name: launcher.sh smoke
+        shell: bash
+        run: sh ./launcher.sh --help

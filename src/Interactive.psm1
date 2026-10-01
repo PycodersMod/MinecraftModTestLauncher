@@ -66,7 +66,7 @@ function Show-MmtlLaunchSummary {
     $primary=Get-MmtlProject -Path $Profile.project
     if($primary.JavaMajor){
         try{$javaPath=Resolve-MmtlJava -Config $Config -Major ([int]$primary.JavaMajor)}
-        catch{$homePath=Read-Host "Required Java $($primary.JavaMajor) is not configured or unavailable. 输入该 Java 安装目录";if(-not(Test-Path -LiteralPath (Join-Path $homePath 'bin\java.exe') -PathType Leaf)){throw "Required Java $($primary.JavaMajor) is not available at configured path."};$Config.javaHomes|Add-Member -NotePropertyName ([string]$primary.JavaMajor) -NotePropertyValue $homePath -Force;$javaPath=Resolve-MmtlJava -Config $Config -Major ([int]$primary.JavaMajor)}
+        catch{$homePath=Read-Host "Required Java $($primary.JavaMajor) is not configured or unavailable. 输入该 Java 安装目录";Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1');$javaName=(Get-MmtlPlatformProvider).JavaExecutable;if(-not(Test-Path -LiteralPath (Join-Path $homePath (Join-Path 'bin' $javaName)) -PathType Leaf)){throw "Required Java $($primary.JavaMajor) is not available at configured path."};$Config.javaHomes|Add-Member -NotePropertyName ([string]$primary.JavaMajor) -NotePropertyValue $homePath -Force;$javaPath=Resolve-MmtlJava -Config $Config -Major ([int]$primary.JavaMajor)}
     }else{$javaPath='无法自动检测'}
     $linked=@($Profile.linkedProjects|Where-Object{$_}|ForEach-Object{Get-MmtlProject -Path $_})
     if($linked.Count){Assert-MmtlCompatible -Projects (@($primary)+$linked)|Out-Null}

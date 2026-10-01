@@ -1,16 +1,16 @@
 # MinecraftModTestLauncher
 
-Minecraft Java Edition 模组开发环境多实例测试启动器（MMTL），面向 Windows 10/11。支持 Forge、NeoForge、Fabric 的 Gradle 开发运行配置。
+Minecraft Java Edition 模组开发环境多实例测试启动器（MMTL），提供 Windows 游戏运行能力，以及 Linux/macOS CLI 与 Gradle 构建基础能力。支持 Forge、NeoForge、Fabric 的 Gradle 项目检测。
 
 MMTL v2 的正式运行基线为 PowerShell 7。现有 Windows PowerShell 5.1 fallback 保留为旧版兼容前端（best effort）；新增 v2 架构能力不承诺完整兼容 5.1。
 
 ## v2 架构演进状态
 
-**已实现（Phase A foundation）：**集中架构契约、平台/架构身份数据模型、Capability 与 Validation Level、独立 Artifact Trust 权限、Loader/Toolchain/Build System identity、LoaderStack、BuildJava/RuntimeJava 需求模型、provenance、Compatibility Matrix v1 和 Exception Registry JSON Schema，以及可读取的 Config v2 foundation。旧版配置仍可读取，未知配置字段保留。
+**已实现（Phase A）：**集中架构契约、平台/架构身份、Capability 与 Validation Level、Artifact Trust、Loader/Toolchain/Build System identity、LoaderStack、BuildJava/RuntimeJava 需求模型、provenance、Compatibility Matrix v1、Exception Registry schema 与 Config v2 foundation。
 
-**计划中（未实现）：**Linux/macOS runtime 与进程管理、Mojang 在线 Version Catalog、Loader Provider v2、Quilt/历史 Loader 实际支持，以及跨平台实机验证。
+**已实现（Phase B）：**Windows/Linux/macOS 平台 Provider 基础、平台 Runtime Root 与路径安全、按平台选择 Java 和 Gradle Wrapper、`launcher.sh`、Session 平台元数据、Linux `/proc` 进程身份和安全停止。Linux 与 macOS 的 `--help`、`--validate`、`--dry-run`、`--build` 不依赖 Windows 窗口或 Minecraft GUI；跨平台游戏启动尚不支持。
 
-当前项目运行时仍为 Windows 10/11 实现。Phase A 的 Ubuntu/macOS CI 只验证 PowerShell 语法和纯架构/Schema 测试，不代表 Linux/macOS Launcher、Minecraft 或 GUI 已受支持。上游 Loader 元数据可用性也不等于 MMTL 已完成构建、服务端或客户端验证。
+Ubuntu CI 覆盖平台、路径、Java/Wrapper fixture 和 Linux 受控进程测试；macOS ARM64 与 Intel CI 覆盖平台/build-path fixture 和 `launcher.sh`。本机 WSL 已验证 Linux CLI 与代表性 Mod 构建。WSL 构建证据不代表真实 Ubuntu Desktop、Minecraft GUI、IntegratedLAN 或 Dedicated Server 实机验证。上游 Loader 元数据可用性也不等于 MMTL 已完成对应版本/系统的构建、服务端或客户端验证。
 
 ## 当前实现状态
 
@@ -27,9 +27,9 @@ MMTL v2 的正式运行基线为 PowerShell 7。现有 Windows PowerShell 5.1 fa
 
 ## 使用
 
-复制 `launcher.config.example.json` 为本地 `launcher.config.json`，配置所需 Java 主版本路径和 Mod 项目路径。双击 `launcher.cmd` 进入菜单；命令行可用 `--validate`、`--dry-run`、`--build`、`--launch` 和 `--profile <名称>`。使用 `--list-sessions`、`--stop <Session ID>`、`--clean-session <Session ID>` 管理会话。
+复制 `launcher.config.example.json` 为本地 `launcher.config.json`，配置当前平台的 Java 主版本路径和 Mod 项目路径。Windows 使用 `launcher.cmd`，Linux/macOS 使用 `./launcher.sh`。CLI 可用 `--help`、`--validate`、`--dry-run`、`--build` 和 `--profile <名称>`；`--launch`、游戏 Session 菜单与窗口管理保持 Windows 运行能力范围。
 
-`--portable` 使用程序目录 `.runtime`；默认运行时使用 `%LOCALAPPDATA%\MinecraftModTestLauncher`。Fabric Loom 需要相对运行目录时，启动器会在项目忽略的 `.gradle` 下建立指向 Session Runtime 的临时目录联接，并在 Gradle 退出或停止会话后清除。
+`runtimeRoot` 显式配置优先；未配置时 Windows 使用 LocalAppData，Linux 使用 `$XDG_DATA_HOME` 或 `~/.local/share`，macOS 使用 `~/Library/Application Support`。`--portable` 使用程序目录 `.runtime`。Fabric Loom 的 Windows Junction workaround 仅用于 Windows 游戏运行路径；Linux/macOS 构建不依赖该 Runtime link。
 
 ## 安全边界
 

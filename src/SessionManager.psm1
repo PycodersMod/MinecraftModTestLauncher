@@ -12,6 +12,8 @@ function New-MmtlSession {
     $players=@($hostName)
     for($i=1;$i -lt [int]$Metadata.players;$i++){$players+=("$clientPrefix$i")}
     foreach($player in $players){New-Item -ItemType Directory -Path (Join-Path $path $player) -Force | Out-Null}
+    Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1');$platform=Get-MmtlPlatformProvider
+    if($Metadata -is [System.Collections.IDictionary]){$Metadata['platform']=$platform.OS;$Metadata['arch']=$platform.Arch;$Metadata['isWSL']=$platform.IsWSL}else{$Metadata|Add-Member -NotePropertyName platform -NotePropertyValue $platform.OS -Force;$Metadata|Add-Member -NotePropertyName arch -NotePropertyValue $platform.Arch -Force;$Metadata|Add-Member -NotePropertyName isWSL -NotePropertyValue $platform.IsWSL -Force}
     $record=[ordered]@{sessionId=$id;createdUtc=(Get-Date).ToUniversalTime().ToString('o');metadata=$Metadata;players=$players;ports=@();processes=@()}
     $record | ConvertTo-Json -Depth 20 | Set-Content -LiteralPath (Join-Path $path 'session.json') -Encoding utf8
     '[]' | Set-Content -LiteralPath (Join-Path $path 'pids.json') -Encoding utf8
@@ -25,12 +27,15 @@ function Update-MmtlSessionReport {
     $statePath=Join-Path $session 'session.json';$pidPath=Join-Path $session 'pids.json';$reportPath=Join-Path $session 'report.md'
     if(-not(Test-Path -LiteralPath $statePath) -or -not(Test-Path -LiteralPath $pidPath)){throw 'Session 缺少 session.json 或 pids.json。'}
     $state=Get-Content -LiteralPath $statePath -Raw|ConvertFrom-Json;$entries=@(Get-Content -LiteralPath $pidPath -Raw|ConvertFrom-Json);$statuses=[Collections.Generic.List[object]]::new()
+    Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1');$platform=Get-MmtlPlatformProvider
+    if($platform.OS -eq 'Linux'){Import-Module (Join-Path $PSScriptRoot 'Platform/Linux.Process.psm1')}elseif($platform.OS -eq 'Windows'){Import-Module (Join-Path $PSScriptRoot 'Platform/Windows.Process.psm1')}
     foreach($entry in $entries){
         $statusPath=if($entry.StatePath){[string]$entry.StatePath}else{Join-Path $session "process-$([int]$entry.PID).exit.json"};$processState='ExitedUnknown';$exitCode=$null;$finished=$null;$errorMessage=$null
         if(Test-Path -LiteralPath $statusPath){$exit=Get-Content -LiteralPath $statusPath -Raw|ConvertFrom-Json;$exitCode=if($null -eq $exit.ExitCode){$null}else{[int]$exit.ExitCode};$finished=[string]$exit.FinishedUtc;$errorMessage=[string]$exit.Error;$processState=if($exit.StopRequested){'StoppedByUser'}elseif($exitCode -eq 0){'Completed'}else{'Failed'}}
         else{
-            $current=Get-CimInstance -ClassName Win32_Process -Filter "ProcessId=$([int]$entry.PID)" -ErrorAction SilentlyContinue
-            if($current -and $current.ExecutablePath -eq [string]$entry.Executable -and $current.CommandLine -eq [string]$entry.CommandLine){$processState='Running'}
+            $current=if($platform.OS -eq 'Linux'){Get-MmtlLinuxProcessRecord -ProcessId ([int]$entry.PID)}elseif($platform.OS -eq 'Windows'){Get-MmtlWindowsProcessRecord -ProcessId ([int]$entry.PID)}else{$null}
+            $same=if($current -and $platform.OS -eq 'Linux'){Test-MmtlLinuxProcessIdentity -Process $current -Record $entry}elseif($current){Test-MmtlWindowsProcessIdentity -Process $current -Record $entry}else{$false}
+            if($same){$processState='Running'}
             elseif($current){$processState='PIDReused'}
             elseif($entry.LogPath){$logText='';foreach($candidateLog in @([string]$entry.LogPath,([string]$entry.LogPath+'.err'))){if(Test-Path -LiteralPath $candidateLog){$logText+=(Get-Content -LiteralPath $candidateLog -Tail 12000 -ErrorAction SilentlyContinue)-join "`n"}};if($logText -match '(?im)^BUILD FAILED'){ $processState='Failed';$errorMessage='Gradle logs report BUILD FAILED; exact wrapper exit code was not recorded.'}elseif($logText -match '(?im)^BUILD SUCCESSFUL'){$processState='Completed';$exitCode=0}}
         }

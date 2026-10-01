@@ -6,15 +6,16 @@ function Invoke-MmtlGradleBuild {
     $log=New-MmtlLogPath -RuntimeRoot (Split-Path (Split-Path $SessionPath -Parent) -Parent) -SessionPath $SessionPath -Name "build-$name"
     $cmd=Get-MmtlGradleCommand -Project $Project -Task build -Clean:$Clean
     $oldHome=$env:JAVA_HOME;$oldPath=$env:Path;$javaHome=Split-Path (Split-Path $JavaPath -Parent) -Parent
+    Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1');$pathSeparator=[string](Get-MmtlPlatformProvider).PathListSeparator
     $started=[DateTimeOffset]::UtcNow
     try{
-        $env:JAVA_HOME=$javaHome;$env:Path=(Join-Path $javaHome 'bin')+';'+$oldPath
+        $env:JAVA_HOME=$javaHome;$env:Path=(Join-Path $javaHome 'bin')+$pathSeparator+$oldPath
         Push-Location -LiteralPath $cmd.WorkingDirectory
         try{$args=@($cmd.Arguments)+@('--console=plain');$cmdOutputPreference=$PSNativeCommandUseErrorActionPreference;$PSNativeCommandUseErrorActionPreference=$false;& $cmd.File @args *> $log;$exitCode=$LASTEXITCODE;$PSNativeCommandUseErrorActionPreference=$cmdOutputPreference}
         finally{Pop-Location}
     }finally{$env:JAVA_HOME=$oldHome;$env:Path=$oldPath}
     if($exitCode -ne 0){throw "Gradle build 失败（exit $exitCode），日志：$log"}
-    $jars=@(Get-ChildItem -LiteralPath (Join-Path $Project.Root 'build\libs') -Filter '*.jar' -File -ErrorAction SilentlyContinue|Where-Object{$_.Name -notmatch '(?i)(sources|javadoc|dev)(?:[-.]|\.jar$)'})
+    $jars=@(Get-ChildItem -LiteralPath (Join-Path $Project.Root 'build/libs') -Filter '*.jar' -File -ErrorAction SilentlyContinue|Where-Object{$_.Name -notmatch '(?i)(sources|javadoc|dev)(?:[-.]|\.jar$)'})
     if($jars.Count -ne 1){throw "Build 结束后应找到唯一正式 JAR，实际 $($jars.Count) 个：$($Project.Root)"}
     $gitSha=(& git -C $Project.Root rev-parse HEAD 2>$null);if($LASTEXITCODE -ne 0){$gitSha=$null}
     [pscustomobject]@{Project=$Project.Root;JavaPath=$JavaPath;BuildStartedUtc=$started.ToString('o');BuildFinishedUtc=[DateTimeOffset]::UtcNow.ToString('o');ExitCode=$exitCode;JarPath=$jars[0].FullName;JarSha256=(Get-FileHash -LiteralPath $jars[0].FullName -Algorithm SHA256).Hash;GitSha=([string]$gitSha).Trim();LogPath=$log}
@@ -29,7 +30,7 @@ function Get-MmtlMemoryBudget {
     $serverMemory=if($Profile.serverMemoryMb){[int]$Profile.serverMemoryMb}else{$fallback}
     $requested=switch($Mode){'Single'{$hostMemory};'IntegratedLAN'{$hostMemory+[Math]::Max(0,$players-1)*$clientMemory};'Dedicated'{$serverMemory+$players*$clientMemory}}
     if($requested -le 0){return [pscustomobject]@{RequestedMb=0;LimitMb=0;ExceedsLimit=$false;PhysicalMemoryMb=$PhysicalMemoryMb;Mode=$Mode}}
-    if($PhysicalMemoryMb -le 0){try{$PhysicalMemoryMb=[long][Math]::Floor((Get-CimInstance Win32_ComputerSystem -ErrorAction Stop).TotalPhysicalMemory/1MB)}catch{throw '无法确定本机物理内存；拒绝估算多实例内存预算。'}}
+    if($PhysicalMemoryMb -le 0){Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1');$PhysicalMemoryMb=Get-MmtlPhysicalMemoryMb;if(-not $PhysicalMemoryMb){throw '无法确定本机物理内存；拒绝估算多实例内存预算。'}}
     $requested=[long]$requested;$limit=[long][Math]::Floor($PhysicalMemoryMb*0.8)
     return [pscustomobject]@{RequestedMb=$requested;LimitMb=$limit;ExceedsLimit=($requested -gt $limit);PhysicalMemoryMb=$PhysicalMemoryMb;Mode=$Mode}
 }
@@ -42,6 +43,7 @@ function Assert-MmtlMemoryBudget {
 }
 function New-MmtlFabricRuntimeLink {
     param([Parameter(Mandatory)][string]$ProjectRoot,[Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][string]$TargetPath,[Parameter(Mandatory)][string]$Name)
+    Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1');if((Get-MmtlPlatformProvider).FabricRuntimeLink -ne 'Native'){throw 'Fabric Runtime link capability is unsupported on this platform; ordinary builds do not require it.'}
     $root=[IO.Path]::GetFullPath($ProjectRoot);$session=[IO.Path]::GetFullPath($SessionPath);$target=[IO.Path]::GetFullPath($TargetPath)
     $sessionId=Split-Path $session -Leaf;$safe=($Name -replace '[^A-Za-z0-9_-]','_')
     $linkRoot=Join-Path $root '.gradle'
@@ -56,6 +58,7 @@ function New-MmtlFabricRuntimeLink {
 }
 function Remove-MmtlFabricRuntimeLink {
     param([Parameter(Mandatory)][string]$ProjectRoot,[Parameter(Mandatory)][string]$LinkPath,[Parameter(Mandatory)][string]$TargetPath)
+    Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1');if((Get-MmtlPlatformProvider).FabricRuntimeLink -ne 'Native'){throw 'Fabric Runtime link cleanup capability is unsupported on this platform.'}
     $root=[IO.Path]::GetFullPath($ProjectRoot);$link=[IO.Path]::GetFullPath($LinkPath);$target=[IO.Path]::GetFullPath($TargetPath)
     if(-not(Test-MmtlInsideRoot -Root $root -Target $link)){throw 'Fabric Runtime junction 越出项目目录，拒绝清理。'}
     if(-not(Test-Path -LiteralPath $link)){return $false}
@@ -116,8 +119,9 @@ function Start-MmtlGradleInstance {
     $payloadB64=[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($payload))
     $log=New-MmtlLogPath -RuntimeRoot (Split-Path (Split-Path $session -Parent) -Parent) -SessionPath $session -Name $logName
     $oldHome=$env:JAVA_HOME;$oldPath=$env:Path;$javaHome=Split-Path (Split-Path $JavaPath -Parent) -Parent
+    Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1');$pathSeparator=[string](Get-MmtlPlatformProvider).PathListSeparator
     try{
-        $env:JAVA_HOME=$javaHome;$env:Path=(Join-Path $javaHome 'bin')+';'+$oldPath
+        $env:JAVA_HOME=$javaHome;$env:Path=(Join-Path $javaHome 'bin')+$pathSeparator+$oldPath
         $args=@('-NoProfile','-NonInteractive','-File',('"'+$helper+'"'),'-LaunchPlanB64',$payloadB64)
         $processId=Start-MmtlTrackedProcess -SessionPath $session -FilePath $powerShellHost.Source -ArgumentList $args -WorkingDirectory $Project.Root -LogPath $log -Role $Plan.Role -Username $Plan.Username -RuntimeLinkPath $runtimeLink -RuntimeTargetPath $(if($runtimeLink){$runtime}else{''})
     }catch{if($runtimeLink){Remove-MmtlFabricRuntimeLink -ProjectRoot $Project.Root -LinkPath $runtimeLink -TargetPath $runtime|Out-Null};throw

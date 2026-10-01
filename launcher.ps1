@@ -3,16 +3,18 @@ param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Arguments)
 $ErrorActionPreference='Stop'
 if($null -eq $Arguments){$Arguments=@()}
 $here=Split-Path -Parent $MyInvocation.MyCommand.Path
-Get-ChildItem (Join-Path $here 'src') -Filter '*.psm1' -Recurse | ForEach-Object { Import-Module $_.FullName -Force }
+Import-Module (Join-Path $here 'src/Platform/Platform.psm1') -Force
+$platform=Get-MmtlPlatformProvider
+Get-ChildItem (Join-Path $here 'src') -Filter '*.psm1' -Recurse | Where-Object { $platform.OS -eq 'Windows' -or $_.BaseName -ne 'WindowManager' } | ForEach-Object { Import-Module $_.FullName -Force }
 $configPath=Join-Path $here 'launcher.config.json'
 $configFileIndex=[Array]::IndexOf($Arguments,'--config-file')
 if($configFileIndex -ge 0){if($configFileIndex+1 -ge $Arguments.Count){throw '--config-file 缺少路径。'};$configPath=[IO.Path]::GetFullPath([string]$Arguments[$configFileIndex+1])}
-$portable=$Arguments -contains '--portable'
+$portable=($Arguments -contains '--portable') -and -not ($configPath -and (Test-Path $configPath) -and (Read-MmtlConfig -Path $configPath).runtimeRoot)
 if($Arguments -contains '--help' -or $Arguments -contains '-h'){
-    Write-Host 'Minecraft Mod Test Launcher';Write-Host '用法：launcher.cmd [--validate|--dry-run|--build|--launch] [--profile NAME]';Write-Host 'Session：--list-sessions | --stop ID | --clean-session ID';Write-Host '运行目录：--portable';Write-Host '交互模式：不传参数；--config-file 仅供临时配置调用。';exit 0
+    Write-Host 'Minecraft Mod Test Launcher';Write-Host '用法：launcher.cmd / launcher.sh [--validate|--dry-run|--build|--launch] [--profile NAME]';Write-Host 'Session：--list-sessions | --stop ID | --clean-session ID';Write-Host '运行目录：--portable';Write-Host '交互模式：不传参数；--config-file 仅供临时配置调用。';exit 0
 }
 $config=if(Test-Path $configPath){Read-MmtlConfig -Path $configPath}else{$null}
-$runtimeConfigured=if($config -and $config.runtimeRoot){[string]$config.runtimeRoot}else{'%LOCALAPPDATA%/MinecraftModTestLauncher'}
+$runtimeConfigured=if($config -and $config.runtimeRoot){[string]$config.runtimeRoot}else{''}
 $runtimeRoot=Resolve-MmtlRuntimeRoot -Path $runtimeConfigured -Portable:$portable -LauncherRoot $here
 if ($Arguments -contains '--list-sessions') {
     $sessions=Join-Path $runtimeRoot 'sessions'
@@ -60,7 +62,7 @@ Assert-MmtlProfile -Profile $profile | Out-Null
 $project=Get-MmtlProject -Path $profile.project
 function Get-MmtlProjectOutputJar {
     param([Parameter(Mandatory)]$Project)
-    $jars=@(Get-ChildItem -LiteralPath (Join-Path $Project.Root 'build\libs') -Filter '*.jar' -File -ErrorAction SilentlyContinue|Where-Object{$_.Name -notmatch '(?i)(sources|javadoc|dev)(?:[-.]|\.jar$)'})
+    $jars=@(Get-ChildItem -LiteralPath (Join-Path $Project.Root 'build/libs') -Filter '*.jar' -File -ErrorAction SilentlyContinue|Where-Object{$_.Name -notmatch '(?i)(sources|javadoc|dev)(?:[-.]|\.jar$)'})
     if($jars.Count -ne 1){throw "项目 $($Project.Root) 应有且仅有一个可用 Mod JAR，实际 $($jars.Count) 个。"}
     return $jars[0].FullName
 }
@@ -167,7 +169,6 @@ function Start-MmtlConfiguredRun {
     }catch{Write-Error "Session $sessionId 已保留现场和日志。检查后可用 --stop $sessionId 停止登记进程。$($_.Exception.Message)";throw}
 }
 if($Arguments -contains '--validate') {
-    if($env:OS -ne 'Windows_NT'){throw 'MMTL v1 仅支持 Windows 10/11。'}
     if($project.Loader -eq 'Unknown'){throw '无法检测 Mod Loader。'}
     $java=if($project.JavaMajor){Resolve-MmtlJava -Config $config -Major $project.JavaMajor}else{'未能自动判断 Java 主版本'}
     $linked=@($profile.linkedProjects|Where-Object{$_}|ForEach-Object{Get-MmtlProject -Path $_})
@@ -176,7 +177,7 @@ if($Arguments -contains '--validate') {
     $extra=@();foreach($item in @($profile.extraMods|Where-Object{$_})){$path=[string]$item;if(-not[IO.Path]::IsPathRooted($path)){$path=Join-Path $here $path};$resolved=(Resolve-Path -LiteralPath $path -ErrorAction Stop).Path;if([IO.Path]::GetExtension($resolved) -ne '.jar'){throw "Extra Mod 必须为 JAR：$item"};$extra+=$resolved}
     $portStatus='Not required'
     if($profile.mode -in @('IntegratedLAN','Dedicated')){if([string]$profile.port -eq 'Auto'){$portStatus='Auto (assigned at launch)'}else{$fixed=[int]$profile.port;$null=Get-MmtlPort -Port $fixed;$portStatus="Available: $fixed"}}
-    [pscustomobject]@{Project=$project.Root;LinkedProjects=($linked.Root -join '; ');ExtraMods=($extra -join '; ');Loader=$project.Loader;LoaderVersion=$project.LoaderVersion;Minecraft=$project.MinecraftVersion;Java=$java;Wrapper=$project.Wrapper;Mode=$profile.mode;Players=$profile.players;RuntimeRoot=$runtimeRoot;Port=$portStatus} | Format-List
+    [pscustomobject]@{Platform=$platform.OS;Architecture=$platform.Arch;WSL=$platform.IsWSL;Project=$project.Root;LinkedProjects=($linked.Root -join '; ');ExtraMods=($extra -join '; ');Loader=$project.Loader;LoaderVersion=$project.LoaderVersion;Minecraft=$project.MinecraftVersion;Java=$java;Wrapper=$project.Wrapper;Mode=$profile.mode;Players=$profile.players;RuntimeRoot=$runtimeRoot;Port=$portStatus} | Format-List
     exit 0
 }
 if($Arguments -contains '--dry-run') {
@@ -192,13 +193,12 @@ if($Arguments -contains '--dry-run') {
     if($autoPort -and $profile.mode -ne 'Single'){Write-Host '端口：Auto（命令预览中的 25565 仅占位，运行时会实际分配或读取端口）'}elseif($profile.mode -ne 'Single'){Write-Host "端口：$port"}
     if($profile.autoBuild -ne $false){foreach($candidate in @($project)+@($linked)){$buildCmd=Get-MmtlGradleCommand -Project $candidate -Task build -Clean:([bool]$profile.cleanBuild);Write-Host "[Build] $($buildCmd.File) $($buildCmd.Arguments -join ' ')"}}
     Write-Host "额外 Mod：$(@($profile.extraMods) -join '; ')"
-    foreach($role in $roles){$plan=New-MmtlGradleRunPlan -Project $project -Mode $profile.mode -RuntimeRoot $previewRoot -Role $role.Role -Username $role.Username -Port $port -Profile $profile;Write-Host "[$($role.Role) $($role.Username)] $($project.Root)\gradlew.bat $($plan.Arguments -join ' ')"}
+    foreach($role in $roles){$plan=New-MmtlGradleRunPlan -Project $project -Mode $profile.mode -RuntimeRoot $previewRoot -Role $role.Role -Username $role.Username -Port $port -Profile $profile;$wrapper=Get-MmtlGradleCommand -Project $project -Task $plan.Task;$prefix=@($wrapper.File);if($wrapper.Invocation -eq 'sh'){$prefix=@('sh',$wrapper.WrapperPath)};Write-Host "[$($role.Role) $($role.Username)] $($prefix -join ' ') $($plan.Arguments -join ' ')"}
     Write-Host '安全说明：dry-run 不创建 Runtime、不执行 Gradle，也不启动 Minecraft。'
     exit 0
 }
 if($Arguments -contains '--launch') { Start-MmtlConfiguredRun -Primary $project -Profile $profile -Config $config -RuntimeRoot $runtimeRoot;exit 0 }
 if($Arguments -contains '--build') {
-    if($env:OS -ne 'Windows_NT'){throw 'MMTL v1 仅支持 Windows 10/11。'}
     if($project.Loader -eq 'Unknown' -or -not $project.Wrapper){throw '项目 Loader 或 Gradle Wrapper 无法确认。'}
     if(-not $project.JavaMajor){throw '无法确定项目所需 Java 主版本；拒绝回退到系统 Java。'}
     $java=Resolve-MmtlJava -Config $config -Major $project.JavaMajor
@@ -207,9 +207,9 @@ if($Arguments -contains '--build') {
     $log=New-MmtlLogPath -RuntimeRoot $runtimeRoot -SessionPath $session -Name 'gradle-build'
     $cmd=Get-MmtlGradleCommand -Project $project -Task 'build' -Clean:([bool]$profile.cleanBuild)
     $oldJavaHome=$env:JAVA_HOME;$oldPath=$env:Path
-    try{$env:JAVA_HOME=$javaHome;$env:Path=(Join-Path $javaHome 'bin')+';'+$oldPath;Push-Location $cmd.WorkingDirectory;try{$cmdArgs=$cmd.Arguments;& $cmd.File @cmdArgs *> $log;$buildExit=$LASTEXITCODE}finally{Pop-Location}}
+    try{$env:JAVA_HOME=$javaHome;$env:Path=(Join-Path $javaHome 'bin')+[string]$platform.PathListSeparator+$oldPath;Push-Location $cmd.WorkingDirectory;try{$cmdArgs=$cmd.Arguments;& $cmd.File @cmdArgs *> $log;$buildExit=$LASTEXITCODE}finally{Pop-Location}}
     finally{$env:JAVA_HOME=$oldJavaHome;$env:Path=$oldPath}
-    $jar=Get-ChildItem (Join-Path $project.Root 'build\libs') -Filter '*.jar' -File -ErrorAction SilentlyContinue|Where-Object{$_.Name -notmatch 'sources|javadoc'}|Sort-Object LastWriteTime -Descending|Select-Object -First 1
+    $jar=if($buildExit -eq 0){Get-ChildItem (Join-Path $project.Root 'build/libs') -Filter '*.jar' -File -ErrorAction SilentlyContinue|Where-Object{$_.Name -notmatch 'sources|javadoc'}|Sort-Object LastWriteTime -Descending|Select-Object -First 1}else{$null}
     $gitSha=(& git -C $project.Root rev-parse HEAD 2>$null)
     $jarHash=if($jar){(Get-FileHash -LiteralPath $jar.FullName -Algorithm SHA256).Hash}else{$null}
     $statePath=Join-Path $session 'session.json';$state=Get-Content $statePath -Raw|ConvertFrom-Json

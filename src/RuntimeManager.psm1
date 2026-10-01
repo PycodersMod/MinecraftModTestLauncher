@@ -1,25 +1,27 @@
 function Resolve-MmtlRuntimeRoot {
-    param([Parameter(Mandatory)][string]$Path,[switch]$Portable,[string]$LauncherRoot)
+    param([Parameter(Mandatory)][AllowEmptyString()][string]$Path,[switch]$Portable,[string]$LauncherRoot)
     if ($Portable) { $Path=Join-Path $LauncherRoot '.runtime' }
+    if ([string]::IsNullOrWhiteSpace($Path)) { Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1'); $Path=(Get-MmtlPlatformProvider).DefaultRuntimeRoot }
     $expanded=[Environment]::ExpandEnvironmentVariables($Path)
-    return [IO.Path]::GetFullPath($expanded)
+    Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1')
+    return Get-MmtlCanonicalPath -Path $expanded
 }
 function Test-MmtlInsideRoot {
     param([Parameter(Mandatory)][string]$Root,[Parameter(Mandatory)][string]$Target)
-    $r=[IO.Path]::GetFullPath($Root).TrimEnd('\')+'\'
-    $t=[IO.Path]::GetFullPath($Target)
-    return $t.StartsWith($r,[StringComparison]::OrdinalIgnoreCase)
+    Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1')
+    return Test-MmtlPlatformPathInsideRoot -Root $Root -Target $Target
 }
 function Assert-MmtlNoReparsePath {
     param([Parameter(Mandatory)][string]$Path)
     $full=[IO.Path]::GetFullPath($Path)
     $drive=[IO.Path]::GetPathRoot($full)
     $current=$drive
-    foreach($part in $full.Substring($drive.Length).Split('\',[StringSplitOptions]::RemoveEmptyEntries)){
+    $remainder=$full.Substring($drive.Length)
+    foreach($part in ($remainder -split '[\\/]' | Where-Object {$_})){
         $current=Join-Path $current $part
         if(Test-Path -LiteralPath $current){
             $item=Get-Item -LiteralPath $current -Force
-            if($item.Attributes -band [IO.FileAttributes]::ReparsePoint){throw "拒绝访问包含 junction/symlink 的路径：$current"}
+            if(Test-MmtlPathLink -Path $current){throw "拒绝访问包含 junction/symlink 的路径：$current"}
         }
     }
     return $true
@@ -31,17 +33,20 @@ function Remove-MmtlSession {
     Assert-MmtlNoReparsePath -Path $root | Out-Null
     Assert-MmtlNoReparsePath -Path $target | Out-Null
     $item=Get-Item -LiteralPath $target -Force -ErrorAction Stop
-    if (-not $item.PSIsContainer -or $item.Attributes -band [IO.FileAttributes]::ReparsePoint) { throw '拒绝删除非目录、junction 或 symlink。' }
-    $nestedLinks=@(Get-ChildItem -LiteralPath $target -Recurse -Force -ErrorAction Stop|Where-Object{$_.Attributes -band [IO.FileAttributes]::ReparsePoint})
+    if (-not $item.PSIsContainer -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -or $item.LinkType) { throw '拒绝删除非目录、junction 或 symlink。' }
+    $nestedLinks=@(Get-ChildItem -LiteralPath $target -Recurse -Force -ErrorAction Stop|Where-Object{($_.Attributes -band [IO.FileAttributes]::ReparsePoint) -or $_.LinkType})
     if($nestedLinks.Count){throw "Session 内含 junction/symlink，拒绝递归删除：$($nestedLinks[0].FullName)"}
     $registry=Join-Path $target 'pids.json'
     if(Test-Path $registry){
         $entries=@(Get-Content $registry -Raw | ConvertFrom-Json)
+        Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1');$platform=Get-MmtlPlatformProvider
+        if($platform.OS -eq 'MacOS' -and $entries.Count){throw 'Cannot clean a session with registered processes because macOS ProcessManagement is unsupported.'}
+        if($platform.OS -eq 'Linux'){Import-Module (Join-Path $PSScriptRoot 'Platform/Linux.Process.psm1')}elseif($platform.OS -eq 'Windows'){Import-Module (Join-Path $PSScriptRoot 'Platform/Windows.Process.psm1')}
         foreach($entry in $entries){
-            $current=Get-CimInstance -ClassName Win32_Process -Filter "ProcessId=$([int]$entry.PID)" -ErrorAction SilentlyContinue
+            $current=if($platform.OS -eq 'Linux'){Get-MmtlLinuxProcessRecord -ProcessId ([int]$entry.PID)}elseif($platform.OS -eq 'Windows'){Get-MmtlWindowsProcessRecord -ProcessId ([int]$entry.PID)}else{$null}
             if($current -and (Test-MmtlProcessIdentity -Process $current -Record $entry)){throw "Session 仍有启动器登记进程 PID $($entry.PID)，请先停止。"}
             foreach($tracked in @($entry.ProcessTree)){
-                $descendant=Get-CimInstance -ClassName Win32_Process -Filter "ProcessId=$([int]$tracked.PID)" -ErrorAction SilentlyContinue
+                $descendant=if($platform.OS -eq 'Linux'){Get-MmtlLinuxProcessRecord -ProcessId ([int]$tracked.PID)}elseif($platform.OS -eq 'Windows'){Get-MmtlWindowsProcessRecord -ProcessId ([int]$tracked.PID)}else{$null}
                 if($descendant -and (Test-MmtlProcessIdentity -Process $descendant -Record $tracked)){throw "Session 仍有登记子进程 PID $($tracked.PID)，请先停止。"}
             }
         }

@@ -1,9 +1,17 @@
 function Get-MmtlGradleCommand {
     param([Parameter(Mandatory)]$Project,[ValidateSet('build','runClient','runServer')][string]$Task='build',[switch]$Clean)
-    $wrapper=Join-Path $Project.Root 'gradlew.bat'
+    Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1')
+    $provider=Get-MmtlPlatformProvider
+    $wrapper=Join-Path $Project.Root $provider.GradleWrapper
     if (-not (Test-Path $wrapper)) { throw '项目缺少 Gradle Wrapper。' }
     $tasks=if($Clean -and $Task -eq 'build'){@('clean','build')}else{@($Task)}
-    return [pscustomobject]@{ File=$wrapper; Arguments=@('--no-daemon')+$tasks; WorkingDirectory=$Project.Root }
+    $file=$wrapper;$arguments=@('--no-daemon')+$tasks;$invocation='direct'
+    if($provider.OS -ne 'Windows'){
+        $mode=(Get-Item -LiteralPath $wrapper).UnixFileMode
+        if(($mode -band [IO.UnixFileMode]::UserExecute) -eq 0 -and ($mode -band [IO.UnixFileMode]::GroupExecute) -eq 0 -and ($mode -band [IO.UnixFileMode]::OtherExecute) -eq 0){$file='sh';$arguments=@($wrapper)+$arguments;$invocation='sh'}
+        else{$file='./'+$provider.GradleWrapper;$invocation='direct'}
+    }
+    return [pscustomobject]@{ File=$file; Arguments=$arguments; WorkingDirectory=$Project.Root; WrapperPath=$wrapper; Invocation=$invocation }
 }
 function ConvertTo-MmtlArgumentPayload {
     param([string[]]$Values=@())

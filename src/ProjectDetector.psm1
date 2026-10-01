@@ -8,7 +8,7 @@ function Get-MmtlProject {
     $props = if (Test-Path $propsPath) { Get-Content $propsPath -Raw } else { '' }
     $buildPath=Join-Path $root $gradle
     $build=Get-Content -LiteralPath $buildPath -Raw
-    $files = @(Get-ChildItem (Join-Path $root 'src\main\resources') -Recurse -File -ErrorAction SilentlyContinue)
+    $files = @(Get-ChildItem (Join-Path $root 'src/main/resources') -Recurse -File -ErrorAction SilentlyContinue)
     $loader = if ($files.Name -contains 'fabric.mod.json') { 'Fabric' } elseif ($files.Name -contains 'neoforge.mods.toml') { 'NeoForge' } elseif ($files.Name -contains 'mods.toml') { 'Forge' } else { 'Unknown' }
     $mc = [regex]::Match($props, '(?m)^minecraft_version\s*=\s*([^\r\n]+)')
     if (-not $mc.Success) { $mc=[regex]::Match($build,'(?i)(?:net\.minecraftforge:forge:|com\.mojang:minecraft:|minecraft\s*\(\s*["''])(\d+\.\d+(?:\.\d+)?)') }
@@ -33,6 +33,8 @@ function Get-MmtlProject {
         $tomlFile=$files|Where-Object Name -in @('mods.toml','neoforge.mods.toml')|Select-Object -First 1
         if($tomlFile){$toml=Get-Content -LiteralPath $tomlFile.FullName -Raw;$idMatch=[regex]::Match($toml,'(?m)^\s*modId\s*=\s*["'']([^"'']+)["'']');if($idMatch.Success -and $idMatch.Groups[1].Value -notmatch '^\$\{'){$modId=$idMatch.Groups[1].Value}}
     }
-    [pscustomobject]@{ Root=$root; BuildFile=$gradle; Loader=$loader; LoaderVersion=$loaderVersion; MinecraftVersion=$mcVersion; JavaMajor=$major; ModId=$modId; Wrapper=(Test-Path (Join-Path $root 'gradlew.bat')); RunClient='runClient'; RunServer='runServer'; BuildTask='build' }
+    Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1')
+    $wrapper=Join-Path $root (Get-MmtlPlatformProvider).GradleWrapper
+    [pscustomobject]@{ Root=$root; BuildFile=$gradle; Loader=$loader; LoaderVersion=$loaderVersion; MinecraftVersion=$mcVersion; JavaMajor=$major; ModId=$modId; Wrapper=(Test-Path $wrapper); WrapperPath=$wrapper; RunClient='runClient'; RunServer='runServer'; BuildTask='build' }
 }
 Export-ModuleMember -Function Get-MmtlProject
