@@ -12,6 +12,7 @@ function Get-MmtlHistoricalContract {
         integrityStrengths = @($contract.historicalIntegrityStrengths)
         maintenanceStates = @($contract.historicalMaintenanceStates)
         artifactTrustClasses = @($contract.artifactTrustClasses)
+        toolchains = @($contract.toolchains | ForEach-Object id)
         downloadPermissionStates = @($contract.artifactPermissionStates)
     }
 }

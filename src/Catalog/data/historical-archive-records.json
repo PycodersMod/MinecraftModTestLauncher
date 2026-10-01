@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "retrievedAt": "2026-10-02T00:00:00Z",
+  "lastReviewed": "2026-10-02T00:00:00Z",
+  "notes": [
+    "Records transcribed from MCArchive pages. Hashes are SHA-256 provenance/integrity values and do not authorize execution.",
+    "Only records with an exact filename and SHA-256 are included. Minecraft version IDs are normalized to the Phase C release catalog where necessary."
+  ],
+  "records": [
+    {
+      "providerId": "ModLoader",
+      "loaderId": "ModLoader",
+      "minecraftId": "1.0",
+      "sourceMinecraftId": "1.0.0",
+      "artifactFilename": "ModLoader 1.0.0.zip",
+      "archiveUrl": "https://mcarchive.net/mods/modloader?gvsn=1.0.0",
+      "sha256": "0abd012bcfd536522d50ac642080d6164cd6cdc22629386a0e8e1fafa2e7cd99",
+      "author": "Risugami",
+      "source": "https://mcarchive.net/mods/modloader",
+      "trust": "VerifiedHistorical",
+      "artifactType": "ClientZip"
+    },
+    {
+      "providerId": "ModLoader",
+      "loaderId": "ModLoader",
+      "minecraftId": "1.2.5",
+      "sourceMinecraftId": "1.2.5",
+      "artifactFilename": "ModLoader 1.2.5.zip",
+      "archiveUrl": "https://mcarchive.net/mods/modloader?gvsn=1.2.5",
+      "sha256": "219370a86a15bfef8ff91f51fdd151e99391b771759183b19f72197452a28b79",
+      "author": "Risugami",
+      "source": "https://mcarchive.net/mods/modloader",
+      "trust": "VerifiedHistorical",
+      "artifactType": "ClientZip"
+    },
+    {
+      "providerId": "ModLoader",
+      "loaderId": "ModLoader",
+      "minecraftId": "1.4.7",
+      "sourceMinecraftId": "1.4.7",
+      "artifactFilename": "ModLoader 1.4.7.zip",
+      "archiveUrl": "https://mcarchive.net/mods/modloader?gvsn=1.4.7",
+      "sha256": "685ead73c19531cf24062c7536737663421ed4170cfa582baddbbf6cba1544d2",
+      "author": "Risugami",
+      "source": "https://mcarchive.net/mods/modloader",
+      "trust": "VerifiedHistorical",
+      "artifactType": "ClientZip"
+    },
+    {
+      "providerId": "ModLoaderMP",
+      "loaderId": "ModLoaderMP",
+      "minecraftId": "1.2.5",
+      "sourceMinecraftId": "1.2.5",
+      "artifactFilename": "ModLoaderMP 1.2.5 v1.zip",
+      "archiveUrl": "https://mcarchive.net/mods/modloadermp?gvsn=1.2.5",
+      "sha256": "493be83295687720978dda7ae449913e618605c711f3d1b508d3df4df2ec4962",
+      "author": "ScottyDoesKnow",
+      "source": "https://mcarchive.net/mods/modloadermp",
+      "trust": "VerifiedHistorical",
+      "artifactType": "ClientZip"
+    },
+    {
+      "providerId": "ModLoaderMP",
+      "loaderId": "ModLoaderMP",
+      "minecraftId": "1.2.5",
+      "sourceMinecraftId": "1.2.5",
+      "artifactFilename": "ModLoaderMP Server 1.2.5 v1.zip",
+      "archiveUrl": "https://mcarchive.net/mods/modloadermp?gvsn=1.2.5",
+      "sha256": "7cd89ee3d4839c03d621e2308a21bae0c824d1f408a055f16d1ce0cd7d6f198e",
+      "author": "ScottyDoesKnow",
+      "source": "https://mcarchive.net/mods/modloadermp",
+      "trust": "VerifiedHistorical",
+      "artifactType": "ServerZip"
+    },
+    {
+      "providerId": "ModLoaderMP",
+      "loaderId": "ModLoaderMP",
+      "minecraftId": "1.3.2",
+      "sourceMinecraftId": "1.3.2",
+      "artifactFilename": "ModLoaderMP 1.3.2 v1.zip",
+      "archiveUrl": "https://mcarchive.net/mods/modloadermp?gvsn=1.3.2",
+      "sha256": "19418c4d28e740e89e9963419fc336012f3749767b5ffaa3c91f7e1d136ac6ac",
+      "author": "ScottyDoesKnow",
+      "source": "https://mcarchive.net/mods/modloadermp",
+      "trust": "VerifiedHistorical",
+      "artifactType": "ClientZip"
+    },
+    {
+      "providerId": "ModLoaderMP",
+      "loaderId": "ModLoaderMP",
+      "minecraftId": "1.3.2",
+      "sourceMinecraftId": "1.3.2",
+      "artifactFilename": "ModLoaderMP Server 1.3.2 v1.zip",
+      "archiveUrl": "https://mcarchive.net/mods/modloadermp?gvsn=1.3.2",
+      "sha256": "8ae7bad614025b1f538b4bebf7049c8edde4918b5316c85e6880ab2d4504c209",
+      "author": "ScottyDoesKnow",
+      "source": "https://mcarchive.net/mods/modloadermp",
+      "trust": "VerifiedHistorical",
+      "artifactType": "ServerZip"
+    }
+  ],
+  "rift": {
+    "original": {
+      "displayName": "Rift",
+      "loaderId": "Rift",
+      "sourceClass": "HistoricalOfficial",
+      "trust": "VerifiedHistorical",
+      "transportSecurity": "ArchivedSnapshot",
+      "maintenanceState": "Archived",
+      "repository": "https://github.com/DimensionalDevelopment/Rift",
+      "commit": "dfc75ff7254cbbea81535c02ddc5252e384ac806",
+      "license": "MIT",
+      "minecraftId": "1.13",
+      "version": "1.0.4"
+    },
+    "communityPorts": [
+      {
+        "displayName": "Rift Community Port",
+        "loaderId": "Rift",
+        "originality": "CommunityPort",
+        "sourceClass": "VerifiedCommunitySource",
+        "trust": "VerifiedHistorical",
+        "transportSecurity": "HTTPS",
+        "maintenanceState": "Archived",
+        "repository": "https://github.com/Chocohead/Rift",
+        "commit": "2c400465c7e0b5abf4e643372fbd9a7e6d39e3ff",
+        "license": "MIT",
+        "minecraftId": "1.13.2",
+        "version": "Community commit 2c400465"
+      }
+    ]
+  }
+}

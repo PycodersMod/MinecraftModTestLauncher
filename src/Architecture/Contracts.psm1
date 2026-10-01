@@ -20,6 +20,7 @@ $script:MmtlArchitectureContract = [ordered]@{
         [pscustomobject]@{ id = 'NeoForge'; displayName = 'NeoForge'; category = 'Mainstream'; historical = $false; providerId = 'NeoForge' }
         [pscustomobject]@{ id = 'Quilt'; displayName = 'Quilt'; category = 'Mainstream'; historical = $false; providerId = 'Quilt' }
         [pscustomobject]@{ id = 'LegacyFabric'; displayName = 'Legacy Fabric'; category = 'Historical'; historical = $true; providerId = $null }
+        [pscustomobject]@{ id = 'OrnitheLoader'; displayName = 'Ornithe Loader'; category = 'Historical'; historical = $true; providerId = $null }
         [pscustomobject]@{ id = 'LiteLoader'; displayName = 'LiteLoader'; category = 'Historical'; historical = $true; providerId = $null }
         [pscustomobject]@{ id = 'Rift'; displayName = 'Rift'; category = 'Historical'; historical = $true; providerId = $null }
         [pscustomobject]@{ id = 'ModLoader'; displayName = 'Risugami ModLoader'; category = 'Historical'; historical = $true; providerId = $null }
@@ -33,6 +34,7 @@ $script:MmtlArchitectureContract = [ordered]@{
         [pscustomobject]@{ id = 'ModDevGradle'; displayName = 'ModDevGradle' }
         [pscustomobject]@{ id = 'QuiltLoom'; displayName = 'Quilt Loom' }
         [pscustomobject]@{ id = 'Ploceus'; displayName = 'Ploceus' }
+        [pscustomobject]@{ id = 'LegacyLooming'; displayName = 'Legacy Looming' }
         [pscustomobject]@{ id = 'Unknown'; displayName = 'Unknown' }
         [pscustomobject]@{ id = 'Custom'; displayName = 'Custom' }
     )
@@ -234,7 +236,7 @@ function New-MmtlLoaderStack {
 function New-MmtlToolchainContext {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory)][ValidateSet('ForgeGradle', 'FabricLoom', 'NeoGradle', 'ModDevGradle', 'QuiltLoom', 'Ploceus', 'Unknown', 'Custom')][string]$Id,
+        [Parameter(Mandatory)][ValidateSet('ForgeGradle', 'FabricLoom', 'NeoGradle', 'ModDevGradle', 'QuiltLoom', 'Ploceus', 'LegacyLooming', 'Unknown', 'Custom')][string]$Id,
         [string]$Version,
         [string]$Ecosystem
     )
