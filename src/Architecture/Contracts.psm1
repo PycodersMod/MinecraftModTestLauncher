@@ -5,6 +5,11 @@ $script:MmtlArchitectureContract = [ordered]@{
     validationLevels = @('CATALOGUED', 'RESOLVED', 'BUILD_VERIFIED', 'SERVER_VERIFIED', 'CLIENT_LAUNCH_VERIFIED', 'INTEGRATION_VERIFIED')
     validationResults = @('UNVERIFIED', 'PASSED', 'FAILED', 'STALE')
     artifactTrustClasses = @('TrustedOfficial', 'VerifiedHistorical', 'UnverifiedHistorical')
+    historicalSourceClasses = @('ActiveOfficial', 'HistoricalOfficial', 'VerifiedCommunityArchive', 'VerifiedCommunitySource', 'ManualArtifact', 'UnknownHistorical')
+    historicalTransportSecurity = @('HTTPS', 'HTTPOnly', 'LocalManual', 'ArchivedSnapshot', 'Unknown')
+    historicalIntegrityAlgorithms = @('SHA256', 'SHA1', 'MD5', 'None', 'Unknown')
+    historicalIntegrityStrengths = @('StrongIntegrity', 'LegacyIntegrity', 'CorruptionDetectionOnly', 'NoIntegrity', 'Unknown')
+    historicalMaintenanceStates = @('Active', 'Limited', 'Archived', 'Dead', 'Unknown')
     artifactPermissionStates = @('Granted', 'RequiresConfirmation', 'Denied')
     provenanceTypes = @('official', 'archivedOfficial', 'trustedArchive', 'communityMirror', 'unknown')
     archiveStatuses = @('active', 'archived', 'unverified', 'unknown')
@@ -47,7 +52,7 @@ function Get-MmtlArchitectureContract {
 function Test-MmtlArchitectureValue {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory)][ValidateSet('OS', 'Architecture', 'Capability', 'ValidationLevel', 'ValidationResult', 'ArtifactTrustClass', 'ArtifactPermission', 'ProvenanceType', 'ArchiveStatus', 'Confidence', 'Loader', 'Toolchain', 'BuildSystem')][string]$Kind,
+        [Parameter(Mandatory)][ValidateSet('OS', 'Architecture', 'Capability', 'ValidationLevel', 'ValidationResult', 'ArtifactTrustClass', 'ArtifactPermission', 'ProvenanceType', 'ArchiveStatus', 'Confidence', 'Loader', 'Toolchain', 'BuildSystem', 'HistoricalSourceClass', 'HistoricalTransport', 'HistoricalIntegrityAlgorithm', 'HistoricalIntegrityStrength', 'HistoricalMaintenanceState')][string]$Kind,
         [Parameter(Mandatory)][string]$Value
     )
     $values = switch ($Kind) {
@@ -64,6 +69,11 @@ function Test-MmtlArchitectureValue {
         'Loader' { @($script:MmtlArchitectureContract.loaders | ForEach-Object id) }
         'Toolchain' { @($script:MmtlArchitectureContract.toolchains | ForEach-Object id) }
         'BuildSystem' { @($script:MmtlArchitectureContract.buildSystems | ForEach-Object id) }
+        'HistoricalSourceClass' { $script:MmtlArchitectureContract.historicalSourceClasses }
+        'HistoricalTransport' { $script:MmtlArchitectureContract.historicalTransportSecurity }
+        'HistoricalIntegrityAlgorithm' { $script:MmtlArchitectureContract.historicalIntegrityAlgorithms }
+        'HistoricalIntegrityStrength' { $script:MmtlArchitectureContract.historicalIntegrityStrengths }
+        'HistoricalMaintenanceState' { $script:MmtlArchitectureContract.historicalMaintenanceStates }
     }
     return $Value -cin $values
 }
