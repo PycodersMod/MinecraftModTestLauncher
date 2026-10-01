@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pycodersmod.github.io/MinecraftModTestLauncher/schemas/minecraft-version-catalog.schema.json",
+  "title": "MMTL Normalized Minecraft Version Catalog Cache",
+  "type": "object",
+  "required": ["schemaVersion", "source", "fetchedAt", "manifestHash", "latestRelease", "minimumReleaseId", "entries"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "source": {"const": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json"},
+    "fetchedAt": {"type": "string", "format": "date-time"},
+    "manifestHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "latestRelease": {"type": "string", "minLength": 1},
+    "latestSnapshot": {"type": ["string", "null"]},
+    "minimumReleaseId": {"type": "string", "minLength": 1},
+    "entries": {"type": "array", "items": {"$ref": "#/$defs/entry"}}
+  },
+  "$defs": {
+    "provenance": {
+      "type": "object",
+      "required": ["sourceType", "url", "fetchedAt", "archiveStatus", "cacheStatus"],
+      "properties": {
+        "sourceType": {"const": "official"},
+        "url": {"type": "string", "format": "uri"},
+        "fetchedAt": {"type": "string", "format": "date-time"},
+        "hash": {"type": ["string", "null"]},
+        "archiveStatus": {"const": "active"},
+        "cacheStatus": {"enum": ["Fresh", "Stale", "OfflineCache", "Cached"]}
+      },
+      "additionalProperties": true
+    },
+    "entry": {
+      "type": "object",
+      "required": ["id", "type", "time", "releaseTime", "metadataUrl", "metadataSha1", "catalogStatus", "metadataStatus", "runtimeJava", "provenance"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "type": {"const": "release"},
+        "time": {"type": "string", "format": "date-time"},
+        "releaseTime": {"type": "string", "format": "date-time"},
+        "metadataUrl": {"type": "string", "format": "uri"},
+        "metadataSha1": {"type": ["string", "null"], "pattern": "^[a-f0-9]{40}$"},
+        "complianceLevel": {"type": ["integer", "null"]},
+        "catalogStatus": {"const": "CATALOGUED"},
+        "metadataStatus": {"enum": ["NOT_FETCHED", "VERIFIED", "METADATA_HASH_MISMATCH", "METADATA_INVALID_JSON", "CACHE_CORRUPT"]},
+        "runtimeJava": {
+          "type": "object",
+          "required": ["major", "component", "source", "confidence", "requirementKind"],
+          "properties": {
+            "major": {"type": ["integer", "null"], "minimum": 1},
+            "component": {"type": ["string", "null"]},
+            "source": {"type": "string"},
+            "confidence": {"type": "string"},
+            "requirementKind": {"enum": ["AuthoritativeMetadata", "OfficialReleaseRequirement", "CompatibilityFallback", "ProjectOverride", "ToolchainRequirement", "Unknown"]}
+          },
+          "additionalProperties": false
+        },
+        "provenance": {"type": "array", "items": {"$ref": "#/$defs/provenance"}}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

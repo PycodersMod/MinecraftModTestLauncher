@@ -1,6 +1,6 @@
 # MMTL v2 架构基础
 
-本文记录已落地的 Phase A contract。当前运行时仍是 Windows 实现；以下模型定义不代表相应平台或 Loader 已经获得运行支持。
+本文记录 MMTL v2 Phase A–C 已落地架构。Catalog、项目构建、服务端和客户端验证是不同状态；实现某个平台的 CLI 或 Catalog 查询不代表 Minecraft GUI 或 Loader 组合已获得验证。
 
 ## 当前实现与后续计划
 
@@ -9,12 +9,21 @@
 - `src/Architecture/Contracts.psm1` 集中定义 OS、架构、能力、验证等级、Artifact Trust、provenance、Loader、Toolchain 和 Build System identities。
 - `PlatformContext`、`LoaderStack`、`BuildJava`/`RuntimeJava` requirement、Toolchain context、Build System context 和 provenance 使用纯数据结构表达。
 - Compatibility Matrix v1、Exception Registry 和 Config v2 foundation 由 JSON Schema 描述；旧配置 reader 保留旧格式并保留未知字段。
-- CI 在 Ubuntu/macOS 上只运行 PowerShell parser 和纯 Architecture/Schema 测试；Windows job 继续运行完整旧测试。
+- CI 在 Ubuntu/macOS 上运行 PowerShell parser 和跨平台纯 fixture 测试；Windows job 运行完整 Pester suite。
 
-### 计划中
+### Phase C 已实现
+
+- src/Catalog/MinecraftVersionCatalog.psm1 从 Mojang Version Manifest v2 建立 release Catalog，以字符串 canonical ID 和 releaseTime 确定从 1.0 到 manifest.latest.release 的范围，不做 SemVer 解析或排序。
+- Catalog cache 分开保存原始 manifest、规范化 catalog 与校验 metadata；使用临时文件和原子替换，记录本地 manifest SHA-256。实测 Mojang 端点提供 ETag 与 Last-Modified；Windows live conditional refresh 收到 304，并保留原始 fetchedAt、更新 validatedAt。
+- Version metadata 按查询惰性拉取，按 manifest SHA-1 校验并拒绝 mismatch；version metadata cache key 使用 canonical ID 与期望 SHA-1。
+- src/Catalog/JavaRuntimeResolver.psm1 以显式 Runtime override、Mojang javaVersion、带官方来源的 MMTL fallback、Unknown 为优先级；它不修改现有 Build Java 选择。
+- Catalog cache 默认 TTL 为 24 小时。--catalog-offline 不访问网络；stale 在线刷新失败会显式返回 Stale；--refresh-catalog 失败不会报告成功。
+- CATALOGUED 仅表示 Mojang manifest 记录了一个 release，不能推导 Loader、构建、服务端或客户端验证通过。
+
+### 后续阶段
 
 - Linux/macOS Runtime、路径 provider、进程树实现、launcher.sh。
-- Mojang Version Catalog 和 Forge/Fabric/NeoForge/Quilt Provider v2。
+- Forge/Fabric/NeoForge/Quilt Provider v2。
 - Quilt 与历史 Loader 实际构建、启动或下载支持。
 - 全版本/OS/架构组合的更深验证。
 

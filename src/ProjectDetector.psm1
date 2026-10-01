@@ -23,6 +23,8 @@ function Get-MmtlProject {
     $loaderVersionKey=switch($loader){'Forge'{'forge_version'}'NeoForge'{'neo_version'}'Fabric'{'loader_version'}default{$null}}
     $loaderVersionMatch=if($loaderVersionKey){[regex]::Match($props,"(?m)^$loaderVersionKey\s*=\s*([^\r\n]+)")}else{[regex]::Match('','a^')}
     $loaderVersion=if($loaderVersionMatch.Success){$loaderVersionMatch.Groups[1].Value.Trim()}else{$null}
+    $buildJavaRequirement=if($major){[pscustomobject]@{major=$major;component=$null;source=if($java.Success){'ProjectConfiguration'}else{'LegacyMinecraftCompatibilityInference'};confidence=if($java.Success){'High'}else{'Low'};requirementKind=if($java.Success){'ToolchainRequirement'}else{'CompatibilityFallback'}}}else{[pscustomobject]@{major=$null;component=$null;source='Unknown';confidence='Unknown';requirementKind='Unknown'}}
+    $runtimeJavaRequirement=[pscustomobject]@{major=$null;component=$null;source='Unknown';confidence='Unknown';requirementKind='Unknown'}
     $modIdMatch=[regex]::Match($props,'(?m)^mod_id\s*=\s*([^\r\n]+)')
     $modId=if($modIdMatch.Success){$modIdMatch.Groups[1].Value.Trim()}else{$null}
     if(-not $modId){
@@ -35,6 +37,6 @@ function Get-MmtlProject {
     }
     Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1')
     $wrapper=Join-Path $root (Get-MmtlPlatformProvider).GradleWrapper
-    [pscustomobject]@{ Root=$root; BuildFile=$gradle; Loader=$loader; LoaderVersion=$loaderVersion; MinecraftVersion=$mcVersion; JavaMajor=$major; ModId=$modId; Wrapper=(Test-Path $wrapper); WrapperPath=$wrapper; RunClient='runClient'; RunServer='runServer'; BuildTask='build' }
+    [pscustomobject]@{ Root=$root; BuildFile=$gradle; Loader=$loader; LoaderVersion=$loaderVersion; MinecraftVersion=$mcVersion; JavaMajor=$major; BuildJavaMajor=$major; RuntimeJavaMajor=$null; BuildJavaRequirement=$buildJavaRequirement; RuntimeJavaRequirement=$runtimeJavaRequirement; ModId=$modId; Wrapper=(Test-Path $wrapper); WrapperPath=$wrapper; RunClient='runClient'; RunServer='runServer'; BuildTask='build' }
 }
 Export-ModuleMember -Function Get-MmtlProject

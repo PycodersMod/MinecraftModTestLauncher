@@ -1,9 +1,11 @@
 BeforeAll {
     $script:repoRoot = Split-Path -Parent $PSScriptRoot
     Import-Module (Join-Path $script:repoRoot 'src/Config.psm1') -Force
+    Import-Module (Join-Path $script:repoRoot 'src/Catalog/MinecraftVersionCatalog.psm1') -Force
     $script:matrixSchema = Join-Path $script:repoRoot 'schemas/compatibility-matrix.schema.json'
     $script:exceptionSchema = Join-Path $script:repoRoot 'schemas/exception-registry.schema.json'
     $script:configSchema = Join-Path $script:repoRoot 'schemas/launcher-config.schema.json'
+    $script:catalogSchema = Join-Path $script:repoRoot 'schemas/minecraft-version-catalog.schema.json'
     $script:provenance = @{
         sourceType = 'archivedOfficial'
         url = 'https://example.invalid/archive'
@@ -52,6 +54,7 @@ Describe 'MMTL v2 JSON Schemas' {
             $schema = Get-Content -LiteralPath $path -Raw | ConvertFrom-Json -ErrorAction Stop
             $schema.'$schema' | Should -Be 'http://json-schema.org/draft-07/schema#'
         }
+        (Get-Content $script:catalogSchema -Raw|ConvertFrom-Json -ErrorAction Stop).'$schema' | Should -Be 'http://json-schema.org/draft-07/schema#'
     }
 
     It 'Compatibility Matrix 接受来源、LoaderStack、任意 Java major 与验证证据' {
@@ -122,5 +125,19 @@ Describe 'MMTL v2 JSON Schemas' {
         $config.javaHomes = @{ '0' = '/jdk-0' }
         $config | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $path
         { Read-MmtlConfig -Path $path } | Should -Throw '*正整数 major*'
+    }
+
+    It 'normalized Mojang Catalog schema accepts canonical release metadata and provenance' {
+        $catalog=[ordered]@{
+            schemaVersion=1;source='https://piston-meta.mojang.com/mc/game/version_manifest_v2.json';fetchedAt='2026-10-01T00:00:00Z';manifestHash=('a'*64);latestRelease='26.3';latestSnapshot='26.4-snapshot-2';minimumReleaseId='1.0'
+            entries=@(@{
+                id='26.3';type='release';time='2026-09-15T10:00:00Z';releaseTime='2026-09-15T10:00:00Z';metadataUrl='https://piston-meta.mojang.com/v1/26.3.json';metadataSha1=('b'*40);complianceLevel=1
+                catalogStatus='CATALOGUED';metadataStatus='NOT_FETCHED';runtimeJava=@{major=$null;component=$null;source='Unknown';confidence='Unknown';requirementKind='Unknown'}
+                provenance=@(@{sourceType='official';url='https://piston-meta.mojang.com/mc/game/version_manifest_v2.json';fetchedAt='2026-10-01T00:00:00Z';hash=('a'*64);archiveStatus='active';cacheStatus='Fresh'})
+            })
+        }
+        (Test-Json -Json ($catalog|ConvertTo-Json -Depth 20 -Compress) -SchemaFile $script:catalogSchema) | Should -BeTrue
+        $catalog.entries[0].type='snapshot'
+        (Test-Json -Json ($catalog|ConvertTo-Json -Depth 20 -Compress) -SchemaFile $script:catalogSchema -ErrorAction SilentlyContinue) | Should -BeFalse
     }
 }

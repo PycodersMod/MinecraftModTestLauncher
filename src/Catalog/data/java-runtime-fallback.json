@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Recommended compatibility fallback only; not a Mojang-authored per-version requirement. Verified Mojang javaVersion metadata always takes precedence.",
+  "rules": [
+    {
+      "matcher": "^1\\.17(?:\\.\\d+)?$",
+      "recommendedMajor": 16,
+      "semantics": "CompatibilityFallback",
+      "reason": "The 1.17 development line switched Minecraft to Java 16; used only when the selected version metadata lacks javaVersion.",
+      "provenance": {
+        "sourceType": "official",
+        "url": "https://feedback.minecraft.net/hc/en-us/articles/360060771772-Minecraft-Java-Edition-Snapshot-21w19a",
+        "fetchedAt": "2026-10-01T00:00:00Z",
+        "hash": null,
+        "archiveStatus": "active"
+      },
+      "confidence": "Medium",
+      "lastReviewed": "2026-10-01"
+    },
+    {
+      "matcher": "^1\\.18(?:\\.\\d+)?$",
+      "recommendedMajor": 17,
+      "semantics": "CompatibilityFallback",
+      "reason": "Mojang's 1.18 technical notes state Java 17; used only when the selected version metadata lacks javaVersion.",
+      "provenance": {
+        "sourceType": "official",
+        "url": "https://feedback.minecraft.net/hc/en-us/articles/4415128577293-Minecraft-Java-Edition-1-18",
+        "fetchedAt": "2026-10-01T00:00:00Z",
+        "hash": null,
+        "archiveStatus": "active"
+      },
+      "confidence": "Medium",
+      "lastReviewed": "2026-10-01"
+    },
+    {
+      "matcher": "^26\\.1(?:\\.\\d+)?$",
+      "recommendedMajor": 25,
+      "semantics": "CompatibilityFallback",
+      "reason": "Mojang's 26.1 snapshot technical notes state Java 25; used only when the selected release metadata lacks javaVersion.",
+      "provenance": {
+        "sourceType": "official",
+        "url": "https://feedback.minecraft.net/hc/en-us/articles/42011663817357-Minecraft-Java-Edition-26-1-Snapshot-1",
+        "fetchedAt": "2026-10-01T00:00:00Z",
+        "hash": null,
+        "archiveStatus": "active"
+      },
+      "confidence": "Medium",
+      "lastReviewed": "2026-10-01"
+    }
+  ]
+}

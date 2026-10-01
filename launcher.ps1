@@ -11,11 +11,45 @@ $configFileIndex=[Array]::IndexOf($Arguments,'--config-file')
 if($configFileIndex -ge 0){if($configFileIndex+1 -ge $Arguments.Count){throw '--config-file 缺少路径。'};$configPath=[IO.Path]::GetFullPath([string]$Arguments[$configFileIndex+1])}
 $portable=($Arguments -contains '--portable') -and -not ($configPath -and (Test-Path $configPath) -and (Read-MmtlConfig -Path $configPath).runtimeRoot)
 if($Arguments -contains '--help' -or $Arguments -contains '-h'){
-    Write-Host 'Minecraft Mod Test Launcher';Write-Host '用法：launcher.cmd / launcher.sh [--validate|--dry-run|--build|--launch] [--profile NAME]';Write-Host 'Session：--list-sessions | --stop ID | --clean-session ID';Write-Host '运行目录：--portable';Write-Host '交互模式：不传参数；--config-file 仅供临时配置调用。';exit 0
+    Write-Host 'Minecraft Mod Test Launcher';Write-Host '用法：launcher.cmd / launcher.sh [--validate|--dry-run|--build|--launch] [--profile NAME]';Write-Host 'Catalog：--list-minecraft-versions | --minecraft-info <id|CurrentStable> | --refresh-catalog';Write-Host 'Catalog cache：--catalog-offline（仅影响 Catalog，不改变 Gradle Offline）';Write-Host 'Session：--list-sessions | --stop ID | --clean-session ID';Write-Host '运行目录：--portable';Write-Host '交互模式：不传参数；--config-file 仅供临时配置调用。';exit 0
 }
 $config=if(Test-Path $configPath){Read-MmtlConfig -Path $configPath}else{$null}
 $runtimeConfigured=if($config -and $config.runtimeRoot){[string]$config.runtimeRoot}else{''}
 $runtimeRoot=Resolve-MmtlRuntimeRoot -Path $runtimeConfigured -Portable:$portable -LauncherRoot $here
+$catalogRuntimeRoot=$runtimeRoot
+if($platform.OS -in @('Linux','MacOS') -and $runtimeConfigured -match '^%LOCALAPPDATA%([\\/]|$)'){
+    $catalogRuntimeRoot=$platform.DefaultRuntimeRoot
+    Write-Warning 'Catalog cache ignored the Windows-only %LOCALAPPDATA% runtimeRoot on this platform and will use the native platform Runtime Root.'
+}
+$catalogOffline=$Arguments -contains '--catalog-offline'
+$refreshCatalog=$Arguments -contains '--refresh-catalog'
+$listMinecraftVersions=$Arguments -contains '--list-minecraft-versions'
+$minecraftInfoIndex=[Array]::IndexOf($Arguments,'--minecraft-info')
+$hasMinecraftInfo=$minecraftInfoIndex -ge 0
+if($catalogOffline -and $refreshCatalog){throw 'CATALOG_OPTION_CONFLICT: --refresh-catalog cannot be combined with --catalog-offline.'}
+if($hasMinecraftInfo -and ($minecraftInfoIndex+1 -ge $Arguments.Count -or [string]::IsNullOrWhiteSpace([string]$Arguments[$minecraftInfoIndex+1]))){throw '--minecraft-info 缺少 Minecraft 版本 ID。'}
+if($listMinecraftVersions -or $hasMinecraftInfo -or $refreshCatalog){
+    $catalog=Get-MmtlMinecraftVersionCatalog -RuntimeRoot $catalogRuntimeRoot -Offline:$catalogOffline -ForceRefresh:$refreshCatalog
+    if($hasMinecraftInfo){
+        $entry=Resolve-MmtlMinecraftVersion -MinecraftId ([string]$Arguments[$minecraftInfoIndex+1]) -Catalog $catalog
+        $versionMetadata=Get-MmtlMinecraftVersionMetadata -CatalogEntry $entry -RuntimeRoot $catalogRuntimeRoot -Offline:$catalogOffline
+        $runtimeJava=Resolve-MmtlMinecraftRuntimeJavaRequirement -MinecraftId $entry.id -CatalogEntry $entry -VersionMetadata $versionMetadata
+        [pscustomobject]@{
+            ID=$entry.id;Type=$entry.type;ReleaseTime=$entry.releaseTime;CatalogStatus=$entry.catalogStatus;CatalogCacheStatus=$catalog.cacheStatus
+            MetadataStatus=$versionMetadata.metadataStatus;MetadataSource='Mojang per-version JSON';ExpectedSHA1=$versionMetadata.expectedSha1;ActualSHA1=$versionMetadata.actualSha1
+            JavaVersionPresent=[bool]$versionMetadata.metadata.javaVersion;RuntimeJavaMajor=$runtimeJava.major;RuntimeJavaComponent=$runtimeJava.component
+            RuntimeJavaSource=$runtimeJava.source;RuntimeJavaConfidence=$runtimeJava.confidence;RuntimeJavaRequirementKind=$runtimeJava.requirementKind
+        } | Format-List
+        exit 0
+    }
+    if($listMinecraftVersions){
+        foreach($entry in $catalog.entries){$stable=if($entry.id -ceq $catalog.latestRelease){' CurrentStable'}else{''};Write-Output ('{0} | {1}{2}' -f $entry.id,$entry.releaseTime,$stable)}
+        Write-Output "Catalog: $($catalog.cacheStatus); releases: $($catalog.entries.Count); minimum: $($catalog.minimumReleaseId); CurrentStable: $($catalog.latestRelease)"
+        exit 0
+    }
+    Write-Output "Mojang Catalog refreshed. Status: $($catalog.cacheStatus); releases: $($catalog.entries.Count); CurrentStable: $($catalog.latestRelease)"
+    exit 0
+}
 if ($Arguments -contains '--list-sessions') {
     $sessions=Join-Path $runtimeRoot 'sessions'
     if(Test-Path $sessions){foreach($dir in Get-ChildItem $sessions -Directory){try{$status=Update-MmtlSessionReport -SessionPath $dir.FullName;Write-Output "$($dir.Name) [$($status.Status)]"}catch{Write-Output "$($dir.Name) [Unknown]"}}}; exit 0
@@ -177,7 +211,14 @@ if($Arguments -contains '--validate') {
     $extra=@();foreach($item in @($profile.extraMods|Where-Object{$_})){$path=[string]$item;if(-not[IO.Path]::IsPathRooted($path)){$path=Join-Path $here $path};$resolved=(Resolve-Path -LiteralPath $path -ErrorAction Stop).Path;if([IO.Path]::GetExtension($resolved) -ne '.jar'){throw "Extra Mod 必须为 JAR：$item"};$extra+=$resolved}
     $portStatus='Not required'
     if($profile.mode -in @('IntegratedLAN','Dedicated')){if([string]$profile.port -eq 'Auto'){$portStatus='Auto (assigned at launch)'}else{$fixed=[int]$profile.port;$null=Get-MmtlPort -Port $fixed;$portStatus="Available: $fixed"}}
-    [pscustomobject]@{Platform=$platform.OS;Architecture=$platform.Arch;WSL=$platform.IsWSL;Project=$project.Root;LinkedProjects=($linked.Root -join '; ');ExtraMods=($extra -join '; ');Loader=$project.Loader;LoaderVersion=$project.LoaderVersion;Minecraft=$project.MinecraftVersion;Java=$java;Wrapper=$project.Wrapper;Mode=$profile.mode;Players=$profile.players;RuntimeRoot=$runtimeRoot;Port=$portStatus} | Format-List
+    $minecraftCatalogStatus='Unavailable';$metadataStatus='Unavailable';$currentStable='Unknown';$runtimeJavaMajor=$null;$runtimeJavaSource='Unknown';$runtimeJavaKind='Unknown'
+    try{
+        $catalog=Get-MmtlMinecraftVersionCatalog -RuntimeRoot $catalogRuntimeRoot -Offline
+        $currentStable=[string]$catalog.latestRelease
+        $entry=if($project.MinecraftVersion){Resolve-MmtlMinecraftVersion -MinecraftId ([string]$project.MinecraftVersion) -Catalog $catalog}else{$null}
+        if($entry){$minecraftCatalogStatus=[string]$entry.catalogStatus;try{$metadata=Get-MmtlMinecraftVersionMetadata -CatalogEntry $entry -RuntimeRoot $catalogRuntimeRoot -Offline;$resolvedRuntime=Resolve-MmtlMinecraftRuntimeJavaRequirement -MinecraftId $entry.id -CatalogEntry $entry -VersionMetadata $metadata;$metadataStatus=$metadata.metadataStatus;$runtimeJavaMajor=$resolvedRuntime.major;$runtimeJavaSource=$resolvedRuntime.source;$runtimeJavaKind=$resolvedRuntime.requirementKind}catch{$metadataStatus=if($_.Exception.Message -match 'CACHE_UNAVAILABLE'){'Unavailable'}else{'Error'};$resolvedRuntime=Resolve-MmtlMinecraftRuntimeJavaRequirement -MinecraftId $entry.id -CatalogEntry $entry;$runtimeJavaMajor=$resolvedRuntime.major;$runtimeJavaSource=$resolvedRuntime.source;$runtimeJavaKind=$resolvedRuntime.requirementKind}}
+    }catch{}
+    [pscustomobject]@{Platform=$platform.OS;Architecture=$platform.Arch;WSL=$platform.IsWSL;Project=$project.Root;LinkedProjects=($linked.Root -join '; ');ExtraMods=($extra -join '; ');Loader=$project.Loader;LoaderVersion=$project.LoaderVersion;Minecraft=$project.MinecraftVersion;Java=$java;BuildJavaMajor=$project.BuildJavaMajor;RuntimeJavaMajor=$runtimeJavaMajor;RuntimeJavaSource=$runtimeJavaSource;RuntimeJavaRequirementKind=$runtimeJavaKind;MinecraftCatalogStatus=$minecraftCatalogStatus;MinecraftMetadataStatus=$metadataStatus;CurrentStable=$currentStable;Wrapper=$project.Wrapper;Mode=$profile.mode;Players=$profile.players;RuntimeRoot=$runtimeRoot;Port=$portStatus} | Format-List
     exit 0
 }
 if($Arguments -contains '--dry-run') {
