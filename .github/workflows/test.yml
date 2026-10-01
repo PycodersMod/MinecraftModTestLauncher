@@ -31,7 +31,7 @@ jobs:
         run: Get-ChildItem -Recurse -Include *.ps1,*.psm1 | ForEach-Object { $tokens=$null; $errors=$null; [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$tokens,[ref]$errors) | Out-Null; if($errors){throw ($errors | Out-String)} }
       - name: Platform, runtime, Java, wrapper and Linux process tests
         shell: pwsh
-        run: Invoke-Pester -Path ./tests/Architecture.Tests.ps1,./tests/Schema.Tests.ps1,./tests/Platform.Tests.ps1,./tests/RuntimeManager.Tests.ps1,./tests/JavaResolver.Tests.ps1,./tests/GradleRunner.Tests.ps1,./tests/ProcessManager.Linux.Tests.ps1,./tests/CrossPlatformCli.Tests.ps1,./tests/MinecraftVersionCatalog.Tests.ps1,./tests/JavaRuntimeResolver.Tests.ps1,./tests/MinecraftVersionCatalog.Cli.Tests.ps1 -CI
+        run: Invoke-Pester -Path ./tests/Architecture.Tests.ps1,./tests/Schema.Tests.ps1,./tests/Platform.Tests.ps1,./tests/RuntimeManager.Tests.ps1,./tests/JavaResolver.Tests.ps1,./tests/GradleRunner.Tests.ps1,./tests/ProcessManager.Linux.Tests.ps1,./tests/CrossPlatformCli.Tests.ps1,./tests/MinecraftVersionCatalog.Tests.ps1,./tests/JavaRuntimeResolver.Tests.ps1,./tests/MinecraftVersionCatalog.Cli.Tests.ps1,./tests/LoaderMetadata.Tests.ps1,./tests/ForgeProvider.Tests.ps1,./tests/FabricProvider.Tests.ps1,./tests/NeoForgeProvider.Tests.ps1,./tests/QuiltProvider.Tests.ps1,./tests/LoaderAvailability.Tests.ps1,./tests/AdapterV2.Tests.ps1,./tests/ProjectDetectorV2.Tests.ps1,./tests/LoaderProvider.Cli.Tests.ps1 -CI
       - name: launcher.sh smoke
         shell: bash
         run: ./launcher.sh --help
@@ -48,7 +48,7 @@ jobs:
         run: Get-ChildItem -Recurse -Include *.ps1,*.psm1 | ForEach-Object { $tokens=$null; $errors=$null; [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$tokens,[ref]$errors) | Out-Null; if($errors){throw ($errors | Out-String)} }
       - name: Platform/build-path Pester tests
         shell: pwsh
-        run: Invoke-Pester -Path ./tests/Architecture.Tests.ps1,./tests/Schema.Tests.ps1,./tests/Platform.Tests.ps1,./tests/RuntimeManager.Tests.ps1,./tests/JavaResolver.Tests.ps1,./tests/GradleRunner.Tests.ps1,./tests/CrossPlatformCli.Tests.ps1,./tests/MinecraftVersionCatalog.Tests.ps1,./tests/JavaRuntimeResolver.Tests.ps1,./tests/MinecraftVersionCatalog.Cli.Tests.ps1 -CI
+        run: Invoke-Pester -Path ./tests/Architecture.Tests.ps1,./tests/Schema.Tests.ps1,./tests/Platform.Tests.ps1,./tests/RuntimeManager.Tests.ps1,./tests/JavaResolver.Tests.ps1,./tests/GradleRunner.Tests.ps1,./tests/CrossPlatformCli.Tests.ps1,./tests/MinecraftVersionCatalog.Tests.ps1,./tests/JavaRuntimeResolver.Tests.ps1,./tests/MinecraftVersionCatalog.Cli.Tests.ps1,./tests/LoaderMetadata.Tests.ps1,./tests/ForgeProvider.Tests.ps1,./tests/FabricProvider.Tests.ps1,./tests/NeoForgeProvider.Tests.ps1,./tests/QuiltProvider.Tests.ps1,./tests/LoaderAvailability.Tests.ps1,./tests/AdapterV2.Tests.ps1,./tests/ProjectDetectorV2.Tests.ps1,./tests/LoaderProvider.Cli.Tests.ps1 -CI
       - name: launcher.sh smoke
         shell: bash
         run: sh ./launcher.sh --help
@@ -62,7 +62,7 @@ jobs:
         run: Install-Module Pester -MinimumVersion 5.0 -Scope CurrentUser -Force -SkipPublisherCheck
       - name: Platform/build-path Pester tests
         shell: pwsh
-        run: Invoke-Pester -Path ./tests/Architecture.Tests.ps1,./tests/Schema.Tests.ps1,./tests/Platform.Tests.ps1,./tests/RuntimeManager.Tests.ps1,./tests/JavaResolver.Tests.ps1,./tests/GradleRunner.Tests.ps1,./tests/CrossPlatformCli.Tests.ps1,./tests/MinecraftVersionCatalog.Tests.ps1,./tests/JavaRuntimeResolver.Tests.ps1,./tests/MinecraftVersionCatalog.Cli.Tests.ps1 -CI
+        run: Invoke-Pester -Path ./tests/Architecture.Tests.ps1,./tests/Schema.Tests.ps1,./tests/Platform.Tests.ps1,./tests/RuntimeManager.Tests.ps1,./tests/JavaResolver.Tests.ps1,./tests/GradleRunner.Tests.ps1,./tests/CrossPlatformCli.Tests.ps1,./tests/MinecraftVersionCatalog.Tests.ps1,./tests/JavaRuntimeResolver.Tests.ps1,./tests/MinecraftVersionCatalog.Cli.Tests.ps1,./tests/LoaderMetadata.Tests.ps1,./tests/ForgeProvider.Tests.ps1,./tests/FabricProvider.Tests.ps1,./tests/NeoForgeProvider.Tests.ps1,./tests/QuiltProvider.Tests.ps1,./tests/LoaderAvailability.Tests.ps1,./tests/AdapterV2.Tests.ps1,./tests/ProjectDetectorV2.Tests.ps1,./tests/LoaderProvider.Cli.Tests.ps1 -CI
       - name: launcher.sh smoke
         shell: bash
         run: sh ./launcher.sh --help

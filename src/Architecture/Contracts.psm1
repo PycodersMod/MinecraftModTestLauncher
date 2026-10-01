@@ -26,6 +26,7 @@ $script:MmtlArchitectureContract = [ordered]@{
         [pscustomobject]@{ id = 'FabricLoom'; displayName = 'Fabric Loom' }
         [pscustomobject]@{ id = 'NeoGradle'; displayName = 'NeoGradle' }
         [pscustomobject]@{ id = 'ModDevGradle'; displayName = 'ModDevGradle' }
+        [pscustomobject]@{ id = 'QuiltLoom'; displayName = 'Quilt Loom' }
         [pscustomobject]@{ id = 'Ploceus'; displayName = 'Ploceus' }
         [pscustomobject]@{ id = 'Unknown'; displayName = 'Unknown' }
         [pscustomobject]@{ id = 'Custom'; displayName = 'Custom' }
@@ -223,7 +224,7 @@ function New-MmtlLoaderStack {
 function New-MmtlToolchainContext {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory)][ValidateSet('ForgeGradle', 'FabricLoom', 'NeoGradle', 'ModDevGradle', 'Ploceus', 'Unknown', 'Custom')][string]$Id,
+        [Parameter(Mandatory)][ValidateSet('ForgeGradle', 'FabricLoom', 'NeoGradle', 'ModDevGradle', 'QuiltLoom', 'Ploceus', 'Unknown', 'Custom')][string]$Id,
         [string]$Version,
         [string]$Ecosystem
     )

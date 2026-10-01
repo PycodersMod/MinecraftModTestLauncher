@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mmtl.local/schemas/loader-availability.schema.json",
+  "title": "MMTL Loader Availability Index",
+  "type": "object",
+  "required": ["schemaVersion", "generatedAt", "minecraftCatalogHash", "providerStatuses", "entries", "cacheStatus"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "generatedAt": {"type": "string", "format": "date-time"},
+    "minecraftCatalogHash": {"type": "string", "minLength": 1},
+    "cacheStatus": {"enum": ["Fresh", "Degraded", "Stale", "OfflineCache", "Unavailable"]},
+    "providerStatuses": {"type": "object", "required": ["Forge", "Fabric", "NeoForge", "Quilt"], "additionalProperties": {"$ref": "#/definitions/providerStatus"}},
+    "entries": {"type": "array", "items": {"$ref": "#/definitions/entry"}}
+  },
+  "definitions": {
+    "providerStatus": {"type": "object", "required": ["status", "cacheStatus"], "properties": {"status": {"enum": ["Available", "Degraded", "Stale", "Unavailable"]}, "cacheStatus": {"enum": ["Fresh", "Stale", "OfflineCache", "Unavailable"]}, "source": {"type": ["string", "null"]}, "lastChecked": {"type": ["string", "null"]}, "error": {"type": ["string", "null"]}}},
+    "availability": {"type": "object", "required": ["availability", "cacheStatus", "notes"], "properties": {"availability": {"enum": ["Available", "Unavailable", "Unknown"]}, "source": {"type": ["string", "null"]}, "lastChecked": {"type": ["string", "null"]}, "cacheStatus": {"enum": ["Fresh", "Stale", "OfflineCache", "Unavailable"]}, "notes": {"type": "array", "items": {"type": "string"}}}},
+    "entry": {"type": "object", "required": ["minecraftId", "loaders"], "properties": {"minecraftId": {"type": "string"}, "loaders": {"type": "object", "required": ["Forge", "Fabric", "NeoForge", "Quilt"], "additionalProperties": {"$ref": "#/definitions/availability"}}}}
+  }
+}

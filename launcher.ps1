@@ -22,6 +22,31 @@ if($platform.OS -in @('Linux','MacOS') -and $runtimeConfigured -match '^%LOCALAP
     Write-Warning 'Catalog cache ignored the Windows-only %LOCALAPPDATA% runtimeRoot on this platform and will use the native platform Runtime Root.'
 }
 $catalogOffline=$Arguments -contains '--catalog-offline'
+$loaderOffline=$Arguments -contains '--loader-offline'
+$listLoadersIndex=[Array]::IndexOf($Arguments,'--list-loaders')
+$loaderInfoIndex=[Array]::IndexOf($Arguments,'--loader-info')
+$hasListLoaders=$listLoadersIndex -ge 0;$hasLoaderInfo=$loaderInfoIndex -ge 0
+if($hasListLoaders -and $hasLoaderInfo){throw 'LOADER_OPTION_CONFLICT: --list-loaders 与 --loader-info 不能同时使用。'}
+if($hasListLoaders -and ($listLoadersIndex+1 -ge $Arguments.Count)){throw '--list-loaders 缺少 Minecraft 版本 ID。'}
+if($hasLoaderInfo -and ($loaderInfoIndex+2 -ge $Arguments.Count)){throw '--loader-info 需要 Minecraft 版本 ID 和 Loader ID。'}
+if($hasListLoaders -or $hasLoaderInfo){
+    $loaderCatalog=Get-MmtlMinecraftVersionCatalog -RuntimeRoot $catalogRuntimeRoot -Offline:$catalogOffline
+    if($hasListLoaders){
+        $id=[string]$Arguments[$listLoadersIndex+1];if($id -eq 'CurrentStable'){$id=[string]$loaderCatalog.latestRelease};$null=Resolve-MmtlMinecraftVersion -MinecraftId $id -Catalog $loaderCatalog
+        $index=Get-MmtlLoaderAvailabilityIndex -Catalog $loaderCatalog -RuntimeRoot $runtimeRoot -Offline:$loaderOffline
+        $row=$index.entries|Where-Object minecraftId -CEQ $id|Select-Object -First 1
+        foreach($loaderId in @('Forge','Fabric','NeoForge','Quilt')){$item=$row.loaders.$loaderId;[pscustomobject]@{Minecraft=$id;Loader=$loaderId;Availability=$item.availability;CacheStatus=$item.cacheStatus;Source=$item.source;LastChecked=$item.lastChecked;Notes=($item.notes -join '; ')}}
+        exit 0
+    }
+    $id=[string]$Arguments[$loaderInfoIndex+1];if($id -eq 'CurrentStable'){$id=[string]$loaderCatalog.latestRelease};$null=Resolve-MmtlMinecraftVersion -MinecraftId $id -Catalog $loaderCatalog
+    $loaderId=[string]$Arguments[$loaderInfoIndex+2];if($loaderId -notin @('Forge','Fabric','NeoForge','Quilt')){throw "Unsupported mainstream Loader: $loaderId"}
+    $snapshot=switch($loaderId){'Forge'{Get-MmtlForgeProviderSnapshot -Catalog $loaderCatalog -RuntimeRoot $runtimeRoot -Offline:$loaderOffline};'Fabric'{Get-MmtlFabricProviderSnapshot -RuntimeRoot $runtimeRoot -Offline:$loaderOffline};'NeoForge'{Get-MmtlNeoForgeProviderSnapshot -Catalog $loaderCatalog -RuntimeRoot $runtimeRoot -Offline:$loaderOffline};'Quilt'{Get-MmtlQuiltProviderSnapshot -RuntimeRoot $runtimeRoot -Offline:$loaderOffline}}
+    $candidates=switch($loaderId){'Forge'{Get-MmtlForgeCandidates -MinecraftId $id -Snapshot $snapshot};'Fabric'{Get-MmtlFabricCandidates -MinecraftId $id -RuntimeRoot $runtimeRoot -Offline:$loaderOffline};'NeoForge'{Get-MmtlNeoForgeCandidates -MinecraftId $id -Snapshot $snapshot};'Quilt'{Get-MmtlQuiltCandidates -MinecraftId $id -RuntimeRoot $runtimeRoot -Offline:$loaderOffline}}
+    $preferred=switch($loaderId){'Forge'{Get-MmtlForgePreferredCandidate -MinecraftId $id -Candidates $candidates};'Fabric'{Get-MmtlFabricPreferredCandidate -MinecraftId $id -Candidates $candidates};'NeoForge'{Get-MmtlNeoForgePreferredCandidate -MinecraftId $id -Candidates $candidates};'Quilt'{Get-MmtlQuiltPreferredCandidate -MinecraftId $id -Candidates $candidates}}
+    $providerStatus=Get-MmtlLoaderProviderStatus -LoaderId $loaderId -Snapshot $snapshot
+    [pscustomobject]@{Minecraft=$id;Loader=$loaderId;ProviderStatus=$providerStatus;Preferred=$preferred;Candidates=@($candidates);Provenance=if($snapshot.provenance){$snapshot.provenance}else{@()}}|ConvertTo-Json -Depth 30
+    exit 0
+}
 $refreshCatalog=$Arguments -contains '--refresh-catalog'
 $listMinecraftVersions=$Arguments -contains '--list-minecraft-versions'
 $minecraftInfoIndex=[Array]::IndexOf($Arguments,'--minecraft-info')

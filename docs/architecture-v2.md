@@ -1,6 +1,6 @@
 # MMTL v2 架构基础
 
-本文记录 MMTL v2 Phase A–C 已落地架构。Catalog、项目构建、服务端和客户端验证是不同状态；实现某个平台的 CLI 或 Catalog 查询不代表 Minecraft GUI 或 Loader 组合已获得验证。
+本文记录 MMTL v2 Phase A–D 的落地边界。Catalog、上游 Loader availability、项目解析、实际构建、服务端和客户端验证是不同状态；查询结果不能替代 Compatibility Matrix 的实验证据。
 
 ## 当前实现与后续计划
 
@@ -23,9 +23,18 @@
 ### 后续阶段
 
 - Linux/macOS Runtime、路径 provider、进程树实现、launcher.sh。
-- Forge/Fabric/NeoForge/Quilt Provider v2。
-- Quilt 与历史 Loader 实际构建、启动或下载支持。
+- Quilt 与历史 Loader 实际启动或下载支持。
 - 全版本/OS/架构组合的更深验证。
+
+### Phase D Loader metadata 与 Adapter Contract v2
+
+- Forge、Fabric、NeoForge 和 Quilt provider 共用 `src/Catalog/LoaderMetadata.psm1` 的 allowlist HTTPS、重定向校验、ETag/Last-Modified、24 小时缓存、stale/offline 状态与原子写入。provider 各自拥有独立 cache key，单一端点失败不会阻断其它 provider。
+- `src/Catalog/LoaderAvailability.psm1` 生成宽度动态跟随 Mojang Catalog 的 availability index；availability 限定为 `Available`、`Unavailable`、`Unknown`，schema 位于 `schemas/loader-availability.schema.json`。该索引不存储 Loader 安装内容，也不表示 build 已验证。
+- Forge 保留 Maven 完整版本和 promotions 中独立的 `recommended` / `latest`；Fabric 保留官方 `stable` 与 intermediary 数据，并依上游顺序选 stable；NeoForge 分开处理 `net.neoforged:neoforge` 与 1.20.1 过渡 artifact `net.neoforged:forge`；26.x scheme 保留完整 Minecraft 前缀；Quilt Meta v3 原样保留 hashed、intermediary、quilt-mappings 与 launcherMeta，不推造 stable 语义。
+- `src/Adapters/ContractV2.psm1` 表达 Adapter probe evidence、解析冲突和 build plan；`ProjectDetector.psm1` 从 mod metadata 与 Gradle 插件 marker 归并 evidence。Quilt 的 `fabric.mod.json` 是兼容 metadata，识别 Quilt 以 Quilt Loom 插件 evidence 为准；多 Loader marker 返回 `Ambiguous`。
+- Toolchain identity 与 Loader identity 分开；`QuiltLoom` 已加入 toolchain registry。Build Java 项目显式要求的 major 是 High confidence；缺失时由 `BuildJavaResolver.psm1` 集中 fallback registry 推断并标记 Low confidence。Runtime Java 仍由 Mojang metadata resolver 负责。
+- CLI 的 `--list-loaders` 显示版本 availability，`--loader-info` 返回候选、preferred policy 和 provenance；`--loader-offline` 独立于 Gradle offline。结果可从 Runtime Root 的 Provider cache 离线重建。
+- PR CI 使用 metadata/adapter fixture，不依赖 live endpoint；Windows 执行全 suite，Ubuntu、macOS ARM64 和 Intel 增加 Provider、index、Adapter 与 ProjectDetector fixture suite。
 
 ## 概念分层
 
@@ -68,7 +77,7 @@ Artifact 具有 `TrustedOfficial`、`VerifiedHistorical`、`UnverifiedHistorical
 
 ## Identity registries 与历史特例
 
-Loader identity 目前包括 Forge、Fabric、NeoForge、Quilt、LegacyFabric、LiteLoader、Rift、ModLoader、ModLoaderMP、JarMod。这是身份词汇表，不是适配器或支持声明。Toolchain（ForgeGradle、FabricLoom、NeoGradle、ModDevGradle、Ploceus）和 Build System（GradleWrapper、Custom、Legacy）独立建模。Ornithe 可作为 ecosystem context 与 Ploceus 关联，而不是 Loader identity。
+Loader identity 目前包括 Forge、Fabric、NeoForge、Quilt、LegacyFabric、LiteLoader、Rift、ModLoader、ModLoaderMP、JarMod。这是身份词汇表，不是全版本支持声明。Toolchain（ForgeGradle、FabricLoom、NeoGradle、ModDevGradle、QuiltLoom、Ploceus）和 Build System（GradleWrapper、Custom、Legacy）独立建模。Ornithe 可作为 ecosystem context 与 Ploceus 关联，而不是 Loader identity。
 
 将来版本/平台例外应按 `schemas/exception-registry.schema.json` 集中登记 matcher、rule、reason、provenance、适用范围和复核策略；Phase A 尚未迁移现有运行逻辑中的特例。
 
@@ -80,4 +89,4 @@ Loader identity 目前包括 Forge、Fabric、NeoForge、Quilt、LegacyFabric、
 
 ## CI 边界
 
-Windows 执行原有完整 Pester。Ubuntu/macOS 只执行 parser、Architecture 与 Schema tests，不能导入当前 Win32 WindowManager，也不运行完整启动器、Gradle Minecraft 项目或游戏。这些 smoke 只证明纯契约代码在 runner 上可执行。当前 workflow 使用 `ubuntu-latest` 和 `macos-latest`；GitHub 文档（2026-10-01 查阅）将 `macos-latest` 标为 Apple Silicon arm64，因此该 macOS job 不提供 Intel x64 覆盖。[GitHub-hosted runners](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)
+Windows 执行完整 Pester。Ubuntu、macOS ARM64 和 macOS Intel 执行 parser、Architecture、Schema、Provider、Availability Index、Adapter 与 ProjectDetector fixtures；CI 不调用 live upstream API，也不启动 Minecraft GUI。具体 required job 结果以对应提交的 Actions run 为准。

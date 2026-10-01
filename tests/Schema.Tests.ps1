@@ -6,6 +6,7 @@ BeforeAll {
     $script:exceptionSchema = Join-Path $script:repoRoot 'schemas/exception-registry.schema.json'
     $script:configSchema = Join-Path $script:repoRoot 'schemas/launcher-config.schema.json'
     $script:catalogSchema = Join-Path $script:repoRoot 'schemas/minecraft-version-catalog.schema.json'
+    $script:availabilitySchema = Join-Path $script:repoRoot 'schemas/loader-availability.schema.json'
     $script:provenance = @{
         sourceType = 'archivedOfficial'
         url = 'https://example.invalid/archive'
@@ -50,7 +51,7 @@ BeforeAll {
 
 Describe 'MMTL v2 JSON Schemas' {
     It '所有 Schema 文件自身是合法 JSON 并使用 JSON Schema Draft 7' {
-        foreach ($path in @($script:matrixSchema, $script:exceptionSchema, $script:configSchema)) {
+        foreach ($path in @($script:matrixSchema, $script:exceptionSchema, $script:configSchema,$script:availabilitySchema)) {
             $schema = Get-Content -LiteralPath $path -Raw | ConvertFrom-Json -ErrorAction Stop
             $schema.'$schema' | Should -Be 'http://json-schema.org/draft-07/schema#'
         }
@@ -139,5 +140,15 @@ Describe 'MMTL v2 JSON Schemas' {
         (Test-Json -Json ($catalog|ConvertTo-Json -Depth 20 -Compress) -SchemaFile $script:catalogSchema) | Should -BeTrue
         $catalog.entries[0].type='snapshot'
         (Test-Json -Json ($catalog|ConvertTo-Json -Depth 20 -Compress) -SchemaFile $script:catalogSchema -ErrorAction SilentlyContinue) | Should -BeFalse
+    }
+
+    It 'Loader Availability Index schema accepts three-valued upstream results and cache provenance' {
+        $index=@{schemaVersion=1;generatedAt='2026-10-02T00:00:00Z';minecraftCatalogHash=('a'*64);cacheStatus='OfflineCache';providerStatuses=@{};entries=@()}
+        foreach($loader in @('Forge','Fabric','NeoForge','Quilt')){$index.providerStatuses[$loader]=@{status='Available';cacheStatus='OfflineCache';source='https://example.invalid/metadata';lastChecked='2026-10-02T00:00:00Z';error=$null}}
+        $index.entries=@(@{minecraftId='1.20.1';loaders=@{}})
+        foreach($loader in @('Forge','Fabric','NeoForge','Quilt')){$index.entries[0].loaders[$loader]=@{availability='Unknown';source=$null;lastChecked=$null;cacheStatus='Unavailable';notes=@('offline fixture')}}
+        (Test-Json -Json ($index|ConvertTo-Json -Depth 20 -Compress) -SchemaFile $script:availabilitySchema) | Should -BeTrue
+        $index.entries[0].loaders.Forge.availability='BUILD_VERIFIED'
+        (Test-Json -Json ($index|ConvertTo-Json -Depth 20 -Compress) -SchemaFile $script:availabilitySchema -ErrorAction SilentlyContinue) | Should -BeFalse
     }
 }

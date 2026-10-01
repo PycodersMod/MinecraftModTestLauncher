@@ -1,6 +1,6 @@
 # MinecraftModTestLauncher
 
-Minecraft Java Edition 模组开发环境多实例测试启动器（MMTL），提供 Windows 游戏运行能力，以及 Linux/macOS CLI 与 Gradle 构建基础能力。支持 Forge、NeoForge、Fabric 的 Gradle 项目检测。
+Minecraft Java Edition 模组开发环境多实例测试启动器（MMTL），提供 Windows 游戏运行能力，以及 Linux/macOS CLI 与 Gradle 构建基础能力。Phase D 为 Forge、Fabric、NeoForge、Quilt 提供官方上游元数据查询与项目适配器基础；上游 availability 不代表 MMTL build、Dedicated Server、客户端或集成测试已验证。
 
 MMTL v2 的正式运行基线为 PowerShell 7。现有 Windows PowerShell 5.1 fallback 保留为旧版兼容前端（best effort）；新增 v2 架构能力不承诺完整兼容 5.1。
 
@@ -15,6 +15,8 @@ Ubuntu CI 覆盖平台、路径、Java/Wrapper fixture 和 Linux 受控进程测
 ## 当前实现状态
 
 Phase C 增加 Mojang 官方 Version Manifest release Catalog，从 Java Edition 1.0 动态覆盖到 CurrentStable，并提供 24 小时缓存、惰性 version metadata、SHA-1 校验与 Runtime Java 来源解析。CLI 提供 --list-minecraft-versions、--minecraft-info <id|CurrentStable>、--refresh-catalog 与 --catalog-offline。CATALOGUED 只表示版本在 Mojang 目录中，不代表 Loader supported、Build verified、Dedicated Server verified 或 Client verified。Runtime Java metadata 不决定 Mod 工程的 Build Java，旧 JavaMajor 构建行为保留。
+
+Phase D 的 loader metadata 独立缓存于 Runtime Root，CLI 提供 `--list-loaders <minecraft-id|CurrentStable>` 与 `--loader-info <minecraft-id|CurrentStable> <Forge|Fabric|NeoForge|Quilt>`；`--loader-offline` 只影响 Loader metadata。Provider 会保留上游字段和来源，不会把查询结果提升为 Compatibility Matrix 的验证级别。
 
 - 已实现 Forge、NeoForge、Fabric 项目元数据识别、Java 主版本映射、Profile、兼容性预检和 build/run Gradle Wrapper 调用。
 - 支持 Single、IntegratedLAN 引导式 Host/Client，以及 Dedicated Server 加本地客户端；多项目构建结果按 SHA-256 汇入独立 Session。

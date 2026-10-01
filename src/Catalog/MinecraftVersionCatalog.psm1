@@ -1,5 +1,7 @@
 Set-StrictMode -Version Latest
 
+Import-Module (Join-Path $PSScriptRoot 'LoaderMetadata.psm1') -Force
+
 $script:MmtlMojangManifestUrl='https://piston-meta.mojang.com/mc/game/version_manifest_v2.json'
 $script:MmtlMojangMetadataHosts=@('piston-meta.mojang.com')
 $script:MmtlCatalogSchemaVersion=1
@@ -28,26 +30,6 @@ function Write-MmtlAtomicBytes {
         [IO.File]::WriteAllBytes($temporary,$Bytes)
         if([IO.File]::Exists($Path)){[IO.File]::Move($temporary,$Path,$true)}else{[IO.File]::Move($temporary,$Path)}
     } finally { if([IO.File]::Exists($temporary)){[IO.File]::Delete($temporary)} }
-}
-
-function Invoke-MmtlMetadataHttpGet {
-    param([Parameter(Mandatory)][string]$Uri,[hashtable]$Headers=@{},[int]$TimeoutSeconds=30)
-    $handler=[Net.Http.HttpClientHandler]::new()
-    $handler.AllowAutoRedirect=$true
-    $client=[Net.Http.HttpClient]::new($handler)
-    $client.Timeout=[TimeSpan]::FromSeconds($TimeoutSeconds)
-    try {
-        $request=[Net.Http.HttpRequestMessage]::new([Net.Http.HttpMethod]::Get,$Uri)
-        foreach($key in $Headers.Keys){$null=$request.Headers.TryAddWithoutValidation([string]$key,[string]$Headers[$key])}
-        $response=$client.Send($request)
-        try {
-            $responseUri=[string]$response.RequestMessage.RequestUri.AbsoluteUri
-            $responseHeaders=@{}
-            foreach($header in $response.Headers){$responseHeaders[$header.Key]=$header.Value -join ', '}
-            foreach($header in $response.Content.Headers){$responseHeaders[$header.Key]=$header.Value -join ', '}
-            [pscustomobject]@{StatusCode=[int]$response.StatusCode;Headers=$responseHeaders;Bytes=if([int]$response.StatusCode -eq 304){[byte[]]@()}else{$response.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult()};ResponseUri=$responseUri}
-        } finally { $response.Dispose();$request.Dispose() }
-    } finally { $client.Dispose();$handler.Dispose() }
 }
 
 function Test-MmtlMojangMetadataUri {
@@ -145,7 +127,7 @@ function Get-MmtlMinecraftVersionCatalog {
     if($cached){if($cached.Metadata.etag){$headers['If-None-Match']=[string]$cached.Metadata.etag};if($cached.Metadata.lastModified){$headers['If-Modified-Since']=[string]$cached.Metadata.lastModified}}
     $manifest=$null;$catalog=$null
     try {
-        try{$response=if($HttpGet){& $HttpGet $script:MmtlMojangManifestUrl $headers 30}else{Invoke-MmtlMetadataHttpGet -Uri $script:MmtlMojangManifestUrl -Headers $headers -TimeoutSeconds 30}}catch{throw "MANIFEST_NETWORK_ERROR: $($_.Exception.Message)"}
+        try{$response=Invoke-MmtlMetadataHttpGet -Uri $script:MmtlMojangManifestUrl -AllowedHosts $script:MmtlMojangMetadataHosts -Headers $headers -TimeoutSeconds 30 -HttpGet $HttpGet}catch{throw "MANIFEST_NETWORK_ERROR: $($_.Exception.Message)"}
         if([int]$response.StatusCode -eq 304){
             if(-not $cached){throw 'MANIFEST_INVALID_RESPONSE: received 304 without cached content.'}
             $manifestBytes=[IO.File]::ReadAllBytes($paths.Raw);$raw=[Text.Encoding]::UTF8.GetString($manifestBytes);$fetchedAt=[DateTimeOffset]::Parse([string]$cached.Metadata.fetchedAt);$hash=[string]$cached.Metadata.manifestHash
@@ -200,7 +182,7 @@ function Get-MmtlMinecraftVersionMetadata {
     } elseif($Offline){throw "CACHE_UNAVAILABLE: metadata cache for $($CatalogEntry.id) is unavailable offline."}
     else {
         if(-not (Test-MmtlMojangMetadataUri $sourceUrl)){throw 'METADATA_INVALID_URL: metadata URL is not an allowlisted HTTPS URL.'}
-        try{$response=if($HttpGet){& $HttpGet $sourceUrl @{} 30}else{Invoke-MmtlMetadataHttpGet -Uri $sourceUrl -TimeoutSeconds 30}}catch{throw "METADATA_NETWORK_ERROR: $($_.Exception.Message)"}
+        try{$response=Invoke-MmtlMetadataHttpGet -Uri $sourceUrl -AllowedHosts $script:MmtlMojangMetadataHosts -TimeoutSeconds 30 -HttpGet $HttpGet}catch{throw "METADATA_NETWORK_ERROR: $($_.Exception.Message)"}
         if([int]$response.StatusCode -lt 200 -or [int]$response.StatusCode -ge 300){throw "METADATA_NETWORK_ERROR: HTTP $($response.StatusCode) for $($CatalogEntry.id)."}
         $responseUri=if($response.PSObject.Properties['ResponseUri']){[string]$response.ResponseUri}else{''}
         if($responseUri -and -not (Test-MmtlMojangMetadataUri $responseUri)){throw 'METADATA_UNTRUSTED_REDIRECT: response host is not allowlisted.'}
