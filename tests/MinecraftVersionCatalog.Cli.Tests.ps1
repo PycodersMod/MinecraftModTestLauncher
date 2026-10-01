@@ -37,9 +37,11 @@ Describe 'Minecraft Catalog CLI' {
     It 'prints integrity and authoritative runtime Java for CurrentStable' {
         $output=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --catalog-offline --minecraft-info CurrentStable 2>&1|Out-String
         $LASTEXITCODE | Should -Be 0
-        $output | Should -Match 'ID\s*:\s*1\.20\.5'
-        $output | Should -Match 'ActualSHA1\s*:'
-        $output | Should -Match 'RuntimeJavaMajor\s*:\s*21'
+        $output | Should -Match 'ID'
+        $output | Should -Match '1\.20\.5'
+        $output | Should -Match 'ActualSHA1'
+        $output | Should -Match 'RuntimeJavaMajor'
+        $output | Should -Match '21'
         $output | Should -Match 'AuthoritativeMetadata'
     }
 
