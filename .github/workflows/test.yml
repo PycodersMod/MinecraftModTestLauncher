@@ -1,20 +1,48 @@
-name: Windows tests
+name: MMTL tests
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
 jobs:
-  test:
+  windows-tests:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - name: Install Pester
         shell: pwsh
-        run: Install-Module Pester -MinimumVersion 5.0 -Scope CurrentUser -Force
+        run: Install-Module Pester -MinimumVersion 5.0 -Scope CurrentUser -Force -SkipPublisherCheck
       - name: PowerShell syntax
         shell: pwsh
         run: Get-ChildItem -Recurse -Include *.ps1,*.psm1 | ForEach-Object { $tokens=$null; $errors=$null; [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$tokens,[ref]$errors) | Out-Null; if($errors){throw ($errors | Out-String)} }
-      - name: Pester
+      - name: Full Windows Pester suite
         shell: pwsh
         run: Invoke-Pester ./tests -CI
+
+  ubuntu-pure-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Pester
+        shell: pwsh
+        run: Install-Module Pester -MinimumVersion 5.0 -Scope CurrentUser -Force -SkipPublisherCheck
+      - name: PowerShell syntax
+        shell: pwsh
+        run: Get-ChildItem -Recurse -Include *.ps1,*.psm1 | ForEach-Object { $tokens=$null; $errors=$null; [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$tokens,[ref]$errors) | Out-Null; if($errors){throw ($errors | Out-String)} }
+      - name: Architecture and schema smoke only
+        shell: pwsh
+        run: Invoke-Pester -Path ./tests/Architecture.Tests.ps1,./tests/Schema.Tests.ps1 -CI
+
+  macos-pure-smoke:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Pester
+        shell: pwsh
+        run: Install-Module Pester -MinimumVersion 5.0 -Scope CurrentUser -Force -SkipPublisherCheck
+      - name: PowerShell syntax
+        shell: pwsh
+        run: Get-ChildItem -Recurse -Include *.ps1,*.psm1 | ForEach-Object { $tokens=$null; $errors=$null; [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$tokens,[ref]$errors) | Out-Null; if($errors){throw ($errors | Out-String)} }
+      - name: Architecture and schema smoke only
+        shell: pwsh
+        run: Invoke-Pester -Path ./tests/Architecture.Tests.ps1,./tests/Schema.Tests.ps1 -CI

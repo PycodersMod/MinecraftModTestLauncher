@@ -2,7 +2,15 @@
 
 Minecraft Java Edition 模组开发环境多实例测试启动器（MMTL），面向 Windows 10/11。支持 Forge、NeoForge、Fabric 的 Gradle 开发运行配置。
 
-PowerShell 7 优先；未安装 PowerShell 7 时，批处理入口和 Gradle Runner 回退到 Windows PowerShell 5.1。
+MMTL v2 的正式运行基线为 PowerShell 7。现有 Windows PowerShell 5.1 fallback 保留为旧版兼容前端（best effort）；新增 v2 架构能力不承诺完整兼容 5.1。
+
+## v2 架构演进状态
+
+**已实现（Phase A foundation）：**集中架构契约、平台/架构身份数据模型、Capability 与 Validation Level、独立 Artifact Trust 权限、Loader/Toolchain/Build System identity、LoaderStack、BuildJava/RuntimeJava 需求模型、provenance、Compatibility Matrix v1 和 Exception Registry JSON Schema，以及可读取的 Config v2 foundation。旧版配置仍可读取，未知配置字段保留。
+
+**计划中（未实现）：**Linux/macOS runtime 与进程管理、Mojang 在线 Version Catalog、Loader Provider v2、Quilt/历史 Loader 实际支持，以及跨平台实机验证。
+
+当前项目运行时仍为 Windows 10/11 实现。Phase A 的 Ubuntu/macOS CI 只验证 PowerShell 语法和纯架构/Schema 测试，不代表 Linux/macOS Launcher、Minecraft 或 GUI 已受支持。上游 Loader 元数据可用性也不等于 MMTL 已完成构建、服务端或客户端验证。
 
 ## 当前实现状态
 

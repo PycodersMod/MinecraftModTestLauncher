@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pycodersmod.github.io/MinecraftModTestLauncher/schemas/compatibility-matrix.schema.json",
+  "title": "MMTL Compatibility Matrix v1",
+  "description": "Records upstream provenance, a resolved target, capability and MMTL validation evidence separately.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "minecraft", "loaderStack", "toolchain", "buildSystem", "java", "target", "validation", "provenance", "notes"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "minecraft": {"$ref": "#/definitions/minecraft"},
+    "loaderStack": {"$ref": "#/definitions/loaderStack"},
+    "toolchain": {"$ref": "#/definitions/toolchain"},
+    "buildSystem": {"$ref": "#/definitions/buildSystem"},
+    "java": {"type": "object", "additionalProperties": false, "required": ["build", "runtime"], "properties": {"build": {"$ref": "#/definitions/javaRequirement"}, "runtime": {"$ref": "#/definitions/javaRequirement"}}},
+    "target": {"$ref": "#/definitions/target"},
+    "validation": {"$ref": "#/definitions/validation"},
+    "provenance": {"type": "array", "items": {"$ref": "#/definitions/provenance"}},
+    "notes": {"type": "array", "items": {"type": "string"}}
+  },
+  "definitions": {
+    "provenance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["sourceType", "url", "fetchedAt"],
+      "properties": {
+        "sourceType": {"enum": ["official", "archivedOfficial", "trustedArchive", "communityMirror", "unknown"]},
+        "url": {"type": "string", "format": "uri"},
+        "fetchedAt": {"type": "string", "format": "date-time"},
+        "hash": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"},
+        "archiveStatus": {"enum": ["active", "archived", "unverified", "unknown"]},
+        "notes": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "minecraft": {
+      "type": "object", "additionalProperties": false, "required": ["id", "channel", "releaseTime", "provenance"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "channel": {"enum": ["release", "snapshot", "prerelease", "rc"]},
+        "releaseTime": {"type": "string", "format": "date-time"},
+        "provenance": {"type": "array", "minItems": 1, "items": {"$ref": "#/definitions/provenance"}}
+      }
+    },
+    "loaderIdentity": {
+      "type": "object", "additionalProperties": false, "required": ["id", "version", "role", "provenance"],
+      "properties": {
+        "id": {"enum": ["Forge", "Fabric", "NeoForge", "Quilt", "LegacyFabric", "LiteLoader", "Rift", "ModLoader", "ModLoaderMP", "JarMod"]},
+        "version": {"type": "string", "minLength": 1},
+        "role": {"enum": ["Primary", "Overlay"]},
+        "provenance": {"type": "array", "minItems": 1, "items": {"$ref": "#/definitions/provenance"}}
+      }
+    },
+    "loaderStack": {
+      "type": "object", "additionalProperties": false, "required": ["primaryLoader", "overlayLoaders"],
+      "properties": {
+        "primaryLoader": {"allOf": [{"$ref": "#/definitions/loaderIdentity"}, {"properties": {"role": {"const": "Primary"}}}]},
+        "overlayLoaders": {"type": "array", "items": {"allOf": [{"$ref": "#/definitions/loaderIdentity"}, {"properties": {"role": {"const": "Overlay"}}}]}}
+      }
+    },
+    "toolchain": {
+      "type": "object", "additionalProperties": false, "required": ["id"],
+      "properties": {
+        "id": {"enum": ["ForgeGradle", "FabricLoom", "NeoGradle", "ModDevGradle", "Ploceus", "Unknown", "Custom"]},
+        "version": {"type": "string"},
+        "ecosystem": {"type": "string", "description": "Optional ecosystem context, for example Ornithe; not a Loader identity."}
+      }
+    },
+    "buildSystem": {
+      "type": "object", "additionalProperties": false, "required": ["id"],
+      "properties": {"id": {"enum": ["GradleWrapper", "Custom", "Legacy"]}, "version": {"type": "string"}}
+    },
+    "javaRequirement": {
+      "type": "object", "additionalProperties": false, "required": ["major", "source", "confidence"],
+      "properties": {
+        "major": {"type": "integer", "minimum": 1},
+        "exactVersion": {"type": "string"},
+        "home": {"type": "string"},
+        "source": {"type": "string", "minLength": 1},
+        "confidence": {"enum": ["High", "Medium", "Low", "Unknown"]},
+        "vendor": {"type": "string"},
+        "arch": {"enum": ["x64", "ARM64"]}
+      }
+    },
+    "target": {
+      "type": "object", "additionalProperties": false, "required": ["os", "arch", "capability"],
+      "properties": {
+        "os": {"enum": ["Windows", "Linux", "MacOS"]},
+        "arch": {"enum": ["x64", "ARM64"]},
+        "capability": {"enum": ["Native", "Compatibility", "BuildOnly", "Unsupported"]}
+      }
+    },
+    "validation": {
+      "type": "object", "additionalProperties": false, "required": ["level", "result", "lastVerified", "evidence"],
+      "properties": {
+        "level": {"enum": ["CATALOGUED", "RESOLVED", "BUILD_VERIFIED", "SERVER_VERIFIED", "CLIENT_LAUNCH_VERIFIED", "INTEGRATION_VERIFIED"]},
+        "result": {"enum": ["UNVERIFIED", "PASSED", "FAILED", "STALE"]},
+        "lastVerified": {"type": ["string", "null"], "format": "date-time"},
+        "evidence": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

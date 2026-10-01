@@ -1,9 +1,15 @@
 {
+  "configVersion": 2,
   "defaultProfile": "single-test",
   "javaHomes": {
     "17": "C:/Java/jdk-17",
     "21": "C:/Java/jdk-21",
     "25": "C:/Java/jdk-25"
+  },
+  "javaHomesByPlatform": {
+    "Windows": {},
+    "Linux": {},
+    "MacOS": {}
   },
   "runtimeRoot": "%LOCALAPPDATA%/MinecraftModTestLauncher",
   "profiles": {
