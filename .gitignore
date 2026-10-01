@@ -9,3 +9,4 @@ logs/
 *.tmp
 testResults.xml
 testResults.xml
+.worktrees/
