@@ -14,10 +14,11 @@
   "definitions": {
     "entry": {
       "type": "object",
-      "required": ["loaderId", "availability", "providerStatus", "sourceClass", "trustClass", "transportSecurity", "maintenanceState", "cacheStatus", "candidateCount", "notes"],
+      "required": ["loaderId", "availability", "reasonCode", "providerStatus", "sourceClass", "trustClass", "transportSecurity", "maintenanceState", "cacheStatus", "candidateCount", "notes"],
       "properties": {
         "loaderId": {"enum": ["LegacyFabric", "OrnitheLoader", "LiteLoader", "Rift", "ModLoader", "ModLoaderMP", "JarMod"]},
         "availability": {"enum": ["Available", "Unavailable", "Unknown", "Manual"]},
+        "reasonCode": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]+$"},
         "providerStatus": {"type": "string"},
         "sourceClass": {"enum": ["ActiveOfficial", "HistoricalOfficial", "VerifiedCommunityArchive", "VerifiedCommunitySource", "ManualArtifact", "UnknownHistorical"]},
         "trustClass": {"enum": ["TrustedOfficial", "VerifiedHistorical", "UnverifiedHistorical"]},

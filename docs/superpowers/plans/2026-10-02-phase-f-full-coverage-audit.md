@@ -63,12 +63,12 @@ Expected verification: `Invoke-Pester -Path ./tests/JavaEvidence.Tests.ps1,./tes
 - Keep source-specific functions unchanged where possible; add a normalized loader/release state projection containing `availability`, `reasonCode`, `source`, `sourceClass`, `cacheStatus`, `lastChecked`, `notes`, and `provenance`.
 - Candidate-detail probes are bounded to missing/contradictory cases, earliest/latest, era transitions, required historical anchors, and P0 modern releases; global metadata drives the complete matrix.
 
-- [ ] Add exact-ID mapping tests for stable versus prerelease Fabric, all current NeoForge naming eras including 1.20.1 transition and 26.x, and Quilt candidate-only semantics.
-- [ ] Add red tests for “Ornithe game exists but no loader candidate”, Legacy Fabric provider outage aggregation, LiteLoader completeness semantics, Rift original/community distinction, and archive no-record semantics.
-- [ ] Verify current official source formats and timestamps live; Legacy Fabric and Ornithe document a full `/v2/versions` database, so prefer one bounded full-index request when usable; pin only source repositories or formats, never a current full-version snapshot.
-- [ ] Implement explicit per-provider mapping and reason codes; zero silent NeoForge upstream versions, preserve Legacy Fabric outage as a provider-level gap, and avoid promoting Ploceus to OrnitheLoader.
-- [ ] Run provider mapping tests and existing provider tests; document any source that cannot establish exhaustive absence as Unknown/HISTORICAL_SOURCE_NO_RECORD.
-- [ ] Commit as `fix: 明确全版本 provider 映射语义`.
+- [x] Add exact-ID mapping tests for stable versus prerelease Fabric, all current NeoForge naming eras including 1.20.1 transition and 26.x, and Quilt candidate-only semantics.
+- [x] Add red tests for “Ornithe game exists but no loader candidate”, Legacy Fabric provider outage aggregation, LiteLoader completeness semantics, Rift original/community distinction, and archive no-record semantics.
+- [x] Verify current official source formats and timestamps live; Legacy Fabric and Ornithe document a full `/v2/versions` database, so prefer one bounded full-index request when usable; pin only source repositories or formats, never a current full-version snapshot.
+- [x] Implement explicit historical-provider reason codes; preserve Legacy Fabric outage as a provider-level gap, and avoid promoting Ploceus to OrnitheLoader. Static curated archive absences remain Unknown.
+- [x] Run provider mapping tests and existing provider tests; document any source that cannot establish exhaustive absence as Unknown/HISTORICAL_SOURCE_NO_RECORD.
+- [x] Commit as `fix: 明确全版本 provider 映射语义`.
 
 Expected verification: `Invoke-Pester -Path ./tests/CoverageProviderMapping.Tests.ps1,./tests/ForgeProvider.Tests.ps1,./tests/FabricProvider.Tests.ps1,./tests/NeoForgeProvider.Tests.ps1,./tests/QuiltProvider.Tests.ps1,./tests/HistoricalProviders.Tests.ps1 -CI` reports zero failures and fixtures prove exact ID matching.
 

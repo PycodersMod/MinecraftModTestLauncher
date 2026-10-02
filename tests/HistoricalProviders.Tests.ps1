@@ -90,7 +90,8 @@ Describe 'Historical providers and provenance' {
         $offline={throw 'fixture network failure'}
         $index=Get-MmtlHistoricalLoaderAvailability -MinecraftId '1.14.4' -Catalog $script:catalog -RuntimeRoot (Join-Path $TestDrive 'availability-empty') -Offline -HttpGet $offline
         @($index.entries).Count | Should -Be 7
-        @($index.entries | Where-Object {$_.loaderId -in @('Rift','ModLoader','ModLoaderMP')} | Where-Object availability -ne 'Unavailable').Count | Should -Be 0
+        @($index.entries | Where-Object {$_.loaderId -in @('Rift','ModLoader','ModLoaderMP')} | Where-Object availability -ne 'Unknown').Count | Should -Be 0
+        @($index.entries | Where-Object {$_.loaderId -in @('Rift','ModLoader','ModLoaderMP')} | Where-Object reasonCode -ne 'HISTORICAL_SOURCE_NO_RECORD').Count | Should -Be 0
         $json=$index|ConvertTo-Json -Depth 20 -Compress
         (Test-Json -Json $json -SchemaFile (Join-Path $script:repoRoot 'schemas/historical-availability.schema.json')) | Should -BeTrue
     }
@@ -122,6 +123,22 @@ Describe 'Historical providers and provenance' {
         $legacy.providerStatus | Should -BeExactly 'Unavailable'
         $legacy.candidateCount | Should -Be 0
         @($legacy.notes | Where-Object {$_}).Count | Should -BeGreaterThan 0
+    }
+
+    It 'does not claim an Ornithe loader candidate from game support alone' {
+        $index=Get-MmtlHistoricalLoaderAvailability -MinecraftId '1.8.9' -Catalog $script:catalog -RuntimeRoot (Join-Path $TestDrive 'ornithe-game-without-loader') -HttpGet $script:http
+        $ornithe=$index.entries | Where-Object loaderId -eq 'OrnitheLoader'
+        $ornithe.availability | Should -BeExactly 'Unavailable'
+        $ornithe.reasonCode | Should -BeExactly 'GAME_VERSION_HAS_NO_ORNITHE_LOADER'
+        $ornithe.candidateCount | Should -Be 0
+    }
+
+    It 'uses the complete LiteLoader manifest to explain a version absent from its index' {
+        $index=Get-MmtlHistoricalLoaderAvailability -MinecraftId '1.14.4' -Catalog $script:catalog -RuntimeRoot (Join-Path $TestDrive 'liteloader-complete-index') -HttpGet $script:http
+        $lite=$index.entries | Where-Object loaderId -eq 'LiteLoader'
+        $lite.availability | Should -BeExactly 'Unavailable'
+        $lite.reasonCode | Should -BeExactly 'LITELOADER_VERSION_NOT_LISTED'
+        $lite.providerStatus | Should -BeExactly 'Available'
     }
 
     It 'preserves community Rift provenance in the historical availability index' {
