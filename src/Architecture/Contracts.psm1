@@ -14,6 +14,7 @@ $script:MmtlArchitectureContract = [ordered]@{
     provenanceTypes = @('official', 'archivedOfficial', 'trustedArchive', 'communityMirror', 'unknown')
     archiveStatuses = @('active', 'archived', 'unverified', 'unknown')
     confidences = @('High', 'Medium', 'Low', 'Unknown')
+    javaRequirementKinds = @('Minimum', 'Preferred', 'Exact', 'Unknown')
     loaders = @(
         [pscustomobject]@{ id = 'Forge'; displayName = 'Forge'; category = 'Mainstream'; historical = $false; providerId = 'Forge' }
         [pscustomobject]@{ id = 'Fabric'; displayName = 'Fabric'; category = 'Mainstream'; historical = $false; providerId = 'Fabric' }
@@ -54,7 +55,7 @@ function Get-MmtlArchitectureContract {
 function Test-MmtlArchitectureValue {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory)][ValidateSet('OS', 'Architecture', 'Capability', 'ValidationLevel', 'ValidationResult', 'ArtifactTrustClass', 'ArtifactPermission', 'ProvenanceType', 'ArchiveStatus', 'Confidence', 'Loader', 'Toolchain', 'BuildSystem', 'HistoricalSourceClass', 'HistoricalTransport', 'HistoricalIntegrityAlgorithm', 'HistoricalIntegrityStrength', 'HistoricalMaintenanceState')][string]$Kind,
+        [Parameter(Mandatory)][ValidateSet('OS', 'Architecture', 'Capability', 'ValidationLevel', 'ValidationResult', 'ArtifactTrustClass', 'ArtifactPermission', 'ProvenanceType', 'ArchiveStatus', 'Confidence', 'JavaRequirementKind', 'Loader', 'Toolchain', 'BuildSystem', 'HistoricalSourceClass', 'HistoricalTransport', 'HistoricalIntegrityAlgorithm', 'HistoricalIntegrityStrength', 'HistoricalMaintenanceState')][string]$Kind,
         [Parameter(Mandatory)][string]$Value
     )
     $values = switch ($Kind) {
@@ -68,6 +69,7 @@ function Test-MmtlArchitectureValue {
         'ProvenanceType' { $script:MmtlArchitectureContract.provenanceTypes }
         'ArchiveStatus' { $script:MmtlArchitectureContract.archiveStatuses }
         'Confidence' { $script:MmtlArchitectureContract.confidences }
+        'JavaRequirementKind' { $script:MmtlArchitectureContract.javaRequirementKinds }
         'Loader' { @($script:MmtlArchitectureContract.loaders | ForEach-Object id) }
         'Toolchain' { @($script:MmtlArchitectureContract.toolchains | ForEach-Object id) }
         'BuildSystem' { @($script:MmtlArchitectureContract.buildSystems | ForEach-Object id) }
@@ -133,6 +135,7 @@ function New-MmtlJavaRequirement {
     param(
         [Parameter(Mandatory)][ValidateSet('BuildJava', 'RuntimeJava')][string]$Purpose,
         [Parameter(Mandatory)][ValidateRange(1, 2147483647)][int]$Major,
+        [ValidateSet('Minimum', 'Preferred', 'Exact', 'Unknown')][string]$RequirementKind = 'Unknown',
         [Parameter(Mandatory)][ValidateNotNullOrEmpty()][string]$Source,
         [Parameter(Mandatory)][ValidateSet('High', 'Medium', 'Low', 'Unknown')][string]$Confidence,
         [string]$ExactVersion,
@@ -143,12 +146,59 @@ function New-MmtlJavaRequirement {
     return [pscustomobject][ordered]@{
         purpose = $Purpose
         major = $Major
+        requirementKind = $RequirementKind
+        minimumMajor = if($RequirementKind -eq 'Minimum'){$Major}else{$null}
+        preferredMajor = if($RequirementKind -eq 'Preferred'){$Major}else{$null}
+        exactMajor = if($RequirementKind -eq 'Exact'){$Major}else{$null}
         exactVersion = $ExactVersion
         home = $Home
         source = $Source
         confidence = $Confidence
         vendor = $Vendor
         arch = $Arch
+    }
+}
+
+function New-MmtlBuildEvidence {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)][ValidateNotNullOrEmpty()][string]$MinecraftId,
+        [Parameter(Mandatory)][ValidateNotNullOrEmpty()][string]$LoaderId,
+        [Parameter(Mandatory)][ValidateNotNullOrEmpty()][string]$LoaderVersion,
+        [Parameter(Mandatory)]$Toolchain,
+        [Parameter(Mandatory)]$Platform,
+        [Parameter(Mandatory)]$BuildJavaRequirement,
+        [Parameter(Mandatory)]$ObservedBuildJava,
+        [Parameter(Mandatory)][ValidateRange(1,2147483647)][int]$CompilerTargetMajor,
+        [string]$CompilerTargetSource='ProjectCompilerConfiguration',
+        [Parameter(Mandatory)][ValidateSet('PASSED','FAILED','UNVERIFIED','STALE')][string]$Result,
+        [string]$ArtifactSha256,
+        [Parameter(Mandatory)][DateTimeOffset]$VerifiedAt,
+        [Parameter(Mandatory)]$FixtureProvenance
+    )
+    if(-not (Test-MmtlArchitectureValue -Kind Loader -Value $LoaderId)){throw "Unknown build evidence Loader: $LoaderId"}
+    if(-not $Toolchain.PSObject.Properties['id'] -or -not (Test-MmtlArchitectureValue -Kind Toolchain -Value ([string]$Toolchain.id))){throw 'Build evidence requires a registered toolchain identity.'}
+    if(-not $Platform.PSObject.Properties['os'] -or -not $Platform.PSObject.Properties['arch'] -or -not (Test-MmtlArchitectureValue -Kind OS -Value ([string]$Platform.os)) -or -not (Test-MmtlArchitectureValue -Kind Architecture -Value ([string]$Platform.arch))){throw 'Build evidence requires a valid OS and architecture.'}
+    if(-not $BuildJavaRequirement.PSObject.Properties['major'] -or [int]$BuildJavaRequirement.major -lt 1 -or -not $BuildJavaRequirement.PSObject.Properties['source'] -or [string]::IsNullOrWhiteSpace([string]$BuildJavaRequirement.source)){throw 'Build evidence requires an explicit BuildJava requirement.'}
+    if(-not $ObservedBuildJava.PSObject.Properties['major'] -or [int]$ObservedBuildJava.major -lt 1 -or -not $ObservedBuildJava.PSObject.Properties['exactVersion'] -or [string]::IsNullOrWhiteSpace([string]$ObservedBuildJava.exactVersion) -or -not $ObservedBuildJava.PSObject.Properties['vendor'] -or [string]::IsNullOrWhiteSpace([string]$ObservedBuildJava.vendor) -or -not $ObservedBuildJava.PSObject.Properties['os'] -or -not $ObservedBuildJava.PSObject.Properties['arch'] -or -not (Test-MmtlArchitectureValue -Kind OS -Value ([string]$ObservedBuildJava.os)) -or -not (Test-MmtlArchitectureValue -Kind Architecture -Value ([string]$ObservedBuildJava.arch))){throw 'ObservedBuildJava requires valid major, exactVersion, vendor, OS, and architecture.'}
+    if([string]$ObservedBuildJava.os -ne [string]$Platform.os -or [string]$ObservedBuildJava.arch -ne [string]$Platform.arch){throw 'Observed Java platform must match the build platform.'}
+    if(-not $FixtureProvenance.PSObject.Properties['sourceUrl'] -or -not $FixtureProvenance.PSObject.Properties['commit'] -or -not $FixtureProvenance.PSObject.Properties['license']){throw 'Build evidence requires source fixture provenance, commit, and license.'}
+    if($ArtifactSha256 -and $ArtifactSha256 -notmatch '^(?i:[0-9a-f]{64})$'){throw 'Artifact SHA-256 must contain exactly 64 hexadecimal characters.'}
+    if($Result -eq 'PASSED' -and -not $ArtifactSha256){throw 'Passed build evidence requires the artifact SHA-256.'}
+    if($Result -eq 'PASSED' -and $BuildJavaRequirement.requirementKind -eq 'Minimum' -and [int]$ObservedBuildJava.major -lt [int]$BuildJavaRequirement.minimumMajor){throw 'Observed build JVM is below the required minimum.'}
+    [pscustomobject][ordered]@{
+        minecraftId=$MinecraftId
+        loaderId=$LoaderId
+        loaderVersion=$LoaderVersion
+        toolchain=$Toolchain
+        platform=[pscustomobject][ordered]@{os=[string]$Platform.os;arch=[string]$Platform.arch;isWSL=[bool]$Platform.isWSL}
+        buildJavaRequirement=$BuildJavaRequirement
+        observedBuildJava=$ObservedBuildJava
+        compilerTarget=[pscustomobject][ordered]@{major=$CompilerTargetMajor;source=$CompilerTargetSource}
+        result=$Result
+        artifactSha256=if($ArtifactSha256){$ArtifactSha256.ToLowerInvariant()}else{$null}
+        verifiedAt=$VerifiedAt.ToUniversalTime().ToString('o')
+        fixtureProvenance=$FixtureProvenance
     }
 }
 
@@ -252,4 +302,4 @@ function New-MmtlBuildSystemContext {
     return [pscustomobject][ordered]@{ id = $Id; version = $Version }
 }
 
-Export-ModuleMember -Function Get-MmtlArchitectureContract,Test-MmtlArchitectureValue,New-MmtlPlatformContext,Get-MmtlPlatformContext,New-MmtlJavaRequirement,New-MmtlProvenance,Resolve-MmtlArtifactTrust,New-MmtlLoaderStack,New-MmtlToolchainContext,New-MmtlBuildSystemContext
+Export-ModuleMember -Function Get-MmtlArchitectureContract,Test-MmtlArchitectureValue,New-MmtlPlatformContext,Get-MmtlPlatformContext,New-MmtlJavaRequirement,New-MmtlBuildEvidence,New-MmtlProvenance,Resolve-MmtlArtifactTrust,New-MmtlLoaderStack,New-MmtlToolchainContext,New-MmtlBuildSystemContext

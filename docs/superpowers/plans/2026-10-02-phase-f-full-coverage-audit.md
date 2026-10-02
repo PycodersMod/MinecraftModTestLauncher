@@ -44,11 +44,11 @@
 - Preserve the existing `New-MmtlJavaRequirement` fields for compatibility; add `requirementKind` with `Minimum`, `Preferred`, `Exact`, `Unknown` semantics only where existing values can be classified from evidence.
 - Define build evidence with `minecraftId`, `loaderId`, `loaderVersion`, `toolchain`, `platform`, `buildJavaRequirement`, `observedBuildJava`, `compilerTarget`, `result`, `artifactSha256`, `verifiedAt`, and fixture provenance.
 
-- [ ] Record test asserting Gradle 9 minimum Java 17 can pair with observed JDK 25 and compiler target 8 without rewriting the requirement.
-- [ ] Run the new test and confirm the current model cannot represent the distinction or loses a required field.
-- [ ] Implement the smallest backward-compatible contract/schema extension and explicit WSL JDK correction in the local Phase E report.
-- [ ] Run Java evidence, Architecture, Schema, and historical tests; validate all five `/opt/java/oracle/jdk-{8,16,17,21,25}` java/javac absolute paths remain unmodified and callable.
-- [ ] Commit as `feat: 区分 Java 需求与实测构建证据`.
+- [x] Record test asserting Gradle 9 minimum Java 17 can pair with observed JDK 25 and compiler target 8 without rewriting the requirement.
+- [x] Run the new test and confirm the current model cannot represent the distinction or loses a required field.
+- [x] Implement the smallest backward-compatible contract/schema extension and explicit WSL JDK correction in the local Phase E report.
+- [x] Run Java evidence, Architecture, Schema, and historical tests; validate all five `/opt/java/oracle/jdk-{8,16,17,21,25}` java/javac absolute paths remain unmodified and callable.
+- [x] Commit as `feat: 区分 Java 需求与实测构建证据`.
 
 Expected verification: `Invoke-Pester -Path ./tests/JavaEvidence.Tests.ps1,./tests/Architecture.Tests.ps1,./tests/Schema.Tests.ps1,./tests/HistoricalAdapters.Tests.ps1 -CI` reports zero failures; each WSL Java binary reports its expected major and javac exits 0.
 

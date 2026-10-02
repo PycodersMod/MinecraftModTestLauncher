@@ -43,7 +43,7 @@
     "loaderIdentity": {
       "type": "object", "additionalProperties": false, "required": ["id", "version", "role", "provenance"],
       "properties": {
-        "id": {"enum": ["Forge", "Fabric", "NeoForge", "Quilt", "LegacyFabric", "LiteLoader", "Rift", "ModLoader", "ModLoaderMP", "JarMod"]},
+        "id": {"enum": ["Forge", "Fabric", "NeoForge", "Quilt", "LegacyFabric", "OrnitheLoader", "LiteLoader", "Rift", "ModLoader", "ModLoaderMP", "JarMod"]},
         "version": {"type": "string", "minLength": 1},
         "role": {"enum": ["Primary", "Overlay"]},
         "provenance": {"type": "array", "minItems": 1, "items": {"$ref": "#/definitions/provenance"}}
@@ -59,7 +59,7 @@
     "toolchain": {
       "type": "object", "additionalProperties": false, "required": ["id"],
       "properties": {
-        "id": {"enum": ["ForgeGradle", "FabricLoom", "NeoGradle", "ModDevGradle", "Ploceus", "Unknown", "Custom"]},
+        "id": {"enum": ["ForgeGradle", "FabricLoom", "NeoGradle", "ModDevGradle", "QuiltLoom", "Ploceus", "LegacyLooming", "Unknown", "Custom"]},
         "version": {"type": "string"},
         "ecosystem": {"type": "string", "description": "Optional ecosystem context, for example Ornithe; not a Loader identity."}
       }
@@ -71,11 +71,17 @@
     "javaRequirement": {
       "type": "object", "additionalProperties": false, "required": ["major", "source", "confidence"],
       "properties": {
-        "major": {"type": "integer", "minimum": 1},
+        "major": {"type": ["integer", "null"], "minimum": 1},
         "exactVersion": {"type": "string"},
         "home": {"type": "string"},
         "source": {"type": "string", "minLength": 1},
         "confidence": {"enum": ["High", "Medium", "Low", "Unknown"]},
+        "requirementKind": {"enum": ["Minimum", "Preferred", "Exact", "Unknown", "AuthoritativeMetadata", "OfficialReleaseRequirement", "CompatibilityFallback", "ProjectOverride", "ToolchainRequirement"]},
+        "requirementSourceKind": {"type": "string"},
+        "minimumMajor": {"type": ["integer", "null"], "minimum": 1},
+        "preferredMajor": {"type": ["integer", "null"], "minimum": 1},
+        "exactMajor": {"type": ["integer", "null"], "minimum": 1},
+        "purpose": {"enum": ["BuildJava", "RuntimeJava"]},
         "vendor": {"type": "string"},
         "arch": {"enum": ["x64", "ARM64"]}
       }
@@ -90,12 +96,32 @@
     },
     "validation": {
       "type": "object", "additionalProperties": false, "required": ["level", "result", "lastVerified", "evidence"],
-      "properties": {
+        "properties": {
         "level": {"enum": ["CATALOGUED", "RESOLVED", "BUILD_VERIFIED", "SERVER_VERIFIED", "CLIENT_LAUNCH_VERIFIED", "INTEGRATION_VERIFIED"]},
         "result": {"enum": ["UNVERIFIED", "PASSED", "FAILED", "STALE"]},
         "lastVerified": {"type": ["string", "null"], "format": "date-time"},
-        "evidence": {"type": "array", "items": {"type": "string"}}
+          "evidence": {"type": "array", "items": {"type": "string"}},
+          "buildEvidence": {"type": "array", "items": {"$ref": "#/definitions/buildEvidence"}}
       }
+    },
+    "buildEvidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["minecraftId", "loaderId", "loaderVersion", "toolchain", "platform", "buildJavaRequirement", "observedBuildJava", "compilerTarget", "result", "artifactSha256", "verifiedAt", "fixtureProvenance"],
+      "properties": {
+        "minecraftId": {"type": "string", "minLength": 1},
+        "loaderId": {"enum": ["Forge", "Fabric", "NeoForge", "Quilt", "LegacyFabric", "OrnitheLoader", "LiteLoader", "Rift", "ModLoader", "ModLoaderMP", "JarMod"]},
+        "loaderVersion": {"type": "string", "minLength": 1},
+        "toolchain": {"$ref": "#/definitions/toolchain"},
+        "platform": {"type": "object", "additionalProperties": false, "required": ["os", "arch", "isWSL"], "properties": {"os": {"enum": ["Windows", "Linux", "MacOS"]}, "arch": {"enum": ["x64", "ARM64"]}, "isWSL": {"type": "boolean"}}},
+        "buildJavaRequirement": {"$ref": "#/definitions/javaRequirement"},
+        "observedBuildJava": {"type": "object", "additionalProperties": false, "required": ["major", "exactVersion", "vendor", "os", "arch"], "properties": {"major": {"type": "integer", "minimum": 1}, "exactVersion": {"type": "string", "minLength": 1}, "vendor": {"type": "string", "minLength": 1}, "os": {"enum": ["Windows", "Linux", "MacOS"]}, "arch": {"enum": ["x64", "ARM64"]}}},
+        "compilerTarget": {"type": "object", "additionalProperties": false, "required": ["major", "source"], "properties": {"major": {"type": "integer", "minimum": 1}, "source": {"type": "string", "minLength": 1}}},
+        "result": {"enum": ["PASSED", "FAILED", "UNVERIFIED", "STALE"]},
+        "artifactSha256": {"type": ["string", "null"], "pattern": "^[a-fA-F0-9]{64}$"},
+        "verifiedAt": {"type": "string", "format": "date-time"},
+        "fixtureProvenance": {"type": "object", "additionalProperties": false, "required": ["sourceUrl", "commit", "license"], "properties": {"sourceUrl": {"type": "string", "format": "uri"}, "commit": {"type": "string", "pattern": "^[a-fA-F0-9]{40}$"}, "license": {"type": "string", "minLength": 1}}}
+      },
+      "allOf": [{"if": {"properties": {"result": {"const": "PASSED"}}}, "then": {"properties": {"artifactSha256": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"}}}}]
     }
   }
 }
