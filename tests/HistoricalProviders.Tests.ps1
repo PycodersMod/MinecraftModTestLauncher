@@ -22,6 +22,13 @@ BeforeAll {
 }
 
 Describe 'Historical providers and provenance' {
+    It 'reports unavailable providers cleanly when every official endpoint is offline' {
+        $offline={throw 'fixture network failure'}
+        $legacy=Get-MmtlLegacyFabricProviderSnapshot -RuntimeRoot (Join-Path $TestDrive 'legacy-down') -HttpGet $offline
+        $ornithe=Get-MmtlOrnitheProviderSnapshot -RuntimeRoot (Join-Path $TestDrive 'ornithe-down') -HttpGet $offline
+        $legacy.providerStatus | Should -BeExactly 'Unavailable';@($legacy.supportedVersions).Count | Should -Be 0
+        $ornithe.providerStatus | Should -BeExactly 'Unavailable';@($ornithe.supportedVersions).Count | Should -Be 0
+    }
     It 'maps only Ornithe 1.0+ game IDs present in the Mojang release catalog and preserves loader/mappings context' {
         $snapshot = Get-MmtlOrnitheProviderSnapshot -RuntimeRoot (Join-Path $TestDrive 'ornithe') -HttpGet $script:http
         $coverage = Get-MmtlOrnitheReleaseCoverage -Catalog $script:catalog -Snapshot $snapshot

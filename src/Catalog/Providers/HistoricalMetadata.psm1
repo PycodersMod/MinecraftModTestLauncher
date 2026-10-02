@@ -101,6 +101,7 @@ function Get-MmtlHistoricalMetadataDocument {
                 if (-not $cached) { throw 'METADATA_INVALID_RESPONSE: HTTP 304 without a cache.' }
                 $bytes = [byte[]]$cached.bytes
                 $fetchedAt = [DateTimeOffset]::Parse([string]$cached.fetchedAt)
+                $mergedHeaders=@{};if($cached.etag){$mergedHeaders.ETag=[string]$cached.etag};if($cached.lastModified){$mergedHeaders.'Last-Modified'=[string]$cached.lastModified};if($response.Headers -is [Collections.IDictionary]){foreach($key in $response.Headers.Keys){$mergedHeaders[[string]$key]=$response.Headers[$key]}};$response.Headers=$mergedHeaders
             } elseif ([int]$response.StatusCode -ge 200 -and [int]$response.StatusCode -lt 300) {
                 $bytes = [byte[]]$response.Bytes
                 $fetchedAt = $now

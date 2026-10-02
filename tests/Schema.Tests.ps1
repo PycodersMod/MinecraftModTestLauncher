@@ -7,6 +7,7 @@ BeforeAll {
     $script:configSchema = Join-Path $script:repoRoot 'schemas/launcher-config.schema.json'
     $script:catalogSchema = Join-Path $script:repoRoot 'schemas/minecraft-version-catalog.schema.json'
     $script:availabilitySchema = Join-Path $script:repoRoot 'schemas/loader-availability.schema.json'
+    $script:historicalAvailabilitySchema = Join-Path $script:repoRoot 'schemas/historical-availability.schema.json'
     $script:provenance = @{
         sourceType = 'archivedOfficial'
         url = 'https://example.invalid/archive'
@@ -150,5 +151,14 @@ Describe 'MMTL v2 JSON Schemas' {
         (Test-Json -Json ($index|ConvertTo-Json -Depth 20 -Compress) -SchemaFile $script:availabilitySchema) | Should -BeTrue
         $index.entries[0].loaders.Forge.availability='BUILD_VERIFIED'
         (Test-Json -Json ($index|ConvertTo-Json -Depth 20 -Compress) -SchemaFile $script:availabilitySchema -ErrorAction SilentlyContinue) | Should -BeFalse
+    }
+
+    It 'Historical Availability schema keeps manual artifacts separate from remote availability' {
+        $index=@{schemaVersion=1;minecraftId='1.2.5';scope='Historical';generatedAt='2026-10-02T00:00:00Z';entries=@(@{loaderId='JarMod';availability='Manual';providerStatus='ManualOnly';sourceClass='ManualArtifact';trustClass='UnverifiedHistorical';transportSecurity='LocalManual';maintenanceState='Unknown';cacheStatus='NotApplicable';source=$null;candidateCount=0;notes=@('Requires user supplied artifact.')})}
+        (Test-Json -Json ($index|ConvertTo-Json -Depth 10 -Compress) -SchemaFile $script:historicalAvailabilitySchema) | Should -BeTrue
+        $index.entries[0].availability='Available'
+        (Test-Json -Json ($index|ConvertTo-Json -Depth 10 -Compress) -SchemaFile $script:historicalAvailabilitySchema) | Should -BeTrue
+        $index.entries[0].sourceClass='TrustedOfficial'
+        (Test-Json -Json ($index|ConvertTo-Json -Depth 10 -Compress) -SchemaFile $script:historicalAvailabilitySchema -ErrorAction SilentlyContinue) | Should -BeFalse
     }
 }

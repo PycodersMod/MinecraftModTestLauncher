@@ -11,7 +11,7 @@ $configFileIndex=[Array]::IndexOf($Arguments,'--config-file')
 if($configFileIndex -ge 0){if($configFileIndex+1 -ge $Arguments.Count){throw '--config-file 缺少路径。'};$configPath=[IO.Path]::GetFullPath([string]$Arguments[$configFileIndex+1])}
 $portable=($Arguments -contains '--portable') -and -not ($configPath -and (Test-Path $configPath) -and (Read-MmtlConfig -Path $configPath).runtimeRoot)
 if($Arguments -contains '--help' -or $Arguments -contains '-h'){
-    Write-Host 'Minecraft Mod Test Launcher';Write-Host '用法：launcher.cmd / launcher.sh [--validate|--dry-run|--build|--launch] [--profile NAME]';Write-Host 'Catalog：--list-minecraft-versions | --minecraft-info <id|CurrentStable> | --refresh-catalog';Write-Host 'Catalog cache：--catalog-offline（仅影响 Catalog，不改变 Gradle Offline）';Write-Host 'Session：--list-sessions | --stop ID | --clean-session ID';Write-Host '运行目录：--portable';Write-Host '交互模式：不传参数；--config-file 仅供临时配置调用。';exit 0
+    Write-Host 'Minecraft Mod Test Launcher';Write-Host '用法：launcher.cmd / launcher.sh [--validate|--dry-run|--build|--launch] [--profile NAME]';Write-Host 'Catalog：--list-minecraft-versions | --minecraft-info <id|CurrentStable> | --refresh-catalog';Write-Host 'Loaders：--list-loaders <mc> [--include-historical] | --loader-info <mc> <loader>';Write-Host 'Manual JarMod: --loader-info <mc> JarMod --jar-mod-artifact <path> --patch-strategy <name> (plan only)';Write-Host 'Historical providers use HTTPS metadata/cache; HTTP-only artifacts are never auto-executed.';Write-Host 'Catalog cache：--catalog-offline（仅影响 Catalog，不改变 Gradle Offline）';Write-Host 'Session：--list-sessions | --stop ID | --clean-session ID';Write-Host '运行目录：--portable';Write-Host '交互模式：不传参数；--config-file 仅供临时配置调用。';exit 0
 }
 $config=if(Test-Path $configPath){Read-MmtlConfig -Path $configPath}else{$null}
 $runtimeConfigured=if($config -and $config.runtimeRoot){[string]$config.runtimeRoot}else{''}
@@ -23,23 +23,41 @@ if($platform.OS -in @('Linux','MacOS') -and $runtimeConfigured -match '^%LOCALAP
 }
 $catalogOffline=$Arguments -contains '--catalog-offline'
 $loaderOffline=$Arguments -contains '--loader-offline'
+$includeHistorical=$Arguments -contains '--include-historical' -or $Arguments -contains '--loader-scope-all'
 $listLoadersIndex=[Array]::IndexOf($Arguments,'--list-loaders')
 $loaderInfoIndex=[Array]::IndexOf($Arguments,'--loader-info')
-$hasListLoaders=$listLoadersIndex -ge 0;$hasLoaderInfo=$loaderInfoIndex -ge 0
-if($hasListLoaders -and $hasLoaderInfo){throw 'LOADER_OPTION_CONFLICT: --list-loaders 与 --loader-info 不能同时使用。'}
+$providerStatusIndex=[Array]::IndexOf($Arguments,'--provider-status')
+$jarModArtifactIndex=[Array]::IndexOf($Arguments,'--jar-mod-artifact')
+$jarModStrategyIndex=[Array]::IndexOf($Arguments,'--patch-strategy')
+$hasListLoaders=$listLoadersIndex -ge 0;$hasLoaderInfo=$loaderInfoIndex -ge 0;$hasProviderStatus=$providerStatusIndex -ge 0
+if(@($hasListLoaders,$hasLoaderInfo,$hasProviderStatus|Where-Object{$_}).Count -gt 1){throw 'LOADER_OPTION_CONFLICT: loader/provider 查询参数不能组合。'}
 if($hasListLoaders -and ($listLoadersIndex+1 -ge $Arguments.Count)){throw '--list-loaders 缺少 Minecraft 版本 ID。'}
 if($hasLoaderInfo -and ($loaderInfoIndex+2 -ge $Arguments.Count)){throw '--loader-info 需要 Minecraft 版本 ID 和 Loader ID。'}
-if($hasListLoaders -or $hasLoaderInfo){
+if($hasProviderStatus -and ($providerStatusIndex+1 -ge $Arguments.Count)){throw '--provider-status 缺少 Provider ID。'}
+if($hasLoaderInfo -and [string]$Arguments[$loaderInfoIndex+2] -notin @('Forge','Fabric','NeoForge','Quilt','LegacyFabric','OrnitheLoader','LiteLoader','Rift','ModLoader','ModLoaderMP','JarMod')){throw "Unsupported Loader: $($Arguments[$loaderInfoIndex+2])"}
+if($jarModArtifactIndex -ge 0 -and (-not $hasLoaderInfo -or [string]$Arguments[$loaderInfoIndex+2] -ne 'JarMod')){throw '--jar-mod-artifact 只能与 --loader-info <mc> JarMod 组合。'}
+if($jarModArtifactIndex -ge 0 -and ($jarModArtifactIndex+1 -ge $Arguments.Count -or $jarModStrategyIndex -lt 0 -or $jarModStrategyIndex+1 -ge $Arguments.Count)){throw '--jar-mod-artifact 需要文件路径，且必须提供 --patch-strategy。'}
+if($hasProviderStatus -and [string]$Arguments[$providerStatusIndex+1] -notin @('LegacyFabric','OrnitheLoader','LiteLoader','Rift','ModLoader','ModLoaderMP','JarMod')){throw "Unsupported historical Provider: $($Arguments[$providerStatusIndex+1])"}
+if($hasListLoaders -or $hasLoaderInfo -or $hasProviderStatus){
     $loaderCatalog=Get-MmtlMinecraftVersionCatalog -RuntimeRoot $catalogRuntimeRoot -Offline:$catalogOffline
+    if($hasProviderStatus){$providerId=[string]$Arguments[$providerStatusIndex+1];Get-MmtlHistoricalProviderStatus -LoaderId $providerId -Catalog $loaderCatalog -RuntimeRoot $runtimeRoot -Offline:$loaderOffline|ConvertTo-Json -Depth 30;exit 0}
     if($hasListLoaders){
         $id=[string]$Arguments[$listLoadersIndex+1];if($id -eq 'CurrentStable'){$id=[string]$loaderCatalog.latestRelease};$null=Resolve-MmtlMinecraftVersion -MinecraftId $id -Catalog $loaderCatalog
         $index=Get-MmtlLoaderAvailabilityIndex -Catalog $loaderCatalog -RuntimeRoot $runtimeRoot -Offline:$loaderOffline
         $row=$index.entries|Where-Object minecraftId -CEQ $id|Select-Object -First 1
         foreach($loaderId in @('Forge','Fabric','NeoForge','Quilt')){$item=$row.loaders.$loaderId;[pscustomobject]@{Minecraft=$id;Loader=$loaderId;Availability=$item.availability;CacheStatus=$item.cacheStatus;Source=$item.source;LastChecked=$item.lastChecked;Notes=($item.notes -join '; ')}}
+        if($includeHistorical){$historical=Get-MmtlHistoricalLoaderAvailability -MinecraftId $id -Catalog $loaderCatalog -RuntimeRoot $runtimeRoot -Offline:$loaderOffline;foreach($item in $historical.entries){[pscustomobject]@{Minecraft=$id;Loader=$item.loaderId;Availability=$item.availability;CacheStatus=$item.cacheStatus;Source=$item.source;LastChecked=$historical.generatedAt;SourceClass=$item.sourceClass;Trust=$item.trustClass;Transport=$item.transportSecurity;Maintenance=$item.maintenanceState;CandidateCount=$item.candidateCount;Notes=($item.notes -join '; ')}}}
         exit 0
     }
     $id=[string]$Arguments[$loaderInfoIndex+1];if($id -eq 'CurrentStable'){$id=[string]$loaderCatalog.latestRelease};$null=Resolve-MmtlMinecraftVersion -MinecraftId $id -Catalog $loaderCatalog
-    $loaderId=[string]$Arguments[$loaderInfoIndex+2];if($loaderId -notin @('Forge','Fabric','NeoForge','Quilt')){throw "Unsupported mainstream Loader: $loaderId"}
+    $loaderId=[string]$Arguments[$loaderInfoIndex+2]
+    if($loaderId -in @('LegacyFabric','OrnitheLoader','LiteLoader','Rift','ModLoader','ModLoaderMP','JarMod')){
+        $historicalCandidates=@();$snapshot=$null
+        switch($loaderId){'LegacyFabric'{$snapshot=Get-MmtlLegacyFabricProviderSnapshot -RuntimeRoot $runtimeRoot -Offline:$loaderOffline;$historicalCandidates=@(Get-MmtlLegacyFabricCandidates -MinecraftId $id -RuntimeRoot $runtimeRoot -Offline:$loaderOffline)}'OrnitheLoader'{$snapshot=Get-MmtlOrnitheProviderSnapshot -RuntimeRoot $runtimeRoot -Offline:$loaderOffline;$historicalCandidates=@(Get-MmtlOrnitheCandidates -MinecraftId $id -RuntimeRoot $runtimeRoot -Offline:$loaderOffline)}'LiteLoader'{$snapshot=Get-MmtlLiteLoaderProviderSnapshot -RuntimeRoot $runtimeRoot -Offline:$loaderOffline;$historicalCandidates=@(Get-MmtlLiteLoaderCandidates -MinecraftId $id -Snapshot $snapshot)}'Rift'{$historicalCandidates=@(Get-MmtlRiftCandidates -MinecraftId $id)}'ModLoader'{$historicalCandidates=@(Get-MmtlModLoaderArchiveCandidates -MinecraftId $id)}'ModLoaderMP'{$historicalCandidates=@(Get-MmtlModLoaderMPArchiveCandidates -MinecraftId $id)}'JarMod'{if($jarModArtifactIndex -ge 0){$artifactPath=[string]$Arguments[$jarModArtifactIndex+1];$patchStrategy=[string]$Arguments[$jarModStrategyIndex+1];$historicalCandidates=@(New-MmtlJarModManualCandidate -MinecraftId $id -ArtifactPath $artifactPath -PatchStrategy $patchStrategy)}else{$historicalCandidates=@()}}}
+        [pscustomobject]@{Minecraft=$id;Loader=$loaderId;ProviderStatus=if($snapshot){$snapshot.providerStatus}else{'CuratedOrManual'};Availability=if($loaderId -eq 'JarMod'){'Manual'}elseif($historicalCandidates.Count){'Available'}elseif($snapshot -and $snapshot.providerStatus -in @('Available','Stale')){'Unavailable'}else{'Unknown'};SourceClass=if($historicalCandidates.Count){$historicalCandidates[0].sourceClass}else{$null};MaintenanceState=if($historicalCandidates.Count){$historicalCandidates[0].maintenanceState}else{$null};Trust=if($historicalCandidates.Count){$historicalCandidates[0].trustClass}else{$null};Transport=if($historicalCandidates.Count){$historicalCandidates[0].transportSecurity}else{$null};Integrity=if($historicalCandidates.Count){$historicalCandidates[0].integrity}else{$null};Toolchain=if($historicalCandidates.Count){$historicalCandidates[0].toolchain}else{$null};BuildStatus=if($historicalCandidates.Count){'CATALOGUED'}elseif($loaderId -eq 'JarMod'){'MANUAL'}else{'UNVERIFIED'};Candidates=$historicalCandidates;Provenance=if($historicalCandidates.Count){@($historicalCandidates|ForEach-Object provenance)}elseif($snapshot){$snapshot.provenance}else{@()}}|ConvertTo-Json -Depth 30
+        exit 0
+    }
+    if($loaderId -notin @('Forge','Fabric','NeoForge','Quilt')){throw "Unsupported Loader: $loaderId"}
     $snapshot=switch($loaderId){'Forge'{Get-MmtlForgeProviderSnapshot -Catalog $loaderCatalog -RuntimeRoot $runtimeRoot -Offline:$loaderOffline};'Fabric'{Get-MmtlFabricProviderSnapshot -RuntimeRoot $runtimeRoot -Offline:$loaderOffline};'NeoForge'{Get-MmtlNeoForgeProviderSnapshot -Catalog $loaderCatalog -RuntimeRoot $runtimeRoot -Offline:$loaderOffline};'Quilt'{Get-MmtlQuiltProviderSnapshot -RuntimeRoot $runtimeRoot -Offline:$loaderOffline}}
     $candidates=switch($loaderId){'Forge'{Get-MmtlForgeCandidates -MinecraftId $id -Snapshot $snapshot};'Fabric'{Get-MmtlFabricCandidates -MinecraftId $id -RuntimeRoot $runtimeRoot -Offline:$loaderOffline};'NeoForge'{Get-MmtlNeoForgeCandidates -MinecraftId $id -Snapshot $snapshot};'Quilt'{Get-MmtlQuiltCandidates -MinecraftId $id -RuntimeRoot $runtimeRoot -Offline:$loaderOffline}}
     $preferred=switch($loaderId){'Forge'{Get-MmtlForgePreferredCandidate -MinecraftId $id -Candidates $candidates};'Fabric'{Get-MmtlFabricPreferredCandidate -MinecraftId $id -Candidates $candidates};'NeoForge'{Get-MmtlNeoForgePreferredCandidate -MinecraftId $id -Candidates $candidates};'Quilt'{Get-MmtlQuiltPreferredCandidate -MinecraftId $id -Candidates $candidates}}

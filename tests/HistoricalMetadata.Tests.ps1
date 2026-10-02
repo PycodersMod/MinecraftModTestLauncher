@@ -14,6 +14,11 @@ Describe 'Historical metadata transport and cache' {
         $first = Get-MmtlHistoricalMetadataDocument -ProviderId Ornithe -CacheKey 'v2-game' -Uri 'https://meta.ornithemc.net/v2/versions/game' -AllowedHosts @('meta.ornithemc.net') -RuntimeRoot $runtime -HttpGet $script:reply
         $first.providerStatus | Should -Be 'Available'
         $first.cacheStatus | Should -Be 'Fresh'
+        $refresh = { param($uri,$headers,$timeout) if($headers['If-None-Match'] -eq '"fixture"'){[pscustomobject]@{StatusCode=304;Headers=@{};Bytes=[byte[]]@();ResponseUri=$uri}}else{$script:reply.Invoke($uri,$headers,$timeout)} }
+        $revalidated = Get-MmtlHistoricalMetadataDocument -ProviderId Ornithe -CacheKey 'v2-game' -Uri 'https://meta.ornithemc.net/v2/versions/game' -AllowedHosts @('meta.ornithemc.net') -RuntimeRoot $runtime -ForceRefresh -HttpGet $refresh
+        $revalidated.content | Should -Be $script:fixture
+        $cachePath=Get-MmtlHistoricalMetadataCachePath -ProviderId Ornithe -CacheKey 'v2-game' -RuntimeRoot $runtime
+        (Get-Content -LiteralPath $cachePath -Raw|ConvertFrom-Json).etag | Should -Be '"fixture"'
         $offline = Get-MmtlHistoricalMetadataDocument -ProviderId Ornithe -CacheKey 'v2-game' -Uri 'https://meta.ornithemc.net/v2/versions/game' -AllowedHosts @('meta.ornithemc.net') -RuntimeRoot $runtime -Offline -HttpGet { throw 'offline request must not run' }
         $offline.cacheStatus | Should -Be 'OfflineCache'
         $offline.content | Should -Be $script:fixture

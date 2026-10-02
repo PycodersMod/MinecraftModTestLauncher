@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mmtl.local/schemas/historical-availability.schema.json",
+  "title": "MMTL Historical Loader Availability",
+  "type": "object",
+  "required": ["schemaVersion", "minecraftId", "scope", "generatedAt", "entries"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "minecraftId": {"type": "string", "minLength": 1},
+    "scope": {"const": "Historical"},
+    "generatedAt": {"type": "string", "format": "date-time"},
+    "entries": {"type": "array", "items": {"$ref": "#/definitions/entry"}}
+  },
+  "definitions": {
+    "entry": {
+      "type": "object",
+      "required": ["loaderId", "availability", "providerStatus", "sourceClass", "trustClass", "transportSecurity", "maintenanceState", "cacheStatus", "candidateCount", "notes"],
+      "properties": {
+        "loaderId": {"enum": ["LegacyFabric", "OrnitheLoader", "LiteLoader", "Rift", "ModLoader", "ModLoaderMP", "JarMod"]},
+        "availability": {"enum": ["Available", "Unavailable", "Unknown", "Manual"]},
+        "providerStatus": {"type": "string"},
+        "sourceClass": {"enum": ["ActiveOfficial", "HistoricalOfficial", "VerifiedCommunityArchive", "VerifiedCommunitySource", "ManualArtifact", "UnknownHistorical"]},
+        "trustClass": {"enum": ["TrustedOfficial", "VerifiedHistorical", "UnverifiedHistorical"]},
+        "transportSecurity": {"enum": ["HTTPS", "HTTPOnly", "LocalManual", "ArchivedSnapshot", "Unknown"]},
+        "maintenanceState": {"enum": ["Active", "Limited", "Archived", "Dead", "Unknown"]},
+        "cacheStatus": {"type": "string"},
+        "source": {"type": ["string", "null"]},
+        "candidateCount": {"type": "integer", "minimum": 0},
+        "notes": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": true
+    }
+  }
+}
