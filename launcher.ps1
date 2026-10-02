@@ -11,7 +11,7 @@ $configFileIndex=[Array]::IndexOf($Arguments,'--config-file')
 if($configFileIndex -ge 0){if($configFileIndex+1 -ge $Arguments.Count){throw '--config-file 缺少路径。'};$configPath=[IO.Path]::GetFullPath([string]$Arguments[$configFileIndex+1])}
 $portable=($Arguments -contains '--portable') -and -not ($configPath -and (Test-Path $configPath) -and (Read-MmtlConfig -Path $configPath).runtimeRoot)
 if($Arguments -contains '--help' -or $Arguments -contains '-h'){
-    Write-Host 'Minecraft Mod Test Launcher';Write-Host '用法：launcher.cmd / launcher.sh [--validate|--dry-run|--build|--launch] [--profile NAME]';Write-Host 'Catalog：--list-minecraft-versions | --minecraft-info <id|CurrentStable> | --refresh-catalog';Write-Host 'Loaders：--list-loaders <mc> [--include-historical] | --loader-info <mc> <loader>';Write-Host 'Manual JarMod: --loader-info <mc> JarMod --jar-mod-artifact <path> --patch-strategy <name> (plan only)';Write-Host 'Historical providers use HTTPS metadata/cache; HTTP-only artifacts are never auto-executed.';Write-Host 'Catalog cache：--catalog-offline（仅影响 Catalog，不改变 Gradle Offline）';Write-Host 'Session：--list-sessions | --stop ID | --clean-session ID';Write-Host '运行目录：--portable';Write-Host '交互模式：不传参数；--config-file 仅供临时配置调用。';exit 0
+    Write-Host 'Minecraft Mod Test Launcher';Write-Host '用法：launcher.cmd / launcher.sh [--validate|--dry-run|--build|--launch] [--profile NAME]';Write-Host 'Catalog：--list-minecraft-versions | --minecraft-info <id|CurrentStable> | --refresh-catalog';Write-Host 'Loaders：--list-loaders <mc> [--include-historical] | --loader-info <mc> <loader> | --provider-status <loader>';Write-Host '覆盖审计：';foreach($option in Get-MmtlCoverageCliOptionDefinitions){Write-Host "  $($option.usage) — $($option.description)"};Write-Host 'Historical providers use HTTPS metadata/cache; HTTP-only artifacts are never auto-executed.';Write-Host 'Offline：--catalog-offline 仅影响 Mojang Catalog；--loader-offline 仅影响 Loader metadata；均不改变 Gradle Offline。';Write-Host 'Session：--list-sessions | --stop ID | --clean-session ID';Write-Host '运行目录：--portable';Write-Host '交互模式：不传参数；--config-file 仅供临时配置调用。';exit 0
 }
 $config=if(Test-Path $configPath){Read-MmtlConfig -Path $configPath}else{$null}
 $runtimeConfigured=if($config -and $config.runtimeRoot){[string]$config.runtimeRoot}else{''}
@@ -23,6 +23,12 @@ if($platform.OS -in @('Linux','MacOS') -and $runtimeConfigured -match '^%LOCALAP
 }
 $catalogOffline=$Arguments -contains '--catalog-offline'
 $loaderOffline=$Arguments -contains '--loader-offline'
+$coverageCommands=@('--coverage-report','--coverage-gaps','--coverage-version')
+$coverageCommandPresent=@($coverageCommands|Where-Object{$Arguments -ccontains $_}).Count -gt 0
+if($coverageCommandPresent){
+    Invoke-MmtlCoverageCli -Arguments $Arguments -RuntimeRoot $runtimeRoot -CatalogOffline:$catalogOffline -LoaderOffline:$loaderOffline -ForceRefresh:($Arguments -contains '--refresh-catalog')
+    exit 0
+}
 $includeHistorical=$Arguments -contains '--include-historical' -or $Arguments -contains '--loader-scope-all'
 $listLoadersIndex=[Array]::IndexOf($Arguments,'--list-loaders')
 $loaderInfoIndex=[Array]::IndexOf($Arguments,'--loader-info')

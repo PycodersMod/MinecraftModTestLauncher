@@ -1,6 +1,6 @@
 # MMTL v2 架构基础
 
-本文记录 MMTL v2 Phase A–D 的落地边界。Catalog、上游 Loader availability、项目解析、实际构建、服务端和客户端验证是不同状态；查询结果不能替代 Compatibility Matrix 的实验证据。
+本文记录 MMTL v2 Phase A–F 的落地边界。Catalog、上游 Loader availability、项目解析、实际构建、服务端和客户端验证是不同状态；查询结果不能替代 Compatibility Matrix 的实验证据。
 
 ## 当前实现与后续计划
 
@@ -11,6 +11,11 @@
 - Compatibility Matrix v1、Exception Registry 和 Config v2 foundation 由 JSON Schema 描述；旧配置 reader 保留旧格式并保留未知字段。
 - CI 在 Ubuntu/macOS 上运行 PowerShell parser 和跨平台纯 fixture 测试；Windows job 运行完整 Pester suite。
 
+### Phase B 已实现
+
+- Windows/Linux/macOS 平台 Provider、各平台 Runtime Root 与路径安全、Java/Gradle Wrapper 选择和 `launcher.sh` 已落地。
+- Session 平台元数据、Linux `/proc` 进程身份与受控停止均有实现和 fixture 覆盖。Linux/macOS CLI 与 Gradle build 能力不等价于这些平台上的 Minecraft GUI 实机运行。
+
 ### Phase C 已实现
 
 - src/Catalog/MinecraftVersionCatalog.psm1 从 Mojang Version Manifest v2 建立 release Catalog，以字符串 canonical ID 和 releaseTime 确定从 1.0 到 manifest.latest.release 的范围，不做 SemVer 解析或排序。
@@ -20,11 +25,10 @@
 - Catalog cache 默认 TTL 为 24 小时。--catalog-offline 不访问网络；stale 在线刷新失败会显式返回 Stale；--refresh-catalog 失败不会报告成功。
 - CATALOGUED 仅表示 Mojang manifest 记录了一个 release，不能推导 Loader、构建、服务端或客户端验证通过。
 
-### 后续阶段
+### Phase G 及后续工作
 
-- Linux/macOS Runtime、路径 provider、进程树实现、launcher.sh。
-- Quilt 与历史 Loader 实际启动或下载支持。
-- 全版本/OS/架构组合的更深验证。
+- Minecraft GUI 跨平台、IntegratedLAN/Dedicated 跨平台实机验证、历史组合深度 Resolve/Build 和全 OS/架构矩阵属于 Phase G 或后续阶段。
+- 本仓库当前 Linux/macOS 目标仍是 CLI、构建基础与 CI fixtures，不把 WSL/WSLg 当作完整 Linux Desktop 实机验证。
 
 ### Phase D Loader metadata 与 Adapter Contract v2
 
@@ -35,6 +39,10 @@
 - Toolchain identity 与 Loader identity 分开；`QuiltLoom` 已加入 toolchain registry。Build Java 项目显式要求的 major 是 High confidence；缺失时由 `BuildJavaResolver.psm1` 集中 fallback registry 推断并标记 Low confidence。Runtime Java 仍由 Mojang metadata resolver 负责。
 - CLI 的 `--list-loaders` 显示版本 availability，`--loader-info` 返回候选、preferred policy 和 provenance；`--loader-offline` 独立于 Gradle offline。结果可从 Runtime Root 的 Provider cache 离线重建。
 - PR CI 使用 metadata/adapter fixture，不依赖 live endpoint；Windows 执行全 suite，Ubuntu、macOS ARM64 和 Intel 增加 Provider、index、Adapter 与 ProjectDetector fixture suite。
+
+### Phase E 已实现 — Historical ecosystem providers
+
+Legacy Fabric、Ornithe Loader、LiteLoader、Rift、ModLoader、ModLoaderMP 与 JarMod Manual Mode 均保留独立 Loader/source/trust/provenance 语义；不可用上游与历史目录缺项不能推导为已验证不兼容。
 
 ## 概念分层
 
@@ -88,7 +96,7 @@ Loader identity 目前包括 Forge、Fabric、NeoForge、Quilt、LegacyFabric、
 - LiteLoader manifest 采用 HTTPS，但 manifest 中的历史 artifact repository 为 HTTP-only。Rift 原始仓库、community port 与 MCArchive ModLoader/MP archive records 分开标识，并固定源码 commit 或 archive hash。JarMod 只允许用户提供本地路径、计算 SHA-256 并生成 Manual plan；本轮不会改写 Minecraft JAR 或执行 patch。
 - `--include-historical` 是 opt-in，默认 availability 列表维持四个 mainstream loaders。`--provider-status <id>` 输出历史 provider 来源、状态与 release coverage。Forge + LiteLoader evidence 解析为 Forge primary 与 LiteLoader overlay；不相关的多个 primary loader 仍标记 Ambiguous。
 
-将来版本/平台例外应按 `schemas/exception-registry.schema.json` 集中登记 matcher、rule、reason、provenance、适用范围和复核策略；Phase A 尚未迁移现有运行逻辑中的特例。
+将来新增的版本/平台例外应按 `schemas/exception-registry.schema.json` 登记 matcher、rule、reason、provenance、适用范围和复核策略；当前实现不以此 schema 暗示每项历史规则已完成迁移。
 
 ## Schema 与 Config
 
@@ -99,3 +107,11 @@ Loader identity 目前包括 Forge、Fabric、NeoForge、Quilt、LegacyFabric、
 ## CI 边界
 
 Windows 执行完整 Pester。Ubuntu、macOS ARM64 和 macOS Intel 执行 parser、Architecture、Schema、Provider、Availability Index、Adapter 与 ProjectDetector fixtures；CI 不调用 live upstream API，也不启动 Minecraft GUI。具体 required job 结果以对应提交的 Actions run 为准。
+
+## Phase F — Full Coverage Audit
+
+Phase F 完成全正式 Mojang release 覆盖审计。每个 release 都列出四种主流 Loader、六种历史 Loader 与 JarMod Manual mode；Unknown 必须附 reason code 与解释。上游支持状态、Resolver、构建、服务端和客户端验证是分开的证据层。候选端点的边界/P0 抽样若与全局 index 冲突，会生成 `COVERAGE_INCONSISTENCY` gap。Ornithe 官方 game-support 记录不会单独推导 Ornithe Loader 候选；只有逐版本 loader candidate metadata 才能标记 Available。
+
+Java 需求不代表构建时实际使用的 JDK。`BuildJavaRequirement.requirementKind` 可以是 Minimum、Preferred、Exact 或 Unknown；构建证据单独记录 `observedBuildJava`（主版本、完整版本、vendor、OS、arch）和 `compilerTarget`。例如 Gradle 最低要求 Java 17、实际使用 Oracle JDK 25、字节码目标 Java 8，三者必须分别保留。Mojang `runtimeJava` 是游戏运行需求，不推导 Mod 构建需求。
+
+Coverage CLI 使用统一入口：`--coverage-report` 输出摘要，`--coverage-report --json` 输出全量模型，`--coverage-gaps` 输出 gaps，`--coverage-version <id>` 输出单个正式 release。Provider 汇总额外给出首末 Available release、连续区间和状态 gap ranges；逐 canonical ID 记录仍是事实来源。`--catalog-offline` 与 `--loader-offline` 保持独立。Live 报告不得写入 source tree；必需 CI 只运行 fixture，不依赖上游服务在线。手动/weekly live workflow 分开报告 Provider health、coverage data errors 与 MMTL invariant errors；已解释的 provider outage 或 upstream unmapped version 不会单独使 workflow 判为代码回归，只有明确列出的 invariant violation 会失败。

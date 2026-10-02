@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pycodersmod.github.io/MinecraftModTestLauncher/schemas/build-evidence.schema.json",
+  "title": "MMTL Build Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["minecraftId", "loaderId", "loaderVersion", "toolchain", "platform", "buildJavaRequirement", "observedBuildJava", "compilerTarget", "result", "artifactSha256", "verifiedAt", "fixtureProvenance"],
+  "properties": {
+    "minecraftId": {"type": "string", "minLength": 1},
+    "loaderId": {"enum": ["Forge", "Fabric", "NeoForge", "Quilt", "LegacyFabric", "OrnitheLoader", "LiteLoader", "Rift", "ModLoader", "ModLoaderMP", "JarMod"]},
+    "loaderVersion": {"type": "string", "minLength": 1},
+    "toolchain": {"type": "object", "additionalProperties": false, "required": ["id"], "properties": {"id": {"enum": ["ForgeGradle", "FabricLoom", "NeoGradle", "ModDevGradle", "QuiltLoom", "Ploceus", "LegacyLooming", "Unknown", "Custom"]}, "version": {"type": "string"}, "ecosystem": {"type": "string"}}},
+    "platform": {"type": "object", "additionalProperties": false, "required": ["os", "arch", "isWSL"], "properties": {"os": {"enum": ["Windows", "Linux", "MacOS"]}, "arch": {"enum": ["x64", "ARM64"]}, "isWSL": {"type": "boolean"}}},
+    "buildJavaRequirement": {"type": "object", "additionalProperties": true, "required": ["purpose", "major", "requirementKind", "source", "confidence"], "properties": {"purpose": {"const": "BuildJava"}, "major": {"type": ["integer", "null"], "minimum": 1}, "requirementKind": {"enum": ["Minimum", "Preferred", "Exact", "Unknown"]}, "minimumMajor": {"type": ["integer", "null"], "minimum": 1}, "preferredMajor": {"type": ["integer", "null"], "minimum": 1}, "exactMajor": {"type": ["integer", "null"], "minimum": 1}, "source": {"type": "string", "minLength": 1}, "confidence": {"enum": ["High", "Medium", "Low", "Unknown"]}}},
+    "observedBuildJava": {"type": "object", "additionalProperties": false, "required": ["major", "exactVersion", "vendor", "os", "arch"], "properties": {"major": {"type": "integer", "minimum": 1}, "exactVersion": {"type": "string", "minLength": 1}, "vendor": {"type": "string", "minLength": 1}, "os": {"enum": ["Windows", "Linux", "MacOS"]}, "arch": {"enum": ["x64", "ARM64"]}}},
+    "compilerTarget": {"type": "object", "additionalProperties": false, "required": ["major", "source"], "properties": {"major": {"type": "integer", "minimum": 1}, "source": {"type": "string", "minLength": 1}}},
+    "result": {"enum": ["PASSED", "FAILED", "UNVERIFIED", "STALE"]},
+    "artifactSha256": {"type": ["string", "null"], "pattern": "^[a-fA-F0-9]{64}$"},
+    "verifiedAt": {"type": "string", "format": "date-time"},
+    "fixtureProvenance": {"type": "object", "additionalProperties": false, "required": ["sourceUrl", "commit", "license"], "properties": {"sourceUrl": {"type": "string", "format": "uri"}, "commit": {"type": "string", "pattern": "^[a-fA-F0-9]{40}$"}, "license": {"type": "string", "minLength": 1}}}
+  },
+  "allOf": [
+    {"if": {"properties": {"result": {"const": "PASSED"}}}, "then": {"properties": {"artifactSha256": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"}}}},
+    {"if": {"properties": {"result": {"const": "PASSED"}, "buildJavaRequirement": {"properties": {"requirementKind": {"const": "Minimum"}}}}}, "then": {"properties": {"observedBuildJava": {"properties": {"major": {"minimum": 1}}}}}}
+  ]
+}
