@@ -4,6 +4,12 @@ Describe 'Historical adapters, detection, overlay, and manual mode' {
         (Get-MmtlHistoricalAdapterProbe -LoaderId LegacyFabric -Evidence @([pscustomobject]@{loaderId='LegacyFabric';confidence='High'})).adapterId | Should -BeExactly 'LegacyFabric'
         (Get-MmtlHistoricalAdapterProbe -LoaderId OrnitheLoader -Evidence @([pscustomobject]@{loaderId='OrnitheLoader';confidence='High'})).adapterId | Should -BeExactly 'OrnitheLoader'
     }
+    It 'returns a non-matching probe instead of throwing when no loader evidence matches' {
+        $probe=Get-MmtlHistoricalAdapterProbe -LoaderId Rift -Evidence @([pscustomobject]@{loaderId='Fabric';confidence='High'})
+        $probe.matched | Should -BeFalse
+        $probe.confidence | Should -BeExactly 'Unknown'
+        @($probe.evidence).Count | Should -Be 0
+    }
     It 'resolves Forge plus LiteLoader as a primary and overlay' {
         $e=@([pscustomobject]@{loaderId='Forge';confidence='High'},[pscustomobject]@{loaderId='LiteLoader';confidence='High';role='Overlay';version='1.12.2'})
         $r=Resolve-MmtlProjectStack -Evidence $e
@@ -16,6 +22,13 @@ Describe 'Historical adapters, detection, overlay, and manual mode' {
         $result=Get-MmtlProject -Path $project
         $result.DetectionStatus | Should -BeExactly 'Resolved';$result.LoaderStack.primaryLoader.id | Should -BeExactly 'Forge';$result.LoaderStack.overlayLoaders[0].id | Should -BeExactly 'LiteLoader'
     }
+    It 'detects a standalone LiteLoader project without promoting its ForgeGradle toolchain to Forge runtime' {
+        $project=Join-Path $TestDrive 'lite-standalone';New-Item -ItemType Directory -Path (Join-Path $project 'src/main/resources') -Force|Out-Null
+        "plugins { id 'net.minecraftforge.gradle.liteloader' version '2.3-SNAPSHOT' }"|Set-Content (Join-Path $project 'build.gradle')
+        '{"name":"Fixture","mcversion":"1.12.2"}'|Set-Content (Join-Path $project 'src/main/resources/litemod.json')
+        $result=Get-MmtlProject -Path $project
+        $result.DetectionStatus | Should -BeExactly 'Resolved';$result.Loader | Should -BeExactly 'LiteLoader';$result.LoaderStack.primaryLoader.id | Should -BeExactly 'LiteLoader';$result.LoaderStack.overlayLoaders.Count | Should -Be 0;$result.Toolchain.id | Should -BeExactly 'ForgeGradle'
+    }
     It 'uses Legacy Looming evidence instead of the compatible Fabric metadata marker' {
         $project=Join-Path $TestDrive 'legacy';New-Item -ItemType Directory -Path (Join-Path $project 'src/main/resources') -Force|Out-Null
         "plugins { id 'fabric-loom' version '1.16-SNAPSHOT'; id 'legacy-looming' version '1.16-SNAPSHOT' }"|Set-Content (Join-Path $project 'build.gradle')
@@ -24,13 +37,21 @@ Describe 'Historical adapters, detection, overlay, and manual mode' {
         $result=Get-MmtlProject -Path $project
         $result.Loader | Should -BeExactly 'LegacyFabric';$result.Toolchain.id | Should -BeExactly 'LegacyLooming';$result.MinecraftVersion | Should -BeExactly '1.8.9';$result.LoaderVersion | Should -BeExactly '0.18.3'
     }
-    It 'uses Ploceus evidence to distinguish Ornithe Loader from Fabric' {
+    It 'keeps the loader identity from the declared Fabric Loader dependency while retaining Ornithe toolchain context' {
         $project=Join-Path $TestDrive 'ornithe';New-Item -ItemType Directory -Path (Join-Path $project 'src/main/resources') -Force|Out-Null
-        "plugins { id 'fabric-loom' version '1.18-SNAPSHOT'; id 'ploceus' version '1.18-SNAPSHOT' }"|Set-Content (Join-Path $project 'build.gradle')
+        "plugins { id 'fabric-loom' version '1.18-SNAPSHOT'; id 'ploceus' version '1.18-SNAPSHOT' }`ndependencies { modImplementation 'net.fabricmc:fabric-loader:0.19.5' }"|Set-Content (Join-Path $project 'build.gradle')
         "minecraft_version=1.7.2`nloader_version=0.19.5"|Set-Content (Join-Path $project 'gradle.properties')
-        '{}'|Set-Content (Join-Path $project 'src/main/resources/fabric.mod.json')
+        '{"depends":{"fabricloader":">=0.17.3","minecraft":"1.7.2"}}'|Set-Content (Join-Path $project 'src/main/resources/fabric.mod.json')
         $result=Get-MmtlProject -Path $project
-        $result.Loader | Should -BeExactly 'OrnitheLoader';$result.Toolchain.id | Should -BeExactly 'Ploceus';$result.MinecraftVersion | Should -BeExactly '1.7.2';$result.LoaderVersion | Should -BeExactly '0.19.5'
+        $result.Loader | Should -BeExactly 'Fabric';$result.Toolchain.id | Should -BeExactly 'Ploceus';$result.Toolchain.ecosystem | Should -BeExactly 'Ornithe';$result.MinecraftVersion | Should -BeExactly '1.7.2';$result.LoaderVersion | Should -BeExactly '0.19.5'
+    }
+    It 'detects Ornithe Loader only when its distinct runtime artifact is declared' {
+        $project=Join-Path $TestDrive 'ornithe-runtime';New-Item -ItemType Directory -Path (Join-Path $project 'src/main/resources') -Force|Out-Null
+        "plugins { id 'ploceus' version '1.18-SNAPSHOT' }`ndependencies { modImplementation 'net.ornithemc:ornithe-loader:0.19.5' }"|Set-Content (Join-Path $project 'build.gradle')
+        "minecraft_version=1.7.2`nloader_version=0.19.5"|Set-Content (Join-Path $project 'gradle.properties')
+        '{"depends":{"fabricloader":">=0.17.3","minecraft":"1.7.2"}}'|Set-Content (Join-Path $project 'src/main/resources/fabric.mod.json')
+        $result=Get-MmtlProject -Path $project
+        $result.Loader | Should -BeExactly 'OrnitheLoader';$result.Toolchain.id | Should -BeExactly 'Ploceus';$result.Toolchain.ecosystem | Should -BeExactly 'Ornithe'
     }
     It 'recognizes original Rift ForgeGradle tweaker projects as Rift' {
         $project=Join-Path $TestDrive 'rift';New-Item -ItemType Directory -Path $project -Force|Out-Null
@@ -62,7 +83,7 @@ Describe 'Historical adapters, detection, overlay, and manual mode' {
         (Test-Json -Json ($record|ConvertTo-Json -Depth 10 -Compress) -SchemaFile (Join-Path $root 'schemas/historical-provenance.schema.json')) | Should -BeTrue
     }
     It 'keeps the historical availability index opt-in' {
-        (Get-Command Get-MmtlHistoricalLoaderAvailability -ErrorAction SilentlyContinue) | Should -BeNullOrEmpty
-        Test-Path (Join-Path $root 'src/Catalog/HistoricalAvailability.psm1') | Should -BeTrue
+        $launcher=Get-Content (Join-Path $root 'launcher.ps1') -Raw
+        $launcher | Should -Match 'if\(\$includeHistorical\).*Get-MmtlHistoricalLoaderAvailability'
     }
 }

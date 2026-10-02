@@ -17,15 +17,21 @@ function Get-MmtlProject {
     $hasQuiltLoom=$allBuildText -match '(?i)(org\.quiltmc\.loom|quilt-loom)'
     $hasLegacyLooming=$allBuildText -match '(?i)(legacy-looming|net\.legacyfabric\.loom|legacyfabric-loom)'
     $hasPloceus=$allBuildText -match '(?i)(ploceus|net\.ornithemc)'
+    $hasOrnitheLoader=$allBuildText -match '(?i)net\.ornithemc:ornithe-loader'
     $hasRift=$allBuildText -match '(?i)(org\.dimdev:ForgeGradle|org\.dimdev\.riftloader|RiftLoaderClientTweaker|rift-loader)'
-    $forgeMarker=(-not $hasRift) -and (($files.Name -contains 'mods.toml') -or ($allBuildText -match '(?i)(net\.minecraftforge\.gradle|ForgeGradle)'))
+    $hasLiteLoaderMetadata=$files.Name -contains 'litemod.json'
+    $hasLiteLoaderPlugin=$allBuildText -match '(?i)(com\.mumfrey:liteloader|net\.minecraftforge\.gradle\.liteloader|liteloader-gradle)'
+    $hasLiteLoader=$hasLiteLoaderMetadata -or $hasLiteLoaderPlugin
+    $forgeToolchainMarker=$allBuildText -match '(?i)(net\.minecraftforge\.gradle|ForgeGradle)'
+    $hasForgeRuntime=($files.Name -contains 'mods.toml') -or ($allBuildText -match '(?i)net\.minecraftforge:forge(?::|@)') -or ($forgeToolchainMarker -and -not $hasLiteLoaderPlugin)
+    $forgeMarker=(-not $hasRift) -and $hasForgeRuntime
     if($hasQuiltLoom){$evidence.Add([pscustomobject]@{loaderId='Quilt';source='GradlePlugin';path=$gradle;confidence='High';detail='Quilt Loom plugin'})}
-    if($files.Name -contains 'fabric.mod.json' -and -not ($hasQuiltLoom -or $hasPloceus -or $hasLegacyLooming)){$evidence.Add([pscustomobject]@{loaderId='Fabric';source='ModMetadata';path='src/main/resources/fabric.mod.json';confidence='High';detail='Fabric mod metadata'})}
+    if($files.Name -contains 'fabric.mod.json' -and -not ($hasQuiltLoom -or $hasOrnitheLoader -or $hasLegacyLooming)){$evidence.Add([pscustomobject]@{loaderId='Fabric';source='ModMetadata';path='src/main/resources/fabric.mod.json';confidence='High';detail='Fabric mod metadata'})}
     if($files.Name -contains 'neoforge.mods.toml'){$evidence.Add([pscustomobject]@{loaderId='NeoForge';source='ModMetadata';path='src/main/resources/META-INF/neoforge.mods.toml';confidence='High';detail='NeoForge mod metadata'})}
     if($forgeMarker){$evidence.Add([pscustomobject]@{loaderId='Forge';source=if($files.Name -contains 'mods.toml'){'ModMetadata'}else{'GradlePlugin'};path=if($files.Name -contains 'mods.toml'){'src/main/resources/META-INF/mods.toml'}else{$gradle};confidence='High';detail='Forge project marker'})}
     if($hasLegacyLooming){$evidence.Add([pscustomobject]@{loaderId='LegacyFabric';source='GradlePlugin';path=$gradle;confidence='High';detail='Legacy Fabric Looming plugin';toolchainId='LegacyLooming'})}
-    if($hasPloceus){$evidence.Add([pscustomobject]@{loaderId='OrnitheLoader';source='GradlePlugin';path=$gradle;confidence='High';detail='Ornithe Loader/Ploceus marker';toolchainId='Ploceus'})}
-    if($allBuildText -match '(?i)(com\.mumfrey:liteloader|liteloader-gradle|litemod\.json)'){$evidence.Add([pscustomobject]@{loaderId='LiteLoader';source='GradlePlugin';path=$gradle;confidence='High';detail='LiteLoader project marker';role=if($forgeMarker){'Overlay'}else{'Primary'}})}
+    if($hasOrnitheLoader){$evidence.Add([pscustomobject]@{loaderId='OrnitheLoader';source='GradleDependency';path=$gradle;confidence='High';detail='Ornithe Loader runtime artifact';toolchainId=if($hasPloceus){'Ploceus'}else{$null}})}
+    if($hasLiteLoader){$evidence.Add([pscustomobject]@{loaderId='LiteLoader';source=if($hasLiteLoaderMetadata){'ModMetadata'}else{'GradlePlugin'};path=if($hasLiteLoaderMetadata){'src/main/resources/litemod.json'}else{$gradle};confidence='High';detail='LiteLoader project marker';role=if($hasForgeRuntime){'Overlay'}else{'Primary'}})}
     if($hasRift){$evidence.Add([pscustomobject]@{loaderId='Rift';source='GradlePlugin';path=$gradle;confidence='High';detail='Rift tweaker/ForgeGradle marker'})}
     if($allBuildText -match '(?i)(modloadermp|modloader\.ModLoader)'){$evidence.Add([pscustomobject]@{loaderId=if($allBuildText -match '(?i)modloadermp'){'ModLoaderMP'}else{'ModLoader'};source='GradlePlugin';path=$gradle;confidence='Medium';detail='Historical ModLoader dependency marker'})}
     Import-Module (Join-Path $PSScriptRoot 'Adapters/ContractV2.psm1') -Force
@@ -67,7 +73,7 @@ function Get-MmtlProject {
     $wrapper=Join-Path $root (Get-MmtlPlatformProvider).GradleWrapper
     $buildSystem=if(Test-Path $wrapper){[pscustomobject]@{id='GradleWrapper';version=$null}}else{[pscustomobject]@{id='Custom';version=$null}}
     $toolchainVersion=if($hasRift){'2.3-SNAPSHOT'}else{$null}
-    $toolchainEcosystem=if($loader -eq 'Rift'){'Rift'}else{'Gradle'}
+    $toolchainEcosystem=if($hasPloceus){'Ornithe'}elseif($loader -eq 'Rift'){'Rift'}else{'Gradle'}
     $toolchain=[pscustomobject]@{id=$toolchainId;version=$toolchainVersion;ecosystem=$toolchainEcosystem}
     if($toolchainId -in @('LegacyLooming','Ploceus')){
         $pluginName=if($toolchainId -eq 'LegacyLooming'){'legacy-looming'}else{'ploceus'}
@@ -76,7 +82,7 @@ function Get-MmtlProject {
         $pluginVersion=if($pluginVersionMatch.Success){$pluginVersionMatch.Groups[1].Value}else{$null}
         if($pluginVersion -match '^\$\{([^}]+)\}$'){$propertyName=$Matches[1];$propertyMatch=[regex]::Match($props,"(?m)^\s*$([regex]::Escape($propertyName))\s*=\s*([^\r\n]+)");$pluginVersion=if($propertyMatch.Success){$propertyMatch.Groups[1].Value.Trim()}else{$null}}
         $toolchain.version=$pluginVersion
-        $toolchain.ecosystem=if($loader -eq 'LegacyFabric'){'LegacyFabric'}elseif($loader -eq 'OrnitheLoader'){'Ornithe'}else{'Gradle'}
+        $toolchain.ecosystem=if($loader -eq 'LegacyFabric'){'LegacyFabric'}elseif($hasPloceus){'Ornithe'}else{'Gradle'}
     }
     $project=[pscustomobject]@{ Root=$root; BuildFile=$gradle; Loader=$loader; LoaderVersion=$loaderVersion; MinecraftVersion=$mcVersion; JavaMajor=$major; BuildJavaMajor=$major; RuntimeJavaMajor=$null; BuildJavaRequirement=$buildJavaRequirement; RuntimeJavaRequirement=$runtimeJavaRequirement; GradleRuntimeJavaRequirement=$gradleRuntimeJavaRequirement; CompilerTargetJavaMajor=$compilerTargetMajor; ModId=$modId; Wrapper=(Test-Path $wrapper); WrapperPath=$wrapper; RunClient='runClient'; RunServer='runServer'; BuildTask='build';Evidence=@($evidence);DetectionStatus=$stackResolution.status;DetectionConflicts=@($stackResolution.conflicts);LoaderStack=$stackResolution.loaderStack;Toolchain=$toolchain;BuildSystem=$buildSystem}
     $project

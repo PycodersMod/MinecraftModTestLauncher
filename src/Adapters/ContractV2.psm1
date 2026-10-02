@@ -2,7 +2,7 @@ Set-StrictMode -Version Latest
 
 function New-MmtlAdapterProbeResult {
     [CmdletBinding()]
-    param([Parameter(Mandatory)][string]$AdapterId,[Parameter(Mandatory)][object[]]$Evidence,[Parameter(Mandatory)][ValidateSet('High','Medium','Low','Unknown')][string]$Confidence)
+    param([Parameter(Mandatory)][string]$AdapterId,[Parameter(Mandatory)][AllowEmptyCollection()][object[]]$Evidence,[Parameter(Mandatory)][ValidateSet('High','Medium','Low','Unknown')][string]$Confidence)
     [pscustomobject][ordered]@{contractVersion=2;adapterId=$AdapterId;matched=($Evidence.Count -gt 0);confidence=$Confidence;evidence=@($Evidence);conflicts=@()}
 }
 

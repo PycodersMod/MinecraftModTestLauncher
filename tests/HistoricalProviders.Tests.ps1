@@ -1,6 +1,7 @@
 BeforeAll {
     $script:repoRoot = Split-Path -Parent $PSScriptRoot
-    Import-Module (Join-Path $script:repoRoot 'src/Catalog/Providers/HistoricalProviders.psm1') -Force
+    Import-Module (Join-Path $script:repoRoot 'src/Catalog/HistoricalAvailability.psm1') -Force
+    $script:providerModule=Import-Module (Join-Path $script:repoRoot 'src/Catalog/Providers/HistoricalProviders.psm1') -Force -PassThru
     $script:catalog = [pscustomobject]@{entries=@(@{id='1.7.2';type='release'},@{id='1.8.9';type='release'},@{id='1.14.4';type='release'},@{id='1.13';type='release'})}
     $script:legacyGame = '[{"version":"1.7.2","stable":true},{"version":"1.8.9","stable":true},{"version":"1.14.4","stable":false},{"version":"b1.7.3","stable":true}]'
     $script:ornitheGame = '[{"version":"b1.9-pre6","stable":false},{"version":"1.7.2","stable":false},{"version":"1.8.9","stable":true},{"version":"1.8.8","stable":false},{"version":"1.14.4","stable":false}]'
@@ -83,5 +84,51 @@ Describe 'Historical providers and provenance' {
         $original.commit | Should -Match '^[0-9a-f]{40}$'
         $port = Get-MmtlRiftCandidates -MinecraftId '1.13.2' | Select-Object -First 1
         if ($port) { $port.originality | Should -Be 'CommunityPort';$port.displayName | Should -Be 'Rift Community Port' }
+    }
+
+    It 'returns historical availability when static providers have no candidates for an anchor' {
+        $offline={throw 'fixture network failure'}
+        $index=Get-MmtlHistoricalLoaderAvailability -MinecraftId '1.14.4' -Catalog $script:catalog -RuntimeRoot (Join-Path $TestDrive 'availability-empty') -Offline -HttpGet $offline
+        @($index.entries).Count | Should -Be 7
+        @($index.entries | Where-Object {$_.loaderId -in @('Rift','ModLoader','ModLoaderMP')} | Where-Object availability -ne 'Unavailable').Count | Should -Be 0
+        $json=$index|ConvertTo-Json -Depth 20 -Compress
+        (Test-Json -Json $json -SchemaFile (Join-Path $script:repoRoot 'schemas/historical-availability.schema.json')) | Should -BeTrue
+    }
+
+    It 'validates an online-shaped availability index with empty provider notes' {
+        $index=Get-MmtlHistoricalLoaderAvailability -MinecraftId '1.14.4' -Catalog $script:catalog -RuntimeRoot (Join-Path $TestDrive 'availability-live-shape') -HttpGet $script:http
+        (Test-Json -Json ($index|ConvertTo-Json -Depth 20 -Compress) -SchemaFile (Join-Path $script:repoRoot 'schemas/historical-availability.schema.json')) | Should -BeTrue
+    }
+
+    It 'reports OfflineCache aggregate status instead of fresh Available' {
+        $documents=@(@{providerStatus='Available';cacheStatus='OfflineCache'},@{providerStatus='Available';cacheStatus='OfflineCache'})
+        $status=& $script:providerModule {param($items) Get-MmtlHistoricalAggregateStatus -Documents $items} $documents
+        $status | Should -BeExactly 'OfflineCache'
+    }
+
+    It 'preserves failed per-version candidate metadata lookups instead of returning fresh zero candidates' {
+        $query=Get-MmtlLegacyFabricCandidateQuery -MinecraftId '1.14.4' -RuntimeRoot (Join-Path $TestDrive 'candidate-down') -HttpGet {throw 'candidate endpoint offline'}
+        $query.providerStatus | Should -BeExactly 'Unavailable'
+        $query.cacheStatus | Should -BeExactly 'Unavailable'
+        @($query.candidates).Count | Should -Be 0
+        $query.error | Should -Match 'candidate endpoint offline'
+    }
+
+    It 'marks availability unknown when its game candidate endpoint is unavailable' {
+        $failedCandidate={param($uri,$headers,$timeout) if($uri -match '/loader/1\.14\.4$'){throw 'candidate endpoint offline'};& $script:http $uri $headers $timeout}
+        $index=Get-MmtlHistoricalLoaderAvailability -MinecraftId '1.14.4' -Catalog $script:catalog -RuntimeRoot (Join-Path $TestDrive 'index-candidate-down') -HttpGet $failedCandidate
+        $legacy=$index.entries | Where-Object loaderId -eq 'LegacyFabric'
+        $legacy.availability | Should -BeExactly 'Unknown'
+        $legacy.providerStatus | Should -BeExactly 'Unavailable'
+        $legacy.candidateCount | Should -Be 0
+        @($legacy.notes | Where-Object {$_}).Count | Should -BeGreaterThan 0
+    }
+
+    It 'preserves community Rift provenance in the historical availability index' {
+        $index=Get-MmtlHistoricalLoaderAvailability -MinecraftId '1.13.2' -Catalog $script:catalog -RuntimeRoot (Join-Path $TestDrive 'availability-rift') -Offline -HttpGet {throw 'fixture network failure'}
+        $rift=$index.entries | Where-Object loaderId -eq 'Rift'
+        $rift.sourceClass | Should -BeExactly 'VerifiedCommunitySource'
+        $rift.source | Should -BeExactly 'https://github.com/Chocohead/Rift'
+        $rift.candidateCount | Should -Be 1
     }
 }

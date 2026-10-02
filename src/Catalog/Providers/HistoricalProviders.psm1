@@ -23,6 +23,7 @@ function Get-MmtlHistoricalAggregateStatus {
     $available = @($Documents | Where-Object { $_.providerStatus -eq 'Available' }).Count
     $stale = @($Documents | Where-Object { $_.providerStatus -eq 'Stale' }).Count
     $offline = @($Documents | Where-Object { $_.cacheStatus -eq 'OfflineCache' }).Count
+    if ($offline -eq $Documents.Count) { return 'OfflineCache' }
     if ($available -eq $Documents.Count) { return 'Available' }
     if (($available + $stale) -eq 0) { return 'Unavailable' }
     if ($stale) { return 'Stale' }
@@ -76,14 +77,15 @@ function Get-MmtlLegacyFabricReleaseCoverage {
     [pscustomobject]@{providerId='LegacyFabric';releaseCount=$matched.Count;earliestRelease=$earliest;latestRelease=$latest;releaseIds=@($matched|ForEach-Object{[string]$_.id});catalogHash=if($Catalog.PSObject.Properties['manifestHash']){$Catalog.manifestHash}else{$null};sourceUrl=if($Snapshot.PSObject.Properties['sourceUrl']){$Snapshot.sourceUrl}else{$null};providerStatus=if($Snapshot.PSObject.Properties['providerStatus']){$Snapshot.providerStatus}else{'Unknown'}}
 }
 
-function Get-MmtlLegacyFabricCandidates {
+function Get-MmtlLegacyFabricCandidateQuery {
     [CmdletBinding()]
     param([Parameter(Mandatory)][string]$MinecraftId,[Parameter(Mandatory)][string]$RuntimeRoot,[switch]$Offline,[switch]$ForceRefresh,[scriptblock]$HttpGet)
     $encoded = [Uri]::EscapeDataString($MinecraftId)
     $uri = "$script:MmtlLegacyFabricBase/loader/$encoded"
     $document = Get-MmtlHistoricalMetadataDocument -ProviderId LegacyFabric -CacheKey "v2-loader-$MinecraftId" -Uri $uri -AllowedHosts $script:MmtlLegacyFabricHost -RuntimeRoot $RuntimeRoot -Offline:$Offline -ForceRefresh:$ForceRefresh -HttpGet $HttpGet
-    if ($document.providerStatus -notin @('Available','Stale')) { return @() }
-    $records = ConvertFrom-MmtlHistoricalJsonArray -Content $document.content -Context "Legacy Fabric candidates $MinecraftId"
+    if ($document.providerStatus -notin @('Available','Stale')) { return [pscustomobject]@{providerStatus=$document.providerStatus;cacheStatus=$document.cacheStatus;validatedAt=$document.validatedAt;error=$document.error;candidates=@()} }
+    try { $records = ConvertFrom-MmtlHistoricalJsonArray -Content $document.content -Context "Legacy Fabric candidates $MinecraftId" }
+    catch { return [pscustomobject]@{providerStatus='Degraded';cacheStatus=$document.cacheStatus;validatedAt=$document.validatedAt;error=$_.Exception.Message;candidates=@()} }
     $candidates = [Collections.Generic.List[object]]::new()
     foreach ($record in $records) {
         if (-not $record.loader -or -not $record.intermediary) { continue }
@@ -101,7 +103,14 @@ function Get-MmtlLegacyFabricCandidates {
             downloadPermission='Granted';executePermission='RequiresConfirmation'
         })
     }
-    return @($candidates)
+    [pscustomobject]@{providerStatus=$document.providerStatus;cacheStatus=$document.cacheStatus;validatedAt=$document.validatedAt;error=$null;candidates=@($candidates)}
+}
+
+function Get-MmtlLegacyFabricCandidates {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][string]$MinecraftId,[Parameter(Mandatory)][string]$RuntimeRoot,[switch]$Offline,[switch]$ForceRefresh,[scriptblock]$HttpGet)
+    $query=Get-MmtlLegacyFabricCandidateQuery -MinecraftId $MinecraftId -RuntimeRoot $RuntimeRoot -Offline:$Offline -ForceRefresh:$ForceRefresh -HttpGet $HttpGet
+    return @($query.candidates)
 }
 
 function Get-MmtlOrnitheProviderSnapshot {
@@ -127,15 +136,22 @@ function Get-MmtlOrnitheReleaseCoverage {
     [pscustomobject]@{providerId='Ornithe';releaseCount=$matched.Count;earliestRelease=if($ordered.Count){[string]$ordered[0].id}else{$null};latestRelease=if($ordered.Count){[string]$ordered[-1].id}else{$null};releaseIds=@($matched|ForEach-Object{[string]$_.id});catalogHash=if($Catalog.PSObject.Properties['manifestHash']){$Catalog.manifestHash}else{$null};sourceUrl=$Snapshot.sourceUrl;providerStatus=$Snapshot.providerStatus}
 }
 
-function Get-MmtlOrnitheCandidates {
+function Get-MmtlOrnitheCandidateQuery {
     [CmdletBinding()]
     param([Parameter(Mandatory)][string]$MinecraftId,[Parameter(Mandatory)][string]$RuntimeRoot,[switch]$Offline,[switch]$ForceRefresh,[scriptblock]$HttpGet)
     $uri="$script:MmtlOrnitheBase/loader/$([Uri]::EscapeDataString($MinecraftId))"
     $document=Get-MmtlHistoricalMetadataDocument -ProviderId Ornithe -CacheKey "v2-loader-$MinecraftId" -Uri $uri -AllowedHosts $script:MmtlOrnitheHost -RuntimeRoot $RuntimeRoot -Offline:$Offline -ForceRefresh:$ForceRefresh -HttpGet $HttpGet
-    if($document.providerStatus -notin @('Available','Stale')){return @()}
-    $records=ConvertFrom-MmtlHistoricalJsonArray -Content $document.content -Context "Ornithe candidates $MinecraftId";$candidates=[Collections.Generic.List[object]]::new()
+    if($document.providerStatus -notin @('Available','Stale')){return [pscustomobject]@{providerStatus=$document.providerStatus;cacheStatus=$document.cacheStatus;validatedAt=$document.validatedAt;error=$document.error;candidates=@()}}
+    try{$records=ConvertFrom-MmtlHistoricalJsonArray -Content $document.content -Context "Ornithe candidates $MinecraftId"}catch{return [pscustomobject]@{providerStatus='Degraded';cacheStatus=$document.cacheStatus;validatedAt=$document.validatedAt;error=$_.Exception.Message;candidates=@()}};$candidates=[Collections.Generic.List[object]]::new()
     foreach($record in $records){if(-not $record.loader){continue};$version=[string]$record.loader.version;if(-not $version){continue};$maven=$null;if($record.loader.PSObject.Properties['maven']){$maven=[string]$record.loader.maven};$calamus=$null;if($record.PSObject.Properties['calamus']){$calamus=$record.calamus};$launcherMeta=$null;if($record.PSObject.Properties['launcherMeta']){$launcherMeta=$record.launcherMeta};$candidates.Add([pscustomobject][ordered]@{loaderId='OrnitheLoader';minecraftId=$MinecraftId;loaderVersion=$version;version=$version;stable=[bool]$record.loader.stable;artifact=[pscustomobject]@{coordinate=$maven};mappingContext=[pscustomobject]@{calamus=$calamus;feather=$null};launcherMeta=$launcherMeta;sourceClass='ActiveOfficial';trustClass='TrustedOfficial';maintenanceState='Active';transportSecurity='HTTPS';toolchain=[pscustomobject]@{id='Ploceus';version=$null;ecosystem='Ornithe'};source=$document.sourceUrl;providerStatus=$document.providerStatus;cacheStatus=$document.cacheStatus;provenance=@([pscustomobject]@{sourceUrl=$document.sourceUrl;fetchedAt=$document.fetchedAt;validatedAt=$document.validatedAt;localHash=$document.localHash;cacheStatus=$document.cacheStatus});downloadPermission='Granted';executePermission='RequiresConfirmation'})}
-    return @($candidates)
+    [pscustomobject]@{providerStatus=$document.providerStatus;cacheStatus=$document.cacheStatus;validatedAt=$document.validatedAt;error=$null;candidates=@($candidates)}
+}
+
+function Get-MmtlOrnitheCandidates {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][string]$MinecraftId,[Parameter(Mandatory)][string]$RuntimeRoot,[switch]$Offline,[switch]$ForceRefresh,[scriptblock]$HttpGet)
+    $query=Get-MmtlOrnitheCandidateQuery -MinecraftId $MinecraftId -RuntimeRoot $RuntimeRoot -Offline:$Offline -ForceRefresh:$ForceRefresh -HttpGet $HttpGet
+    return @($query.candidates)
 }
 
 function Get-MmtlLiteLoaderProviderSnapshot {
@@ -162,7 +178,7 @@ function Get-MmtlLiteLoaderProviderSnapshot {
             }
         }catch{$error=$_.Exception.Message;$records.Clear()}
     }
-    [pscustomobject][ordered]@{providerId='LiteLoader';loaderId='LiteLoader';providerStatus=if($error -and $document.providerStatus -eq 'Available'){'Degraded'}else{$document.providerStatus};availability=if($records.Count){'Available'}else{'Unknown'};sourceClass='HistoricalOfficial';trustClass='VerifiedHistorical';maintenanceState='Archived';metadataTransport='HTTPS';supportedVersions=@($records|ForEach-Object minecraftId|Sort-Object -Unique);candidates=@($records);sourceUrl=$script:MmtlLiteLoaderManifest;cacheStatus=$document.cacheStatus;retrievedAt=$document.fetchedAt;lastReviewed='2026-10-02T00:00:00Z';error=$error;provenance=@($document.sourceUrl)}
+    [pscustomobject][ordered]@{providerId='LiteLoader';loaderId='LiteLoader';providerStatus=if($error -and $document.providerStatus -eq 'Available'){'Degraded'}else{$document.providerStatus};availability=if($records.Count){'Available'}else{'Unknown'};sourceClass='HistoricalOfficial';trustClass='VerifiedHistorical';maintenanceState='Archived';metadataTransport='HTTPS';supportedVersions=@($records|ForEach-Object minecraftId|Sort-Object -Unique);candidates=@($records);sourceUrl=$script:MmtlLiteLoaderManifest;cacheStatus=$document.cacheStatus;retrievedAt=$document.fetchedAt;validatedAt=$document.validatedAt;lastReviewed='2026-10-02T00:00:00Z';error=$error;provenance=@($document.sourceUrl)}
 }
 
 function Get-MmtlLiteLoaderCandidates {
@@ -215,4 +231,4 @@ function New-MmtlJarModManualCandidate {
     [pscustomobject][ordered]@{providerId='JarMod';loaderId='JarMod';minecraftId=$MinecraftId;availability='Manual';sourceClass='ManualArtifact';trustClass='UnverifiedHistorical';transportSecurity='LocalManual';maintenanceState='Unknown';artifactPath=$resolved.Path;sha256=$hash;integrity=Get-MmtlHistoricalIntegrityAssessment -Algorithm SHA256 -Hash $hash;source=$Source;patchStrategy=$PatchStrategy;downloadPermission='Denied';executePermission='Denied';patchPermission='RequiresConfirmation';retrievedAt=$retrievedAt.ToUniversalTime().ToString('o');lastReviewed=[DateTimeOffset]::UtcNow.ToString('o');provenance=@([pscustomobject]@{sourceType='manual';path=$resolved.Path;sha256=$hash;source=$Source})}
 }
 
-Export-ModuleMember -Function Get-MmtlLegacyFabricProviderSnapshot,Get-MmtlLegacyFabricReleaseCoverage,Get-MmtlLegacyFabricCandidates,Get-MmtlOrnitheProviderSnapshot,Get-MmtlOrnitheReleaseCoverage,Get-MmtlOrnitheCandidates,Get-MmtlLiteLoaderProviderSnapshot,Get-MmtlLiteLoaderCandidates,Get-MmtlModLoaderArchiveCandidates,Get-MmtlModLoaderMPArchiveCandidates,Get-MmtlRiftCandidates,New-MmtlJarModManualCandidate
+Export-ModuleMember -Function Get-MmtlLegacyFabricProviderSnapshot,Get-MmtlLegacyFabricReleaseCoverage,Get-MmtlLegacyFabricCandidateQuery,Get-MmtlLegacyFabricCandidates,Get-MmtlOrnitheProviderSnapshot,Get-MmtlOrnitheReleaseCoverage,Get-MmtlOrnitheCandidateQuery,Get-MmtlOrnitheCandidates,Get-MmtlLiteLoaderProviderSnapshot,Get-MmtlLiteLoaderCandidates,Get-MmtlModLoaderArchiveCandidates,Get-MmtlModLoaderMPArchiveCandidates,Get-MmtlRiftCandidates,New-MmtlJarModManualCandidate
