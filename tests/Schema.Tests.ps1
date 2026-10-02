@@ -154,7 +154,7 @@ Describe 'MMTL v2 JSON Schemas' {
     }
 
     It 'Historical Availability schema keeps manual artifacts separate from remote availability' {
-        $index=@{schemaVersion=1;minecraftId='1.2.5';scope='Historical';generatedAt='2026-10-02T00:00:00Z';entries=@(@{loaderId='JarMod';availability='Manual';providerStatus='ManualOnly';sourceClass='ManualArtifact';trustClass='UnverifiedHistorical';transportSecurity='LocalManual';maintenanceState='Unknown';cacheStatus='NotApplicable';source=$null;candidateCount=0;notes=@('Requires user supplied artifact.')})}
+        $index=@{schemaVersion=1;minecraftId='1.2.5';scope='Historical';generatedAt='2026-10-02T00:00:00Z';entries=@(@{loaderId='JarMod';availability='Manual';reasonCode='MANUAL_USER_ARTIFACT_REQUIRED';providerStatus='ManualOnly';sourceClass='ManualArtifact';trustClass='UnverifiedHistorical';transportSecurity='LocalManual';maintenanceState='Unknown';cacheStatus='NotApplicable';source=$null;candidateCount=0;notes=@('Requires user supplied artifact.')})}
         (Test-Json -Json ($index|ConvertTo-Json -Depth 10 -Compress) -SchemaFile $script:historicalAvailabilitySchema) | Should -BeTrue
         $index.entries[0].availability='Available'
         (Test-Json -Json ($index|ConvertTo-Json -Depth 10 -Compress) -SchemaFile $script:historicalAvailabilitySchema) | Should -BeTrue

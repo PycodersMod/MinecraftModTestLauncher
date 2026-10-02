@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pycodersmod.github.io/MinecraftModTestLauncher/schemas/coverage-audit.schema.json",
+  "title": "MMTL Full Minecraft Release Coverage Audit",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "generatedAt", "minecraftCatalog", "providers", "releases", "summary", "gaps", "warnings", "provenance"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "generatedAt": {"type": "string", "format": "date-time"},
+    "minecraftCatalog": {"type": "object", "additionalProperties": false, "required": ["source", "manifestHash", "minimumRelease", "currentStable", "releaseCount", "cacheStatus"], "properties": {"source": {"type": "string", "format": "uri"}, "manifestHash": {"type": "string", "minLength": 1}, "minimumRelease": {"type": "string", "minLength": 1}, "currentStable": {"type": "string", "minLength": 1}, "releaseCount": {"type": "integer", "minimum": 1}, "cacheStatus": {"type": "string"}}},
+    "providers": {"type": "array", "items": {"$ref": "#/definitions/provider"}},
+    "releases": {"type": "array", "items": {"$ref": "#/definitions/release"}},
+    "summary": {"type": "object", "required": ["releaseCount", "stateCounts", "coverageStatus"], "properties": {"releaseCount": {"type": "integer", "minimum": 0}, "stateCounts": {"type": "object", "required": ["Available", "Unavailable", "Unknown", "Manual", "Degraded"], "properties": {"Available": {"type": "integer", "minimum": 0}, "Unavailable": {"type": "integer", "minimum": 0}, "Unknown": {"type": "integer", "minimum": 0}, "Manual": {"type": "integer", "minimum": 0}, "Degraded": {"type": "integer", "minimum": 0}}}, "coverageStatus": {"type": "string"}}, "additionalProperties": true},
+    "gaps": {"type": "array", "items": {"$ref": "#/definitions/gap"}},
+    "warnings": {"type": "array", "items": {"type": "object"}},
+    "provenance": {"type": "array", "items": {"type": "object"}}
+  },
+  "definitions": {
+    "provider": {"type": "object", "required": ["loaderId", "status", "cacheStatus"], "properties": {"loaderId": {"enum": ["Forge", "Fabric", "NeoForge", "Quilt", "LegacyFabric", "OrnitheLoader", "LiteLoader", "Rift", "ModLoader", "ModLoaderMP", "JarMod"]}, "status": {"type": "string"}, "source": {"type": ["string", "null"]}, "sourceClass": {"type": ["string", "null"]}, "cacheStatus": {"type": "string"}, "lastChecked": {"type": ["string", "null"], "format": "date-time"}, "notes": {"type": "array", "items": {"type": "string"}}}, "additionalProperties": true},
+    "state": {"type": "object", "additionalProperties": true, "required": ["availability", "reasonCode", "source", "sourceClass", "cacheStatus", "lastChecked", "notes", "provenance"], "properties": {"availability": {"enum": ["Available", "Unavailable", "Unknown", "Manual", "Degraded"]}, "reasonCode": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]+$"}, "source": {"type": ["string", "null"]}, "sourceClass": {"type": "string", "minLength": 1}, "cacheStatus": {"type": "string", "minLength": 1}, "lastChecked": {"type": ["string", "null"], "format": "date-time"}, "notes": {"type": "array", "items": {"type": "string"}}, "provenance": {"type": "array", "items": {"type": "object"}}, "candidateCount": {"type": ["integer", "null"], "minimum": 0}, "candidates": {"type": "array"}, "candidateProbeStatus": {"type": "string"}, "trustClass": {"type": ["string", "null"]}, "transportSecurity": {"type": ["string", "null"]}}},
+    "release": {"type": "object", "additionalProperties": false, "required": ["minecraftId", "releaseTime", "runtimeJava", "mainstreamLoaders", "historicalLoaders", "manualModes", "validationEvidence", "coverageStatus", "notes"], "properties": {"minecraftId": {"type": "string", "minLength": 1}, "releaseTime": {"type": "string", "format": "date-time"}, "runtimeJava": {"type": ["object", "null"]}, "mainstreamLoaders": {"$ref": "#/definitions/mainstream"}, "historicalLoaders": {"$ref": "#/definitions/historical"}, "manualModes": {"$ref": "#/definitions/manual"}, "validationEvidence": {"type": "array", "items": {"type": "object"}}, "coverageStatus": {"type": "string"}, "notes": {"type": "array", "items": {"type": "string"}}}},
+    "mainstream": {"type": "object", "additionalProperties": false, "required": ["Forge", "Fabric", "NeoForge", "Quilt"], "properties": {"Forge": {"$ref": "#/definitions/state"}, "Fabric": {"$ref": "#/definitions/state"}, "NeoForge": {"$ref": "#/definitions/state"}, "Quilt": {"$ref": "#/definitions/state"}}},
+    "historical": {"type": "object", "additionalProperties": false, "required": ["LegacyFabric", "OrnitheLoader", "LiteLoader", "Rift", "ModLoader", "ModLoaderMP"], "properties": {"LegacyFabric": {"$ref": "#/definitions/state"}, "OrnitheLoader": {"$ref": "#/definitions/state"}, "LiteLoader": {"$ref": "#/definitions/state"}, "Rift": {"$ref": "#/definitions/state"}, "ModLoader": {"$ref": "#/definitions/state"}, "ModLoaderMP": {"$ref": "#/definitions/state"}}},
+    "manual": {"type": "object", "additionalProperties": false, "required": ["JarMod"], "properties": {"JarMod": {"$ref": "#/definitions/state"}}},
+    "gap": {"type": "object", "additionalProperties": false, "required": ["severity", "reasonCode", "minecraftId", "loaderId", "message"], "properties": {"severity": {"enum": ["Info", "Warning", "Error", "Blocker"]}, "reasonCode": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]+$"}, "minecraftId": {"type": ["string", "null"]}, "loaderId": {"type": ["string", "null"]}, "message": {"type": "string", "minLength": 1}}}
+  }
+}

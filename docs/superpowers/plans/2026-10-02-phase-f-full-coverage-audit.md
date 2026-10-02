@@ -86,12 +86,12 @@ Expected verification: `Invoke-Pester -Path ./tests/CoverageProviderMapping.Test
 - Top-level contract includes catalog provenance/hash/range/count, providers, canonical release rows, summary metrics, gaps, warnings, and provenance. Every release contains four mainstream states, six historical states, JarMod manual-mode state, runtime Java, validation evidence, coverage status, and notes.
 - Gap severity is `Info`, `Warning`, `Error`, or `Blocker`; reason codes are centralized and stable.
 
-- [ ] Write schema-valid and schema-invalid fixtures, including missing reason, illegal status, missing provenance, and a null release row.
-- [ ] Add engine tests for generated records for every catalog release, all eleven modes present, provider-level failure isolation, offline partial cache, summary counts/ranges/gaps, and no fabricated JarMod candidates.
-- [ ] Add invariant tests for unexplained Unknown, Available without candidates, candidate/state contradiction, missing provenance/check time, invalid trust, and build evidence without exact target.
-- [ ] Run those tests against the current tree and observe the expected failures.
-- [ ] Implement pure normalization and aggregation; isolate provider exceptions; persist only optional live output under Runtime Root, never in source data.
-- [ ] Run coverage engine/schema/gap plus all existing provider/Java/historical tests.
+- [x] Write schema-valid and schema-invalid fixtures, including missing reason, illegal status, missing provenance, and a null release row.
+- [x] Add engine tests for generated records for every catalog release, all eleven modes present, provider-level failure isolation, offline partial cache, summary counts/ranges/gaps, and no fabricated JarMod candidates.
+- [x] Add invariant tests for unexplained Unknown, Available without candidates, candidate/state contradiction, missing provenance/check time, invalid trust, and build evidence without exact target.
+- [x] Run those tests against the current tree and observe the expected failures.
+- [x] Implement pure normalization and aggregation; isolate provider exceptions; live audit output stays outside source data.
+- [x] Run coverage engine/schema/gap plus all existing provider/Java/historical tests.
 - [ ] Commit as `feat: 建立全版本 coverage audit 引擎`.
 
 Expected verification: `Invoke-Pester -Path ./tests/CoverageAudit.Tests.ps1,./tests/CoverageSchema.Tests.ps1,./tests/CoverageGap.Tests.ps1,./tests/CoverageProviderMapping.Tests.ps1,./tests/Schema.Tests.ps1 -CI` reports zero failures; generated test audit has exactly `Catalog.entries.Count` release rows and no missing loader mode.
