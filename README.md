@@ -16,7 +16,13 @@ Ubuntu CI 覆盖平台、路径、Java/Wrapper fixture 和 Linux 受控进程测
 
 Phase C 增加 Mojang 官方 Version Manifest release Catalog，从 Java Edition 1.0 动态覆盖到 CurrentStable，并提供 24 小时缓存、惰性 version metadata、SHA-1 校验与 Runtime Java 来源解析。CLI 提供 --list-minecraft-versions、--minecraft-info <id|CurrentStable>、--refresh-catalog 与 --catalog-offline。CATALOGUED 只表示版本在 Mojang 目录中，不代表 Loader supported、Build verified、Dedicated Server verified 或 Client verified。Runtime Java metadata 不决定 Mod 工程的 Build Java，旧 JavaMajor 构建行为保留。
 
-Phase D 的 loader metadata 独立缓存于 Runtime Root，CLI 提供 `--list-loaders <minecraft-id|CurrentStable>` 与 `--loader-info <minecraft-id|CurrentStable> <Forge|Fabric|NeoForge|Quilt>`；`--loader-offline` 只影响 Loader metadata。Provider 会保留上游字段和来源，不会把查询结果提升为 Compatibility Matrix 的验证级别。
+Phase D 的 loader metadata 独立缓存于 Runtime Root，CLI 默认只显示 Forge、Fabric、NeoForge、Quilt。`--include-historical` 可显式显示历史生态，`--loader-info <id> <loader>` 可查询历史候选，`--provider-status <loader>` 可检查来源和覆盖状态；`--loader-offline` 只影响 Loader metadata。Provider 会保留来源与缓存状态，不会把查询结果提升为 Compatibility Matrix 的验证级别。
+
+### Historical / Advanced Ecosystems
+
+当前已加入 Legacy Fabric、Ornithe Loader、LiteLoader、Rift、Risugami ModLoader、ModLoaderMP 与 JarMod Manual Mode。Legacy Fabric 与 Ornithe 使用官方 HTTPS metadata 和独立缓存；Ornithe 按官方 v2 metadata 建模为独立 Loader identity，使用 Ploceus toolchain 并保留 Calamus mapping context。LiteLoader 的 HTTPS manifest 与 HTTP-only artifact repository 分开标记，MD5 仅用于损坏检测，不能授权执行。Rift 原始项目与 Rift Community Port 分别标识。ModLoader/MP 的 MCArchive 数据按具体版本、作者、文件名和 SHA-256 记录；JarMod 只在提供本地 artifact 后生成 Manual candidate，不执行 patch。
+
+历史候选或 `Available` 只表示来源目录/归档证据发现了候选；本地 fixtures 的 provider 解析与项目 Resolve 才分别记作 `CATALOGUED` / `RESOLVED`。所有历史构建需看逐项兼容性证据；不宣称这些生态均可在现代系统构建、启动客户端或运行服务端。用户显式请求历史范围时运行 `launcher.ps1 --list-loaders 1.7.10 --include-historical`；历史来源可通过 `--loader-info 1.13 Rift` 和 `--provider-status OrnitheLoader` 检查。
 
 - 已实现 Forge、NeoForge、Fabric 项目元数据识别、Java 主版本映射、Profile、兼容性预检和 build/run Gradle Wrapper 调用。
 - 支持 Single、IntegratedLAN 引导式 Host/Client，以及 Dedicated Server 加本地客户端；多项目构建结果按 SHA-256 汇入独立 Session。

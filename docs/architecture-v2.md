@@ -77,7 +77,16 @@ Artifact 具有 `TrustedOfficial`、`VerifiedHistorical`、`UnverifiedHistorical
 
 ## Identity registries 与历史特例
 
-Loader identity 目前包括 Forge、Fabric、NeoForge、Quilt、LegacyFabric、LiteLoader、Rift、ModLoader、ModLoaderMP、JarMod。这是身份词汇表，不是全版本支持声明。Toolchain（ForgeGradle、FabricLoom、NeoGradle、ModDevGradle、QuiltLoom、Ploceus）和 Build System（GradleWrapper、Custom、Legacy）独立建模。Ornithe 可作为 ecosystem context 与 Ploceus 关联，而不是 Loader identity。
+Loader identity 目前包括 Forge、Fabric、NeoForge、Quilt、LegacyFabric、OrnitheLoader、LiteLoader、Rift、ModLoader、ModLoaderMP、JarMod。这是身份词汇表，不是全版本支持声明。Toolchain（ForgeGradle、FabricLoom、NeoGradle、ModDevGradle、QuiltLoom、Ploceus、LegacyLooming）和 Build System（GradleWrapper、Custom、Legacy）独立建模。Ornithe Loader 是独立 runtime loader，Ornithe 是其 ecosystem context，Ploceus 是 toolchain，Calamus/Feather 等 mapping context 独立保留。
+
+### Historical source and safety model
+
+- `HistoricalSourceClass`（ActiveOfficial、HistoricalOfficial、VerifiedCommunityArchive、VerifiedCommunitySource、ManualArtifact、UnknownHistorical）、Artifact Trust、TransportSecurity、IntegrityAlgorithm/Strength、MaintenanceState 是并列字段，来源分类不会替代 artifact trust。
+- 历史 metadata 仅接受 allowlisted HTTPS，使用 ETag、Last-Modified、24 小时缓存、离线读取、哈希 envelope、原子替换和 stale 状态。HTTP-only artifact repository 仅作为 provenance；不放宽 metadata transport policy，也不允许其自动执行。
+- SHA-256 为 strong integrity evidence；SHA-1 为 legacy integrity；MD5 仅用于 corruption detection。Integrity hash 不等于 execution trust。
+- Legacy Fabric 与 Ornithe release coverage 通过精确 Minecraft ID 与 Phase C release Catalog 求交；Beta/Alpha/pre-release 不进入正式 release catalog。Legacy Fabric API 当前官方文档是 v2；实时 endpoint 本轮间歇超时，provider 会返回 Unavailable/Degraded 并保留 cache status。
+- LiteLoader manifest 采用 HTTPS，但 manifest 中的历史 artifact repository 为 HTTP-only。Rift 原始仓库、community port 与 MCArchive ModLoader/MP archive records 分开标识，并固定源码 commit 或 archive hash。JarMod 只允许用户提供本地路径、计算 SHA-256 并生成 Manual plan；本轮不会改写 Minecraft JAR 或执行 patch。
+- `--include-historical` 是 opt-in，默认 availability 列表维持四个 mainstream loaders。`--provider-status <id>` 输出历史 provider 来源、状态与 release coverage。Forge + LiteLoader evidence 解析为 Forge primary 与 LiteLoader overlay；不相关的多个 primary loader 仍标记 Ambiguous。
 
 将来版本/平台例外应按 `schemas/exception-registry.schema.json` 集中登记 matcher、rule、reason、provenance、适用范围和复核策略；Phase A 尚未迁移现有运行逻辑中的特例。
 
