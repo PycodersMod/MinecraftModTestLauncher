@@ -27,6 +27,10 @@ Describe 'Full coverage audit engine' {
         $audit.summary.releaseCount | Should -Be 2
         $audit.summary.perLoader.Forge.releaseCount | Should -Be 2
         $audit.summary.perLoader.Forge.Available | Should -Be 1
+        $audit.summary.perLoader.Forge.firstAvailableRelease | Should -BeExactly '1.0'
+        $audit.summary.perLoader.Forge.lastAvailableRelease | Should -BeExactly '1.0'
+        $audit.summary.perLoader.Forge.continuousRanges[0].minecraftIds | Should -Be @('1.0')
+        $audit.summary.perLoader.Forge.gaps[0].minecraftIds | Should -Be @('1.1')
     }
 
     It 'isolates a failed loader provider while retaining the other ten states' {
@@ -65,6 +69,30 @@ Describe 'Full coverage audit engine' {
         $audit=New-MmtlLiveCoverageAudit -RuntimeRoot $TestDrive -Catalog $script:catalog -ProviderInputs $script:inputs -CandidateProbe $probe
         $audit.releases[0].mainstreamLoaders.Forge.availability | Should -BeExactly 'Unknown'
         $audit.releases[0].mainstreamLoaders.Forge.reasonCode | Should -BeExactly 'COVERAGE_INCONSISTENCY'
+        $audit.summary.perLoader.Forge.candidateProbed | Should -Be 1
+        $audit.summary.perLoader.Forge.Available | Should -Be 0
+        $audit.summary.perLoader.Forge.Unknown | Should -Be 1
+        $audit.summary.stateCounts.Unknown | Should -Be 2
         @($audit.gaps|Where-Object{$_.minecraftId -eq '1.0' -and $_.loaderId -eq 'Forge' -and $_.reasonCode -eq 'COVERAGE_INCONSISTENCY'}).Count | Should -Be 1
+    }
+
+    It 'does not infer Ornithe Loader availability from game support without a loader candidate' {
+        $input=$script:inputs|ConvertTo-Json -Depth 20|ConvertFrom-Json -AsHashtable
+        $input.byRelease['1.0'].OrnitheLoader=[ordered]@{availability='Unknown';reasonCode='ORNITHE_LOADER_CANDIDATE_NOT_PROBED';source='https://meta.ornithemc.net/v2/versions/game';sourceClass='ActiveOfficial';cacheStatus='Fresh';lastChecked='2026-10-03T00:00:00Z';notes=@('Game support alone does not prove a loader candidate.');candidateCount=$null;candidates=@();candidateProbeStatus='NotProbed';provenance=@([pscustomobject]@{source='https://meta.ornithemc.net/v2/versions/game'})}
+        $probe={param($MinecraftId,$LoaderId) if($LoaderId -eq 'OrnitheLoader'){@()}else{@([pscustomobject]@{provenance=@([pscustomobject]@{source='https://example.invalid/candidate'})})}}
+        $audit=New-MmtlLiveCoverageAudit -RuntimeRoot $TestDrive -Catalog $script:catalog -ProviderInputs $input -CandidateProbe $probe
+        $audit.releases[0].historicalLoaders.OrnitheLoader.availability | Should -Be 'Unavailable'
+        $audit.releases[0].historicalLoaders.OrnitheLoader.reasonCode | Should -Be 'NO_UPSTREAM_CANDIDATE'
+        @($audit.gaps|Where-Object loaderId -eq 'OrnitheLoader').Count | Should -Be 0
+    }
+
+    It 'retains aggregated provider outage and unmapped upstream gaps after candidate probes' {
+        $input=$script:inputs|ConvertTo-Json -Depth 20|ConvertFrom-Json -AsHashtable
+        foreach($id in @('1.0','1.1')){$input.byRelease[$id].LegacyFabric=[ordered]@{availability='Unknown';reasonCode='LEGACY_FABRIC_PROVIDER_OUTAGE';source='https://meta.legacyfabric.net/v2/versions/game';sourceClass='ActiveOfficial';cacheStatus='Unavailable';lastChecked=$null;notes=@('official endpoint timed out');candidateCount=$null;candidates=@();candidateProbeStatus='NotProbed';provenance=@([pscustomobject]@{source='https://meta.legacyfabric.net/v2/versions/game'})}}
+        $input.providerStatuses=[ordered]@{LegacyFabric=[ordered]@{status='Unavailable';source='https://meta.legacyfabric.net/v2/versions/game';sourceClass='ActiveOfficial';cacheStatus='Unavailable';lastChecked=$null;notes=@('official endpoint timed out')};NeoForge=[ordered]@{status='Available';source='https://maven.neoforged.net';sourceClass='ActiveOfficial';cacheStatus='Fresh';lastChecked='2026-10-03T00:00:00Z';notes=@();unmappedVersions=@([ordered]@{artifactFamily='NeoForge';upstreamVersion='99.1.0'})}}
+        $probe={param($MinecraftId,$LoaderId) @([pscustomobject]@{source='https://example.invalid/candidate';provenance=@([pscustomobject]@{source='https://example.invalid/candidate'})})}
+        $audit=New-MmtlLiveCoverageAudit -RuntimeRoot $TestDrive -Catalog $script:catalog -ProviderInputs $input -CandidateProbe $probe
+        @($audit.gaps|Where-Object{$_.loaderId -eq 'LegacyFabric' -and $_.reasonCode -eq 'PROVIDER_UNAVAILABLE' -and $_.releaseCount -eq 2}).Count | Should -Be 1
+        @($audit.gaps|Where-Object{$_.loaderId -eq 'NeoForge' -and $_.reasonCode -eq 'UNMAPPED_UPSTREAM_VERSION' -and $_.severity -eq 'Error'}).Count | Should -Be 1
     }
 }

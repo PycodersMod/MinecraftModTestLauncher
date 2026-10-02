@@ -1,0 +1,57 @@
+name: MMTL live coverage audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 8 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  live-coverage:
+    runs-on: windows-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Generate live full-coverage report
+        shell: pwsh
+        run: |
+          $reportText = & ./launcher.ps1 --coverage-report --json | Out-String
+          $report = $reportText | ConvertFrom-Json -ErrorAction Stop
+          $report | ConvertTo-Json -Depth 80 | Set-Content -LiteralPath coverage-report.json -Encoding utf8
+          $gaps = @($report.gaps)
+          $warnings = @($report.warnings)
+          $invariantCodes = @('CATALOG_RELEASE_ROW_COUNT_MISMATCH', 'PROVIDER_RECORD_MISSING', 'UNKNOWN_REASON_CODE', 'UNKNOWN_WITHOUT_REASON', 'UNKNOWN_WITHOUT_NOTES', 'AVAILABLE_WITHOUT_CANDIDATE', 'COVERAGE_INCONSISTENCY', 'STATE_PROVENANCE_MISSING', 'STATE_CHECK_TIME_MISSING', 'UNSAFE_TRUST_ESCALATION', 'STATE_SOURCE_MISSING')
+          $invariantErrors = @($gaps | Where-Object { $_.reasonCode -in $invariantCodes })
+          $coverageErrors = @($gaps | Where-Object { $_.severity -in @('Error', 'Blocker') -and $_.reasonCode -notin $invariantCodes })
+          $summary = @(
+            '# Live coverage audit',
+            "- Catalog: $($report.minecraftCatalog.releaseCount) releases; $($report.minecraftCatalog.minimumRelease) to $($report.minecraftCatalog.currentStable)",
+            "- Coverage status: $($report.summary.coverageStatus)",
+            "- Provider health warnings: $($warnings.Count)",
+            "- Coverage gaps: $($gaps.Count)",
+            "- Coverage errors (explicit provider/data gaps): $($coverageErrors.Count)",
+            "- Invariant errors/blockers: $($invariantErrors.Count)",
+            '',
+            '## Provider health',
+            ($warnings | ForEach-Object { "- $($_.loaderId): $($_.reasonCode) — $($_.message)" }),
+            '',
+            '## Coverage errors',
+            ($coverageErrors | ForEach-Object { "- $($_.loaderId) $($_.minecraftId) $($_.reasonCode) — $($_.message)" }),
+            '',
+            '## Coverage gaps',
+            ($gaps | ForEach-Object { "- $($_.severity): $($_.loaderId) $($_.minecraftId) $($_.reasonCode) — $($_.message)" })
+          )
+          $summary | Set-Content -LiteralPath coverage-summary.md -Encoding utf8
+          $gaps | ConvertTo-Json -Depth 30 | Set-Content -LiteralPath coverage-gaps.json -Encoding utf8
+          if ($invariantErrors.Count -gt 0) { throw 'MMTL coverage invariants reported Error or Blocker gaps.' }
+      - name: Upload audit artifacts
+        if: always()
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: mmtl-live-coverage-${{ github.run_id }}
+          path: |
+            coverage-report.json
+            coverage-summary.md
+            coverage-gaps.json

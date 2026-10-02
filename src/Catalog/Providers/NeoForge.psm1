@@ -46,6 +46,20 @@ function Resolve-MmtlNeoForgeVersionMapping {
     $null
 }
 
+function Get-MmtlNeoForgeUnmappedVersions {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)]$Snapshot)
+    $unmapped=[Collections.Generic.List[object]]::new()
+    foreach($family in @($Snapshot.modern,$Snapshot.transition)){
+        if(-not $family -or $family.status -notin @('Available','Stale')){continue}
+        foreach($version in @($family.versions)){
+            $mapping=Resolve-MmtlNeoForgeVersionMapping -Version ([string]$version) -CatalogEntrySet $Snapshot.catalogEntrySet -ArtifactFamily $family.artifactFamily
+            if(-not $mapping){$unmapped.Add([pscustomobject]@{artifactFamily=[string]$family.artifactFamily;upstreamVersion=[string]$version;reasonCode='UNMAPPED_UPSTREAM_VERSION'})}
+        }
+    }
+    @($unmapped)
+}
+
 function New-MmtlNeoForgeCandidate {
     param([Parameter(Mandatory)][string]$MinecraftId,[Parameter(Mandatory)][string]$Version,[Parameter(Mandatory)]$Family,[Parameter(Mandatory)]$Snapshot)
     $mapping=Resolve-MmtlNeoForgeVersionMapping -Version $Version -CatalogEntrySet $Snapshot.catalogEntrySet -ArtifactFamily $Family.artifactFamily
@@ -82,4 +96,4 @@ function Get-MmtlNeoForgePreferredCandidate {
     [pscustomobject]@{candidate=$null;policy='NoCandidate';status='Unavailable';reason='No mapped NeoForge candidate exists.'}
 }
 
-Export-ModuleMember -Function Get-MmtlNeoForgeProviderSnapshot,Get-MmtlNeoForgeCandidates,Get-MmtlNeoForgeAvailability,Get-MmtlNeoForgePreferredCandidate,Resolve-MmtlNeoForgeVersionMapping
+Export-ModuleMember -Function Get-MmtlNeoForgeProviderSnapshot,Get-MmtlNeoForgeCandidates,Get-MmtlNeoForgeAvailability,Get-MmtlNeoForgePreferredCandidate,Resolve-MmtlNeoForgeVersionMapping,Get-MmtlNeoForgeUnmappedVersions

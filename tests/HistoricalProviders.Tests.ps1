@@ -65,6 +65,17 @@ Describe 'Historical providers and provenance' {
         $candidate.executePermission | Should -Be 'Denied'
         $candidate.maintenanceState | Should -Be 'Archived'
     }
+    It 'accepts LiteLoader manifest records without optional dev toolchain metadata' {
+        $original=$script:liteManifest
+        try {
+            $script:liteManifest=$script:liteManifest.Replace(',"dev":{"fgVersion":"2.2","mappings":"snapshot_custom"}','')
+            $snapshot=Get-MmtlLiteLoaderProviderSnapshot -RuntimeRoot (Join-Path $TestDrive 'lite-no-dev') -HttpGet $script:http
+            $snapshot.providerStatus | Should -Be 'Available'
+            $candidate=Get-MmtlLiteLoaderCandidates -MinecraftId '1.10.2' -Snapshot $snapshot|Select-Object -First 1
+            $candidate.toolchain.version | Should -BeNullOrEmpty
+            $candidate.mappingContext.mappings | Should -BeNullOrEmpty
+        } finally {$script:liteManifest=$original}
+    }
 
     It 'exposes ModLoader and ModLoaderMP as separate archive providers with distinct client/server artifacts' {
         $loader = Get-MmtlModLoaderArchiveCandidates -MinecraftId '1.2.5' | Select-Object -First 1
