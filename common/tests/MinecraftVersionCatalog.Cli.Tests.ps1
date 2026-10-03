@@ -72,7 +72,7 @@ Describe 'Minecraft Catalog CLI' {
             $script:config|ConvertTo-Json -Depth 12|Set-Content -LiteralPath $script:configPath -Encoding utf8
             $output=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --catalog-offline --list-minecraft-versions 2>&1|Out-String
             $LASTEXITCODE | Should -Be 0
-            $output | Should -Match 'Windows-only %LOCALAPPDATA%'
+            $output | Should -Match 'Windows 专用的 %LOCALAPPDATA%'
             $output | Should -Match '1.20.5'
         }finally{$env:XDG_DATA_HOME=$previousXdg}
     }
