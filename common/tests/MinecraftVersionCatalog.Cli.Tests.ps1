@@ -64,7 +64,7 @@ Describe 'Minecraft Catalog CLI' {
         $previousXdg=$env:XDG_DATA_HOME
         try{
             $env:XDG_DATA_HOME=Join-Path $TestDrive 'isolated-xdg'
-            $nativeRuntime=(Get-MmtlPlatformProvider).DefaultRuntimeRoot
+            $nativeRuntime=Join-Path $env:XDG_DATA_HOME 'MinecraftModTestLauncher'
             $json=$script:manifestJson
             $http={param($Uri,$Headers,$TimeoutSeconds)[pscustomobject]@{StatusCode=200;Headers=@{};Bytes=[Text.Encoding]::UTF8.GetBytes($json)}}.GetNewClosure()
             Get-MmtlMinecraftVersionCatalog -RuntimeRoot $nativeRuntime -HttpGet $http | Out-Null
