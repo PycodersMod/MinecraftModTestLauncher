@@ -31,7 +31,7 @@ Describe 'Validation plan selection and fixture trust' {
         $fixture=[pscustomobject]@{type='GeneratedOfficialFixture';source='https://github.com/FabricMC/fabric-example-mod';commit=('a'*40);license='CC0-1.0';trust='TrustedOfficial';allowedTasks=@('clean','build')}
         (Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @('FabricMC','NeoForgeMDKs','QuiltMC','MinecraftForge')) | Should -BeTrue
         $fixture.allowedTasks=@('build','build; Remove-Item -Recurse')
-        {Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @('FabricMC')} | Should -Throw '*unallowlisted*'
+        {Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @('FabricMC')} | Should -Throw '*未列入许可清单*'
     }
 
     It 'rejects unpinned, HTTP, unknown-owner, and untrusted fixture sources' {
@@ -39,7 +39,7 @@ Describe 'Validation plan selection and fixture trust' {
         {Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @('FabricMC')} | Should -Throw
         $fixture.source='https://github.com/random-user/mod'
         $fixture.commit=('a'*40)
-        {Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @('FabricMC')} | Should -Throw '*owner*'
+        {Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @('FabricMC')} | Should -Throw '*来源所有者不在许可清单中*'
         $fixture.source='https://github.com/FabricMC/fabric-example-mod'
         $fixture.trust='UnverifiedHistorical'
         {Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @('FabricMC')} | Should -Throw '*trust*'
@@ -49,7 +49,7 @@ Describe 'Validation plan selection and fixture trust' {
         $fixture=[pscustomobject]@{type='OfficialArtifactFixture';source='https://maven.minecraftforge.net/net/minecraftforge/forge/example-mdk.zip';commit=('a'*64);officialChecksum=('b'*32);officialChecksumAlgorithm='MD5';license='Forge MDK license';trust='TrustedOfficial';allowedTasks=@('clean','build')}
         (Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @()) | Should -BeTrue
         $fixture.source='https://example.org/forge-mdk.zip'
-        {Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @()} | Should -Throw '*allowlisted*'
+        {Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @()} | Should -Throw '*许可清单中的 Forge HTTPS 主机*'
         $fixture.source='https://maven.minecraftforge.net/forge-mdk.zip';$fixture.commit='latest'
         {Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @()} | Should -Throw '*SHA-256*'
     }

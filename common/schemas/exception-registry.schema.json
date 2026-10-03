@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://pycodersmod.github.io/MinecraftModTestLauncher/schemas/exception-registry.schema.json",
-  "title": "MMTL Exception Registry v1",
-  "description": "Central, reviewable rules for historical compatibility and platform exceptions.",
+  "title": "MMTL 例外注册表 v1",
+  "description": "集中记录可审查的历史兼容性规则与平台例外。",
   "type": "object",
   "additionalProperties": false,
   "required": ["schemaVersion", "exceptions"],

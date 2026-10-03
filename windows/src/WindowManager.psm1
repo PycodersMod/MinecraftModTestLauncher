@@ -40,10 +40,10 @@ function Set-MmtlSessionWindowLayout {
     [CmdletBinding()]
     param([Parameter(Mandatory)][string]$SessionPath,[ValidateSet('Auto','Tile','Cascade','None')][string]$Mode='Auto',[ValidateRange(1,300)][int]$TimeoutSeconds=45,[ValidateRange(100,2000)][int]$PollMilliseconds=500)
     if($Mode -eq 'None'){return [pscustomobject]@{Status='Skipped';Reason='Layout disabled';Windows=0}}
-    if((Get-MmtlWindowLayout -Mode $Mode) -ne 'Available'){return [pscustomobject]@{Status='UnavailableFallbackNone';Reason='Windows window API unavailable';Windows=0}}
+    if((Get-MmtlWindowLayout -Mode $Mode) -ne 'Available'){return [pscustomobject]@{Status='UnavailableFallbackNone';Reason='Windows 窗口 API 不可用';Windows=0}}
     $pidPath=Join-Path $SessionPath 'pids.json';if(-not(Test-Path -LiteralPath $pidPath)){throw 'Session 缺少进程登记清单。'}
     $entries=@(Get-Content -LiteralPath $pidPath -Raw|ConvertFrom-Json|Where-Object Role -in @('Host','Client'))
-    if(-not $entries.Count){return [pscustomobject]@{Status='Skipped';Reason='No registered client processes';Windows=0}}
+    if(-not $entries.Count){return [pscustomobject]@{Status='Skipped';Reason='没有已登记的客户端进程';Windows=0}}
     $deadline=[DateTime]::UtcNow.AddSeconds($TimeoutSeconds);$matched=@()
     do{
         $cim=@(Get-CimInstance -ClassName Win32_Process -ErrorAction SilentlyContinue);$candidatePids=[Collections.Generic.HashSet[int]]::new()
@@ -54,10 +54,10 @@ function Set-MmtlSessionWindowLayout {
         if($windows.Count -ge $entries.Count -or [DateTime]::UtcNow -ge $deadline){break}
         Start-Sleep -Milliseconds $PollMilliseconds
     }while([DateTime]::UtcNow -lt $deadline)
-    if(-not $matched.Count){return [pscustomobject]@{Status='Skipped';Reason='No visible Minecraft windows found';Windows=0}}
-    if($Mode -eq 'Auto' -and $matched.Count -lt 2){return [pscustomobject]@{Status='Skipped';Reason='Auto layout requires multiple clients';Windows=$matched.Count}}
+    if(-not $matched.Count){return [pscustomobject]@{Status='Skipped';Reason='没有找到可见的 Minecraft 窗口';Windows=0}}
+    if($Mode -eq 'Auto' -and $matched.Count -lt 2){return [pscustomobject]@{Status='Skipped';Reason='自动布局需要多个客户端';Windows=$matched.Count}}
     $width=[MMTL.WindowApi]::ScreenWidth;$height=[MMTL.WindowApi]::ScreenHeight
-    if($width -lt 1 -or $height -lt 1){return [pscustomobject]@{Status='UnavailableFallbackNone';Reason='Screen geometry unavailable';Windows=$matched.Count}}
+    if($width -lt 1 -or $height -lt 1){return [pscustomobject]@{Status='UnavailableFallbackNone';Reason='无法获取屏幕尺寸';Windows=$matched.Count}}
     $rectangles=if($Mode -eq 'Cascade'){Get-MmtlCascadeRectangles -Count $matched.Count -ScreenWidth $width -ScreenHeight $height}else{Get-MmtlTileRectangles -Count $matched.Count -ScreenWidth $width -ScreenHeight $height}
     $moved=0
     for($i=0;$i -lt $matched.Count;$i++){$rect=$rectangles[$i];if([MMTL.WindowApi]::Place($matched[$i].Handle,$rect.X,$rect.Y,$rect.Width,$rect.Height)){$moved++}}

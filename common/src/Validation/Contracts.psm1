@@ -45,7 +45,7 @@ function Test-MmtlAdvancedValidationEvidence {
                 $server.processExited -eq $true -and
                 $server.portReleased -eq $true
             $reason = 'SERVER_VERIFIED_CLAIM_MISSING_EVIDENCE'
-            $message = 'Server verification needs a matched ready marker, matching process, listening port, safe stop, process exit, and released port.'
+            $message = '服务端验证需要匹配就绪标记和进程，并确认端口正在监听、安全停止、进程退出且端口已释放。'
         }
         'CLIENT_LAUNCH_VERIFIED' {
             $client = if ($Validation.PSObject.Properties['clientEvidence']) { $Validation.clientEvidence } elseif ($Validation.PSObject.Properties['marker'] -and $Validation.PSObject.Properties['process'] -and $Validation.marker -and $Validation.process) {
@@ -57,7 +57,7 @@ function Test-MmtlAdvancedValidationEvidence {
                 $client.processIdentityMatched -eq $true -and
                 $client.liveAtMarker -eq $true
             $reason = 'CLIENT_LAUNCH_VERIFIED_CLAIM_MISSING_EVIDENCE'
-            $message = 'Client verification needs a real initialization marker and matching live Minecraft process.'
+            $message = '客户端验证需要真实的初始化标记，以及与之匹配且仍在运行的 Minecraft 进程。'
         }
         'INTEGRATION_VERIFIED' {
             $integration = if ($Validation.PSObject.Properties['integrationEvidence']) { $Validation.integrationEvidence } else { $null }
@@ -66,7 +66,7 @@ function Test-MmtlAdvancedValidationEvidence {
                 $integration.completed -eq $true -and
                 [int]$integration.assertionsPassed -ge 1
             $reason = 'INTEGRATION_VERIFIED_CLAIM_MISSING_EVIDENCE'
-            $message = 'Integration verification needs a named completed scenario and at least one passed assertion.'
+            $message = '集成验证需要具名且已完成的场景，并至少有一项断言通过。'
         }
     }
 

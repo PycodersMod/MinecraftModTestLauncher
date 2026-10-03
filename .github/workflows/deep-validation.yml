@@ -1,10 +1,10 @@
-name: MMTL deep validation
+name: MMTL 深度验证
 
 on:
   workflow_dispatch:
     inputs:
       scope:
-        description: Select a bounded evidence slice; each run only builds the declared pinned fixtures.
+        description: 选择有界证据范围；每次运行只构建声明且已固定版本的 Fixture。
         type: choice
         required: true
         default: P0
@@ -104,7 +104,7 @@ jobs:
           distribution: temurin
           java-version: ${{ matrix.java }}
           cache: gradle
-      - name: Check wrapper source
+      - name: 检查 Wrapper 来源
         if: github.event_name != 'workflow_dispatch' || inputs.scope == matrix.scope
         shell: pwsh
         run: |
@@ -115,7 +115,7 @@ jobs:
           $distributionUrl = ($distributionLine -replace '^distributionUrl=', '') -replace '\\:', ':'
           if ($distributionUrl -notmatch '^https://') { Add-Content ./fixture/build.log 'Fixture Gradle distribution must use HTTPS.'; throw 'Fixture Gradle distribution must use HTTPS.' }
           if ($distributionUrl -match '(?i)^https?://[^/\s:]+:[^/@\s]+@') { Add-Content ./fixture/build.log 'Credentials are forbidden in fixture wrapper URLs.'; throw 'Credentials are forbidden in fixture wrapper URLs.' }
-      - name: Clean build fixture
+      - name: 清理并构建 Fixture
         id: fixture-build-windows
         if: (github.event_name != 'workflow_dispatch' || inputs.scope == matrix.scope) && runner.os == 'Windows'
         shell: pwsh
@@ -124,13 +124,13 @@ jobs:
           [DateTimeOffset]::UtcNow.ToString('o') | Set-Content ./build-started-at.txt -NoNewline
           .\gradlew.bat --no-daemon --console=plain clean build 2>&1 | Tee-Object -FilePath build.log
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      - name: Clean build fixture
+      - name: 清理并构建 Fixture
         id: fixture-build-unix
         if: (github.event_name != 'workflow_dispatch' || inputs.scope == matrix.scope) && runner.os != 'Windows'
         shell: bash
         working-directory: fixture
         run: date -u +%Y-%m-%dT%H:%M:%SZ > build-started-at.txt; set -o pipefail; ./gradlew --no-daemon --console=plain clean build 2>&1 | tee build.log
-      - name: Write hashed build evidence
+      - name: 写入带哈希的构建证据
         if: always() && (github.event_name != 'workflow_dispatch' || inputs.scope == matrix.scope)
         shell: pwsh
         run: |

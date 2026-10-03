@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://mmtl.local/schemas/historical-availability.schema.json",
-  "title": "MMTL Historical Loader Availability",
+  "title": "MMTL 历史 Loader 可用性",
   "type": "object",
   "required": ["schemaVersion", "minecraftId", "scope", "generatedAt", "entries"],
   "properties": {

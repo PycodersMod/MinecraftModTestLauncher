@@ -36,7 +36,7 @@ function Update-MmtlSessionReport {
             $same=if($current){Test-MmtlProcessIdentity -Process $current -Record $entry}else{$false}
             if($same){$processState='Running'}
             elseif($current){$processState='PIDReused'}
-            elseif($entry.LogPath){$logText='';foreach($candidateLog in @([string]$entry.LogPath,([string]$entry.LogPath+'.err'))){if(Test-Path -LiteralPath $candidateLog){$logText+=(Get-Content -LiteralPath $candidateLog -Tail 12000 -ErrorAction SilentlyContinue)-join "`n"}};if($logText -match '(?im)^BUILD FAILED'){ $processState='Failed';$errorMessage='Gradle logs report BUILD FAILED; exact wrapper exit code was not recorded.'}elseif($logText -match '(?im)^BUILD SUCCESSFUL'){$processState='Completed';$exitCode=0}}
+            elseif($entry.LogPath){$logText='';foreach($candidateLog in @([string]$entry.LogPath,([string]$entry.LogPath+'.err'))){if(Test-Path -LiteralPath $candidateLog){$logText+=(Get-Content -LiteralPath $candidateLog -Tail 12000 -ErrorAction SilentlyContinue)-join "`n"}};if($logText -match '(?im)^BUILD FAILED'){ $processState='Failed';$errorMessage='Gradle 日志报告 BUILD FAILED；未记录 Wrapper 的准确退出码。'}elseif($logText -match '(?im)^BUILD SUCCESSFUL'){$processState='Completed';$exitCode=0}}
         }
         $entry|Add-Member -NotePropertyName Status -NotePropertyValue $processState -Force
         $entry|Add-Member -NotePropertyName ExitCode -NotePropertyValue $exitCode -Force

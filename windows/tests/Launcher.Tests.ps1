@@ -59,7 +59,7 @@ Describe 'MMTL 安全与项目检测' {
         { Assert-MmtlCompatible -Projects @($p1,$p2) } | Should -Throw
     }
     It 'Java 未配置时明确失败' {
-        { Resolve-MmtlJava -Config ([pscustomobject]@{javaHomes=@{}}) -Major 19 } | Should -Throw '*Required Java 19 is not configured*'
+        { Resolve-MmtlJava -Config ([pscustomobject]@{javaHomes=@{}}) -Major 19 } | Should -Throw '*尚未为 Windows 配置所需的 Java 19*'
     }
     It 'Runtime Root 内创建 Session 和隔离日志目录' {
         $runtime=Join-Path $TestDrive 'runtime'

@@ -64,19 +64,19 @@ Describe 'Build Java requirement and observed build evidence' {
     It 'rejects a passed build record without an artifact digest' {
         $incomplete=@{}+$script:buildEvidenceArgs
         $incomplete.Remove('ArtifactSha256')
-        { New-MmtlBuildEvidence @incomplete } | Should -Throw '*requires the artifact SHA-256*'
+        { New-MmtlBuildEvidence @incomplete } | Should -Throw '*必须包含产物 SHA-256*'
     }
 
     It 'does not mark a build passed when the observed JVM is below the declared minimum' {
         $incompatible=@{}+$script:buildEvidenceArgs
         $incompatible.ObservedBuildJava=[pscustomobject]@{major=16;exactVersion='16.0.2';vendor='Oracle';os='Windows';arch='x64'}
-        { New-MmtlBuildEvidence @incompatible } | Should -Throw '*below the required minimum*'
+        { New-MmtlBuildEvidence @incompatible } | Should -Throw '*实测构建 JVM 低于要求的最低版本*'
     }
 
     It 'rejects build evidence whose observed Java platform differs from the build platform' {
         $mismatch=@{}+$script:buildEvidenceArgs
         $mismatch.ObservedBuildJava=[pscustomobject]@{major=25;exactVersion='25.0.1+8-LTS';vendor='Oracle';os='Linux';arch='x64'}
-        { New-MmtlBuildEvidence @mismatch } | Should -Throw '*must match the build platform*'
+        { New-MmtlBuildEvidence @mismatch } | Should -Throw '*必须与构建平台一致*'
     }
 
     It 'rejects a schema record that claims a passed build without an artifact digest' {

@@ -13,11 +13,11 @@ function Test-MmtlAllowedMetadataUri {
 function Invoke-MmtlMetadataHttpGet {
     [CmdletBinding()]
     param([Parameter(Mandatory)][string]$Uri,[Parameter(Mandatory)][string[]]$AllowedHosts,[hashtable]$Headers=@{},[int]$TimeoutSeconds=30,[scriptblock]$HttpGet)
-    if(-not (Test-MmtlAllowedMetadataUri -Uri $Uri -AllowedHosts $AllowedHosts)){throw "METADATA_INVALID_URL: URL must be HTTPS on an allowlisted host: $Uri"}
+    if(-not (Test-MmtlAllowedMetadataUri -Uri $Uri -AllowedHosts $AllowedHosts)){throw "METADATA_INVALID_URL: URL 必须使用许可清单中的 HTTPS 主机：$Uri"}
     if($HttpGet){
         $response=& $HttpGet $Uri $Headers $TimeoutSeconds
         $responseUri=if($response.PSObject.Properties['ResponseUri'] -and $response.ResponseUri){[string]$response.ResponseUri}else{$Uri}
-        if(-not (Test-MmtlAllowedMetadataUri -Uri $responseUri -AllowedHosts $AllowedHosts)){throw "METADATA_UNTRUSTED_REDIRECT: response URI is outside the provider allowlist: $responseUri"}
+        if(-not (Test-MmtlAllowedMetadataUri -Uri $responseUri -AllowedHosts $AllowedHosts)){throw "METADATA_UNTRUSTED_REDIRECT: 响应 URI 不在 Provider 许可清单中：$responseUri"}
         return [pscustomobject]@{StatusCode=[int]$response.StatusCode;Headers=$response.Headers;Bytes=[byte[]]$response.Bytes;ResponseUri=$responseUri}
     }
     $handler=[Net.Http.HttpClientHandler]::new();$handler.AllowAutoRedirect=$false
@@ -25,7 +25,7 @@ function Invoke-MmtlMetadataHttpGet {
     $current=[Uri]$Uri;$redirects=0
     try {
         while($true){
-            if(-not (Test-MmtlAllowedMetadataUri -Uri $current.AbsoluteUri -AllowedHosts $AllowedHosts)){throw "METADATA_UNTRUSTED_REDIRECT: redirect target is outside the provider allowlist: $current"}
+            if(-not (Test-MmtlAllowedMetadataUri -Uri $current.AbsoluteUri -AllowedHosts $AllowedHosts)){throw "METADATA_UNTRUSTED_REDIRECT: 重定向目标不在 Provider 许可清单中：$current"}
             $request=[Net.Http.HttpRequestMessage]::new([Net.Http.HttpMethod]::Get,$current)
             foreach($key in $Headers.Keys){$null=$request.Headers.TryAddWithoutValidation([string]$key,[string]$Headers[$key])}
             $response=$client.Send($request)
@@ -33,9 +33,9 @@ function Invoke-MmtlMetadataHttpGet {
                 $status=[int]$response.StatusCode
                 if($status -in @(301,302,303,307,308)){
                     $location=$response.Headers.Location
-                    if(-not $location){throw 'METADATA_REDIRECT_INVALID: redirect has no Location header.'}
+                    if(-not $location){throw 'METADATA_REDIRECT_INVALID: 重定向响应缺少 Location 标头。'}
                     $redirects++
-                    if($redirects -gt 5){throw 'METADATA_REDIRECT_LIMIT: more than five redirects.'}
+                    if($redirects -gt 5){throw 'METADATA_REDIRECT_LIMIT: 重定向次数超过五次。'}
                     $current=if($location.IsAbsoluteUri){$location}else{[Uri]::new($current,$location)}
                     continue
                 }
@@ -61,10 +61,10 @@ function Get-MmtlLoaderCacheEnvelope {
     if(-not [IO.File]::Exists($Path)){return $null}
     try {
         $envelope=[IO.File]::ReadAllText($Path,[Text.Encoding]::UTF8)|ConvertFrom-Json -ErrorAction Stop
-        if([int]$envelope.providerSchemaVersion -ne $script:MmtlLoaderMetadataSchemaVersion -or [string]::IsNullOrWhiteSpace([string]$envelope.bodyBase64)){throw 'cache schema or body missing'}
+        if([int]$envelope.providerSchemaVersion -ne $script:MmtlLoaderMetadataSchemaVersion -or [string]::IsNullOrWhiteSpace([string]$envelope.bodyBase64)){throw '缓存缺少 schema 或正文内容。'}
         $bytes=[Convert]::FromBase64String([string]$envelope.bodyBase64)
         $hash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
-        if($hash -cne [string]$envelope.localHash){throw 'cache body hash mismatch'}
+        if($hash -cne [string]$envelope.localHash){throw '缓存正文哈希不匹配。'}
         $envelope|Add-Member -NotePropertyName bodyBytes -NotePropertyValue $bytes -Force
         $envelope|Add-Member -NotePropertyName content -NotePropertyValue ([Text.Encoding]::UTF8.GetString($bytes)) -Force
         return $envelope
@@ -91,13 +91,13 @@ function Get-MmtlLoaderOptionalProperty {
 function Get-MmtlLoaderMetadataDocument {
     [CmdletBinding()]
     param([Parameter(Mandatory)][ValidateSet('Forge','Fabric','NeoForge','Quilt')][string]$ProviderId,[Parameter(Mandatory)][string]$CacheKey,[Parameter(Mandatory)][string]$Uri,[Parameter(Mandatory)][string[]]$AllowedHosts,[Parameter(Mandatory)][string]$RuntimeRoot,[switch]$Offline,[switch]$ForceRefresh,[TimeSpan]$MaxAge=$script:MmtlLoaderMetadataTtl,[scriptblock]$HttpGet)
-    if(-not (Test-MmtlAllowedMetadataUri -Uri $Uri -AllowedHosts $AllowedHosts)){return [pscustomobject]@{providerId=$ProviderId;providerStatus='Unavailable';cacheStatus='Unavailable';sourceUrl=$Uri;fetchedAt=$null;validatedAt=$null;localHash=$null;etag=$null;lastModified=$null;error='METADATA_INVALID_URL: URL is not HTTPS on an allowlisted host.';content=$null}}
+    if(-not (Test-MmtlAllowedMetadataUri -Uri $Uri -AllowedHosts $AllowedHosts)){return [pscustomobject]@{providerId=$ProviderId;providerStatus='Unavailable';cacheStatus='Unavailable';sourceUrl=$Uri;fetchedAt=$null;validatedAt=$null;localHash=$null;etag=$null;lastModified=$null;error='METADATA_INVALID_URL: URL 不是许可主机上的 HTTPS 地址。';content=$null}}
     $path=Get-MmtlLoaderMetadataCachePath -ProviderId $ProviderId -CacheKey $CacheKey -RuntimeRoot $RuntimeRoot
     $cached=$null;$cacheError=$null
     try{$cached=Get-MmtlLoaderCacheEnvelope -Path $path}catch{$cacheError=$_.Exception.Message}
     $now=[DateTimeOffset]::UtcNow
     if($Offline){
-        if(-not $cached){return [pscustomobject]@{providerId=$ProviderId;providerStatus='Unavailable';cacheStatus='Unavailable';sourceUrl=$Uri;fetchedAt=$null;validatedAt=$null;localHash=$null;etag=$null;lastModified=$null;error=if($cacheError){$cacheError}else{'CACHE_UNAVAILABLE: no provider metadata cache.'};content=$null}}
+        if(-not $cached){return [pscustomobject]@{providerId=$ProviderId;providerStatus='Unavailable';cacheStatus='Unavailable';sourceUrl=$Uri;fetchedAt=$null;validatedAt=$null;localHash=$null;etag=$null;lastModified=$null;error=if($cacheError){$cacheError}else{'CACHE_UNAVAILABLE: 没有 Provider 元数据缓存。'};content=$null}}
         return [pscustomobject]@{providerId=$ProviderId;providerStatus='Available';cacheStatus='OfflineCache';sourceUrl=[string]$cached.sourceUrl;fetchedAt=[string]$cached.fetchedAt;validatedAt=[string]$cached.validatedAt;localHash=[string]$cached.localHash;etag=[string]$cached.etag;lastModified=[string]$cached.lastModified;content=[string]$cached.content;error=$null}
     }
     if($cached -and -not $ForceRefresh -and ($now-[DateTimeOffset]::Parse([string]$cached.validatedAt)) -le $MaxAge){return [pscustomobject]@{providerId=$ProviderId;providerStatus='Available';cacheStatus='Fresh';sourceUrl=[string]$cached.sourceUrl;fetchedAt=[string]$cached.fetchedAt;validatedAt=[string]$cached.validatedAt;localHash=[string]$cached.localHash;etag=[string]$cached.etag;lastModified=[string]$cached.lastModified;content=[string]$cached.content;error=$null}}
@@ -105,7 +105,7 @@ function Get-MmtlLoaderMetadataDocument {
     try {
         $response=Invoke-MmtlMetadataHttpGet -Uri $Uri -AllowedHosts $AllowedHosts -Headers $headers -HttpGet $HttpGet
         if([int]$response.StatusCode -eq 304){
-            if(-not $cached){throw 'METADATA_INVALID_RESPONSE: got HTTP 304 without a validated cache.'}
+            if(-not $cached){throw 'METADATA_INVALID_RESPONSE: 没有经过验证的缓存却收到 HTTP 304。'}
             $bytes=[byte[]]$cached.bodyBytes;$fetched=[DateTimeOffset]::Parse([string]$cached.fetchedAt)
             Write-MmtlLoaderCacheEnvelope -Path $path -Bytes $bytes -ProviderId $ProviderId -Uri $Uri -Headers $response.Headers -FetchedAt $fetched -ValidatedAt $now
         } elseif([int]$response.StatusCode -ge 200 -and [int]$response.StatusCode -lt 300){

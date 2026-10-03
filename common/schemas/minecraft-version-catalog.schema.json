@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://pycodersmod.github.io/MinecraftModTestLauncher/schemas/minecraft-version-catalog.schema.json",
-  "title": "MMTL Normalized Minecraft Version Catalog Cache",
+  "title": "MMTL 规范化 Minecraft 版本目录缓存",
   "type": "object",
   "required": ["schemaVersion", "source", "fetchedAt", "manifestHash", "latestRelease", "minimumReleaseId", "entries"],
   "properties": {

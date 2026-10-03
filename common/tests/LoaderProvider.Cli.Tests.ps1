@@ -10,6 +10,6 @@ Describe 'Loader CLI options' {
     }
     It 'rejects loader IDs outside the declared loader identities before network access' {
         $unknown=& $script:pwsh -NoProfile -File $script:launcher --loader-info 1.20.1 UnknownLoader 2>&1|Out-String
-        $LASTEXITCODE | Should -Not -Be 0;$unknown | Should -Match 'Unsupported Loader'
+        $LASTEXITCODE | Should -Not -Be 0;$unknown | Should -Match '不支持的 Loader'
     }
 }

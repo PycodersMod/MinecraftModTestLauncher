@@ -36,7 +36,7 @@ $runtimeRoot=Resolve-MmtlRuntimeRoot -Path $runtimeConfigured -Portable:$portabl
 $catalogRuntimeRoot=$runtimeRoot
 if($platform.OS -in @('Linux','MacOS') -and $runtimeConfigured -match '^%LOCALAPPDATA%([\\/]|$)'){
     $catalogRuntimeRoot=$platform.DefaultRuntimeRoot
-    Write-Warning 'Catalog cache ignored the Windows-only %LOCALAPPDATA% runtimeRoot on this platform and will use the native platform Runtime Root.'
+    Write-Warning '当前平台不支持 Windows 专用的 %LOCALAPPDATA% runtimeRoot；已忽略该目录并改用本平台的 Runtime Root。'
 }
 $catalogOffline=$Arguments -contains '--catalog-offline'
 $loaderOffline=$Arguments -contains '--loader-offline'
@@ -48,9 +48,9 @@ if($coverageCommandPresent){
 }
 $validationMatrixIndex=[Array]::IndexOf($Arguments,'--validation-matrix')
 if($validationMatrixIndex -ge 0){
-    if($validationMatrixIndex+1 -ge $Arguments.Count){throw '--validation-matrix 缺少 target definitions JSON 路径。'}
+    if($validationMatrixIndex+1 -ge $Arguments.Count){throw '--validation-matrix 缺少目标定义 JSON 文件路径。'}
     $targetPath=[IO.Path]::GetFullPath([string]$Arguments[$validationMatrixIndex+1])
-    if(-not(Test-Path -LiteralPath $targetPath -PathType Leaf)){throw 'Validation target definitions file was not found.'}
+    if(-not(Test-Path -LiteralPath $targetPath -PathType Leaf)){throw '未找到验证目标定义文件。'}
     $targets=Get-Content -LiteralPath $targetPath -Raw|ConvertFrom-Json -ErrorAction Stop
     $runEvidence=Get-MmtlValidationRunEvidence -RuntimeRoot $runtimeRoot
     $outputIndex=[Array]::IndexOf($Arguments,'--validation-output')
@@ -93,12 +93,12 @@ if($validationSummaryIndex -ge 0 -or $validationVersionIndex -ge 0 -or $validati
 $validationPlanIndex=[Array]::IndexOf($Arguments,'--validation-plan')
 if($validationPlanIndex -ge 0){
     $scopeIndex=[Array]::IndexOf($Arguments,'--scope')
-    if($scopeIndex -lt 0 -or $scopeIndex+1 -ge $Arguments.Count){throw '--validation-plan requires --scope P0 or --scope CurrentStable.'}
+    if($scopeIndex -lt 0 -or $scopeIndex+1 -ge $Arguments.Count){throw '--validation-plan 需要搭配 --scope P0 或 --scope CurrentStable。'}
     $scope=[string]$Arguments[$scopeIndex+1]
-    if($scope -notin @('P0','CurrentStable')){throw 'Validation plan scope must be P0 or CurrentStable.'}
+    if($scope -notin @('P0','CurrentStable')){throw '验证计划范围必须为 P0 或 CurrentStable。'}
     $catalog=Get-MmtlMinecraftVersionCatalog -RuntimeRoot $catalogRuntimeRoot -Offline:$catalogOffline
     $fixturePath=Join-Path $commonRoot 'fixtures/deep-validation/fixtures.json'
-    if(-not(Test-Path -LiteralPath $fixturePath -PathType Leaf)){throw 'Pinned official fixture manifest is missing.'}
+    if(-not(Test-Path -LiteralPath $fixturePath -PathType Leaf)){throw '缺少已固定版本的官方 fixture 清单。'}
     $fixtureManifest=Get-Content -LiteralPath $fixturePath -Raw|ConvertFrom-Json -ErrorAction Stop
     $platform=Get-MmtlPlatformProvider
     $fixtureTargets=@(New-MmtlValidationFixtureTargets -Fixtures @($fixtureManifest.fixtures) -Platform ([pscustomobject]@{os=$platform.OS;arch=$platform.Arch;isWSL=$platform.IsWSL}))
@@ -118,10 +118,10 @@ if(@($hasListLoaders,$hasLoaderInfo,$hasProviderStatus|Where-Object{$_}).Count -
 if($hasListLoaders -and ($listLoadersIndex+1 -ge $Arguments.Count)){throw '--list-loaders 缺少 Minecraft 版本 ID。'}
 if($hasLoaderInfo -and ($loaderInfoIndex+2 -ge $Arguments.Count)){throw '--loader-info 需要 Minecraft 版本 ID 和 Loader ID。'}
 if($hasProviderStatus -and ($providerStatusIndex+1 -ge $Arguments.Count)){throw '--provider-status 缺少 Provider ID。'}
-if($hasLoaderInfo -and [string]$Arguments[$loaderInfoIndex+2] -notin @('Forge','Fabric','NeoForge','Quilt','LegacyFabric','OrnitheLoader','LiteLoader','Rift','ModLoader','ModLoaderMP','JarMod')){throw "Unsupported Loader: $($Arguments[$loaderInfoIndex+2])"}
+if($hasLoaderInfo -and [string]$Arguments[$loaderInfoIndex+2] -notin @('Forge','Fabric','NeoForge','Quilt','LegacyFabric','OrnitheLoader','LiteLoader','Rift','ModLoader','ModLoaderMP','JarMod')){throw "不支持的 Loader：$($Arguments[$loaderInfoIndex+2])"}
 if($jarModArtifactIndex -ge 0 -and (-not $hasLoaderInfo -or [string]$Arguments[$loaderInfoIndex+2] -ne 'JarMod')){throw '--jar-mod-artifact 只能与 --loader-info <mc> JarMod 组合。'}
 if($jarModArtifactIndex -ge 0 -and ($jarModArtifactIndex+1 -ge $Arguments.Count -or $jarModStrategyIndex -lt 0 -or $jarModStrategyIndex+1 -ge $Arguments.Count)){throw '--jar-mod-artifact 需要文件路径，且必须提供 --patch-strategy。'}
-if($hasProviderStatus -and [string]$Arguments[$providerStatusIndex+1] -notin @('LegacyFabric','OrnitheLoader','LiteLoader','Rift','ModLoader','ModLoaderMP','JarMod')){throw "Unsupported historical Provider: $($Arguments[$providerStatusIndex+1])"}
+if($hasProviderStatus -and [string]$Arguments[$providerStatusIndex+1] -notin @('LegacyFabric','OrnitheLoader','LiteLoader','Rift','ModLoader','ModLoaderMP','JarMod')){throw "不支持的历史 Provider：$($Arguments[$providerStatusIndex+1])"}
 if($hasListLoaders -or $hasLoaderInfo -or $hasProviderStatus){
     $loaderCatalog=Get-MmtlMinecraftVersionCatalog -RuntimeRoot $catalogRuntimeRoot -Offline:$catalogOffline
     if($hasProviderStatus){$providerId=[string]$Arguments[$providerStatusIndex+1];Get-MmtlHistoricalProviderStatus -LoaderId $providerId -Catalog $loaderCatalog -RuntimeRoot $runtimeRoot -Offline:$loaderOffline|ConvertTo-Json -Depth 30;exit 0}
@@ -141,7 +141,7 @@ if($hasListLoaders -or $hasLoaderInfo -or $hasProviderStatus){
         [pscustomobject]@{Minecraft=$id;Loader=$loaderId;ProviderStatus=if($candidateQuery){$candidateQuery.providerStatus}elseif($snapshot){$snapshot.providerStatus}else{'CuratedOrManual'};Availability=if($loaderId -eq 'JarMod'){'Manual'}elseif($historicalCandidates.Count){'Available'}elseif($candidateQuery -and $candidateQuery.providerStatus -in @('Available','Stale')){'Unavailable'}elseif($snapshot -and $snapshot.providerStatus -in @('Available','Stale')){'Unavailable'}else{'Unknown'};CacheStatus=if($candidateQuery){$candidateQuery.cacheStatus}elseif($snapshot){$snapshot.cacheStatus}else{'Curated'};LastChecked=if($candidateQuery){$candidateQuery.validatedAt}elseif($snapshot -and $snapshot.validatedAt){$snapshot.validatedAt}else{$null};Notes=if($candidateQuery -and $candidateQuery.error){$candidateQuery.error}elseif($snapshot -and $snapshot.error){$snapshot.error}else{$null};SourceClass=if($historicalCandidates.Count){$historicalCandidates[0].sourceClass}else{$null};MaintenanceState=if($historicalCandidates.Count){$historicalCandidates[0].maintenanceState}else{$null};Trust=if($historicalCandidates.Count){$historicalCandidates[0].trustClass}else{$null};Transport=if($historicalCandidates.Count){$historicalCandidates[0].transportSecurity}else{$null};Integrity=if($historicalCandidates.Count){$historicalCandidates[0].integrity}else{$null};Toolchain=if($historicalCandidates.Count){$historicalCandidates[0].toolchain}else{$null};BuildStatus=if($historicalCandidates.Count){'CATALOGUED'}elseif($loaderId -eq 'JarMod'){'MANUAL'}else{'UNVERIFIED'};Candidates=$historicalCandidates;Provenance=if($historicalCandidates.Count){@($historicalCandidates|ForEach-Object provenance)}elseif($snapshot){$snapshot.provenance}else{@()}}|ConvertTo-Json -Depth 30
         exit 0
     }
-    if($loaderId -notin @('Forge','Fabric','NeoForge','Quilt')){throw "Unsupported Loader: $loaderId"}
+    if($loaderId -notin @('Forge','Fabric','NeoForge','Quilt')){throw "不支持的 Loader：$loaderId"}
     $snapshot=switch($loaderId){'Forge'{Get-MmtlForgeProviderSnapshot -Catalog $loaderCatalog -RuntimeRoot $runtimeRoot -Offline:$loaderOffline};'Fabric'{Get-MmtlFabricProviderSnapshot -RuntimeRoot $runtimeRoot -Offline:$loaderOffline};'NeoForge'{Get-MmtlNeoForgeProviderSnapshot -Catalog $loaderCatalog -RuntimeRoot $runtimeRoot -Offline:$loaderOffline};'Quilt'{Get-MmtlQuiltProviderSnapshot -RuntimeRoot $runtimeRoot -Offline:$loaderOffline}}
     $candidates=switch($loaderId){'Forge'{Get-MmtlForgeCandidates -MinecraftId $id -Snapshot $snapshot};'Fabric'{Get-MmtlFabricCandidates -MinecraftId $id -RuntimeRoot $runtimeRoot -Offline:$loaderOffline};'NeoForge'{Get-MmtlNeoForgeCandidates -MinecraftId $id -Snapshot $snapshot};'Quilt'{Get-MmtlQuiltCandidates -MinecraftId $id -RuntimeRoot $runtimeRoot -Offline:$loaderOffline}}
     $preferred=switch($loaderId){'Forge'{Get-MmtlForgePreferredCandidate -MinecraftId $id -Candidates $candidates};'Fabric'{Get-MmtlFabricPreferredCandidate -MinecraftId $id -Candidates $candidates};'NeoForge'{Get-MmtlNeoForgePreferredCandidate -MinecraftId $id -Candidates $candidates};'Quilt'{Get-MmtlQuiltPreferredCandidate -MinecraftId $id -Candidates $candidates}}
@@ -153,7 +153,7 @@ $refreshCatalog=$Arguments -contains '--refresh-catalog'
 $listMinecraftVersions=$Arguments -contains '--list-minecraft-versions'
 $minecraftInfoIndex=[Array]::IndexOf($Arguments,'--minecraft-info')
 $hasMinecraftInfo=$minecraftInfoIndex -ge 0
-if($catalogOffline -and $refreshCatalog){throw 'CATALOG_OPTION_CONFLICT: --refresh-catalog cannot be combined with --catalog-offline.'}
+if($catalogOffline -and $refreshCatalog){throw 'CATALOG_OPTION_CONFLICT: --refresh-catalog 不能与 --catalog-offline 同时使用。'}
 if($hasMinecraftInfo -and ($minecraftInfoIndex+1 -ge $Arguments.Count -or [string]::IsNullOrWhiteSpace([string]$Arguments[$minecraftInfoIndex+1]))){throw '--minecraft-info 缺少 Minecraft 版本 ID。'}
 if($listMinecraftVersions -or $hasMinecraftInfo -or $refreshCatalog){
     $catalog=Get-MmtlMinecraftVersionCatalog -RuntimeRoot $catalogRuntimeRoot -Offline:$catalogOffline -ForceRefresh:$refreshCatalog
@@ -174,7 +174,7 @@ if($listMinecraftVersions -or $hasMinecraftInfo -or $refreshCatalog){
         Write-Output "Catalog: $($catalog.cacheStatus); releases: $($catalog.entries.Count); minimum: $($catalog.minimumReleaseId); CurrentStable: $($catalog.latestRelease)"
         exit 0
     }
-    Write-Output "Mojang Catalog refreshed. Status: $($catalog.cacheStatus); releases: $($catalog.entries.Count); CurrentStable: $($catalog.latestRelease)"
+    Write-Output "Mojang 版本目录已刷新。状态：$($catalog.cacheStatus)；正式版本数：$($catalog.entries.Count)；当前稳定版：$($catalog.latestRelease)"
     exit 0
 }
 if ($Arguments -contains '--list-sessions') {
@@ -197,7 +197,7 @@ foreach($operation in @('--stop','--clean-session')){
     }
 }
 if (-not (Test-Path $configPath)) {
-    Write-Host 'Minecraft Mod Test Launcher - 临时向导'
+    Write-Host 'Minecraft 模组测试启动器 - 临时向导'
     $examplePath=Join-Path $commonRoot 'config/launcher.config.example.json'
     $example=Read-MmtlConfig -Path $examplePath
     $profile=Read-MmtlWizardProfile -Defaults $null
@@ -257,7 +257,7 @@ function Start-MmtlConfiguredRun {
     $sessionId=Split-Path $session -Leaf
     $builds=[Collections.Generic.List[object]]::new();$linkedJars=[Collections.Generic.List[string]]::new()
     try{
-        Write-Host "Session: $sessionId`nMinecraft: $($Primary.MinecraftVersion)`nLoader: $($Primary.Loader) $($Primary.LoaderVersion)`nJava: $($Primary.JavaMajor)`nMode: $($Profile.mode)`nPlayers: $players`nRuntime: $session"
+        Write-Host "会话：$sessionId`nMinecraft：$($Primary.MinecraftVersion)`nLoader：$($Primary.Loader) $($Primary.LoaderVersion)`nJava：$($Primary.JavaMajor)`n模式：$($Profile.mode)`n玩家：$players`n运行目录：$session"
         if($Profile.resetWorld -eq $true){$resetWorldCount=0;foreach($username in @($hostName)+@(for($i=1;$i -lt $players;$i++){$prefix+$i})){if(Reset-MmtlSessionWorld -RuntimeRoot $RuntimeRoot -SessionPath $session -PlayerName $username -WorldName ([string]$Profile.worldName) -Reset -Confirm:$false){$resetWorldCount++}};$metadata.worldResetCount=$resetWorldCount;Write-Host "当前 Session 测试世界重置数：$resetWorldCount"}
         if($Profile.autoBuild -ne $false){
             foreach($candidate in $projects){
@@ -299,7 +299,7 @@ function Start-MmtlConfiguredRun {
             $hostPlan=New-MmtlGradleRunPlan -Project $Primary -Mode IntegratedLAN -RuntimeRoot $session -Role Host -Username $hostName -Profile $Profile
             $hostProcess=Start-MmtlGradleInstance -Project $Primary -Plan $hostPlan -JavaPath $java -SessionPath $session -ModJars @($extraJars)
             $metadata.processes+=@([pscustomobject]@{PID=$hostProcess.ProcessId;role='Host';username=$hostName;log=$hostProcess.LogPath})
-            Write-Host "Host 客户端已启动。请进入测试世界并在游戏菜单中手动 Open to LAN。若选择固定端口，请使用 $requestedPort。"
+            Write-Host "主机客户端已启动。请进入测试世界，并在游戏菜单中手动选择“对局域网开放”（Open to LAN）。若选择固定端口，请使用 $requestedPort。"
             $null=Read-Host '发布局域网后按 Enter，启动器将从日志读取端口并启动其他客户端'
             $port=Wait-MmtlLanPort -Path $hostProcess.LogPath -ProcessId $hostProcess.ProcessId -TimeoutSeconds 180
             if($requestedPort -and $port -ne $requestedPort){throw "游戏实际开放端口 $port 与配置固定端口 $requestedPort 不同。"}
@@ -323,8 +323,8 @@ function Start-MmtlConfiguredRun {
         }else{$metadata.windowLayoutStatus='Skipped'}
         $metadata.builds=@($builds)
         $statePath=Join-Path $session 'session.json';$state=Get-Content -LiteralPath $statePath -Raw|ConvertFrom-Json;$state.metadata=$metadata;$state|ConvertTo-Json -Depth 30|Set-Content -LiteralPath $statePath -Encoding utf8
-        $report=@("# Session $sessionId",'',"- Mode: $($Profile.mode)","- Project: $($Primary.Root)","- Minecraft: $($Primary.MinecraftVersion)","- Loader: $($Primary.Loader) $($Primary.LoaderVersion)","- Java: $($Primary.JavaMajor)","- Players: $($metadata.processes.username -join ', ')","- Port: $($metadata.port)","- Memory budget MB: $($memoryBudget.RequestedMb) / $($memoryBudget.LimitMb); overage confirmed=$memoryOverageConfirmed","- World reset count: $($metadata.worldResetCount)","- Window layout: $($metadata.windowLayoutStatus)","- Runtime: $session",'', '## Builds')
-        foreach($build in $builds){$report+=@("- Project: $($build.Project)","  - Git SHA: $($build.GitSha)","  - Jar: $($build.JarPath)","  - SHA-256: $($build.JarSha256)","  - Log: $($build.LogPath)")}
+        $report=@("# 会话 $sessionId",'',"- 模式：$($Profile.mode)","- 项目：$($Primary.Root)","- Minecraft：$($Primary.MinecraftVersion)","- Loader：$($Primary.Loader) $($Primary.LoaderVersion)","- Java：$($Primary.JavaMajor)","- 玩家：$($metadata.processes.username -join ', ')","- 端口：$($metadata.port)","- 内存预算 MB：$($memoryBudget.RequestedMb) / $($memoryBudget.LimitMb)；已确认超额=$memoryOverageConfirmed","- 世界重置次数：$($metadata.worldResetCount)","- 窗口布局：$($metadata.windowLayoutStatus)","- 运行目录：$session",'', '## 构建')
+        foreach($build in $builds){$report+=@("- 项目：$($build.Project)","  - Git SHA：$($build.GitSha)","  - Jar：$($build.JarPath)","  - SHA-256：$($build.JarSha256)","  - 日志：$($build.LogPath)")}
         $report+=@('','## Processes');foreach($process in $metadata.processes){$report+="- $($process.role) $($process.username) PID $($process.PID): $($process.log)"};Set-Content -LiteralPath (Join-Path $session 'report.md') -Value $report -Encoding utf8
         Write-Host "会话清单：$session`n停止命令：launcher.cmd --stop $sessionId`n清理命令：launcher.cmd --clean-session $sessionId"
     }catch{Write-Error "Session $sessionId 已保留现场和日志。检查后可用 --stop $sessionId 停止登记进程。$($_.Exception.Message)";throw}
@@ -337,7 +337,7 @@ if($Arguments -contains '--validate') {
     Assert-MmtlNoReparsePath -Path $runtimeRoot|Out-Null
     $extra=@();foreach($item in @($profile.extraMods|Where-Object{$_})){$path=[string]$item;if(-not[IO.Path]::IsPathRooted($path)){$path=Join-Path $here $path};$resolved=(Resolve-Path -LiteralPath $path -ErrorAction Stop).Path;if([IO.Path]::GetExtension($resolved) -ne '.jar'){throw "Extra Mod 必须为 JAR：$item"};$extra+=$resolved}
     $portStatus='Not required'
-    if($profile.mode -in @('IntegratedLAN','Dedicated')){if([string]$profile.port -eq 'Auto'){$portStatus='Auto (assigned at launch)'}else{$fixed=[int]$profile.port;$null=Get-MmtlPort -Port $fixed;$portStatus="Available: $fixed"}}
+    if($profile.mode -in @('IntegratedLAN','Dedicated')){if([string]$profile.port -eq 'Auto'){$portStatus='自动（启动时分配）'}else{$fixed=[int]$profile.port;$null=Get-MmtlPort -Port $fixed;$portStatus="可用：$fixed"}}
     $minecraftCatalogStatus='Unavailable';$metadataStatus='Unavailable';$currentStable='Unknown';$runtimeJavaMajor=$null;$runtimeJavaSource='Unknown';$runtimeJavaKind='Unknown'
     try{
         $catalog=Get-MmtlMinecraftVersionCatalog -RuntimeRoot $catalogRuntimeRoot -Offline
@@ -386,8 +386,8 @@ if($Arguments -contains '--build') {
     $state|Add-Member -NotePropertyName jarPath -NotePropertyValue $(if($jar){$jar.FullName}else{$null}) -Force
     $state|Add-Member -NotePropertyName jarSha256 -NotePropertyValue $jarHash -Force
     $state|ConvertTo-Json -Depth 20|Set-Content $statePath -Encoding utf8
-    "# Session $($state.sessionId)`n`nProject: $($project.Root)`nMinecraft: $($project.MinecraftVersion)`nLoader: $($project.Loader)`nJava: $($project.JavaMajor)`nGit SHA: $gitSha`nBuild exit code: $buildExit`nJar: $($jar.FullName)`nJar SHA-256: $jarHash`nGradle log: $log`n" | Set-Content (Join-Path $session 'report.md') -Encoding utf8
-    Write-Host "Build exit code: $buildExit`nSession: $session`nLog: $log`nJar SHA-256: $jarHash"
+    "# 会话 $($state.sessionId)`n`n项目：$($project.Root)`nMinecraft：$($project.MinecraftVersion)`nLoader：$($project.Loader)`nJava：$($project.JavaMajor)`nGit SHA：$gitSha`n构建退出码：$buildExit`nJar：$($jar.FullName)`nJar SHA-256：$jarHash`nGradle 日志：$log`n" | Set-Content (Join-Path $session 'report.md') -Encoding utf8
+    Write-Host "构建退出码：$buildExit`n会话：$session`n日志：$log`nJar SHA-256：$jarHash"
     if($buildExit -ne 0){Get-Content $log -Tail 30;exit $buildExit};exit 0
 }
 Write-Host '当前版本只提供配置验证与 dry-run。实际 Minecraft 启动、多实例、LAN 与 Dedicated 编排尚未实现。'

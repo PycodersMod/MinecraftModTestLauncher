@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://mmtl.local/schemas/loader-availability.schema.json",
-  "title": "MMTL Loader Availability Index",
+  "title": "MMTL Loader 可用性索引",
   "type": "object",
   "required": ["schemaVersion", "generatedAt", "minecraftCatalogHash", "providerStatuses", "entries", "cacheStatus"],
   "properties": {

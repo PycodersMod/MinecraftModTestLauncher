@@ -45,9 +45,9 @@ function ConvertTo-MmtlMinecraftVersionCatalog {
     $latestNode=Get-MmtlOptionalProperty -InputObject $Manifest -Name 'latest'
     $latestRelease=Get-MmtlOptionalProperty -InputObject $latestNode -Name 'release'
     $versionsNode=Get-MmtlOptionalProperty -InputObject $Manifest -Name 'versions'
-    if($null -eq $latestNode -or [string]::IsNullOrWhiteSpace([string]$latestRelease) -or $null -eq $versionsNode){throw 'MANIFEST_SCHEMA_ERROR: latest.release or versions is missing.'}
+    if($null -eq $latestNode -or [string]::IsNullOrWhiteSpace([string]$latestRelease) -or $null -eq $versionsNode){throw 'MANIFEST_SCHEMA_ERROR: latest.release 或 versions 缺失。'}
     $all=@($versionsNode)
-    if($all.Count -eq 0){throw 'MANIFEST_SCHEMA_ERROR: versions is empty.'}
+    if($all.Count -eq 0){throw 'MANIFEST_SCHEMA_ERROR: versions 为空。'}
     $seen=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
     $validated=[Collections.Generic.List[object]]::new()
     foreach($entry in $all){
@@ -56,19 +56,19 @@ function ConvertTo-MmtlMinecraftVersionCatalog {
         $entryUrl=Get-MmtlOptionalProperty -InputObject $entry -Name 'url'
         $entryTime=Get-MmtlOptionalProperty -InputObject $entry -Name 'time'
         $entryReleaseTime=Get-MmtlOptionalProperty -InputObject $entry -Name 'releaseTime'
-        if([string]::IsNullOrWhiteSpace([string]$entryId) -or -not $seen.Add([string]$entryId)){throw 'MANIFEST_SCHEMA_ERROR: canonical ID is empty or duplicated.'}
-        if([string]::IsNullOrWhiteSpace([string]$entryType) -or -not (Test-MmtlMojangMetadataUri ([string]$entryUrl))){throw "MANIFEST_SCHEMA_ERROR: invalid or untrusted metadata URL for $entryId."}
+        if([string]::IsNullOrWhiteSpace([string]$entryId) -or -not $seen.Add([string]$entryId)){throw 'MANIFEST_SCHEMA_ERROR: 规范 ID 为空或重复。'}
+        if([string]::IsNullOrWhiteSpace([string]$entryType) -or -not (Test-MmtlMojangMetadataUri ([string]$entryUrl))){throw "MANIFEST_SCHEMA_ERROR: $entryId 的元数据 URL 无效或不受信任。"}
         $entrySha1=Get-MmtlOptionalProperty -InputObject $entry -Name 'sha1'
         if($entrySha1 -and [string]$entrySha1 -notmatch '^(?i:[0-9a-f]{40})$'){throw "MANIFEST_SCHEMA_ERROR: malformed SHA-1 for $entryId."}
-        if([string]::IsNullOrWhiteSpace([string]$entryTime) -or [string]::IsNullOrWhiteSpace([string]$entryReleaseTime)){throw "MANIFEST_SCHEMA_ERROR: required timestamp missing for $entryId."}
-        try{$time=[DateTimeOffset]::Parse([string]$entryTime,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::AssumeUniversal);$releaseTime=[DateTimeOffset]::Parse([string]$entryReleaseTime,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::AssumeUniversal)}catch{throw "MANIFEST_SCHEMA_ERROR: invalid timestamp for $entryId."}
+        if([string]::IsNullOrWhiteSpace([string]$entryTime) -or [string]::IsNullOrWhiteSpace([string]$entryReleaseTime)){throw "MANIFEST_SCHEMA_ERROR: $entryId 缺少必需时间戳。"}
+        try{$time=[DateTimeOffset]::Parse([string]$entryTime,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::AssumeUniversal);$releaseTime=[DateTimeOffset]::Parse([string]$entryReleaseTime,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::AssumeUniversal)}catch{throw "MANIFEST_SCHEMA_ERROR: $entryId 的时间戳无效。"}
         $validated.Add([pscustomobject]@{id=[string]$entryId;type=[string]$entryType;url=[string]$entryUrl;time=$time;releaseTime=$releaseTime;sha1=if($entrySha1){([string]$entrySha1).ToLowerInvariant()}else{$null};complianceLevel=(Get-MmtlOptionalProperty -InputObject $entry -Name 'complianceLevel');original=$entry})
     }
     $anchor=$validated|Where-Object{$_.id -ceq '1.0' -and $_.type -ceq 'release'}|Select-Object -First 1
     if(-not $anchor){throw 'MINIMUM_RELEASE_NOT_FOUND: CATALOG_MINIMUM_RELEASE_ANCHOR_NOT_FOUND (1.0).'}
     $latest=$validated|Where-Object{$_.id -ceq [string]$Manifest.latest.release -and $_.type -ceq 'release'}|Select-Object -First 1
-    if(-not $latest){throw "MANIFEST_SCHEMA_ERROR: latest.release '$($Manifest.latest.release)' is not a release entry."}
-    if($latest.releaseTime -lt $anchor.releaseTime){throw 'MANIFEST_SCHEMA_ERROR: latest.release precedes the 1.0 anchor.'}
+    if(-not $latest){throw "MANIFEST_SCHEMA_ERROR: latest.release '$($Manifest.latest.release)' 不是正式版本条目。"}
+    if($latest.releaseTime -lt $anchor.releaseTime){throw 'MANIFEST_SCHEMA_ERROR: latest.release 早于 1.0 锚点。'}
     $entries=@($validated|Where-Object{$_.type -ceq 'release' -and $_.releaseTime -ge $anchor.releaseTime -and $_.releaseTime -le $latest.releaseTime}|ForEach-Object{
         [pscustomobject]@{
             id=$_.id;type=$_.type;time=$_.time.ToString('o');releaseTime=$_.releaseTime.ToString('o');metadataUrl=$_.url;metadataSha1=$_.sha1;complianceLevel=$_.complianceLevel
@@ -77,7 +77,7 @@ function ConvertTo-MmtlMinecraftVersionCatalog {
         }
     })
     $latestEntryCount=@($entries|Where-Object{$_.id -ceq [string]$Manifest.latest.release}).Count
-    if($latestEntryCount -eq 0){throw "MANIFEST_SCHEMA_ERROR: CurrentStable '$($Manifest.latest.release)' is outside normalized IDs: $(@($entries.id) -join ',')."}
+    if($latestEntryCount -eq 0){throw "MANIFEST_SCHEMA_ERROR: CurrentStable '$($Manifest.latest.release)' 不在规范化后的 ID 中：$(@($entries.id) -join ',')。"}
     $latestSnapshot=Get-MmtlOptionalProperty -InputObject $Manifest.latest -Name 'snapshot'
     [pscustomobject]@{schemaVersion=$script:MmtlCatalogSchemaVersion;source=$script:MmtlMojangManifestUrl;fetchedAt=$FetchedAt.ToUniversalTime().ToString('o');manifestHash=$ManifestHash;latestRelease=[string]$Manifest.latest.release;latestSnapshot=if($latestSnapshot){[string]$latestSnapshot}else{$null};minimumReleaseId=$anchor.id;entries=$entries}
 }
@@ -99,14 +99,14 @@ function Read-MmtlCachedMinecraftVersionCatalog {
     param([Parameter(Mandatory)]$Paths)
     $exists=@([IO.File]::Exists($Paths.Metadata),[IO.File]::Exists($Paths.Raw),[IO.File]::Exists($Paths.Normalized))
     if(-not ($exists -contains $true)){return $null}
-    if($exists -contains $false){throw 'CACHE_CORRUPT: catalog cache is only partially present.'}
+    if($exists -contains $false){throw 'CACHE_CORRUPT: 目录缓存仅部分存在。'}
     try {
         $metadata=[IO.File]::ReadAllText($Paths.Metadata,[Text.Encoding]::UTF8)|ConvertFrom-Json -ErrorAction Stop
         $rawBytes=[IO.File]::ReadAllBytes($Paths.Raw)
         $normalizedBytes=[IO.File]::ReadAllBytes($Paths.Normalized)
         $manifestHash=Get-MmtlSha256Hex -Bytes $rawBytes
         $normalizedHash=Get-MmtlSha256Hex -Bytes $normalizedBytes
-        if([int]$metadata.schemaVersion -ne $script:MmtlCatalogSchemaVersion -or $manifestHash -cne [string]$metadata.manifestHash -or $normalizedHash -cne [string]$metadata.normalizedHash){throw 'cache identity mismatch'}
+        if([int]$metadata.schemaVersion -ne $script:MmtlCatalogSchemaVersion -or $manifestHash -cne [string]$metadata.manifestHash -or $normalizedHash -cne [string]$metadata.normalizedHash){throw '缓存身份信息不匹配。'}
         $manifest=[Text.Encoding]::UTF8.GetString($rawBytes)|ConvertFrom-Json -ErrorAction Stop
         $catalog=ConvertTo-MmtlMinecraftVersionCatalog -Manifest $manifest -FetchedAt ([DateTimeOffset]::Parse([string]$metadata.fetchedAt)) -ManifestHash $manifestHash
         [pscustomobject]@{Metadata=$metadata;Catalog=$catalog}
@@ -120,7 +120,7 @@ function Get-MmtlMinecraftVersionCatalog {
     $cacheReadError=$null
     try{$cached=Read-MmtlCachedMinecraftVersionCatalog -Paths $paths}catch{if($Offline){throw};$cacheReadError=$_.Exception.Message;$cached=$null}
     $now=[DateTimeOffset]::UtcNow
-    if($Offline){if(-not $cached){throw 'CACHE_UNAVAILABLE: offline catalog cache does not exist.'};return Set-MmtlCatalogStatus -Catalog $cached.Catalog -Status 'OfflineCache' -ProvenanceCacheStatus 'OfflineCache'}
+    if($Offline){if(-not $cached){throw 'CACHE_UNAVAILABLE: 离线时目录缓存不存在。'};return Set-MmtlCatalogStatus -Catalog $cached.Catalog -Status 'OfflineCache' -ProvenanceCacheStatus 'OfflineCache'}
     $lastValidated=if($cached){[DateTimeOffset]::Parse([string]$cached.Metadata.validatedAt)}else{$null}
     if($cached -and -not $ForceRefresh -and ($now-$lastValidated) -le $MaxAge){return Set-MmtlCatalogStatus -Catalog $cached.Catalog -Status 'Fresh' -ProvenanceCacheStatus 'Cached'}
     $headers=@{}
@@ -129,11 +129,11 @@ function Get-MmtlMinecraftVersionCatalog {
     try {
         try{$response=Invoke-MmtlMetadataHttpGet -Uri $script:MmtlMojangManifestUrl -AllowedHosts $script:MmtlMojangMetadataHosts -Headers $headers -TimeoutSeconds 30 -HttpGet $HttpGet}catch{throw "MANIFEST_NETWORK_ERROR: $($_.Exception.Message)"}
         if([int]$response.StatusCode -eq 304){
-            if(-not $cached){throw 'MANIFEST_INVALID_RESPONSE: received 304 without cached content.'}
+            if(-not $cached){throw 'MANIFEST_INVALID_RESPONSE: 没有缓存内容却收到 HTTP 304。'}
             $manifestBytes=[IO.File]::ReadAllBytes($paths.Raw);$raw=[Text.Encoding]::UTF8.GetString($manifestBytes);$fetchedAt=[DateTimeOffset]::Parse([string]$cached.Metadata.fetchedAt);$hash=[string]$cached.Metadata.manifestHash
         } elseif([int]$response.StatusCode -ge 200 -and [int]$response.StatusCode -lt 300){
             $responseUri=if($response.PSObject.Properties['ResponseUri']){[string]$response.ResponseUri}else{''}
-            if($responseUri -and -not (Test-MmtlMojangMetadataUri $responseUri)){throw 'MANIFEST_UNTRUSTED_REDIRECT: response host is not allowlisted.'}
+            if($responseUri -and -not (Test-MmtlMojangMetadataUri $responseUri)){throw 'MANIFEST_UNTRUSTED_REDIRECT: 响应主机不在许可清单中。'}
             $manifestBytes=[byte[]]$response.Bytes
             $raw=[Text.Encoding]::UTF8.GetString($manifestBytes)
             try{$manifest=$raw|ConvertFrom-Json -ErrorAction Stop}catch{throw "MANIFEST_INVALID_JSON: $($_.Exception.Message)"}
@@ -165,27 +165,27 @@ function Resolve-MmtlMinecraftVersion {
     param([Parameter(Mandatory)][string]$MinecraftId,[Parameter(Mandatory)]$Catalog)
     $id=if($MinecraftId -ceq 'CurrentStable'){[string]$Catalog.latestRelease}else{$MinecraftId}
     $entry=$Catalog.entries|Where-Object{$_.id -ceq $id}|Select-Object -First 1
-    if(-not $entry){throw "VERSION_NOT_FOUND: Minecraft version '$MinecraftId' is not in the release catalog."}
+    if(-not $entry){throw "VERSION_NOT_FOUND: Minecraft 版本 '$MinecraftId' 不在正式版本目录中。"}
     $entry
 }
 
 function Get-MmtlMinecraftVersionMetadata {
     [CmdletBinding()]
     param([Parameter(Mandatory)]$CatalogEntry,[Parameter(Mandatory)][string]$RuntimeRoot,[switch]$Offline,[scriptblock]$HttpGet)
-    if(-not $CatalogEntry.metadataSha1){throw "METADATA_HASH_MISSING: no expected SHA-1 for $($CatalogEntry.id)."}
+    if(-not $CatalogEntry.metadataSha1){throw "METADATA_HASH_MISSING: $($CatalogEntry.id) 缺少预期 SHA-1。"}
     $keyText="$($CatalogEntry.id)|$($CatalogEntry.metadataSha1.ToLowerInvariant())"
     $key=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($keyText))).ToLowerInvariant()
     $path=Join-Path (Join-Path $RuntimeRoot 'metadata/mojang/versions') "$key.json"
     $raw=$null;$bytes=$null;$actual=$null;$sourceUrl=[string]$CatalogEntry.metadataUrl;$downloadedAt=$null;$wasCached=$false
     if([IO.File]::Exists($path)){
-        try{$cached=[IO.File]::ReadAllText($path,[Text.Encoding]::UTF8)|ConvertFrom-Json -ErrorAction Stop;$bytes=[Text.Encoding]::UTF8.GetBytes([string]$cached.rawJson);$actual=[Convert]::ToHexString([Security.Cryptography.SHA1]::HashData($bytes)).ToLowerInvariant();if([string]$cached.id -cne [string]$CatalogEntry.id -or [string]$cached.expectedSha1 -cne ([string]$CatalogEntry.metadataSha1).ToLowerInvariant() -or $actual -cne ([string]$CatalogEntry.metadataSha1).ToLowerInvariant()){throw 'cache identity or SHA-1 mismatch'};$raw=[string]$cached.rawJson;$sourceUrl=[string]$cached.sourceUrl;if(-not (Test-MmtlMojangMetadataUri $sourceUrl)){throw 'cached source URL is not allowlisted'};$downloadedAt=[string]$cached.downloadedAt;$wasCached=$true}catch{throw "CACHE_CORRUPT: per-version metadata cache is invalid: $($_.Exception.Message)"}
-    } elseif($Offline){throw "CACHE_UNAVAILABLE: metadata cache for $($CatalogEntry.id) is unavailable offline."}
+        try{$cached=[IO.File]::ReadAllText($path,[Text.Encoding]::UTF8)|ConvertFrom-Json -ErrorAction Stop;$bytes=[Text.Encoding]::UTF8.GetBytes([string]$cached.rawJson);$actual=[Convert]::ToHexString([Security.Cryptography.SHA1]::HashData($bytes)).ToLowerInvariant();if([string]$cached.id -cne [string]$CatalogEntry.id -or [string]$cached.expectedSha1 -cne ([string]$CatalogEntry.metadataSha1).ToLowerInvariant() -or $actual -cne ([string]$CatalogEntry.metadataSha1).ToLowerInvariant()){throw '缓存身份信息或 SHA-1 不匹配'};$raw=[string]$cached.rawJson;$sourceUrl=[string]$cached.sourceUrl;if(-not (Test-MmtlMojangMetadataUri $sourceUrl)){throw '缓存的来源 URL 不在许可清单中'};$downloadedAt=[string]$cached.downloadedAt;$wasCached=$true}catch{throw "CACHE_CORRUPT: 逐版本元数据缓存无效: $($_.Exception.Message)"}
+    } elseif($Offline){throw "CACHE_UNAVAILABLE: $($CatalogEntry.id) 的元数据缓存离线不可用。"}
     else {
-        if(-not (Test-MmtlMojangMetadataUri $sourceUrl)){throw 'METADATA_INVALID_URL: metadata URL is not an allowlisted HTTPS URL.'}
+        if(-not (Test-MmtlMojangMetadataUri $sourceUrl)){throw 'METADATA_INVALID_URL: 元数据 URL 不是许可清单中的 HTTPS 地址。'}
         try{$response=Invoke-MmtlMetadataHttpGet -Uri $sourceUrl -AllowedHosts $script:MmtlMojangMetadataHosts -TimeoutSeconds 30 -HttpGet $HttpGet}catch{throw "METADATA_NETWORK_ERROR: $($_.Exception.Message)"}
         if([int]$response.StatusCode -lt 200 -or [int]$response.StatusCode -ge 300){throw "METADATA_NETWORK_ERROR: HTTP $($response.StatusCode) for $($CatalogEntry.id)."}
         $responseUri=if($response.PSObject.Properties['ResponseUri']){[string]$response.ResponseUri}else{''}
-        if($responseUri -and -not (Test-MmtlMojangMetadataUri $responseUri)){throw 'METADATA_UNTRUSTED_REDIRECT: response host is not allowlisted.'}
+        if($responseUri -and -not (Test-MmtlMojangMetadataUri $responseUri)){throw 'METADATA_UNTRUSTED_REDIRECT: 响应主机不在许可清单中。'}
         $bytes=[byte[]]$response.Bytes;$actual=[Convert]::ToHexString([Security.Cryptography.SHA1]::HashData($bytes)).ToLowerInvariant()
         if($actual -cne ([string]$CatalogEntry.metadataSha1).ToLowerInvariant()){throw "METADATA_HASH_MISMATCH: expected $($CatalogEntry.metadataSha1), actual $actual."}
         $raw=[Text.Encoding]::UTF8.GetString($bytes);$downloadedAt=[DateTimeOffset]::UtcNow.ToString('o')

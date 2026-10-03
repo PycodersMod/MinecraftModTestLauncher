@@ -106,12 +106,12 @@ Describe 'Immutable validation run evidence' {
         Test-Path -LiteralPath $path | Should -BeTrue
         $before=Get-FileHash -LiteralPath $path -Algorithm SHA256
         $evidence.notes=@('new state must be a new run')
-        {Write-MmtlValidationRunEvidence -RuntimeRoot $TestDrive -Evidence $evidence} | Should -Throw '*immutable*'
+        {Write-MmtlValidationRunEvidence -RuntimeRoot $TestDrive -Evidence $evidence} | Should -Throw '*不可更改*'
         (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash | Should -Be $before.Hash
     }
 
     It 'rejects path traversal in target and run identifiers' {
         $evidence=[pscustomobject]@{targetId='..\outside';runId='run-1'}
-        {Write-MmtlValidationRunEvidence -RuntimeRoot $TestDrive -Evidence $evidence} | Should -Throw '*identifier*'
+        {Write-MmtlValidationRunEvidence -RuntimeRoot $TestDrive -Evidence $evidence} | Should -Throw '*标识*'
     }
 }

@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://pycodersmod.github.io/MinecraftModTestLauncher/schemas/compatibility-matrix.schema.json",
-  "title": "MMTL Compatibility Matrix v1",
-  "description": "Records upstream provenance, a resolved target, capability and MMTL validation evidence separately.",
+  "title": "MMTL 兼容性矩阵 v1",
+  "description": "分别记录上游来源、已解析目标、能力和 MMTL 验证证据。",
   "type": "object",
   "additionalProperties": false,
   "required": ["schemaVersion", "minecraft", "loaderStack", "toolchain", "buildSystem", "java", "target", "validation", "provenance", "notes"],
@@ -61,7 +61,7 @@
       "properties": {
         "id": {"enum": ["ForgeGradle", "FabricLoom", "NeoGradle", "ModDevGradle", "QuiltLoom", "Ploceus", "LegacyLooming", "Unknown", "Custom"]},
         "version": {"type": "string"},
-        "ecosystem": {"type": "string", "description": "Optional ecosystem context, for example Ornithe; not a Loader identity."}
+        "ecosystem": {"type": "string", "description": "可选的生态背景信息，例如 Ornithe；这不是 Loader 身份。"}
       }
     },
     "buildSystem": {

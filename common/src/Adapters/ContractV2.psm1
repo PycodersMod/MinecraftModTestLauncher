@@ -11,7 +11,7 @@ function Resolve-MmtlProjectStack {
     param([Parameter(Mandatory)][AllowEmptyCollection()][object[]]$Evidence)
     $primaryEvidence=@($Evidence|Where-Object{-not $_.PSObject.Properties['role'] -or $_.role -ne 'Overlay'});$overlayEvidence=@($Evidence|Where-Object{$_.PSObject.Properties['role'] -and $_.role -eq 'Overlay'})
     $ids=@($primaryEvidence|ForEach-Object {[string]$_.loaderId}|Select-Object -Unique)
-    $conflicts=@();if($ids.Count -gt 1){$conflicts=@("Conflicting primary loader evidence: $($ids -join ', ').")}
+    $conflicts=@();if($ids.Count -gt 1){$conflicts=@("主 Loader 证据相互冲突：$($ids -join ', ')。")}
     $selected=if($ids.Count -eq 1){$ids[0]}else{'Unknown'}
     $stack=$null
     if($selected -ne 'Unknown' -and -not $conflicts.Count){
@@ -31,7 +31,7 @@ function New-MmtlAdapterBuildPlan {
 function Get-MmtlHistoricalAdapterProbe {
     [CmdletBinding()]
     param([Parameter(Mandatory)][string]$LoaderId,[Parameter(Mandatory)][AllowEmptyCollection()][object[]]$Evidence)
-    if($LoaderId -notin @('LegacyFabric','OrnitheLoader','LiteLoader','Rift','ModLoader','ModLoaderMP','JarMod')){throw "Unknown historical adapter: $LoaderId"}
+    if($LoaderId -notin @('LegacyFabric','OrnitheLoader','LiteLoader','Rift','ModLoader','ModLoaderMP','JarMod')){throw "未知的历史适配器：$LoaderId"}
     $matched=@($Evidence|Where-Object loaderId -CEQ $LoaderId)
     New-MmtlAdapterProbeResult -AdapterId $LoaderId -Evidence $matched -Confidence $(if($matched.Count){[string]$matched[0].confidence}else{'Unknown'})
 }
@@ -39,7 +39,7 @@ function Get-MmtlHistoricalAdapterProbe {
 function New-MmtlHistoricalAdapterBuildPlan {
     [CmdletBinding()]
     param([Parameter(Mandatory)]$Project)
-    if($Project.Loader -notin @('LegacyFabric','OrnitheLoader','LiteLoader','Rift','ModLoader','ModLoaderMP','JarMod')){throw 'Historical adapter requires historical loader evidence.'}
+    if($Project.Loader -notin @('LegacyFabric','OrnitheLoader','LiteLoader','Rift','ModLoader','ModLoaderMP','JarMod')){throw '历史适配器需要对应的历史 Loader 证据。'}
     $plan=New-MmtlAdapterBuildPlan -Project $Project
     $plan|Add-Member -NotePropertyName historical -NotePropertyValue ([pscustomobject]@{sourceClass='UnknownHistorical';trustClass='UnverifiedHistorical';automaticArtifactExecution='Denied';validationStatus='Unverified'})
     $plan|Add-Member -NotePropertyName loaderStack -NotePropertyValue $Project.LoaderStack

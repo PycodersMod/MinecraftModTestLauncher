@@ -55,7 +55,7 @@ Describe 'Full coverage audit engine' {
     It 'returns one exact catalog release record and rejects unknown version ids' {
         $audit=New-MmtlCoverageAudit -Catalog $script:catalog -RuntimeRoot $TestDrive -ProviderInputs $script:inputs
         (Get-MmtlCoverageVersion -Audit $audit -MinecraftId '1.1').minecraftId | Should -BeExactly '1.1'
-        {Get-MmtlCoverageVersion -Audit $audit -MinecraftId '1.1-pre1'} | Should -Throw '*is not a formal catalog release*'
+        {Get-MmtlCoverageVersion -Audit $audit -MinecraftId '1.1-pre1'} | Should -Throw '*不是本次审计中的正式目录版本*'
     }
 
     It 'supports an injected catalog/provider snapshot for deterministic live-audit orchestration tests' {

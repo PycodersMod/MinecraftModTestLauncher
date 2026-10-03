@@ -1,94 +1,94 @@
-# Minecraft Version Catalog and Runtime Java Metadata Implementation Plan
+# Minecraft 版本目录与运行时 Java 元数据实施计划
 
-> **For agentic workers:** Implement each task with fixture-first tests and run the listed verification before proceeding.
+> **面向智能体执行者：**每项任务都先编写 fixture 测试，再运行列出的验证命令后继续。
 
-**Goal:** Add an authoritative Mojang release catalog, integrity-checked lazy version metadata cache, Runtime Java resolver v2, and cross-platform catalog CLI without changing legacy Build Java behavior.
+**目标：**新增权威 Mojang 版本目录、校验完整性的惰性版本元数据缓存、Runtime Java resolver v2 和跨平台目录 CLI，同时不改变旧版 Build Java 行为。
 
-**Architecture:** Keep HTTP, manifest normalization, cache policy, metadata integrity, and Java provenance inside focused Catalog modules. The launcher dispatches catalog commands before project-profile resolution; existing `JavaMajor` remains the legacy Build Java alias. Fixtures cover all deterministic behavior while live Mojang checks remain explicit smoke tests.
+**架构：**HTTP、manifest 规范化、缓存策略、元数据完整性和 Java 来源信息放在职责明确的 Catalog 模块中。Launcher 在解析项目 Profile 前分派目录命令；现有 `JavaMajor` 继续作为旧版 Build Java 别名。Fixture 覆盖所有确定性行为，实时 Mojang 检查仍作为显式 smoke test。
 
-**Tech Stack:** PowerShell 7, .NET HTTP/JSON/cryptography APIs, Pester, GitHub Actions, Mojang Version Manifest v2.
+**技术栈：**PowerShell 7、.NET HTTP/JSON/密码学 API、Pester、GitHub Actions、Mojang Version Manifest v2。
 
-**Spec:** User-provided Phase C task and the repository's Phase A/B architecture contracts.
+**规格来源：**用户提供的 Phase C 任务，以及仓库的 Phase A/B 架构契约。
 
-## Global Constraints
+## 全局约束
 
-- Preserve canonical Minecraft IDs as strings and source ordering; do not use SemVer parsing or sorting.
-- Use only `https://piston-meta.mojang.com/mc/game/version_manifest_v2.json` as the authoritative manifest.
-- Only report catalog discovery as `CATALOGUED`; it does not mean loader/build/client support.
-- Verify per-version JSON against manifest SHA-1 before parsing or caching as authoritative.
-- Cache under `<RuntimeRoot>/metadata/mojang/`, atomically; do not commit live cache or personal machine paths.
-- Keep Runtime Java separate from Build Java and retain `JavaMajor` compatibility.
-- Offline mode must not make network requests; stale fallbacks must be labeled.
-- PR tests must be fixture-driven and independent of Mojang availability.
-- Do not implement Loader providers, download JARs, launch Minecraft, alter Mods, or retry the NeoForge stall.
+- 将规范 Minecraft ID 作为字符串并保留来源顺序；不得使用 SemVer 解析或排序。
+- 权威 manifest 仅使用 `https://piston-meta.mojang.com/mc/game/version_manifest_v2.json`。
+- 只将目录发现报告为 `CATALOGUED`；这不代表支持 Loader、构建或客户端。
+- 在将各版本 JSON 解析或作为权威数据缓存前，必须根据 manifest 中的 SHA-1 校验。
+- 缓存写入 `<RuntimeRoot>/metadata/mojang/` 并采用原子操作；不得提交实时缓存或个人机器路径。
+- Runtime Java 与 Build Java 分离，同时保留 `JavaMajor` 兼容性。
+- 离线模式不得发起网络请求；过期数据回退必须明确标注。
+- PR 测试必须使用 fixture，与 Mojang 服务是否可用无关。
+- 不实现 Loader Provider、不下载 JAR、不启动 Minecraft、不修改 Mod，也不重试 NeoForge 卡顿问题。
 
-## Review Focus
+## 审查重点
 
-- Non-SemVer and year-based IDs remain exact strings — pin in manifest normalization and CurrentStable tests.
-- Corrupted, mismatched, malformed, or wrong-ID metadata is rejected — pin in integrity/cache tests.
-- Offline and forced refresh semantics remain distinct — pin with fake HTTP request-count assertions.
-- Legacy `JavaMajor` and Build behavior do not inherit Minecraft Runtime Java — pin with detector and project model tests.
-- Unknown Java metadata remains Unknown unless an audited fallback applies — pin resolver priority and arbitrary-major contract tests.
+- 非 SemVer 和年份格式 ID 必须作为准确字符串保留；在 manifest 规范化和 CurrentStable 测试中固定此行为。
+- 拒绝损坏、不匹配、格式错误或 ID 错误的元数据；在完整性/缓存测试中固定此行为。
+- 离线与强制刷新语义必须保持不同；使用伪造 HTTP 请求计数断言验证。
+- 旧版 `JavaMajor` 和 Build 行为不得继承 Minecraft Runtime Java；使用检测器和项目模型测试固定此行为。
+- 除非适用经过审计的回退规则，未知 Java 元数据必须继续保持 Unknown；验证 resolver 优先级和任意主版本契约。
 
 ---
 
-### Task 1: Mojang Manifest Catalog and HTTP Boundary
+### 任务 1：Mojang Manifest 目录与 HTTP 边界
 
-**Files:**
-- Create: `src/Catalog/MinecraftVersionCatalog.psm1`
-- Create: `schemas/minecraft-version-catalog.schema.json`
-- Create: `tests/MinecraftVersionCatalog.Tests.ps1`
+**文件：**
+- 新建：`src/Catalog/MinecraftVersionCatalog.psm1`
+- 新建：`schemas/minecraft-version-catalog.schema.json`
+- 新建：`tests/MinecraftVersionCatalog.Tests.ps1`
 
-**Interfaces:**
-- Produce manifest fetch/validation/normalization, release filtering from the manifest's `1.0` anchor through `latest.release`, canonical ID lookup, freshness states, atomic manifest cache, and injectable HTTP behavior.
+**接口：**
+- 实现 manifest 获取、验证和规范化；从 manifest 的 `1.0` 锚点筛选到 `latest.release` 的正式版本；提供规范 ID 查询、数据新鲜度状态、原子 manifest 缓存和可注入 HTTP 行为。
 
-- [ ] Add fixture tests for schema validation, duplicate IDs, anchor lookup, source order, release-only filtering, CurrentStable and year-based IDs.
-- [ ] Add cache tests for fresh/stale/offline/corrupt/atomic-write and conditional headers.
-- [ ] Implement normalized schema and HTTPS/host validation based on observed official endpoints.
-- [ ] Run `Invoke-Pester tests/MinecraftVersionCatalog.Tests.ps1 -CI`.
+- [ ] 添加 fixture 测试，覆盖 Schema 验证、重复 ID、锚点查询、来源顺序、仅正式版本筛选、CurrentStable 和年份格式 ID。
+- [ ] 添加缓存测试，覆盖 fresh/stale/offline/corrupt/atomic-write 和条件请求标头。
+- [ ] 根据观察到的官方端点实现规范化 Schema、HTTPS 和主机验证。
+- [ ] 运行 `Invoke-Pester tests/MinecraftVersionCatalog.Tests.ps1 -CI`。
 
-### Task 2: Lazy Version Metadata, Integrity, and Runtime Java Resolver
+### 任务 2：惰性版本元数据、完整性与 Runtime Java Resolver
 
-**Files:**
-- Create: `src/Catalog/JavaRuntimeResolver.psm1`
-- Create: `src/Catalog/data/java-runtime-fallback.json`
-- Modify: `src/Catalog/MinecraftVersionCatalog.psm1`
-- Modify: `tests/MinecraftVersionCatalog.Tests.ps1`
-- Create: `tests/JavaRuntimeResolver.Tests.ps1`
+**文件：**
+- 新建：`src/Catalog/JavaRuntimeResolver.psm1`
+- 新建：`src/Catalog/data/java-runtime-fallback.json`
+- 修改：`src/Catalog/MinecraftVersionCatalog.psm1`
+- 修改：`tests/MinecraftVersionCatalog.Tests.ps1`
+- 新建：`tests/JavaRuntimeResolver.Tests.ps1`
 
-**Interfaces:**
-- `Get-MmtlMinecraftVersionMetadata -CatalogEntry <entry> -RuntimeRoot <path> [-Offline]` validates SHA-1 and canonical metadata ID before returning parsed metadata.
-- `Resolve-MmtlMinecraftRuntimeJavaRequirement -MinecraftId <string> -Catalog <catalog> [-RuntimeOverride <requirement>]` returns major/component/source/confidence/requirementKind/provenance/metadataStatus.
+**接口：**
+- `Get-MmtlMinecraftVersionMetadata -CatalogEntry <entry> -RuntimeRoot <path> [-Offline]` 在返回解析后的元数据前验证 SHA-1 和规范元数据 ID。
+- `Resolve-MmtlMinecraftRuntimeJavaRequirement -MinecraftId <string> -Catalog <catalog> [-RuntimeOverride <requirement>]` 返回 major/component/source/confidence/requirementKind/provenance/metadataStatus。
 
-- [ ] Test metadata SHA-1 success/mismatch, malformed JSON, wrong ID, unsafe URL, and cache revalidation.
-- [ ] Test authoritative metadata, audited fallback, explicit override, Unknown, and arbitrary Java majors.
-- [ ] Add conservative, sourced fallback rules only where supported by official release notes; leave unsupported history Unknown.
-- [ ] Run both focused Pester files.
+- [ ] 测试元数据 SHA-1 成功/不匹配、格式错误的 JSON、错误 ID、不安全 URL 和缓存重新验证。
+- [ ] 测试权威元数据、已审计的回退规则、显式覆盖、Unknown 和任意 Java 主版本。
+- [ ] 仅在官方发行说明支持时添加保守且注明来源的回退规则；证据不足的历史版本继续标记 Unknown。
+- [ ] 运行这两个定向 Pester 文件。
 
-### Task 3: CLI, Project Model Compatibility, Docs, and Cross-platform Fixtures
+### 任务 3：CLI、项目模型兼容性、文档与跨平台 Fixture
 
-**Files:**
-- Modify: `launcher.ps1`
-- Modify: `src/ProjectDetector.psm1`
-- Modify: `tests/CrossPlatformCli.Tests.ps1`
-- Modify: `tests/JavaResolver.Tests.ps1`
-- Modify: `docs/architecture-v2.md`
-- Modify: `README.md`
-- Modify: `.github/workflows/test.yml` only if required to include the new fixture suites.
+**文件：**
+- 修改：`launcher.ps1`
+- 修改：`src/ProjectDetector.psm1`
+- 修改：`tests/CrossPlatformCli.Tests.ps1`
+- 修改：`tests/JavaResolver.Tests.ps1`
+- 修改：`docs/architecture-v2.md`
+- 修改：`README.md`
+- 仅在必须加入新 fixture 套件时修改：`.github/workflows/test.yml`
 
-- [ ] Add `--list-minecraft-versions`, `--minecraft-info <id>`, `--refresh-catalog`, and `--catalog-offline` before profile/project resolution.
-- [ ] Add optional Runtime/Build Java requirement fields while retaining `JavaMajor` and existing build selection behavior.
-- [ ] Test command parsing, offline no-network behavior, refresh failure, status display and legacy regression.
-- [ ] Document catalog coverage boundaries, cache, CurrentStable, provenance, and Runtime/Build split.
-- [ ] Run complete Windows Pester suite; run cross-platform fixture suites in WSL.
+- [ ] 在解析 Profile/项目之前加入 `--list-minecraft-versions`、`--minecraft-info <id>`、`--refresh-catalog` 和 `--catalog-offline`。
+- [ ] 添加可选 Runtime/Build Java 要求字段，同时保留 `JavaMajor` 和现有构建选择行为。
+- [ ] 测试命令解析、离线时不访问网络、刷新失败、状态显示和旧行为回归。
+- [ ] 说明目录覆盖边界、缓存、CurrentStable、来源信息以及 Runtime/Build 的区别。
+- [ ] 运行完整 Windows Pester 套件；在 WSL 中运行跨平台 fixture 套件。
 
-### Task 4: Live Smoke, Privacy Review, Commit, CI, and Handover
+### 任务 4：实时 Smoke、隐私审查、提交、CI 与交接
 
-**Files:**
-- Create a local-only Phase C evidence report; keep it out of Git.
+**文件：**
+- 仅在本地创建 Phase C 证据报告，不纳入 Git。
 
-- [ ] Fetch manifest and P0 metadata on Windows and WSL; compare CurrentStable, release count, anchor and per-version metadata results.
-- [ ] Run all required platform fixture suites and available CI jobs.
-- [ ] Run `git diff --check` and scan staged content for credentials, personal paths and live cache.
-- [ ] Create conventional Chinese-subject commit, push `main`, and verify local/origin/GitHub HEAD plus all four required CI jobs.
-- [ ] Write local HANDOVER evidence and mark Phase C PASS only when every gate is satisfied.
+- [ ] 在 Windows 和 WSL 获取 manifest 与 P0 元数据；比较 CurrentStable、正式版本数量、锚点和逐版本元数据结果。
+- [ ] 运行所有必需的平台 fixture 套件与可用 CI 任务。
+- [ ] 运行 `git diff --check`，并扫描暂存内容中的凭据、个人路径和实时缓存。
+- [ ] 使用中文 Conventional Commit 标题提交并推送 `main`；核对本地/origin/GitHub HEAD 及四个必需 CI 任务。
+- [ ] 写入本地 HANDOVER 证据；只有每项门禁均通过时才将 Phase C 标记为 PASS。

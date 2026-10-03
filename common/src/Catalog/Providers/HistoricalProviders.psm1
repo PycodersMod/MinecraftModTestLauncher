@@ -13,7 +13,7 @@ function ConvertFrom-MmtlHistoricalJsonArray {
     param([Parameter(Mandatory)][string]$Content,[Parameter(Mandatory)][string]$Context)
     try {
         $value = ConvertFrom-Json -InputObject $Content -NoEnumerate -ErrorAction Stop
-        if ($value -isnot [array]) { throw 'Expected JSON array.' }
+        if ($value -isnot [array]) { throw '预期为 JSON 数组。' }
         return ,$value
     } catch { throw "HISTORICAL_METADATA_INVALID ($Context): $($_.Exception.Message)" }
 }
@@ -84,7 +84,7 @@ function Get-MmtlLegacyFabricCandidateQuery {
     $uri = "$script:MmtlLegacyFabricBase/loader/$encoded"
     $document = Get-MmtlHistoricalMetadataDocument -ProviderId LegacyFabric -CacheKey "v2-loader-$MinecraftId" -Uri $uri -AllowedHosts $script:MmtlLegacyFabricHost -RuntimeRoot $RuntimeRoot -Offline:$Offline -ForceRefresh:$ForceRefresh -HttpGet $HttpGet
     if ($document.providerStatus -notin @('Available','Stale')) { return [pscustomobject]@{providerStatus=$document.providerStatus;cacheStatus=$document.cacheStatus;validatedAt=$document.validatedAt;error=$document.error;candidates=@()} }
-    try { $records = ConvertFrom-MmtlHistoricalJsonArray -Content $document.content -Context "Legacy Fabric candidates $MinecraftId" }
+    try { $records = ConvertFrom-MmtlHistoricalJsonArray -Content $document.content -Context "Legacy Fabric $MinecraftId 版候选项" }
     catch { return [pscustomobject]@{providerStatus='Degraded';cacheStatus=$document.cacheStatus;validatedAt=$document.validatedAt;error=$_.Exception.Message;candidates=@()} }
     $candidates = [Collections.Generic.List[object]]::new()
     foreach ($record in $records) {
@@ -162,7 +162,7 @@ function Get-MmtlLiteLoaderProviderSnapshot {
     if($document.providerStatus -in @('Available','Stale')){
         try{
             $manifest=ConvertFrom-Json -InputObject $document.content -ErrorAction Stop
-            if(-not $manifest.versions){throw 'LiteLoader manifest does not contain versions.'}
+            if(-not $manifest.versions){throw 'LiteLoader manifest 不包含版本列表。'}
             foreach($versionProperty in $manifest.versions.PSObject.Properties){
                 $mcId=[string]$versionProperty.Name;$entry=$versionProperty.Value
                 foreach($channelName in @('artefacts','artifacts','snapshots')){
@@ -217,16 +217,16 @@ function Get-MmtlRiftCandidates {
     param([Parameter(Mandatory)][string]$MinecraftId)
     $rift=(Read-MmtlHistoricalArchiveData).rift
     $candidates=[Collections.Generic.List[object]]::new()
-    if($rift.original.minecraftId -ceq $MinecraftId){$item=$rift.original;$candidates.Add([pscustomobject][ordered]@{providerId='Rift';loaderId='Rift';minecraftId=[string]$item.minecraftId;loaderVersion=[string]$item.version;version=[string]$item.version;displayName='Rift';originality='Original';repository=[string]$item.repository;commit=[string]$item.commit;license=[string]$item.license;sourceClass=[string]$item.sourceClass;trustClass=[string]$item.trust;transportSecurity=[string]$item.transportSecurity;maintenanceState=[string]$item.maintenanceState;toolchain=[pscustomobject]@{id='ForgeGradle';version='2.3-SNAPSHOT';ecosystem='Rift'};buildJavaRequirement=[pscustomobject]@{major=8;confidence='High';source='Pinned Rift build.gradle sourceCompatibility = 1.8'};runtimeJavaRequirement=[pscustomobject]@{major=$null;confidence='Unknown';source='No authoritative per-version javaVersion metadata was available for Minecraft 1.13'};providerStatus='Available';availability='Available';downloadPermission='Granted';executePermission='RequiresConfirmation';provenance=@([pscustomobject]@{sourceUrl=[string]$item.repository;commit=[string]$item.commit;license=[string]$item.license;sourceType='archivedOfficial'})})}
-    foreach($item in $rift.communityPorts|Where-Object minecraftId -CEQ $MinecraftId){$candidates.Add([pscustomobject][ordered]@{providerId='Rift';loaderId='Rift';minecraftId=[string]$item.minecraftId;loaderVersion=[string]$item.version;version=[string]$item.version;displayName=[string]$item.displayName;originality='CommunityPort';repository=[string]$item.repository;commit=[string]$item.commit;license=[string]$item.license;sourceClass=[string]$item.sourceClass;trustClass=[string]$item.trust;transportSecurity=[string]$item.transportSecurity;maintenanceState=[string]$item.maintenanceState;toolchain=[pscustomobject]@{id='ForgeGradle';version=$null;ecosystem='RiftCommunityPort'};buildJavaRequirement=[pscustomobject]@{major=8;confidence='Low';source='Pinned community source inspection pending'};runtimeJavaRequirement=[pscustomobject]@{major=$null;confidence='Unknown';source='Unverified'};providerStatus='Available';availability='Available';downloadPermission='RequiresConfirmation';executePermission='Denied';provenance=@([pscustomobject]@{sourceUrl=[string]$item.repository;commit=[string]$item.commit;license=[string]$item.license;sourceType='trustedArchive'})})}
+    if($rift.original.minecraftId -ceq $MinecraftId){$item=$rift.original;$candidates.Add([pscustomobject][ordered]@{providerId='Rift';loaderId='Rift';minecraftId=[string]$item.minecraftId;loaderVersion=[string]$item.version;version=[string]$item.version;displayName='Rift';originality='Original';repository=[string]$item.repository;commit=[string]$item.commit;license=[string]$item.license;sourceClass=[string]$item.sourceClass;trustClass=[string]$item.trust;transportSecurity=[string]$item.transportSecurity;maintenanceState=[string]$item.maintenanceState;toolchain=[pscustomobject]@{id='ForgeGradle';version='2.3-SNAPSHOT';ecosystem='Rift'};buildJavaRequirement=[pscustomobject]@{major=8;confidence='High';source='Rift 固定版本 build.gradle 的 sourceCompatibility = 1.8'};runtimeJavaRequirement=[pscustomobject]@{major=$null;confidence='Unknown';source='Minecraft 1.13 没有可用的权威逐版本 javaVersion 元数据'};providerStatus='Available';availability='Available';downloadPermission='Granted';executePermission='RequiresConfirmation';provenance=@([pscustomobject]@{sourceUrl=[string]$item.repository;commit=[string]$item.commit;license=[string]$item.license;sourceType='archivedOfficial'})})}
+    foreach($item in $rift.communityPorts|Where-Object minecraftId -CEQ $MinecraftId){$candidates.Add([pscustomobject][ordered]@{providerId='Rift';loaderId='Rift';minecraftId=[string]$item.minecraftId;loaderVersion=[string]$item.version;version=[string]$item.version;displayName=[string]$item.displayName;originality='CommunityPort';repository=[string]$item.repository;commit=[string]$item.commit;license=[string]$item.license;sourceClass=[string]$item.sourceClass;trustClass=[string]$item.trust;transportSecurity=[string]$item.transportSecurity;maintenanceState=[string]$item.maintenanceState;toolchain=[pscustomobject]@{id='ForgeGradle';version=$null;ecosystem='RiftCommunityPort'};buildJavaRequirement=[pscustomobject]@{major=8;confidence='Low';source='社区源码已固定，等待检查'};runtimeJavaRequirement=[pscustomobject]@{major=$null;confidence='Unknown';source='Unverified'};providerStatus='Available';availability='Available';downloadPermission='RequiresConfirmation';executePermission='Denied';provenance=@([pscustomobject]@{sourceUrl=[string]$item.repository;commit=[string]$item.commit;license=[string]$item.license;sourceType='trustedArchive'})})}
     return @($candidates)
 }
 
 function New-MmtlJarModManualCandidate {
     [CmdletBinding()]
-    param([Parameter(Mandatory)][string]$MinecraftId,[Parameter(Mandatory)][string]$ArtifactPath,[Parameter(Mandatory)][string]$PatchStrategy,[string]$Source='User supplied local artifact')
+    param([Parameter(Mandatory)][string]$MinecraftId,[Parameter(Mandatory)][string]$ArtifactPath,[Parameter(Mandatory)][string]$PatchStrategy,[string]$Source='用户提供的本地制品')
     $resolved=Resolve-Path -LiteralPath $ArtifactPath -ErrorAction Stop
-    if((Get-Item -LiteralPath $resolved.Path).PSIsContainer){throw 'JARMOD_ARTIFACT_INVALID: expected a file.'}
+    if((Get-Item -LiteralPath $resolved.Path).PSIsContainer){throw 'JARMOD_ARTIFACT_INVALID: 预期路径为文件。'}
     $hash=(Get-FileHash -LiteralPath $resolved.Path -Algorithm SHA256).Hash.ToLowerInvariant()
     $retrievedAt=[DateTimeOffset]::new((Get-Item -LiteralPath $resolved.Path).LastWriteTimeUtc)
     [pscustomobject][ordered]@{providerId='JarMod';loaderId='JarMod';minecraftId=$MinecraftId;availability='Manual';sourceClass='ManualArtifact';trustClass='UnverifiedHistorical';transportSecurity='LocalManual';maintenanceState='Unknown';artifactPath=$resolved.Path;sha256=$hash;integrity=Get-MmtlHistoricalIntegrityAssessment -Algorithm SHA256 -Hash $hash;source=$Source;patchStrategy=$PatchStrategy;downloadPermission='Denied';executePermission='Denied';patchPermission='RequiresConfirmation';retrievedAt=$retrievedAt.ToUniversalTime().ToString('o');lastReviewed=[DateTimeOffset]::UtcNow.ToString('o');provenance=@([pscustomobject]@{sourceType='manual';path=$resolved.Path;sha256=$hash;source=$Source})}

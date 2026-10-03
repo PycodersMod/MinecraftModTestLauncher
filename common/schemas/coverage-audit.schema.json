@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://pycodersmod.github.io/MinecraftModTestLauncher/schemas/coverage-audit.schema.json",
-  "title": "MMTL Full Minecraft Release Coverage Audit",
+  "title": "MMTL Minecraft 正式版本全覆盖审计",
   "type": "object",
   "additionalProperties": false,
   "required": ["schemaVersion", "generatedAt", "minecraftCatalog", "providers", "releases", "summary", "gaps", "warnings", "provenance"],

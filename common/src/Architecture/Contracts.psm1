@@ -26,7 +26,7 @@ $script:MmtlArchitectureContract = [ordered]@{
         [pscustomobject]@{ id = 'Rift'; displayName = 'Rift'; category = 'Historical'; historical = $true; providerId = $null }
         [pscustomobject]@{ id = 'ModLoader'; displayName = 'Risugami ModLoader'; category = 'Historical'; historical = $true; providerId = $null }
         [pscustomobject]@{ id = 'ModLoaderMP'; displayName = 'ModLoaderMP'; category = 'Historical'; historical = $true; providerId = $null }
-        [pscustomobject]@{ id = 'JarMod'; displayName = 'Legacy Jar Mod'; category = 'Compatibility'; historical = $true; providerId = $null }
+        [pscustomobject]@{ id = 'JarMod'; displayName = '旧式 Jar Mod'; category = 'Compatibility'; historical = $true; providerId = $null }
     )
     toolchains = @(
         [pscustomobject]@{ id = 'ForgeGradle'; displayName = 'ForgeGradle' }
@@ -163,16 +163,16 @@ function New-MmtlBuildEvidence {
         [Parameter(Mandatory)][DateTimeOffset]$VerifiedAt,
         [Parameter(Mandatory)]$FixtureProvenance
     )
-    if(-not (Test-MmtlArchitectureValue -Kind Loader -Value $LoaderId)){throw "Unknown build evidence Loader: $LoaderId"}
-    if(-not $Toolchain.PSObject.Properties['id'] -or -not (Test-MmtlArchitectureValue -Kind Toolchain -Value ([string]$Toolchain.id))){throw 'Build evidence requires a registered toolchain identity.'}
-    if(-not $Platform.PSObject.Properties['os'] -or -not $Platform.PSObject.Properties['arch'] -or -not (Test-MmtlArchitectureValue -Kind OS -Value ([string]$Platform.os)) -or -not (Test-MmtlArchitectureValue -Kind Architecture -Value ([string]$Platform.arch))){throw 'Build evidence requires a valid OS and architecture.'}
-    if(-not $BuildJavaRequirement.PSObject.Properties['major'] -or [int]$BuildJavaRequirement.major -lt 1 -or -not $BuildJavaRequirement.PSObject.Properties['source'] -or [string]::IsNullOrWhiteSpace([string]$BuildJavaRequirement.source)){throw 'Build evidence requires an explicit BuildJava requirement.'}
-    if(-not $ObservedBuildJava.PSObject.Properties['major'] -or [int]$ObservedBuildJava.major -lt 1 -or -not $ObservedBuildJava.PSObject.Properties['exactVersion'] -or [string]::IsNullOrWhiteSpace([string]$ObservedBuildJava.exactVersion) -or -not $ObservedBuildJava.PSObject.Properties['vendor'] -or [string]::IsNullOrWhiteSpace([string]$ObservedBuildJava.vendor) -or -not $ObservedBuildJava.PSObject.Properties['os'] -or -not $ObservedBuildJava.PSObject.Properties['arch'] -or -not (Test-MmtlArchitectureValue -Kind OS -Value ([string]$ObservedBuildJava.os)) -or -not (Test-MmtlArchitectureValue -Kind Architecture -Value ([string]$ObservedBuildJava.arch))){throw 'ObservedBuildJava requires valid major, exactVersion, vendor, OS, and architecture.'}
-    if([string]$ObservedBuildJava.os -ne [string]$Platform.os -or [string]$ObservedBuildJava.arch -ne [string]$Platform.arch){throw 'Observed Java platform must match the build platform.'}
-    if(-not $FixtureProvenance.PSObject.Properties['sourceUrl'] -or -not $FixtureProvenance.PSObject.Properties['commit'] -or -not $FixtureProvenance.PSObject.Properties['license']){throw 'Build evidence requires source fixture provenance, commit, and license.'}
-    if($ArtifactSha256 -and $ArtifactSha256 -notmatch '^(?i:[0-9a-f]{64})$'){throw 'Artifact SHA-256 must contain exactly 64 hexadecimal characters.'}
-    if($Result -eq 'PASSED' -and -not $ArtifactSha256){throw 'Passed build evidence requires the artifact SHA-256.'}
-    if($Result -eq 'PASSED' -and $BuildJavaRequirement.requirementKind -eq 'Minimum' -and [int]$ObservedBuildJava.major -lt [int]$BuildJavaRequirement.minimumMajor){throw 'Observed build JVM is below the required minimum.'}
+    if(-not (Test-MmtlArchitectureValue -Kind Loader -Value $LoaderId)){throw "未知的构建证据 Loader：$LoaderId"}
+    if(-not $Toolchain.PSObject.Properties['id'] -or -not (Test-MmtlArchitectureValue -Kind Toolchain -Value ([string]$Toolchain.id))){throw '构建证据需要已注册的工具链身份。'}
+    if(-not $Platform.PSObject.Properties['os'] -or -not $Platform.PSObject.Properties['arch'] -or -not (Test-MmtlArchitectureValue -Kind OS -Value ([string]$Platform.os)) -or -not (Test-MmtlArchitectureValue -Kind Architecture -Value ([string]$Platform.arch))){throw '构建证据需要有效的操作系统与 CPU 架构。'}
+    if(-not $BuildJavaRequirement.PSObject.Properties['major'] -or [int]$BuildJavaRequirement.major -lt 1 -or -not $BuildJavaRequirement.PSObject.Properties['source'] -or [string]::IsNullOrWhiteSpace([string]$BuildJavaRequirement.source)){throw '构建证据需要明确的 BuildJava 要求。'}
+    if(-not $ObservedBuildJava.PSObject.Properties['major'] -or [int]$ObservedBuildJava.major -lt 1 -or -not $ObservedBuildJava.PSObject.Properties['exactVersion'] -or [string]::IsNullOrWhiteSpace([string]$ObservedBuildJava.exactVersion) -or -not $ObservedBuildJava.PSObject.Properties['vendor'] -or [string]::IsNullOrWhiteSpace([string]$ObservedBuildJava.vendor) -or -not $ObservedBuildJava.PSObject.Properties['os'] -or -not $ObservedBuildJava.PSObject.Properties['arch'] -or -not (Test-MmtlArchitectureValue -Kind OS -Value ([string]$ObservedBuildJava.os)) -or -not (Test-MmtlArchitectureValue -Kind Architecture -Value ([string]$ObservedBuildJava.arch))){throw 'ObservedBuildJava 的主版本、完整版本、供应商、操作系统和架构必须有效。'}
+    if([string]$ObservedBuildJava.os -ne [string]$Platform.os -or [string]$ObservedBuildJava.arch -ne [string]$Platform.arch){throw 'Java 的操作系统和架构必须与构建平台一致。'}
+    if(-not $FixtureProvenance.PSObject.Properties['sourceUrl'] -or -not $FixtureProvenance.PSObject.Properties['commit'] -or -not $FixtureProvenance.PSObject.Properties['license']){throw '构建证据需要来源 fixture、commit 和许可证信息。'}
+    if($ArtifactSha256 -and $ArtifactSha256 -notmatch '^(?i:[0-9a-f]{64})$'){throw 'Artifact SHA-256 必须恰好包含 64 个十六进制字符。'}
+    if($Result -eq 'PASSED' -and -not $ArtifactSha256){throw '通过的构建证据必须包含产物 SHA-256。'}
+    if($Result -eq 'PASSED' -and $BuildJavaRequirement.requirementKind -eq 'Minimum' -and [int]$ObservedBuildJava.major -lt [int]$BuildJavaRequirement.minimumMajor){throw '实测构建 JVM 低于要求的最低版本。'}
     [pscustomobject][ordered]@{
         minecraftId=$MinecraftId
         loaderId=$LoaderId

@@ -32,7 +32,7 @@ try{
             $root=[IO.Path]::GetFullPath([string]$plan.projectRoot);$link=[IO.Path]::GetFullPath([string]$plan.runtimeLinkPath);$target=[IO.Path]::GetFullPath([string]$plan.runtimeTargetPath)
             $prefix=$root.TrimEnd('\','/')+[IO.Path]::DirectorySeparatorChar
             if(-not $link.StartsWith($prefix,$platform.PathComparison)){throw 'Fabric Runtime link 越出项目目录。'}
-            if($platform.OS -ne 'Windows'){throw 'Fabric Runtime link cleanup is unsupported on this platform.'}
+            if($platform.OS -ne 'Windows'){throw '当前平台不支持清理 Fabric Runtime 链接。'}
             if(Test-Path -LiteralPath $link){
                 $item=Get-Item -LiteralPath $link -Force
                 if(-not($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -or $item.LinkType -ne 'Junction' -or [IO.Path]::GetFullPath([string]@($item.Target)[0]) -ne $target){throw 'Fabric Runtime junction 身份不符，拒绝清理。'}

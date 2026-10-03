@@ -14,7 +14,7 @@ function New-MmtlValidationPlan {
     )
 
     if ($CurrentStable -notin $CatalogReleaseIds) {
-        throw 'CurrentStable must be an exact release ID in the supplied Mojang catalog.'
+        throw 'CurrentStable 必须是所提供 Mojang 目录中的确切版本 ID。'
     }
     $selected = [Collections.Generic.List[object]]::new()
     switch ($Scope) {
@@ -30,7 +30,7 @@ function New-MmtlValidationPlan {
         'Portfolio' {
             foreach ($project in $ProjectTargets) {
                 if (-not $project -or -not $project.PSObject.Properties['targetId'] -or -not $project.targetId) {
-                    throw 'Every Tier 1 project target requires a stable targetId.'
+                    throw '每个 Tier 1 项目目标都必须具有稳定的 targetId。'
                 }
                 if ([string]$project.minecraftId -notin $CatalogReleaseIds) { continue }
                 $copy = [ordered]@{}
@@ -49,7 +49,7 @@ function New-MmtlValidationPlan {
     }
     $ids = @($selected | ForEach-Object { [string]$_.targetId })
     if (@($ids | Select-Object -Unique).Count -ne $ids.Count) {
-        throw 'Validation plan contains duplicate target IDs.'
+        throw '验证计划中包含重复的目标 ID。'
     }
     [pscustomobject][ordered]@{
         schemaVersion = 1
@@ -68,32 +68,32 @@ function Test-MmtlValidationFixture {
         [Parameter(Mandatory)][AllowEmptyCollection()][string[]]$AllowedOwners
     )
     foreach ($field in @('type', 'source', 'commit', 'license', 'trust', 'allowedTasks')) {
-        if (-not $Fixture.PSObject.Properties[$field] -or $null -eq $Fixture.$field) { throw "Fixture is missing required field: $field" }
+        if (-not $Fixture.PSObject.Properties[$field] -or $null -eq $Fixture.$field) { throw "Fixture 缺少必需字段：$field" }
     }
-    if ([string]::IsNullOrWhiteSpace([string]$Fixture.license)) { throw 'Fixture license must be explicitly recorded.' }
+    if ([string]::IsNullOrWhiteSpace([string]$Fixture.license)) { throw '必须明确记录 Fixture 的许可证。' }
     foreach ($task in @($Fixture.allowedTasks)) {
-        if ([string]$task -notin $script:SafeFixtureTasks) { throw "Fixture contains unallowlisted Gradle task: $task" }
+        if ([string]$task -notin $script:SafeFixtureTasks) { throw "Fixture 包含未列入许可清单的 Gradle 任务：$task" }
     }
     if ([string]$Fixture.type -in @('OfficialFixture', 'GeneratedOfficialFixture')) {
-        if ([string]$Fixture.commit -notmatch '^(?i:[0-9a-f]{40})$') { throw 'Fixture source must be pinned to an exact 40-character commit SHA.' }
-        if ([string]$Fixture.trust -ne 'TrustedOfficial') { throw 'Official fixture trust must be TrustedOfficial.' }
+        if ([string]$Fixture.commit -notmatch '^(?i:[0-9a-f]{40})$') { throw 'Fixture 来源必须固定到准确的 40 字符 commit SHA。' }
+        if ([string]$Fixture.trust -ne 'TrustedOfficial') { throw '官方 Fixture 的信任级别必须为 TrustedOfficial。' }
         $uri = $null
         if (-not [Uri]::TryCreate([string]$Fixture.source, [UriKind]::Absolute, [ref]$uri) -or $uri.Scheme -ne 'https' -or $uri.Host -ne 'github.com') {
-            throw 'Official fixture source must use an HTTPS github.com URL.'
+            throw '官方 Fixture 来源必须使用 github.com 的 HTTPS URL。'
         }
         $owner = $uri.AbsolutePath.Trim('/').Split('/')[0]
-        if ($owner -notin $AllowedOwners) { throw "Fixture source owner is not allowlisted: $owner" }
+        if ($owner -notin $AllowedOwners) { throw "Fixture 来源所有者不在许可清单中：$owner" }
     } elseif ([string]$Fixture.type -eq 'OfficialArtifactFixture') {
-        if ([string]$Fixture.trust -ne 'TrustedOfficial') { throw 'Official artifact fixture trust must be TrustedOfficial.' }
+        if ([string]$Fixture.trust -ne 'TrustedOfficial') { throw '官方产物 Fixture 的信任级别必须为 TrustedOfficial。' }
         $uri = $null
-        if (-not [Uri]::TryCreate([string]$Fixture.source, [UriKind]::Absolute, [ref]$uri) -or $uri.Scheme -ne 'https' -or $uri.Host -notin @('maven.minecraftforge.net', 'files.minecraftforge.net')) { throw 'Official artifact fixture must use an allowlisted HTTPS Forge host.' }
-        if ([string]$Fixture.commit -notmatch '^(?i:[0-9a-f]{64})$') { throw 'Official artifact fixture commit must be its exact archive SHA-256.' }
+        if (-not [Uri]::TryCreate([string]$Fixture.source, [UriKind]::Absolute, [ref]$uri) -or $uri.Scheme -ne 'https' -or $uri.Host -notin @('maven.minecraftforge.net', 'files.minecraftforge.net')) { throw '官方产物 Fixture 必须使用许可清单中的 Forge HTTPS 主机。' }
+        if ([string]$Fixture.commit -notmatch '^(?i:[0-9a-f]{64})$') { throw '官方产物 Fixture 的 commit 必须是其确切归档 SHA-256。' }
         $checksumLength=switch([string]$Fixture.officialChecksumAlgorithm){'MD5'{32}'SHA1'{40}'SHA256'{64}default{0}}
-        if(-not $checksumLength -or [string]$Fixture.officialChecksum -notmatch ("^(?i:[0-9a-f]{$checksumLength})$")){throw 'Official archive fixture must include the matching official checksum and algorithm.'}
+        if(-not $checksumLength -or [string]$Fixture.officialChecksum -notmatch ("^(?i:[0-9a-f]{$checksumLength})$")){throw '官方归档 Fixture 必须包含匹配的官方校验和及算法。'}
     } elseif ([string]$Fixture.type -eq 'UserProject') {
-        if ([string]$Fixture.trust -ne 'UserOwned') { throw 'User project trust must be UserOwned.' }
+        if ([string]$Fixture.trust -ne 'UserOwned') { throw '用户项目的信任级别必须为 UserOwned。' }
     } else {
-        throw "Fixture type is not executable in this validation plan: $($Fixture.type)"
+        throw "此验证计划不支持执行该 Fixture 类型：$($Fixture.type)"
     }
     return $true
 }

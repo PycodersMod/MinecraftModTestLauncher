@@ -9,18 +9,18 @@ function Get-MmtlValidationEvidenceAudit {
     param([object[]]$Matrices=@(),[string[]]$CatalogReleaseIds=@(),[string]$BuildEvidenceSchemaPath=(Join-Path $PSScriptRoot '..\..\schemas\build-evidence.schema.json'))
     $records=[Collections.Generic.List[object]]::new();$warnings=[Collections.Generic.List[object]]::new()
     foreach($matrix in $Matrices){
-        if(-not $matrix -or -not $matrix.PSObject.Properties['minecraft'] -or -not $matrix.minecraft -or -not $matrix.minecraft.PSObject.Properties['id'] -or -not $matrix.PSObject.Properties['loaderStack'] -or -not $matrix.loaderStack -or -not $matrix.loaderStack.PSObject.Properties['primary'] -or -not $matrix.loaderStack.primary -or -not $matrix.loaderStack.primary.PSObject.Properties['id'] -or -not $matrix.PSObject.Properties['validation']){$warnings.Add([pscustomobject]@{reasonCode='COMPATIBILITY_MATRIX_INVALID_STRUCTURE';minecraftId=$null;loaderId=$null;message='Compatibility matrix is missing required Minecraft, primary Loader, or validation structure.'});continue}
+        if(-not $matrix -or -not $matrix.PSObject.Properties['minecraft'] -or -not $matrix.minecraft -or -not $matrix.minecraft.PSObject.Properties['id'] -or -not $matrix.PSObject.Properties['loaderStack'] -or -not $matrix.loaderStack -or -not $matrix.loaderStack.PSObject.Properties['primary'] -or -not $matrix.loaderStack.primary -or -not $matrix.loaderStack.primary.PSObject.Properties['id'] -or -not $matrix.PSObject.Properties['validation']){$warnings.Add([pscustomobject]@{reasonCode='COMPATIBILITY_MATRIX_INVALID_STRUCTURE';minecraftId=$null;loaderId=$null;message='兼容性矩阵缺少必需的 Minecraft、主 Loader 或验证结构。'});continue}
         $minecraftId=[string]$matrix.minecraft.id;$loaderId=[string]$matrix.loaderStack.primary.id;$validation=$matrix.validation
-        if(-not $validation.PSObject.Properties['level'] -or -not $validation.PSObject.Properties['result'] -or -not $validation.level -or -not $validation.result){$warnings.Add([pscustomobject]@{reasonCode='COMPATIBILITY_MATRIX_INVALID_VALIDATION';minecraftId=$minecraftId;loaderId=$loaderId;message='Validation evidence is missing level or result.'});continue}
+        if(-not $validation.PSObject.Properties['level'] -or -not $validation.PSObject.Properties['result'] -or -not $validation.level -or -not $validation.result){$warnings.Add([pscustomobject]@{reasonCode='COMPATIBILITY_MATRIX_INVALID_VALIDATION';minecraftId=$minecraftId;loaderId=$loaderId;message='验证证据缺少 level 或 result。'});continue}
         $claimedLevel=[string]$validation.level;$result=[string]$validation.result
-        if($claimedLevel -notin $script:MmtlValidationLevels -or $result -notin @('PASSED','FAILED','UNVERIFIED','STALE')){$warnings.Add([pscustomobject]@{reasonCode='COMPATIBILITY_MATRIX_INVALID_VALIDATION';minecraftId=$minecraftId;loaderId=$loaderId;message='Validation evidence contains an unrecognized level or result.'});continue}
-        if(@($CatalogReleaseIds).Count -and $minecraftId -notin $CatalogReleaseIds){$warnings.Add([pscustomobject]@{reasonCode='VALIDATION_VERSION_OUTSIDE_FORMAL_CATALOG';minecraftId=$minecraftId;loaderId=$loaderId;message='Compatibility matrix version is not in the current formal release catalog.'});continue}
-        if($loaderId -notin @('Forge','Fabric','NeoForge','Quilt','LegacyFabric','OrnitheLoader','LiteLoader','Rift','ModLoader','ModLoaderMP','JarMod')){$warnings.Add([pscustomobject]@{reasonCode='VALIDATION_LOADER_UNKNOWN';minecraftId=$minecraftId;loaderId=$loaderId;message='Compatibility matrix uses an unregistered Loader identity.'});continue}
+        if($claimedLevel -notin $script:MmtlValidationLevels -or $result -notin @('PASSED','FAILED','UNVERIFIED','STALE')){$warnings.Add([pscustomobject]@{reasonCode='COMPATIBILITY_MATRIX_INVALID_VALIDATION';minecraftId=$minecraftId;loaderId=$loaderId;message='验证证据中的 level 或 result 无法识别。'});continue}
+        if(@($CatalogReleaseIds).Count -and $minecraftId -notin $CatalogReleaseIds){$warnings.Add([pscustomobject]@{reasonCode='VALIDATION_VERSION_OUTSIDE_FORMAL_CATALOG';minecraftId=$minecraftId;loaderId=$loaderId;message='兼容性矩阵中的版本不在当前正式版本目录内。'});continue}
+        if($loaderId -notin @('Forge','Fabric','NeoForge','Quilt','LegacyFabric','OrnitheLoader','LiteLoader','Rift','ModLoader','ModLoaderMP','JarMod')){$warnings.Add([pscustomobject]@{reasonCode='VALIDATION_LOADER_UNKNOWN';minecraftId=$minecraftId;loaderId=$loaderId;message='兼容性矩阵使用了尚未注册的 Loader 标识。'});continue}
         $buildEvidence=if($validation.PSObject.Properties['buildEvidence']){@($validation.buildEvidence)}else{@()};$claimAccepted=$true;$effectiveLevel=$claimedLevel;$reasonCode='VALIDATION_EVIDENCE_ACCEPTED';$notes=@()
         $levelIndex=[array]::IndexOf($script:MmtlValidationLevels,$claimedLevel)
         $buildAccepted=$false
         if($levelIndex -ge 2 -and $result -eq 'PASSED'){
-            if(@($buildEvidence).Count -eq 0){$claimAccepted=$false;$effectiveLevel='RESOLVED';$reasonCode='BUILD_VERIFIED_CLAIM_MISSING_EVIDENCE';$notes+='Build verification claim has no structured build evidence.'}
+            if(@($buildEvidence).Count -eq 0){$claimAccepted=$false;$effectiveLevel='RESOLVED';$reasonCode='BUILD_VERIFIED_CLAIM_MISSING_EVIDENCE';$notes+='构建验证声明缺少结构化构建证据。'}
             else{
                 foreach($build in $buildEvidence){
                     $invalidReason=$null
@@ -28,7 +28,7 @@ function Get-MmtlValidationEvidenceAudit {
                     if(-not $compiler -or -not $compiler.PSObject.Properties['major'] -or [int]$compiler.major -lt 1){$invalidReason='BUILD_EVIDENCE_MISSING_COMPILER_TARGET'}
                     elseif(-not $observed -or -not $observed.PSObject.Properties['major'] -or [int]$observed.major -lt 1 -or -not $observed.PSObject.Properties['exactVersion'] -or [string]::IsNullOrWhiteSpace([string]$observed.exactVersion)){$invalidReason='BUILD_EVIDENCE_MISSING_OBSERVED_JAVA'}
                     else{$json=$build|ConvertTo-Json -Depth 30 -Compress;if(-not (Test-Json -Json $json -SchemaFile $BuildEvidenceSchemaPath -ErrorAction SilentlyContinue)){$invalidReason='BUILD_EVIDENCE_SCHEMA_INVALID'}}
-                    if($invalidReason){$claimAccepted=$false;$effectiveLevel='RESOLVED';$reasonCode=$invalidReason;$notes+="Build evidence is incomplete or invalid ($invalidReason).";break}
+                    if($invalidReason){$claimAccepted=$false;$effectiveLevel='RESOLVED';$reasonCode=$invalidReason;$notes+="构建证据不完整或无效（$invalidReason）。";break}
                 }
                 if(-not $reasonCode -or $reasonCode -eq 'VALIDATION_EVIDENCE_ACCEPTED'){$buildAccepted=$true}
             }

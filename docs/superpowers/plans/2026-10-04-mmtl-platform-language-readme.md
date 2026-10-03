@@ -1,16 +1,16 @@
 # MMTL 平台架构、语言与 README 规范实施计划
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **执行说明：**按本计划逐项完成任务。步骤使用复选框（`- [ ]`）跟踪状态。
 
 **Goal:** 按已批准的本任务书将 MMTL 拆分成严格单向依赖的平台目录，并完成 PycodersMod 中文规范、Mod README 链接/介绍纠偏及全量回归。
 
 **Architecture:** 由 `windows/`、`linux/`、`macos/` 的薄 composition root 加载各自 provider 并注入 `common/`；common 不识别实现路径。组织治理仓库提供 README 目录链接审计与长期规范；10 个 Mod 保留原 Loader/Minecraft 工程布局，仅修改说明文字与发布介绍。
 
-**Tech Stack:** PowerShell 7、Pester、PowerShell parser、GitHub Actions、Gradle Wrapper、GitHub CLI、PowerShell/.NET HTML/XML parsing。
+**技术栈：**PowerShell 7、Pester、PowerShell 语法解析器、GitHub Actions、Gradle Wrapper、GitHub CLI、PowerShell/.NET HTML/XML 解析。
 
-**Spec:** `docs/superpowers/specs/2026-10-04-mmtl-strict-platform-architecture-design.md`
+**设计文档：**`docs/superpowers/specs/2026-10-04-mmtl-strict-platform-architecture-design.md`
 
-## Global Constraints
+## 全局约束
 
 - Product platforms 固定为 Windows、Linux、macOS；WSL/Ubuntu 仅为 Linux validation metadata。
 - 唯一允许依赖方向是每个 OS 层 → common；禁止 common → OS 和 OS → sibling OS。
@@ -21,7 +21,7 @@
 - 不开始 Phase H、不启动 Minecraft GUI、不发布 CurseForge/Modrinth、不重跑 Phase G。
 - 保留 Pester 基线并达到至少 226 passed、0 failed；10 个 Mod 均完成 Windows clean build。
 
-## Review Focus
+## 审查重点
 
 - PowerShell 模块导入与 session registry 易受 `-Force` 重载影响；每个测试均显式注入 provider 并验证隔离。
 - Windows/macOS 大小写语义与 Linux 路径边界不同；边界测试覆盖大小写、根目录自身、父目录前缀相似路径与路径分隔符。
@@ -36,7 +36,7 @@
 **Files:**
 - Create: `.github/scripts/Test-ModReadmeTargets.ps1`
 - Create: `.github/tests/Test-ModReadmeTargets.Tests.ps1`（若 `.github` 当前无测试框架，则在脚本内提供可执行 fixture smoke，不增加依赖）
-- Modify: `.github/docs/MOD_REPOSITORY_LAYOUT.md`
+- 修改：`.github/docs/MOD_REPOSITORY_LAYOUT.md`
 - Test: workspace 中 10 个 Mod README
 
 **Interfaces:**
@@ -69,8 +69,8 @@
 ### Task 3：冻结组织级中文自然语言政策
 
 **Files:**
-- Create: `.github/docs/REPOSITORY_LANGUAGE_POLICY.md`
-- Modify: `.github/README.md`, `.github/CONTRIBUTING.md`, `.github/docs/*.md`, `.github/profile/README.md`
+- 新建：`.github/docs/REPOSITORY_LANGUAGE_POLICY.md`
+- 修改：`.github/README.md`、`.github/CONTRIBUTING.md`、`.github/docs/*.md`、`.github/profile/README.md`
 - Modify: 12 仓库 description（仅 first-party 自然语言描述）
 - Modify: 12 仓库 tracked first-party docs/comments/help/workflow descriptions
 
@@ -87,59 +87,59 @@
 ### Task 4：构建 MMTL 平台 contract 与 composition roots
 
 **Files:**
-- Create: `common/src/Platform/PlatformContract.psm1`
-- Create: `windows/src/WindowsPlatformProvider.psm1`, `windows/launcher.ps1`, `windows/launcher.cmd`
-- Create: `linux/src/LinuxPlatformProvider.psm1`, `linux/launcher.ps1`, `linux/launcher.sh`
-- Create: `macos/src/MacOSPlatformProvider.psm1`, `macos/launcher.ps1`, `macos/launcher.sh`
-- Modify: existing platform-aware common modules and provider-specific modules
-- Test: new common and platform provider tests
+- 新建：`common/src/Platform/PlatformContract.psm1`
+- 新建：`windows/src/WindowsPlatformProvider.psm1`、`windows/launcher.ps1`、`windows/launcher.cmd`
+- 新建：`linux/src/LinuxPlatformProvider.psm1`、`linux/launcher.ps1`、`linux/launcher.sh`
+- 新建：`macos/src/MacOSPlatformProvider.psm1`、`macos/launcher.ps1`、`macos/launcher.sh`
+- 修改：现有平台感知的 common 模块与平台专属模块
+- 测试：新增的 common 和平台 provider 测试
 
 **Interfaces:**
-- Consumes: each platform entrypoint creates and registers a provider before common core load.
-- Produces: `New-MmtlPlatformProvider`, `Set-MmtlPlatformProvider`, `Get-MmtlPlatformProvider`, `Get-MmtlPlatformContext`; callbacks carry platform operations without common importing platform directories.
+- 输入：各平台入口在加载 common core 前创建并注册对应 provider。
+- 输出：`New-MmtlPlatformProvider`、`Set-MmtlPlatformProvider`、`Get-MmtlPlatformProvider`、`Get-MmtlPlatformContext`；通过回调传递平台操作，不允许 common 导入平台目录。
 
-- [ ] **Step 1: Write provider contract and injection isolation tests**
-- [ ] **Step 2: Move Windows/Linux OS implementations to their respective platform trees and create independent macOS provider**
-- [ ] **Step 3: Move identity detection, WSL detection, native path behavior, memory and process APIs out of common**
-- [ ] **Step 4: Refactor common process/runtime/Java/Gradle flows to consume injected operations and capability values**
-- [ ] **Step 5: Add three thin entrypoints/wrappers and verify RepositoryRoot-relative common loading**
+- [ ] **步骤 1：编写 provider contract 与注入隔离测试**
+- [ ] **步骤 2：将 Windows/Linux 操作系统实现迁入各自目录，并创建独立的 macOS provider**
+- [ ] **步骤 3：将身份检测、WSL 检测、本机路径行为、内存与进程 API 从 common 迁出**
+- [ ] **步骤 4：重构 common 进程/runtime/Java/Gradle 流程，使其使用注入的操作与 capability 值**
+- [ ] **步骤 5：添加三个精简入口/包装器，并验证按 RepositoryRoot 相对路径加载 common**
 
 ### Task 5：迁移 MMTL 工程树并适配测试、配置和文档
 
 **Files:**
-- Move: root `src/` → `common/src/`; common schemas/fixtures/config/tests → `common/`
-- Move: Windows-only source/tests → `windows/`; Linux-only source/tests → `linux/`; macOS-only source/tests → `macos/`
-- Remove: root launcher implementations/config example after relocated references pass
-- Modify: `.gitignore`, CI workflows, README, docs, test import paths
-- Create: architecture boundary and root layout Pester tests; 中文平台架构文档
+- 移动：根目录 `src/` → `common/src/`；common schemas/fixtures/config/tests → `common/`
+- 移动：Windows 专属源码/测试 → `windows/`；Linux 专属源码/测试 → `linux/`；macOS 专属源码/测试 → `macos/`
+- 移除：迁移后的引用验证通过后，移除根目录 launcher 实现与配置示例
+- 修改：`.gitignore`、CI workflows、README、文档和测试导入路径
+- 新建：架构边界与根布局 Pester 测试，以及中文平台架构文档
 
 **Interfaces:**
-- Consumes: Task 4 provider contract.
-- Produces: root only contains platform directories, common, docs, .github and repository metadata; all common-to-platform and sibling-platform references are prohibited.
+- 输入：任务 4 的 provider contract。
+- 输出：根目录仅保留平台目录、common、docs、.github 与仓库元数据；禁止 common 指向平台目录以及平台间相互引用。
 
-- [ ] **Step 1: Add failing root-layout and dependency-boundary tests**
-- [ ] **Step 2: Relocate schemas, fixtures, configs, launchers, tests and source without behavior changes**
-- [ ] **Step 3: Update all imports, CLI examples, fixture locations and workflow paths**
-- [ ] **Step 4: Add path-safe boundary scanner plus common OS-branching and cross-platform duplication audit**
-- [ ] **Step 5: Update docs and all MMTL human-readable CLI/help/workflow descriptions to Chinese**
-- [ ] **Step 6: Verify MMTL `--help`, Linux `--help`, safe `--validate`/`--dry-run`, and 10/10 Project Discovery**
+- [ ] **步骤 1：添加先失败的根布局与依赖边界测试**
+- [ ] **步骤 2：迁移 schemas、fixtures、configs、launchers、tests 和源码，不改变行为**
+- [ ] **步骤 3：更新所有导入、CLI 示例、fixture 位置与 workflow 路径**
+- [ ] **步骤 4：添加路径安全边界扫描、common 操作系统分支检查与跨平台重复实现审计**
+- [ ] **步骤 5：更新文档，并将 MMTL 所有面向用户的 CLI/help/workflow 描述改为中文**
+- [ ] **步骤 6：验证 MMTL 与 Linux 入口的 `--help`、安全的 `--validate`/`--dry-run`，以及 10/10 Project Discovery**
 
 ### Task 6：全量验证、提交同步与 HANDOVER
 
 **Files:**
-- Create: local only `HANDOVER/PycodersMod_MMTL_Platform_Architecture_And_Language_Normalization_Report.md`
-- Modify: all task-scoped repositories as needed to resolve tests/build/CI findings
+- 新建：仅本地保存的 `HANDOVER/PycodersMod_MMTL_Platform_Architecture_And_Language_Normalization_Report.md`
+- 修改：按需修复任务范围内各仓库的测试/build/CI 问题
 
 **Interfaces:**
-- Consumes: Tasks 1–5 artifacts.
-- Produces: verified 12-repo result matrix, four-platform CI state, clean branches/worktrees and matching local/origin/GitHub `main` SHAs.
+- 输入：任务 1–5 的产物。
+- 输出：经过验证的 12 仓库结果矩阵、四平台 CI 状态、已清理的分支/worktree，以及一致的 local/origin/GitHub `main` SHA。
 
-- [ ] **Step 1: Run README target audit, bilingual intro audit, language/privacy scan and repository ruleset read-only audit**
-- [ ] **Step 2: Run architecture boundary/root layout/duplication tests and full MMTL Pester; require at least 226 passed and zero failures**
-- [ ] **Step 3: Run Windows clean build for all ten Mods and project discovery 10/10**
-- [ ] **Step 4: Push normal main commits in Chinese and wait for Windows, Ubuntu, macOS ARM64 and macOS Intel required CI**
-- [ ] **Step 5: Repair only regressions introduced by this task, rerun affected checks and confirm no history rewrite/force push**
-- [ ] **Step 6: Remove temporary branches/worktrees, verify 12/12 branch/SHA/clean state and write local HANDOVER with every §94 field**
+- [ ] **步骤 1：运行 README 目标审计、双语介绍审计、语言/隐私扫描和仓库 ruleset 只读审计**
+- [ ] **步骤 2：运行架构边界/根布局/重复实现测试与完整 MMTL Pester；要求至少 226 项通过且零失败**
+- [ ] **步骤 3：为全部 10 个 Mod 运行 Windows clean build，并验证 Project Discovery 10/10**
+- [ ] **步骤 4：以中文提交说明正常推送到 main，并等待 Windows、Ubuntu、macOS ARM64 与 macOS Intel 必需 CI 完成**
+- [ ] **步骤 5：仅修复本任务引入的回归，重跑受影响检查，并确认没有改写历史或 force push**
+- [ ] **步骤 6：移除临时分支/worktree，验证 12/12 分支/SHA/clean 状态，并按 §94 全字段编写本地 HANDOVER**
 
 ## 执行方式
 

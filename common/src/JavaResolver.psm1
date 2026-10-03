@@ -9,18 +9,18 @@ function Resolve-MmtlJava {
         if($platformHomes){$homeProperty=$platformHomes.Value.PSObject.Properties[[string]$Major];if($homeProperty){$homePath=[string]$homeProperty.Value}}
     }
     if(-not $homePath -and $Config.PSObject.Properties['javaHomes']){$homeProperty=$Config.javaHomes.PSObject.Properties[[string]$Major];if($homeProperty){$homePath=[string]$homeProperty.Value}}
-    if(-not $homePath){throw "Required Java $Major is not configured for $($provider.OS)."}
+    if(-not $homePath){throw "尚未为 $($provider.OS) 配置所需的 Java $Major。"}
     $java=Join-Path (Join-Path $homePath 'bin') $provider.JavaExecutable
-    if(-not(Test-Path -LiteralPath $java -PathType Leaf)){throw "Required Java $Major is not available at configured path: $java"}
+    if(-not(Test-Path -LiteralPath $java -PathType Leaf)){throw "配置路径中没有可用的 Java $Major：$java"}
     $resolved=(Resolve-Path -LiteralPath $java).Path
     if(-not $SkipVersionCheck){
-        try{$versionOutput=@(& $resolved -version 2>&1);$exitCode=$LASTEXITCODE}catch{throw "Configured Java could not start: $resolved ($($_.Exception.Message))"}
-        if($exitCode -ne 0){throw "Configured Java failed to start (exit $exitCode): $resolved"}
+        try{$versionOutput=@(& $resolved -version 2>&1);$exitCode=$LASTEXITCODE}catch{throw "配置的 Java 无法启动：$resolved（$($_.Exception.Message)）"}
+        if($exitCode -ne 0){throw "配置的 Java 启动失败（退出码 $exitCode）：$resolved"}
         $text=$versionOutput -join "`n"
         $match=[regex]::Match($text,'(?i)version\s+"(?:1\.)?(\d+)')
-        if(-not $match.Success){throw "Unable to detect Java major from: $text"}
+        if(-not $match.Success){throw "无法从以下文本识别 Java 主版本：$text"}
         $actual=[int]$match.Groups[1].Value
-        if($actual -ne $Major){throw "Configured Java major mismatch: expected $Major, detected $actual ($resolved)."}
+        if($actual -ne $Major){throw "配置的 Java 主版本不匹配：要求 $Major，检测到 $actual（$resolved）。"}
     }
     return $resolved
 }

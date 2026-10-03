@@ -18,20 +18,20 @@ function Write-MmtlValidationRunEvidence {
     $targetId = [string]$Evidence.targetId
     $runId = [string]$Evidence.runId
     if ($targetId -notmatch '^[a-z0-9][a-z0-9._-]{2,127}$' -or $runId -notmatch '^[A-Za-z0-9._-]{1,80}$') {
-        throw 'Evidence target/run identifier is unsafe.'
+        throw '证据目标或运行标识不安全。'
     }
 
     $root = [IO.Path]::GetFullPath($RuntimeRoot)
     $validationRoot = [IO.Path]::GetFullPath((Join-Path $root 'validation'))
     $prefix = $validationRoot.TrimEnd([IO.Path]::DirectorySeparatorChar, [IO.Path]::AltDirectorySeparatorChar) + [IO.Path]::DirectorySeparatorChar
     $runDirectory = [IO.Path]::GetFullPath((Join-Path $validationRoot (Join-Path $targetId $runId)))
-    if (-not $runDirectory.StartsWith($prefix, [StringComparison]::OrdinalIgnoreCase)) { throw 'Evidence destination escaped Runtime Root.' }
+    if (-not $runDirectory.StartsWith($prefix, [StringComparison]::OrdinalIgnoreCase)) { throw '证据目标目录越出了 Runtime Root。' }
 
     $evidencePath = Join-Path $runDirectory 'result.json'
-    if (Test-Path -LiteralPath $evidencePath) { throw 'Completed run evidence is immutable; create a new runId.' }
+    if (Test-Path -LiteralPath $evidencePath) { throw '已完成的运行证据不可更改；请创建新的 runId。' }
     $schemaPath = Join-Path $PSScriptRoot '..\..\schemas\validation-evidence.schema.json'
     $json = $Evidence | ConvertTo-Json -Depth 40
-    if (-not (Test-Json -Json $json -SchemaFile $schemaPath -ErrorAction SilentlyContinue)) { throw 'Validation run evidence does not match the immutable evidence schema.' }
+    if (-not (Test-Json -Json $json -SchemaFile $schemaPath -ErrorAction SilentlyContinue)) { throw '验证运行证据不符合不可变证据 Schema。' }
 
     [void][IO.Directory]::CreateDirectory($runDirectory)
     $temporaryPath = Join-Path $runDirectory ('.result-' + [guid]::NewGuid().ToString('N') + '.tmp')

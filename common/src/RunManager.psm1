@@ -19,9 +19,9 @@ function Invoke-MmtlGradleBuild {
         try{$args=@($cmd.Arguments)+@('--console=plain');$cmdOutputPreference=$PSNativeCommandUseErrorActionPreference;$PSNativeCommandUseErrorActionPreference=$false;& $cmd.File @args *> $log;$exitCode=$LASTEXITCODE;$PSNativeCommandUseErrorActionPreference=$cmdOutputPreference}
         finally{Pop-Location}
     }finally{$env:JAVA_HOME=$oldHome;$env:Path=$oldPath}
-    if($exitCode -ne 0){throw "Gradle build 失败（exit $exitCode），日志：$log"}
+    if($exitCode -ne 0){throw "Gradle 构建失败（退出码 $exitCode），日志：$log"}
     $jars=@(Get-ChildItem -LiteralPath (Join-Path $Project.Root 'build/libs') -Filter '*.jar' -File -ErrorAction SilentlyContinue|Where-Object{$_.Name -notmatch '(?i)(sources|javadoc|dev)(?:[-.]|\.jar$)'})
-    if($jars.Count -ne 1){throw "Build 结束后应找到唯一正式 JAR，实际 $($jars.Count) 个：$($Project.Root)"}
+    if($jars.Count -ne 1){throw "构建结束后应找到唯一正式 JAR，实际找到 $($jars.Count) 个：$($Project.Root)"}
     $gitSha=(& git -C $Project.Root rev-parse HEAD 2>$null);if($LASTEXITCODE -ne 0){$gitSha=$null}
     [pscustomobject]@{Project=$Project.Root;JavaPath=$JavaPath;BuildStartedUtc=$started.ToString('o');BuildFinishedUtc=[DateTimeOffset]::UtcNow.ToString('o');ExitCode=$exitCode;JarPath=$jars[0].FullName;JarSha256=(Get-FileHash -LiteralPath $jars[0].FullName -Algorithm SHA256).Hash;GitSha=([string]$gitSha).Trim();LogPath=$log}
 }
@@ -48,7 +48,7 @@ function Assert-MmtlMemoryBudget {
 }
 function New-MmtlFabricRuntimeLink {
     param([Parameter(Mandatory)][string]$ProjectRoot,[Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][string]$TargetPath,[Parameter(Mandatory)][string]$Name)
-    if($global:MmtlPlatformProvider.FabricRuntimeLink -ne 'Native'){throw 'Fabric Runtime link capability is unsupported on this platform; ordinary builds do not require it.'}
+    if($global:MmtlPlatformProvider.FabricRuntimeLink -ne 'Native'){throw '当前平台不支持 Fabric Runtime 链接；普通构建无需此功能。'}
     $root=[IO.Path]::GetFullPath($ProjectRoot);$session=[IO.Path]::GetFullPath($SessionPath);$target=[IO.Path]::GetFullPath($TargetPath)
     $sessionId=Split-Path $session -Leaf;$safe=($Name -replace '[^A-Za-z0-9_-]','_')
     $linkRoot=Join-Path $root '.gradle'
@@ -63,7 +63,7 @@ function New-MmtlFabricRuntimeLink {
 }
 function Remove-MmtlFabricRuntimeLink {
     param([Parameter(Mandatory)][string]$ProjectRoot,[Parameter(Mandatory)][string]$LinkPath,[Parameter(Mandatory)][string]$TargetPath)
-    if($global:MmtlPlatformProvider.FabricRuntimeLink -ne 'Native'){throw 'Fabric Runtime link cleanup capability is unsupported on this platform.'}
+    if($global:MmtlPlatformProvider.FabricRuntimeLink -ne 'Native'){throw '当前平台不支持清理 Fabric Runtime 链接。'}
     $root=[IO.Path]::GetFullPath($ProjectRoot);$link=[IO.Path]::GetFullPath($LinkPath);$target=[IO.Path]::GetFullPath($TargetPath)
     if(-not(Test-MmtlInsideRoot -Root $root -Target $link)){throw 'Fabric Runtime junction 越出项目目录，拒绝清理。'}
     if(-not(Test-Path -LiteralPath $link)){return $false}
@@ -151,7 +151,7 @@ function Initialize-MmtlDedicatedServerRuntime {
     New-Item -ItemType Directory -Path $server -Force|Out-Null
     $eula=Join-Path $server 'eula.txt';$properties=Join-Path $server 'server.properties'
     if((Test-Path -LiteralPath $eula) -or (Test-Path -LiteralPath $properties)){throw '拒绝覆盖已有 Dedicated Runtime 配置。'}
-    $lines=@("server-ip=127.0.0.1","server-port=$Port","online-mode=false","level-name=$world","max-players=$players","gamemode=$mode","difficulty=$difficulty","motd=MMTL isolated local development session","enable-command-block=false")
+    $lines=@("server-ip=127.0.0.1","server-port=$Port","online-mode=false","level-name=$world","max-players=$players","gamemode=$mode","difficulty=$difficulty","motd=MMTL 本地隔离开发会话","enable-command-block=false")
     if($Profile.seed){$seedText=[string]$Profile.seed;if($seedText -notmatch '^-?\d{1,20}$'){throw 'Dedicated 世界种子必须是整数。'};$lines+="level-seed=$seedText"}
     $permission=if($null -ne $Profile.clientPermissionLevel){[int]$Profile.clientPermissionLevel}else{0}
     if($permission -lt 0 -or $permission -gt 4){throw 'Dedicated 客户端权限等级必须为 0 至 4。'}

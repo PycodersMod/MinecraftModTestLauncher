@@ -31,7 +31,7 @@ function Read-MmtlHistoricalMetadataCache {
         $record = [IO.File]::ReadAllText($Path,[Text.Encoding]::UTF8) | ConvertFrom-Json -ErrorAction Stop
         $bytes = [Convert]::FromBase64String([string]$record.bodyBase64)
         $hash = Get-MmtlHistoricalSha256 -Bytes $bytes
-        if ($hash -cne [string]$record.localHash) { throw 'cache body hash mismatch' }
+        if ($hash -cne [string]$record.localHash) { throw '缓存正文哈希不匹配。' }
         $record | Add-Member -NotePropertyName bytes -NotePropertyValue $bytes -Force
         $record | Add-Member -NotePropertyName content -NotePropertyValue ([Text.Encoding]::UTF8.GetString($bytes)) -Force
         return $record
@@ -77,7 +77,7 @@ function Get-MmtlHistoricalMetadataDocument {
         [scriptblock]$HttpGet
     )
     if (-not (Test-MmtlHistoricalAllowedMetadataUri -Uri $Uri -AllowedHosts $AllowedHosts)) {
-        return [pscustomobject]@{providerId=$ProviderId;providerStatus='Unavailable';cacheStatus='Unavailable';sourceUrl=$Uri;fetchedAt=$null;validatedAt=$null;localHash=$null;content=$null;error='METADATA_INVALID_URL: historical metadata requires allowlisted HTTPS.'}
+        return [pscustomobject]@{providerId=$ProviderId;providerStatus='Unavailable';cacheStatus='Unavailable';sourceUrl=$Uri;fetchedAt=$null;validatedAt=$null;localHash=$null;content=$null;error='METADATA_INVALID_URL: 历史元数据必须使用许可清单中的 HTTPS 地址。'}
     }
     $path = Get-MmtlHistoricalMetadataCachePath -ProviderId $ProviderId -CacheKey $CacheKey -RuntimeRoot $RuntimeRoot
     $cached = $null
@@ -85,7 +85,7 @@ function Get-MmtlHistoricalMetadataDocument {
     try { $cached = Read-MmtlHistoricalMetadataCache -Path $path } catch { $cacheError = $_.Exception.Message }
     $now = [DateTimeOffset]::UtcNow
     if ($Offline) {
-        if (-not $cached) { return [pscustomobject]@{providerId=$ProviderId;providerStatus='Unavailable';cacheStatus='Unavailable';sourceUrl=$Uri;fetchedAt=$null;validatedAt=$null;localHash=$null;content=$null;error=if($cacheError){$cacheError}else{'CACHE_UNAVAILABLE: no historical metadata cache.'}} }
+        if (-not $cached) { return [pscustomobject]@{providerId=$ProviderId;providerStatus='Unavailable';cacheStatus='Unavailable';sourceUrl=$Uri;fetchedAt=$null;validatedAt=$null;localHash=$null;content=$null;error=if($cacheError){$cacheError}else{'CACHE_UNAVAILABLE: 没有历史元数据缓存。'}} }
         return [pscustomobject]@{providerId=$ProviderId;providerStatus='Available';cacheStatus='OfflineCache';sourceUrl=[string]$cached.sourceUrl;fetchedAt=[string]$cached.fetchedAt;validatedAt=[string]$cached.validatedAt;localHash=[string]$cached.localHash;content=[string]$cached.content;error=$null}
     }
     if ($cached -and -not $ForceRefresh -and ($now - [DateTimeOffset]::Parse([string]$cached.validatedAt)) -le $MaxAge) {
@@ -98,7 +98,7 @@ function Get-MmtlHistoricalMetadataDocument {
         try {
             $response = Invoke-MmtlMetadataHttpGet -Uri $Uri -AllowedHosts $AllowedHosts -Headers $headers -HttpGet $HttpGet
             if ([int]$response.StatusCode -eq 304) {
-                if (-not $cached) { throw 'METADATA_INVALID_RESPONSE: HTTP 304 without a cache.' }
+                if (-not $cached) { throw 'METADATA_INVALID_RESPONSE: 没有缓存时收到 HTTP 304。' }
                 $bytes = [byte[]]$cached.bytes
                 $fetchedAt = [DateTimeOffset]::Parse([string]$cached.fetchedAt)
                 $mergedHeaders=@{};if($cached.etag){$mergedHeaders.ETag=[string]$cached.etag};if($cached.lastModified){$mergedHeaders.'Last-Modified'=[string]$cached.lastModified};if($response.Headers -is [Collections.IDictionary]){foreach($key in $response.Headers.Keys){$mergedHeaders[[string]$key]=$response.Headers[$key]}};$response.Headers=$mergedHeaders

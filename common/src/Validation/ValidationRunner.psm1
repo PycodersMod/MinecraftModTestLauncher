@@ -26,12 +26,12 @@ function Resolve-MmtlValidationProject {
     [CmdletBinding()]
     param([Parameter(Mandatory)][string]$Path,[Parameter(Mandatory)]$Target)
     $project=Get-MmtlProject -Path $Path
-    if($project.DetectionStatus -ne 'Resolved'){throw "Project probe did not resolve a single Loader stack: $($project.DetectionStatus)."}
+    if($project.DetectionStatus -ne 'Resolved'){throw "项目探测未能解析出唯一的 Loader 组合：$($project.DetectionStatus)。"}
     $stack=Resolve-MmtlProjectStack -Evidence @($project.Evidence)
-    if($stack.status -ne 'Resolved' -or -not $project.Toolchain.id -or -not $project.BuildSystem.id -or -not $project.Wrapper){throw 'Project probe is missing an explicit Loader, toolchain, build system, or Gradle wrapper.'}
-    if([string]$project.MinecraftVersion -cne [string]$Target.minecraftId -or [string]$project.Loader -cne [string]$Target.loaderStack.primary.id -or [string]$project.LoaderVersion -cne [string]$Target.loaderVersion){throw 'Detected project identity does not match the requested exact validation target.'}
+    if($stack.status -ne 'Resolved' -or -not $project.Toolchain.id -or -not $project.BuildSystem.id -or -not $project.Wrapper){throw '项目探测结果缺少明确的 Loader、工具链、构建系统或 Gradle Wrapper。'}
+    if([string]$project.MinecraftVersion -cne [string]$Target.minecraftId -or [string]$project.Loader -cne [string]$Target.loaderStack.primary.id -or [string]$project.LoaderVersion -cne [string]$Target.loaderVersion){throw '检测到的项目身份与请求的精确验证目标不匹配。'}
     $plan=New-MmtlAdapterBuildPlan -Project $project
-    if(-not $plan -or -not $plan.task -or -not $plan.wrapperPath){throw 'Adapter failed to produce a usable Gradle build plan.'}
+    if(-not $plan -or -not $plan.task -or -not $plan.wrapperPath){throw '适配器未能生成可用的 Gradle 构建计划。'}
     [pscustomobject]@{resolved=$true;project=$project;loaderStack=$stack.loaderStack;buildPlan=$plan}
 }
 
@@ -82,16 +82,16 @@ function Invoke-MmtlValidationBuild {
         [switch]$Clean
     )
     $started=[DateTimeOffset]::UtcNow;$targetId=[string]$Target.targetId
-    if($targetId -notmatch '^[a-z0-9][a-z0-9._-]{2,127}$'){throw 'Unsafe validation target id.'}
+    if($targetId -notmatch '^[a-z0-9][a-z0-9._-]{2,127}$'){throw '验证目标 ID 不安全。'}
     $fixture=$Target.sourceFixture
-    if(-not $fixture){throw 'Validation target is missing source fixture provenance.'}
+    if(-not $fixture){throw '验证目标缺少来源 Fixture 溯源信息。'}
     Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners $AllowedOwners | Out-Null
     if(-not $Project -and $ProjectPath){$resolved=Resolve-MmtlValidationProject -Path $ProjectPath -Target $Target;$Project=$resolved.project}
-    if(-not $Project -or -not $Project.Root -or -not (Test-Path -LiteralPath $Project.Root -PathType Container)){throw 'Resolved project root is unavailable.'}
-    if([string]::IsNullOrWhiteSpace([string]$Project.MinecraftVersion)){throw 'Resolved project is missing an exact Minecraft release ID.'}
+    if(-not $Project -or -not $Project.Root -or -not (Test-Path -LiteralPath $Project.Root -PathType Container)){throw '已解析的项目根目录不可用。'}
+    if([string]::IsNullOrWhiteSpace([string]$Project.MinecraftVersion)){throw '已解析的项目缺少准确的 Minecraft 正式版本 ID。'}
     $task=if($Target.PSObject.Properties['task'] -and $Target.task){[string]$Target.task}else{'build'}
-    if($task -notin @($fixture.allowedTasks)){throw 'Requested Gradle task is not explicitly allowlisted by the fixture.'}
-    if($task -ne 'build'){throw 'The build runner accepts only the build task; launches require the dedicated launch verifier.'}
+    if($task -notin @($fixture.allowedTasks)){throw '请求的 Gradle 任务未被 Fixture 明确列入许可清单。'}
+    if($task -ne 'build'){throw '构建运行器仅接受 build 任务；启动操作必须使用专用启动验证器。'}
     $command=Get-MmtlValidationGradleCommand -Project $Project -Task $task -Clean:$Clean
     $runId=$started.ToString('yyyyMMddTHHmmssZ')+'_'+[guid]::NewGuid().ToString('N').Substring(0,8)
     $validationRoot=Join-Path ([IO.Path]::GetFullPath($RuntimeRoot)) 'validation'
@@ -101,8 +101,8 @@ function Invoke-MmtlValidationBuild {
     $info=[Diagnostics.ProcessStartInfo]::new();$provider=Get-MmtlPlatformProvider
     if($provider.OS -eq 'Windows'){
         $wrapper=[IO.Path]::GetFullPath($command.WrapperPath)
-        if(-not (Test-MmtlPlatformPathInsideRoot -Root ([IO.Path]::GetFullPath($Project.Root)) -Target $wrapper)){throw 'Gradle wrapper escaped project root.'}
-        if($wrapper -match '[&|<>^%!]'){throw 'Wrapper path contains unsafe Windows command processor metacharacters.'}
+        if(-not (Test-MmtlPlatformPathInsideRoot -Root ([IO.Path]::GetFullPath($Project.Root)) -Target $wrapper)){throw 'Gradle Wrapper 路径越出了项目根目录。'}
+        if($wrapper -match '[&|<>^%!]'){throw 'Wrapper 路径包含不安全的 Windows 命令处理器元字符。'}
         $taskArgs=@('--no-daemon')+$(if($task -eq 'build' -and $Clean){@('clean','build')}else{@($task)})
         $info.FileName=$env:ComSpec
         $info.Arguments='/d /c call "'+$wrapper+'" '+($taskArgs -join ' ')
@@ -120,12 +120,12 @@ function Invoke-MmtlValidationBuild {
     $failure='NONE';$result='FAILED';$level='RESOLVED';$exitCode=$null
     $stdoutText='';$stderrText='';$observedBuildJava=Get-MmtlObservedBuildJava -JavaHome $BuildJavaHome
     $buildRequirement=if($Target.PSObject.Properties['java'] -and $Target.java){$Target.java.buildRequirement}else{$null}
-    if(-not $observedBuildJava){$failure='BUILD_JAVA_UNAVAILABLE';$result='BLOCKED';$stderrText='No runnable BuildJava was observed before invoking the Gradle wrapper.'}
-    elseif(-not (Test-MmtlBuildJavaRequirement -Requirement $buildRequirement -Observed $observedBuildJava)){$failure='BUILD_JAVA_UNAVAILABLE';$result='BLOCKED';$stderrText=('Observed BuildJava major {0} does not meet the target requirement.' -f $observedBuildJava.major)}
+    if(-not $observedBuildJava){$failure='BUILD_JAVA_UNAVAILABLE';$result='BLOCKED';$stderrText='调用 Gradle Wrapper 前未能检测到可运行的 BuildJava。'}
+    elseif(-not (Test-MmtlBuildJavaRequirement -Requirement $buildRequirement -Observed $observedBuildJava)){$failure='BUILD_JAVA_UNAVAILABLE';$result='BLOCKED';$stderrText=('检测到的 BuildJava 主版本 {0} 不符合目标要求。' -f $observedBuildJava.major)}
     $stdoutTask=$null;$stderrTask=$null
     try{
         if($failure -eq 'NONE'){
-            if(-not $process.Start()){throw 'Failed to start the Gradle wrapper.'}
+            if(-not $process.Start()){throw '无法启动 Gradle Wrapper。'}
             $stdoutTask=$process.StandardOutput.ReadToEndAsync();$stderrTask=$process.StandardError.ReadToEndAsync()
             if(-not $process.WaitForExit($TimeoutSeconds*1000)){$failure='BUILD_TIMEOUT';$result='BLOCKED';try{$process.Kill($true)}catch{};[void]$process.WaitForExit(10000)}
             else{$process.WaitForExit();$exitCode=$process.ExitCode}

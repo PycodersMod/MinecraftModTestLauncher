@@ -28,9 +28,9 @@ function New-MmtlValidationMatrix {
         [string]$OutputPath
     )
     $ids=@($Targets|ForEach-Object {[string]$_.targetId})
-    if(@($ids|Select-Object -Unique).Count -ne $ids.Count){throw 'Validation target definitions must have unique targetId values.'}
+    if(@($ids|Select-Object -Unique).Count -ne $ids.Count){throw '验证目标定义的 targetId 必须唯一。'}
     $allIds=@($Evidence|ForEach-Object {[string]$_.targetId})
-    if(@($allIds|Where-Object {$_ -notin $ids}).Count){throw 'Evidence references a target absent from this matrix; cross-target inference is forbidden.'}
+    if(@($allIds|Where-Object {$_ -notin $ids}).Count){throw '证据引用了矩阵中不存在的目标；禁止跨目标推断。'}
     $rows=[Collections.Generic.List[object]]::new();$warnings=[Collections.Generic.List[object]]::new()
     foreach($target in $Targets){
         $targetEvidence=@($Evidence|Where-Object {[string]$_.targetId -ceq [string]$target.targetId})
@@ -74,7 +74,7 @@ function New-MmtlValidationMatrix {
     $matrix=[pscustomobject][ordered]@{schemaVersion=1;generatedAt=[DateTimeOffset]::UtcNow.ToString('o');scope=$Scope;targets=@($rows)}
     $json=$matrix|ConvertTo-Json -Depth 50
     $schema=Join-Path $PSScriptRoot '..\..\schemas\validation-matrix.schema.json'
-    if(-not(Test-Json -Json $json -SchemaFile $schema -ErrorAction SilentlyContinue)){throw 'Aggregated validation matrix does not match its schema.'}
+    if(-not(Test-Json -Json $json -SchemaFile $schema -ErrorAction SilentlyContinue)){throw '聚合后的验证矩阵不符合其 Schema。'}
     if($OutputPath){
         $full=[IO.Path]::GetFullPath($OutputPath);$parent=Split-Path -Parent $full
         if(-not(Test-Path -LiteralPath $parent -PathType Container)){[void][IO.Directory]::CreateDirectory($parent)}
@@ -119,7 +119,7 @@ function Get-MmtlValidationTargetsFromEvidence {
                 $suffix=([Convert]::ToHexString($bytes).Substring(0,10)).ToLowerInvariant()
                 $targetId="$targetId-$suffix"
             }
-            $notes=if($identityGroups.Count -gt 1){@('Base target ID reused; this row is scoped to the exact source fixture identity.')}else{@()}
+            $notes=if($identityGroups.Count -gt 1){@('复用了基础 target ID；本行仅适用于准确的来源 Fixture 身份。')}else{@()}
             $targets.Add([pscustomobject][ordered]@{
                 targetId=$targetId;evidenceTargetId=[string]$latest.targetId;tier=$tier;resolved=([string]$latest.validationLevel -ne 'CATALOGUED');minecraftId=[string]$latest.minecraftId
                 loaderStack=[pscustomobject]@{primary=[pscustomobject]@{id=[string]$latest.loaderId;version=[string]$latest.loaderVersion};overlays=@()};loaderVersion=[string]$latest.loaderVersion

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://pycodersmod.github.io/MinecraftModTestLauncher/schemas/build-evidence.schema.json",
-  "title": "MMTL Build Evidence",
+  "title": "MMTL 构建证据",
   "type": "object",
   "additionalProperties": false,
   "required": ["minecraftId", "loaderId", "loaderVersion", "toolchain", "platform", "buildJavaRequirement", "observedBuildJava", "compilerTarget", "result", "artifactSha256", "verifiedAt", "fixtureProvenance"],

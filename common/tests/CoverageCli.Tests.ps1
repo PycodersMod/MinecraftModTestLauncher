@@ -27,11 +27,11 @@ Describe 'Coverage CLI and option registry' {
         @($gaps).Count | Should -BeGreaterThan 0
         $version=Invoke-MmtlCoverageCli -Arguments @('--coverage-version','1.0') -RuntimeRoot $TestDrive -AuditFactory $script:auditFactory|Out-String|ConvertFrom-Json
         $version.minecraftId | Should -BeExactly '1.0'
-        {Invoke-MmtlCoverageCli -Arguments @('--coverage-version','1.0-pre1') -RuntimeRoot $TestDrive -AuditFactory $script:auditFactory} | Should -Throw '*is not a formal catalog release*'
+        {Invoke-MmtlCoverageCli -Arguments @('--coverage-version','1.0-pre1') -RuntimeRoot $TestDrive -AuditFactory $script:auditFactory} | Should -Throw '*不是本次审计中的正式目录版本*'
     }
 
     It 'rejects missing IDs and conflicting coverage commands' {
-        {Invoke-MmtlCoverageCli -Arguments @('--coverage-version') -RuntimeRoot $TestDrive -AuditFactory $script:auditFactory} | Should -Throw '*缺少 Minecraft release ID*'
+        {Invoke-MmtlCoverageCli -Arguments @('--coverage-version') -RuntimeRoot $TestDrive -AuditFactory $script:auditFactory} | Should -Throw '*缺少 Minecraft 正式版本 ID*'
         {Invoke-MmtlCoverageCli -Arguments @('--coverage-report','--coverage-gaps') -RuntimeRoot $TestDrive -AuditFactory $script:auditFactory} | Should -Throw '*COVERAGE_OPTION_CONFLICT*'
         {Invoke-MmtlCoverageCli -Arguments @('--coverage-gaps','--json') -RuntimeRoot $TestDrive -AuditFactory $script:auditFactory} | Should -Throw '*COVERAGE_JSON_OPTION_INVALID*'
     }

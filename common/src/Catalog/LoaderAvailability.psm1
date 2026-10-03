@@ -51,7 +51,7 @@ function Get-MmtlLoaderAvailabilityIndex {
     foreach($catalogEntry in $Catalog.entries){
         $id=[string]$catalogEntry.id;$loaders=[ordered]@{}
         foreach($loader in @('Forge','Fabric','NeoForge','Quilt')){
-            try{$availability=switch($loader){'Forge'{Get-MmtlForgeAvailability -MinecraftId $id -Snapshot $snapshots[$loader]};'Fabric'{Get-MmtlFabricAvailability -MinecraftId $id -Snapshot $snapshots[$loader]};'NeoForge'{Get-MmtlNeoForgeAvailability -MinecraftId $id -Snapshot $snapshots[$loader]};'Quilt'{Get-MmtlQuiltAvailability -MinecraftId $id -Snapshot $snapshots[$loader]}};if($availability.availability -notin @('Available','Unavailable','Unknown')){throw "Invalid availability state: $($availability.availability)"};$loaders[$loader]=$availability}catch{$loaders[$loader]=New-MmtlUnknownLoaderAvailability -Reason $_.Exception.Message}
+            try{$availability=switch($loader){'Forge'{Get-MmtlForgeAvailability -MinecraftId $id -Snapshot $snapshots[$loader]};'Fabric'{Get-MmtlFabricAvailability -MinecraftId $id -Snapshot $snapshots[$loader]};'NeoForge'{Get-MmtlNeoForgeAvailability -MinecraftId $id -Snapshot $snapshots[$loader]};'Quilt'{Get-MmtlQuiltAvailability -MinecraftId $id -Snapshot $snapshots[$loader]}};if($availability.availability -notin @('Available','Unavailable','Unknown')){throw "可用性状态无效：$($availability.availability)"};$loaders[$loader]=$availability}catch{$loaders[$loader]=New-MmtlUnknownLoaderAvailability -Reason $_.Exception.Message}
         }
         $entries.Add([pscustomobject]@{minecraftId=$id;loaders=[pscustomobject]$loaders})
     }

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://pycodersmod.github.io/minecraftmodtestlauncher/schemas/validation-matrix.schema.json",
-  "title": "MMTL deep validation matrix",
+  "title": "MMTL 深度验证矩阵",
   "type": "object",
   "additionalProperties": false,
   "required": ["schemaVersion", "generatedAt", "scope", "targets"],

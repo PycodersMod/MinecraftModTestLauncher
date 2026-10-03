@@ -58,7 +58,7 @@ function Read-MmtlWizardProfile {
     $jvm=ConvertTo-MmtlPromptList (Read-MmtlPromptValue '额外 JVM 参数，以分号分隔' ((@(& $value 'jvmArgs' @())) -join ';'))
     $game=ConvertTo-MmtlPromptList (Read-MmtlPromptValue '额外游戏参数，以分号分隔' ((@(& $value 'gameArgs' @())) -join ';'))
     $acceptEula=$false
-    if($mode -eq 'Dedicated'){$acceptEula=(Read-MmtlPromptValue 'Dedicated Server EULA：输入 Y 表示你已阅读并接受；其他输入为否' $(if((& $value 'acceptEula' $false)){'Y'}else{'N'})) -match '^(?i:y|yes|true|1)$'}
+    if($mode -eq 'Dedicated'){$acceptEula=(Read-MmtlPromptValue '专用服务器 EULA：输入 Y 表示你已阅读并接受；其他输入为否' $(if((& $value 'acceptEula' $false)){'Y'}else{'N'})) -match '^(?i:y|yes|true|1)$'}
     return [pscustomobject]@{project=$project;linkedProjects=@($linked);mode=$mode;players=$players;hostUsername=$host;clientPrefix=$prefix;hostCheats=$hostCheats;clientPermissionLevel=$permission;gameMode=$gameMode;difficulty=$difficulty;worldName=$world;seed=$seed;newWorld=$newWorld;resetWorld=$reset;port=$port;autoBuild=$autoBuild;cleanBuild=$clean;extraMods=@($extra);memoryMb=$memory;hostMemoryMb=$hostMemory;clientMemoryMb=$clientMemory;serverMemoryMb=$serverMemory;resolution=$resolution;guiScale=$(if([string]$guiScaleText -ieq 'Auto'){'Auto'}else{$guiScale});windowLayout=$layout;jvmArgs=@($jvm);gameArgs=@($game);acceptEula=$acceptEula}
 }
 function Show-MmtlLaunchSummary {
@@ -66,19 +66,19 @@ function Show-MmtlLaunchSummary {
     $primary=Get-MmtlProject -Path $Profile.project
     if($primary.JavaMajor){
         try{$javaPath=Resolve-MmtlJava -Config $Config -Major ([int]$primary.JavaMajor)}
-        catch{$homePath=Read-Host "Required Java $($primary.JavaMajor) is not configured or unavailable. 输入该 Java 安装目录";Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1');$javaName=(Get-MmtlPlatformProvider).JavaExecutable;if(-not(Test-Path -LiteralPath (Join-Path $homePath (Join-Path 'bin' $javaName)) -PathType Leaf)){throw "Required Java $($primary.JavaMajor) is not available at configured path."};$Config.javaHomes|Add-Member -NotePropertyName ([string]$primary.JavaMajor) -NotePropertyValue $homePath -Force;$javaPath=Resolve-MmtlJava -Config $Config -Major ([int]$primary.JavaMajor)}
+        catch{$homePath=Read-Host "未配置或无法使用所需的 Java $($primary.JavaMajor)。请输入该 Java 的安装目录";Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1');$javaName=(Get-MmtlPlatformProvider).JavaExecutable;if(-not(Test-Path -LiteralPath (Join-Path $homePath (Join-Path 'bin' $javaName)) -PathType Leaf)){throw "配置路径中没有可用的 Java $($primary.JavaMajor)。"};$Config.javaHomes|Add-Member -NotePropertyName ([string]$primary.JavaMajor) -NotePropertyValue $homePath -Force;$javaPath=Resolve-MmtlJava -Config $Config -Major ([int]$primary.JavaMajor)}
     }else{$javaPath='无法自动检测'}
     $linked=@($Profile.linkedProjects|Where-Object{$_}|ForEach-Object{Get-MmtlProject -Path $_})
     if($linked.Count){Assert-MmtlCompatible -Projects (@($primary)+$linked)|Out-Null}
-    Write-Host '========================================';Write-Host 'Minecraft Mod Test Launcher';Write-Host '========================================'
-    Write-Host "Minecraft: $($primary.MinecraftVersion)";Write-Host "Loader: $($primary.Loader) $($primary.LoaderVersion)";Write-Host "Java: $($primary.JavaMajor) ($javaPath)";Write-Host "Mode: $($Profile.mode)";Write-Host "Players: $($Profile.players)";Write-Host "Host: $($Profile.hostUsername) / $($Profile.gameMode) / Cheats=$($Profile.hostCheats)"
-    if([int]$Profile.players -gt 1){Write-Host "Clients: $($Profile.clientPrefix)1 .. $($Profile.clientPrefix)$([int]$Profile.players-1); Dedicated permission level=$($Profile.clientPermissionLevel)"}
-    Write-Host "Projects: $((@($primary.Root)+@($linked.Root))-join ', ')";Write-Host "Build: $($Profile.autoBuild); Clean: $($Profile.cleanBuild); Reset world: $($Profile.resetWorld)";Write-Host "Runtime: $($Profile.resolution), GUI scale=$($Profile.guiScale), layout=$($Profile.windowLayout); memory Host=$($Profile.hostMemoryMb) MB, Client=$($Profile.clientMemoryMb) MB, Server=$($Profile.serverMemoryMb) MB"
+    Write-Host '========================================';Write-Host 'Minecraft 模组测试启动器';Write-Host '========================================'
+    Write-Host "Minecraft 版本：$($primary.MinecraftVersion)";Write-Host "Loader：$($primary.Loader) $($primary.LoaderVersion)";Write-Host "Java：$($primary.JavaMajor) ($javaPath)";Write-Host "模式：$($Profile.mode)";Write-Host "玩家数：$($Profile.players)";Write-Host "主机：$($Profile.hostUsername) / $($Profile.gameMode) / 作弊=$($Profile.hostCheats)"
+    if([int]$Profile.players -gt 1){Write-Host "客户端：$($Profile.clientPrefix)1 .. $($Profile.clientPrefix)$([int]$Profile.players-1)；Dedicated Server 权限等级=$($Profile.clientPermissionLevel)"}
+    Write-Host "项目：$((@($primary.Root)+@($linked.Root))-join ', ')";Write-Host "构建：$($Profile.autoBuild)；清理构建：$($Profile.cleanBuild)；重置世界：$($Profile.resetWorld)";Write-Host "运行时：$($Profile.resolution)，GUI 缩放=$($Profile.guiScale)，布局=$($Profile.windowLayout)；内存 主机=$($Profile.hostMemoryMb) MB、客户端=$($Profile.clientMemoryMb) MB、服务端=$($Profile.serverMemoryMb) MB"
     if($Profile.mode -eq 'Dedicated' -and $Profile.acceptEula -ne $true){Write-Warning '尚未接受 EULA；Dedicated 启动会被拒绝。'}
 }
 function Invoke-MmtlConsoleMenu {
     param([Parameter(Mandatory)]$Config,[Parameter(Mandatory)][string]$ConfigPath,[Parameter(Mandatory)][string]$LauncherPath)
-    Write-Host 'Minecraft Mod Test Launcher';Write-Host '检测到 launcher.config.json';Write-Host '[1] 使用默认配置快速启动';Write-Host '[2] 选择配置 Profile';Write-Host '[3] 查看/修改配置';Write-Host '[4] 临时配置启动';Write-Host '[Q] 退出'
+    Write-Host 'Minecraft 模组测试启动器';Write-Host '检测到 launcher.config.json';Write-Host '[1] 使用默认配置快速启动';Write-Host '[2] 选择配置 Profile';Write-Host '[3] 查看/修改配置';Write-Host '[4] 临时配置启动';Write-Host '[Q] 退出'
     $choice=Read-Host '选择'
     if($choice -eq 'Q'){return 0}
     $temporary=$false;$profileName=[string]$Config.defaultProfile

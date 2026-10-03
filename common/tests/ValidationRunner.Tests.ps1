@@ -71,19 +71,19 @@ Describe 'Deep validation runner safety and evidence' {
     It 'rejects untrusted fixture before starting a process' {
         $project=[pscustomobject]@{Root=$TestDrive;MinecraftVersion='1.20.1';Loader='Fabric';LoaderVersion='0.15.0';JavaMajor=17;Wrapper='gradlew'}
         $target=[pscustomobject]@{targetId='fixture-one';sourceFixture=[pscustomobject]@{type='OfficialFixture';source='https://github.com/not-allowed/example';commit=('a'*40);license='CC0-1.0';trust='TrustedOfficial';allowedTasks=@('build')}}
-        { Invoke-MmtlValidationBuild -Project $project -Target $target -RuntimeRoot $TestDrive -AllowedOwners @('FabricMC') } | Should -Throw '*owner*'
+        { Invoke-MmtlValidationBuild -Project $project -Target $target -RuntimeRoot $TestDrive -AllowedOwners @('FabricMC') } | Should -Throw '*来源所有者不在许可清单中*'
     }
 
     It 'rejects arbitrary Gradle tasks from target metadata' {
         $project=[pscustomobject]@{Root=$TestDrive;MinecraftVersion='1.20.1';Loader='Fabric';LoaderVersion='0.15.0';JavaMajor=17;Wrapper='gradlew'}
         $target=[pscustomobject]@{targetId='fixture-one';task='build;whoami';sourceFixture=[pscustomobject]@{type='UserProject';source='local';commit='working-tree';license='User-owned';trust='UserOwned';allowedTasks=@('build')}}
-        { Invoke-MmtlValidationBuild -Project $project -Target $target -RuntimeRoot $TestDrive } | Should -Throw '*task*'
+        { Invoke-MmtlValidationBuild -Project $project -Target $target -RuntimeRoot $TestDrive } | Should -Throw '*Gradle 任务*'
     }
 
     It 'does not treat launch tasks as build evidence' {
         $project=[pscustomobject]@{Root=$TestDrive;MinecraftVersion='1.20.1';Loader='Fabric';LoaderVersion='0.15.0';JavaMajor=17;Wrapper='gradlew'}
         $target=[pscustomobject]@{targetId='user-client-task';task='runClient';toolchain='FabricLoom';sourceFixture=[pscustomobject]@{type='UserProject';source='local';commit='working-tree';license='User-owned';trust='UserOwned';allowedTasks=@('build','runClient')}}
-        { Invoke-MmtlValidationBuild -Project $project -Target $target -RuntimeRoot $TestDrive } | Should -Throw '*dedicated launch verifier*'
+        { Invoke-MmtlValidationBuild -Project $project -Target $target -RuntimeRoot $TestDrive } | Should -Throw '*专用启动验证器*'
     }
 
     It 'produces only BUILD_VERIFIED when process succeeds and a JAR is present' {

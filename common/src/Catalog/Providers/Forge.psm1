@@ -20,9 +20,9 @@ function Get-MmtlForgeProviderSnapshot {
             $xml=ConvertFrom-MmtlSafeXml -Xml $maven.content
             $groupNode=$xml.SelectSingleNode('/metadata/groupId');$artifactNode=$xml.SelectSingleNode('/metadata/artifactId')
             $groupValue=if($groupNode){[string]$groupNode.InnerText}else{''};$artifactValue=if($artifactNode){[string]$artifactNode.InnerText}else{''}
-            if($groupValue -cne 'net.minecraftforge' -or $artifactValue -cne 'forge'){throw "Forge Maven coordinate does not match net.minecraftforge:forge (received '$groupValue`:$artifactValue')."}
+            if($groupValue -cne 'net.minecraftforge' -or $artifactValue -cne 'forge'){throw "Forge Maven 坐标与 net.minecraftforge:forge 不匹配（收到 '$groupValue`:$artifactValue'）。"}
             foreach($node in $xml.SelectNodes('/metadata/versioning/versions/version')){if(-not [string]::IsNullOrWhiteSpace($node.InnerText)){$versions.Add($node.InnerText)}}
-            if($versions.Count -eq 0){throw 'Forge Maven metadata contains no versions.'}
+            if($versions.Count -eq 0){throw 'Forge Maven 元数据不包含任何版本。'}
         }catch{$mavenError="FORGE_MAVEN_INVALID: $($_.Exception.Message)";$maven.providerStatus='Unavailable';$maven.cacheStatus='Unavailable';$maven.error=$mavenError}
     }
     $available=$maven.providerStatus -eq 'Available'
@@ -63,10 +63,10 @@ function Get-MmtlForgePreferredCandidate {
     [CmdletBinding()]
     param([Parameter(Mandatory)][string]$MinecraftId,[Parameter(Mandatory)][AllowEmptyCollection()][object[]]$Candidates)
     $recommended=$Candidates|Where-Object{$_.recommended}|Select-Object -First 1
-    if($recommended){return [pscustomobject]@{candidate=$recommended;policy='ForgeRecommendedThenLatest';reason='Forge promotions_slim.json marks this version recommended.'}}
+    if($recommended){return [pscustomobject]@{candidate=$recommended;policy='ForgeRecommendedThenLatest';reason='Forge promotions_slim.json 将此版本标记为推荐版本。'}}
     $latest=$Candidates|Where-Object{$_.latest}|Select-Object -First 1
-    if($latest){return [pscustomobject]@{candidate=$latest;policy='ForgeRecommendedThenLatest';reason='No Forge recommended promotion exists; using the explicit Forge latest promotion.'}}
-    [pscustomobject]@{candidate=$null;policy='NoPromotion';reason='No Forge recommended or latest promotion is present; no default was inferred.'}
+    if($latest){return [pscustomobject]@{candidate=$latest;policy='ForgeRecommendedThenLatest';reason='没有 Forge 推荐版本；采用 Forge 明确标记的最新版本。'}}
+    [pscustomobject]@{candidate=$null;policy='NoPromotion';reason='没有 Forge 推荐或最新版本；不推断默认版本。'}
 }
 
 function Get-MmtlForgeAvailability {

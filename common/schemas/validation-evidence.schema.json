@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://pycodersmod.github.io/minecraftmodtestlauncher/schemas/validation-evidence.schema.json",
-  "title": "MMTL immutable validation run evidence",
+  "title": "MMTL 不可变验证运行证据",
   "type": "object", "additionalProperties": false,
   "required": ["schemaVersion", "targetId", "runId", "startedAt", "endedAt", "durationSeconds", "validationLevel", "result", "failureCode", "platform", "java", "toolchain", "buildSystem", "sourceFixture", "logs", "artifact", "process", "marker", "stopMethod", "scenario", "notes"],
   "properties": {
