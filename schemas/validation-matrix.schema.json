@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pycodersmod.github.io/minecraftmodtestlauncher/schemas/validation-matrix.schema.json",
+  "title": "MMTL deep validation matrix",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "generatedAt", "scope", "targets"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "generatedAt": {"type": "string", "format": "date-time"},
+    "scope": {"type": "string", "minLength": 1},
+    "targets": {"type": "array", "items": {"$ref": "#/definitions/target"}}
+  },
+  "definitions": {
+    "target": {
+      "type": "object", "additionalProperties": false,
+      "required": ["targetId", "tier", "minecraftId", "loaderStack", "loaderVersion", "toolchain", "toolchainVersion", "buildSystem", "platform", "java", "sourceFixture", "validation", "evidence", "notes"],
+      "properties": {
+        "targetId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{2,127}$"},
+        "tier": {"enum": ["Tier0", "Tier1", "Tier2", "Tier3"]},
+        "resolved": {"type": "boolean"},
+        "minecraftId": {"type": "string", "minLength": 1},
+        "loaderStack": {"$ref": "#/definitions/loaderStack"},
+        "loaderVersion": {"type": "string", "minLength": 1},
+        "toolchain": {"type": "string", "minLength": 1},
+        "toolchainVersion": {"type": ["string", "null"]},
+        "buildSystem": {"type": "string", "minLength": 1},
+        "platform": {"$ref": "#/definitions/platform"},
+        "java": {"$ref": "#/definitions/java"},
+        "sourceFixture": {"$ref": "#/definitions/sourceFixture"},
+        "validation": {"$ref": "#/definitions/validation"},
+        "evidence": {"$ref": "#/definitions/evidenceSummary"},
+        "notes": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "loaderStack": {
+      "type": "object", "additionalProperties": false, "required": ["primary", "overlays"],
+      "properties": {
+        "primary": {"type": "object", "additionalProperties": false, "required": ["id", "version"], "properties": {"id": {"type": "string", "minLength": 1}, "version": {"type": ["string", "null"]}}},
+        "overlays": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["id", "version"], "properties": {"id": {"type": "string", "minLength": 1}, "version": {"type": ["string", "null"]}}}}
+      }
+    },
+    "platform": {"type": "object", "additionalProperties": false, "required": ["os", "arch", "isWSL"], "properties": {"os": {"enum": ["Windows", "Linux", "MacOS"]}, "arch": {"enum": ["x64", "ARM64"]}, "isWSL": {"type": "boolean"}}},
+    "java": {
+      "type": "object", "additionalProperties": false,
+      "required": ["buildRequirement", "observedBuildJava", "compilerTarget", "runtimeRequirement", "observedRuntimeJava"],
+      "properties": {
+        "buildRequirement": {"$ref": "#/definitions/javaRequirement"},
+        "observedBuildJava": {"$ref": "#/definitions/observedJava"},
+        "compilerTarget": {"type": ["integer", "null"], "minimum": 1},
+        "runtimeRequirement": {"$ref": "#/definitions/javaRequirement"},
+        "observedRuntimeJava": {"$ref": "#/definitions/observedJava"}
+      }
+    },
+    "javaRequirement": {"type": "object", "additionalProperties": false, "required": ["kind", "major"], "properties": {"kind": {"enum": ["Minimum", "Preferred", "Exact", "Unknown"]}, "major": {"type": ["integer", "null"], "minimum": 1}}},
+    "observedJava": {"type": ["object", "null"], "additionalProperties": false, "required": ["major", "exactVersion", "vendor", "os", "arch"], "properties": {"major": {"type": "integer", "minimum": 1}, "exactVersion": {"type": "string", "minLength": 1}, "vendor": {"type": "string", "minLength": 1}, "os": {"enum": ["Windows", "Linux", "MacOS"]}, "arch": {"enum": ["x64", "ARM64"]}}},
+    "sourceFixture": {
+      "type": "object", "additionalProperties": false, "required": ["type", "source", "commit", "license", "trust"],
+      "properties": {"type": {"enum": ["UserProject", "OfficialFixture", "OfficialArtifactFixture", "GeneratedOfficialFixture", "HistoricalOfficialFixture", "CIHosted", "LocalPhysical", "WSL", "ImportedHistoricalEvidence"]}, "source": {"type": "string", "minLength": 1}, "commit": {"type": "string", "minLength": 1}, "archiveSha256": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"}, "officialChecksum": {"type": "string", "pattern": "^[a-fA-F0-9]{32,64}$"}, "officialChecksumAlgorithm": {"enum": ["MD5", "SHA1", "SHA256"]}, "license": {"type": "string", "minLength": 1}, "trust": {"enum": ["UserOwned", "TrustedOfficial", "VerifiedHistorical", "UnverifiedHistorical", "Unknown"]}, "allowedTasks": {"type": "array", "items": {"enum": ["tasks", "clean", "build", "test", "runClient", "runServer"]}}}
+    },
+    "validation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["effectiveLevel", "resolved", "build", "server", "client", "integration"],
+      "properties": {
+        "effectiveLevel": {"enum": ["CATALOGUED", "RESOLVED", "BUILD_VERIFIED", "SERVER_VERIFIED", "CLIENT_LAUNCH_VERIFIED", "INTEGRATION_VERIFIED"]},
+        "resolved": {"type": "boolean"}, "build": {"type": "boolean"}, "server": {"type": "boolean"}, "client": {"type": "boolean"}, "integration": {"type": "boolean"}
+      }
+    },
+    "evidenceSummary": {"type": "object", "additionalProperties": false, "required": ["runIds", "timestamps", "logs", "hashes", "artifact", "process", "result"], "properties": {"runIds": {"type": "array", "items": {"type": "string"}}, "timestamps": {"type": "array", "items": {"type": "string", "format": "date-time"}}, "logs": {"type": "array", "items": {"type": "string"}}, "hashes": {"type": "array", "items": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"}}, "artifact": {"type": ["string", "null"]}, "process": {"type": ["object", "null"]}, "result": {"enum": ["UNVERIFIED", "PASSED", "FAILED", "BLOCKED", "SKIPPED"]}}}
+  }
+}

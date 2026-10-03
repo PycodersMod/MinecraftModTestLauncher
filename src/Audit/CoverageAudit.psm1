@@ -260,21 +260,23 @@ function New-MmtlLiveCoverageAudit {
             $group=if($loaderId -in $script:MmtlCoverageLoaders.Mainstream){$row.mainstreamLoaders}else{$row.historicalLoaders};$state=$group.$loaderId
             if($state.availability -ne 'Available' -and $state.reasonCode -ne 'ORNITHE_LOADER_CANDIDATE_NOT_PROBED'){continue}
             try{
-                $candidates=@()
+                $candidates=@();$candidateProviderStatus='Available';$candidateProviderError=$null
                 if($CandidateProbe){$probeResult=& $CandidateProbe $minecraftId $loaderId;if($null -ne $probeResult){$candidates=@($probeResult)}}else{$candidates=@(switch($loaderId){
                     'Forge'{Get-MmtlForgeCandidates -MinecraftId $minecraftId -Snapshot $snapshots.Forge}
                     'Fabric'{Get-MmtlFabricCandidates -MinecraftId $minecraftId -RuntimeRoot $RuntimeRoot -Offline:$useLoaderOffline}
                     'NeoForge'{Get-MmtlNeoForgeCandidates -MinecraftId $minecraftId -Snapshot $snapshots.NeoForge}
                     'Quilt'{Get-MmtlQuiltCandidates -MinecraftId $minecraftId -RuntimeRoot $RuntimeRoot -Offline:$useLoaderOffline}
-                    'LegacyFabric'{Get-MmtlLegacyFabricCandidates -MinecraftId $minecraftId -RuntimeRoot $RuntimeRoot -Offline:$useLoaderOffline}
+                    'LegacyFabric'{$legacyQuery=Get-MmtlLegacyFabricCandidateQuery -MinecraftId $minecraftId -RuntimeRoot $RuntimeRoot -Offline:$useLoaderOffline;$candidateProviderStatus=[string]$legacyQuery.providerStatus;$candidateProviderError=[string]$legacyQuery.error;@($legacyQuery.candidates)}
                     'OrnitheLoader'{Get-MmtlOrnitheCandidates -MinecraftId $minecraftId -RuntimeRoot $RuntimeRoot -Offline:$useLoaderOffline}
                     'LiteLoader'{Get-MmtlLiteLoaderCandidates -MinecraftId $minecraftId -Snapshot (Get-MmtlCoverageProperty -InputObject $ProviderInputs -Name 'liteLoaderSnapshot')}
                     'Rift'{Get-MmtlRiftCandidates -MinecraftId $minecraftId}
                     'ModLoader'{Get-MmtlModLoaderArchiveCandidates -MinecraftId $minecraftId}
                     'ModLoaderMP'{Get-MmtlModLoaderMPArchiveCandidates -MinecraftId $minecraftId}
                 })}
-                $state.candidateProbeStatus='Passed';$state.candidateCount=$candidates.Count;$state.candidates=$candidates
+                $candidateProbeSucceeded=$candidateProviderStatus -in @('Available','Stale','OfflineCache')
+                $state.candidateProbeStatus=if($candidateProbeSucceeded){'Passed'}else{'Failed'};$state.candidateCount=$candidates.Count;$state.candidates=$candidates
                 if($candidates.Count -eq 0 -and $loaderId -eq 'OrnitheLoader'){$state.availability='Unavailable';$state.reasonCode='NO_UPSTREAM_CANDIDATE';$state.notes+=@('Official Ornithe game-support record has no distinct Ornithe Loader candidate for this release.')}
+                elseif($candidates.Count -eq 0 -and -not $candidateProbeSucceeded){$state.availability='Unknown';$state.reasonCode='CANDIDATE_PROBE_FAILED';$state.notes+=@('Global availability is known, but the per-release candidate endpoint could not be checked.');$probeWarnings.Add([pscustomobject]@{reasonCode='CANDIDATE_PROBE_FAILED';minecraftId=$minecraftId;loaderId=$loaderId;message=if($candidateProviderError){$candidateProviderError}else{"Candidate endpoint status: $candidateProviderStatus"}})}
                 elseif($candidates.Count -eq 0){$state.availability='Unknown';$state.reasonCode='COVERAGE_INCONSISTENCY';$state.notes+=@('Global availability says Available, but the sampled candidate endpoint returned zero candidates.');$audit.gaps+=@([pscustomobject]@{severity='Error';reasonCode='COVERAGE_INCONSISTENCY';minecraftId=$minecraftId;loaderId=$loaderId;message='Availability index and candidate endpoint disagree.'})}
                 else{$state.availability='Available';$state.reasonCode='UPSTREAM_CANDIDATE_FOUND';$state.provenance=@($state.provenance)+@($candidates|ForEach-Object{$candidate=$_;$candidateProvenance=if($candidate -and $candidate.PSObject.Properties['provenance']){@($candidate.provenance)}else{@()};if(@($candidateProvenance).Count -gt 0){$candidateProvenance}else{[pscustomobject]@{source=if($candidate -and $candidate.PSObject.Properties['source']){$candidate.source}elseif($candidate -and $candidate.PSObject.Properties['repository']){$candidate.repository}else{$null};providerStatus=if($candidate -and $candidate.PSObject.Properties['providerStatus']){$candidate.providerStatus}else{'CuratedArchive'}}}})}
             }catch{$state.candidateProbeStatus='Failed';$state.notes+=@("Candidate endpoint probe failed: $($_.Exception.Message)");$probeWarnings.Add([pscustomobject]@{reasonCode='CANDIDATE_PROBE_FAILED';minecraftId=$minecraftId;loaderId=$loaderId;message=$_.Exception.Message})}

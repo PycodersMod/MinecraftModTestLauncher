@@ -1,0 +1,193 @@
+name: MMTL deep validation
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: Select a bounded evidence slice; each run only builds the declared pinned fixtures.
+        type: choice
+        required: true
+        default: P0
+        options: [P0, CurrentStable]
+  schedule:
+    - cron: '0 4 1,15 * *'
+
+permissions:
+  contents: read
+
+jobs:
+  official-fixture-build:
+    name: ${{ matrix.fixture }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - scope: CurrentStable
+            os: ubuntu-24.04
+            fixture: Fabric 26.3
+            repository: FabricMC/fabric-example-mod
+            revision: 44465cb0eb83932c72ece5934d32ddfc758802ed
+            java: '25'
+            loader: Fabric
+            loaderVersion: 0.19.5
+            toolchainVersion: 1.18-SNAPSHOT
+            license: CC0-1.0
+            minecraft: '26.3'
+          - scope: P0
+            os: ubuntu-24.04
+            fixture: NeoForge 1.21.1
+            repository: NeoForgeMDKs/MDK-1.21.1-NeoGradle
+            revision: 50b02952c596784d7c493866650021c1222846ca
+            java: '21'
+            loader: NeoForge
+            loaderVersion: 21.1.235
+            toolchainVersion: 7.1.38
+            license: MIT
+            minecraft: '1.21.1'
+          - scope: CurrentStable
+            os: macos-26
+            fixture: Fabric 26.3
+            repository: FabricMC/fabric-example-mod
+            revision: 44465cb0eb83932c72ece5934d32ddfc758802ed
+            java: '25'
+            loader: Fabric
+            loaderVersion: 0.19.5
+            toolchainVersion: 1.18-SNAPSHOT
+            license: CC0-1.0
+            minecraft: '26.3'
+          - scope: P0
+            os: macos-26
+            fixture: NeoForge 1.21.1
+            repository: NeoForgeMDKs/MDK-1.21.1-NeoGradle
+            revision: 50b02952c596784d7c493866650021c1222846ca
+            java: '21'
+            loader: NeoForge
+            loaderVersion: 21.1.235
+            toolchainVersion: 7.1.38
+            license: MIT
+            minecraft: '1.21.1'
+          - scope: CurrentStable
+            os: macos-26-intel
+            fixture: Fabric 26.3
+            repository: FabricMC/fabric-example-mod
+            revision: 44465cb0eb83932c72ece5934d32ddfc758802ed
+            java: '25'
+            loader: Fabric
+            loaderVersion: 0.19.5
+            toolchainVersion: 1.18-SNAPSHOT
+            license: CC0-1.0
+            minecraft: '26.3'
+          - scope: P0
+            os: windows-2025
+            fixture: Fabric 26.3
+            repository: FabricMC/fabric-example-mod
+            revision: 44465cb0eb83932c72ece5934d32ddfc758802ed
+            java: '25'
+            loader: Fabric
+            loaderVersion: 0.19.5
+            toolchainVersion: 1.18-SNAPSHOT
+            license: CC0-1.0
+            minecraft: '26.3'
+    steps:
+      - uses: actions/checkout@v7.0.1
+        if: github.event_name != 'workflow_dispatch' || inputs.scope == matrix.scope
+      - uses: actions/checkout@v7.0.1
+        if: github.event_name != 'workflow_dispatch' || inputs.scope == matrix.scope
+        with:
+          repository: ${{ matrix.repository }}
+          ref: ${{ matrix.revision }}
+          path: fixture
+      - uses: actions/setup-java@v4
+        if: github.event_name != 'workflow_dispatch' || inputs.scope == matrix.scope
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: gradle
+      - name: Check wrapper source
+        if: github.event_name != 'workflow_dispatch' || inputs.scope == matrix.scope
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force ./fixture | Out-Null
+          Set-Content ./fixture/build.log 'Pinned fixture validation started.'
+          $wrapper = Get-Content ./fixture/gradle/wrapper/gradle-wrapper.properties -Raw
+          $distributionLine = $wrapper -split "`r?`n" | Where-Object { $_ -match '^distributionUrl=' } | Select-Object -First 1
+          $distributionUrl = ($distributionLine -replace '^distributionUrl=', '') -replace '\\:', ':'
+          if ($distributionUrl -notmatch '^https://') { Add-Content ./fixture/build.log 'Fixture Gradle distribution must use HTTPS.'; throw 'Fixture Gradle distribution must use HTTPS.' }
+          if ($distributionUrl -match '(?i)^https?://[^/\s:]+:[^/@\s]+@') { Add-Content ./fixture/build.log 'Credentials are forbidden in fixture wrapper URLs.'; throw 'Credentials are forbidden in fixture wrapper URLs.' }
+      - name: Clean build fixture
+        id: fixture-build-windows
+        if: (github.event_name != 'workflow_dispatch' || inputs.scope == matrix.scope) && runner.os == 'Windows'
+        shell: pwsh
+        working-directory: fixture
+        run: |
+          [DateTimeOffset]::UtcNow.ToString('o') | Set-Content ./build-started-at.txt -NoNewline
+          .\gradlew.bat --no-daemon --console=plain clean build 2>&1 | Tee-Object -FilePath build.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Clean build fixture
+        id: fixture-build-unix
+        if: (github.event_name != 'workflow_dispatch' || inputs.scope == matrix.scope) && runner.os != 'Windows'
+        shell: bash
+        working-directory: fixture
+        run: date -u +%Y-%m-%dT%H:%M:%SZ > build-started-at.txt; set -o pipefail; ./gradlew --no-daemon --console=plain clean build 2>&1 | tee build.log
+      - name: Write hashed build evidence
+        if: always() && (github.event_name != 'workflow_dispatch' || inputs.scope == matrix.scope)
+        shell: pwsh
+        run: |
+          $artifacts = @(Get-ChildItem ./fixture/build/libs -Filter '*.jar' -File -ErrorAction SilentlyContinue | Where-Object { $_.Name -notmatch '(?i)(sources|javadoc|dev)(?:[-.]|\.jar$)' })
+          $buildSucceeded = ('${{ steps.fixture-build-windows.outcome }}' -eq 'success') -or ('${{ steps.fixture-build-unix.outcome }}' -eq 'success')
+          if ($buildSucceeded -and $artifacts.Count -ne 1) { throw "Expected one primary Mod JAR, found $($artifacts.Count)." }
+          if (-not $buildSucceeded -and $artifacts.Count -gt 1) { $artifacts = @() }
+          $item = if ($artifacts.Count -eq 1) { $artifacts[0] } else { $null }
+          $url = (Get-Content ./fixture/gradle/wrapper/gradle-wrapper.properties | Where-Object { $_ -match '^distributionUrl=' } | Select-Object -First 1) -replace '^distributionUrl=', '' -replace '\\:', ':'
+          $logPath = if (Test-Path ./fixture/build.log) { './fixture/build.log' } else { throw 'Build log is missing.' }
+          $logHash = (Get-FileHash $logPath -Algorithm SHA256).Hash.ToLowerInvariant()
+          $javaLines = @(& java -version 2>&1 | ForEach-Object { [string]$_ })
+          $javaVersion = $javaLines -join ' '
+          $javaMatch = [regex]::Match($javaVersion, '(?:version\s+"|openjdk\s+)(\d+(?:\.\d+){0,3}(?:_[0-9]+)?(?:[-+][A-Za-z0-9._-]+)?)')
+          if (-not $javaMatch.Success) { throw 'Unable to parse observed Java version.' }
+          $javaExact = $javaMatch.Groups[1].Value
+          $javaMajor = if ($javaExact.StartsWith('1.')) { [int]($javaExact -split '\.')[1] } else { [int]($javaExact -split '[._+-]')[0] }
+          $gradleVersion = if ($url -match 'gradle-([^/-]+)-(?:bin|all)\.zip') { $Matches[1] } else { throw 'Unable to resolve Gradle wrapper version from pinned distribution URL.' }
+          $started = if (Test-Path ./fixture/build-started-at.txt) { [DateTimeOffset]::Parse((Get-Content ./fixture/build-started-at.txt -Raw).Trim()) } else { [DateTimeOffset]::UtcNow }
+          $ended = [DateTimeOffset]::UtcNow
+          $platformOs = switch ('${{ runner.os }}') { 'macOS' { 'MacOS' } default { '${{ runner.os }}' } }
+          $platformArch = if ('${{ runner.arch }}' -eq 'ARM64') { 'ARM64' } else { 'x64' }
+          $targetId = ('ci-${{ matrix.loader }}-${{ matrix.minecraft }}-{0}-{1}' -f $platformOs,$platformArch).ToLowerInvariant() -replace '[^a-z0-9._-]','-'
+          $runId = '${{ github.run_id }}-${{ github.run_attempt }}'
+          $failureCode = 'NONE'
+          $validationLevel = 'BUILD_VERIFIED'
+          $result = 'PASSED'
+          if (-not $buildSucceeded) {
+            $log = if (Test-Path $logPath) { Get-Content $logPath -Raw } else { '' }
+            $failureCode = if ($log -match '(?i)Credentials are forbidden|must use HTTPS') { 'UNTRUSTED_FIXTURE_REJECTED' } elseif ($log -match '(?i)(UnknownHostException|ConnectException|Connection timed out|Could not resolve|Could not GET)') { 'BUILD_FAILED_NETWORK' } elseif ($log -match '(?im)(error:|cannot find symbol|compileJava FAILED|compileKotlin FAILED)') { 'BUILD_FAILED_PROJECT_SOURCE' } else { 'BUILD_FAILED_TOOLCHAIN' }
+            $validationLevel = 'RESOLVED'
+            $result = 'FAILED'
+          }
+          $toolchainId = if ('${{ matrix.loader }}' -eq 'Fabric') { 'FabricLoom' } else { 'NeoGradle' }
+          $buildRequirement = [pscustomobject]@{ kind='Minimum'; major=[int]'${{ matrix.java }}' }
+          $artifact = if ($item) { [pscustomobject]@{ path=('fixture/build/libs/'+$item.Name); filename=$item.Name; sizeBytes=[long]$item.Length; sha256=(Get-FileHash $item.FullName -Algorithm SHA256).Hash.ToLowerInvariant() } } else { $null }
+          $evidence = [pscustomobject][ordered]@{
+            schemaVersion=1; targetId=$targetId; runId=$runId; startedAt=$started.ToString('o'); endedAt=$ended.ToString('o'); durationSeconds=[Math]::Round(($ended-$started).TotalSeconds,3)
+            validationLevel=$validationLevel; result=$result; failureCode=$failureCode
+            platform=[pscustomobject]@{ os=$platformOs; arch=$platformArch; isWSL=$false }
+            java=[pscustomobject]@{ buildRequirement=$buildRequirement; observedBuildJava=[pscustomobject]@{major=$javaMajor;exactVersion=$javaExact;vendor=$javaVersion;os=$platformOs;arch=$platformArch}; compilerTarget=$null; runtimeRequirement=[pscustomobject]@{kind='Unknown';major=$null}; observedRuntimeJava=$null }
+            minecraftId='${{ matrix.minecraft }}'; loaderId='${{ matrix.loader }}'; loaderVersion='${{ matrix.loaderVersion }}'
+            toolchain=[pscustomobject]@{id=$toolchainId;version='${{ matrix.toolchainVersion }}'}; buildSystem=[pscustomobject]@{id='Gradle';version=$gradleVersion}
+            sourceFixture=[pscustomobject]@{type='CIHosted';source='https://github.com/${{ matrix.repository }}';commit='${{ matrix.revision }}';license='${{ matrix.license }}';trust='TrustedOfficial'}
+            logs=@([pscustomobject]@{path='fixture/build.log';sha256=$logHash}); artifact=$artifact; process=$null; marker=$null; stopMethod='NotApplicable'; scenario=$null; notes=@('${{ matrix.fixture }} pinned CI-hosted fixture; wrapper URL: '+$url)
+          }
+          $schema = Get-Content ./schemas/validation-evidence.schema.json -Raw
+          $json = $evidence | ConvertTo-Json -Depth 40
+          if (-not (Test-Json -Json $json -Schema $schema -ErrorAction SilentlyContinue)) { throw 'CI evidence does not match validation-evidence.schema.json.' }
+          [IO.File]::WriteAllText('./fixture/build-evidence.json',$json,[Text.UTF8Encoding]::new($false))
+      - uses: actions/upload-artifact@v4
+        if: always() && (github.event_name != 'workflow_dispatch' || inputs.scope == matrix.scope)
+        with:
+          name: deep-validation-${{ matrix.loader }}-${{ matrix.minecraft }}-${{ matrix.os }}
+          path: |
+            fixture/build.log
+            fixture/build-evidence.json
+            fixture/build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 14

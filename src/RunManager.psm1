@@ -1,3 +1,7 @@
+Import-Module (Join-Path $PSScriptRoot 'RuntimeManager.psm1')
+Import-Module (Join-Path $PSScriptRoot 'LogManager.psm1')
+Import-Module (Join-Path $PSScriptRoot 'ProcessManager.psm1')
+
 function Invoke-MmtlGradleBuild {
     [CmdletBinding()]
     param([Parameter(Mandatory)]$Project,[Parameter(Mandatory)][string]$JavaPath,[Parameter(Mandatory)][string]$SessionPath,[switch]$Clean)

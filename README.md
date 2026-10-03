@@ -35,7 +35,17 @@ Phase F 已完成全 Mojang release coverage audit。它按正式 release 逐版
 ./launcher.ps1 --coverage-version 1.20.1
 ```
 
-`--coverage-report` 默认输出简明汇总，`--json` 输出完整审计对象；`--coverage-gaps` 输出 provider 与不变量 gap，`--coverage-version <id>` 只接受 Mojang 正式 release ID。`--catalog-offline` 与 `--loader-offline` 分别控制 Mojang Catalog 与 Loader metadata 缓存。每个 Provider 指标还包含首末 Available release、连续区间和按状态分组的 gap ranges。Live coverage 输出放在 Runtime Root 或本地 HANDOVER，不提交版本化的全量快照。Phase G 深度验证仍未开始。
+`--coverage-report` 默认输出简明汇总，`--json` 输出完整审计对象；`--coverage-gaps` 输出 provider 与不变量 gap，`--coverage-version <id>` 只接受 Mojang 正式 release ID。`--catalog-offline` 与 `--loader-offline` 分别控制 Mojang Catalog 与 Loader metadata 缓存。每个 Provider 指标还包含首末 Available release、连续区间和按状态分组的 gap ranges。Live coverage 输出放在 Runtime Root 或本地 HANDOVER，不提交版本化的全量快照。
+
+### Phase G — Evidence-driven Deep Validation
+
+Phase G 增加独立的 validation matrix 与 immutable per-run evidence schema，区分 `CATALOGUED`、`RESOLVED`、`BUILD_VERIFIED`、`SERVER_VERIFIED`、`CLIENT_LAUNCH_VERIFIED` 与 `INTEGRATION_VERIFIED`。每个结论只适用于完全一致的 fixture、Minecraft、Loader、Java、OS 与架构；单独启动 Gradle `runClient` 或 Java 进程不构成客户端/服务端通过。官方 fixture 必须固定 commit、记录 license 与信任等级，并限制 Gradle task。详见 [docs/validation.md](docs/validation.md)。
+
+```powershell
+./launcher.ps1 --validation-matrix ./my-validation-targets.json --validation-output ./validation-matrix.json
+```
+
+深度 fixture 构建通过 GitHub Actions 手动或半月调度运行，不成为每个 PR 的必需大型 build。每份成功构建证据含主产物 SHA-256；客户端与服务端等级还需要对应真实运行 marker 和进程/端口证据。
 
 - 已实现 Forge、NeoForge、Fabric 项目元数据识别、Java 主版本映射、Profile、兼容性预检和 build/run Gradle Wrapper 调用。
 - 支持 Single、IntegratedLAN 引导式 Host/Client，以及 Dedicated Server 加本地客户端；多项目构建结果按 SHA-256 汇入独立 Session。

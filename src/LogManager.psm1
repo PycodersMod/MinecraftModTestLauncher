@@ -1,3 +1,5 @@
+Import-Module (Join-Path $PSScriptRoot 'RuntimeManager.psm1')
+
 function New-MmtlLogPath {
     param([Parameter(Mandatory)][string]$RuntimeRoot,[Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][string]$Name)
     if ($Name -notmatch '^[A-Za-z0-9_-]{1,40}$') { throw '日志名称无效。' }

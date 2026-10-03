@@ -1,6 +1,8 @@
 BeforeAll {
     $script:root=Split-Path -Parent $PSScriptRoot
     Get-ChildItem (Join-Path $script:root 'src') -Filter '*.psm1' -Recurse | ForEach-Object { Import-Module $_.FullName -Force }
+    Import-Module (Join-Path $script:root 'src/ProjectDetector.psm1') -Force
+    Import-Module (Join-Path $script:root 'src/GradleRunner.psm1') -Force
     function New-TestModProject {
         param([string]$Name,[string]$Loader,[string]$MinecraftVersion,[int]$JavaMajor)
         $path=Join-Path $TestDrive $Name

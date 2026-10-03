@@ -101,7 +101,10 @@
         "result": {"enum": ["UNVERIFIED", "PASSED", "FAILED", "STALE"]},
         "lastVerified": {"type": ["string", "null"], "format": "date-time"},
           "evidence": {"type": "array", "items": {"type": "string"}},
-          "buildEvidence": {"type": "array", "items": {"$ref": "#/definitions/buildEvidence"}}
+          "buildEvidence": {"type": "array", "items": {"$ref": "#/definitions/buildEvidence"}},
+          "serverEvidence": {"$ref": "#/definitions/serverEvidence"},
+          "clientEvidence": {"$ref": "#/definitions/clientEvidence"},
+          "integrationEvidence": {"$ref": "#/definitions/integrationEvidence"}
       }
     },
     "buildEvidence": {
@@ -122,6 +125,21 @@
         "fixtureProvenance": {"type": "object", "additionalProperties": false, "required": ["sourceUrl", "commit", "license"], "properties": {"sourceUrl": {"type": "string", "format": "uri"}, "commit": {"type": "string", "pattern": "^[a-fA-F0-9]{40}$"}, "license": {"type": "string", "minLength": 1}}}
       },
       "allOf": [{"if": {"properties": {"result": {"const": "PASSED"}}}, "then": {"properties": {"artifactSha256": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"}}}}]
+    },
+    "serverEvidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["readyMarker", "readyMarkerMatched", "processIdentityMatched", "portListening", "stopMethod", "processExited", "portReleased"],
+      "properties": {"readyMarker": {"type": "string", "minLength": 1}, "readyMarkerMatched": {"type": "boolean"}, "processIdentityMatched": {"type": "boolean"}, "portListening": {"type": "boolean"}, "stopMethod": {"enum": ["ConsoleStop", "Terminate"]}, "processExited": {"type": "boolean"}, "portReleased": {"type": "boolean"}}
+    },
+    "clientEvidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["initializationMarker", "initializationMarkerMatched", "processIdentityMatched", "liveAtMarker"],
+      "properties": {"initializationMarker": {"type": "string", "minLength": 1}, "initializationMarkerMatched": {"type": "boolean"}, "processIdentityMatched": {"type": "boolean"}, "liveAtMarker": {"type": "boolean"}}
+    },
+    "integrationEvidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["scenario", "completed", "assertionsPassed"],
+      "properties": {"scenario": {"type": "string", "minLength": 1}, "completed": {"type": "boolean"}, "assertionsPassed": {"type": "integer", "minimum": 0}}
     }
   }
 }

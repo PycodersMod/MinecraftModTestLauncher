@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "fixtures": [
+    {
+      "fixtureId": "fabric-263",
+      "type": "OfficialFixture",
+      "source": "https://github.com/FabricMC/fabric-example-mod",
+      "commit": "44465cb0eb83932c72ece5934d32ddfc758802ed",
+      "license": "CC0-1.0",
+      "trust": "TrustedOfficial",
+      "minecraftId": "26.3",
+      "loaderId": "Fabric",
+      "loaderVersion": "0.19.5",
+      "toolchain": "FabricLoom",
+      "toolchainVersion": "1.18-SNAPSHOT",
+      "buildJava": 25,
+      "scopes": [
+        "P0",
+        "CurrentStable"
+      ],
+      "currentStable": true,
+      "allowedTasks": [
+        "clean",
+        "build"
+      ]
+    },
+    {
+      "fixtureId": "forge-1122",
+      "type": "OfficialArtifactFixture",
+      "source": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.12.2-14.23.5.2864/forge-1.12.2-14.23.5.2864-mdk.zip",
+      "commit": "bed660e5f8deab6de687d2e894fb489501f00e7a47a9bea260c84a460f8f6733",
+      "license": "LGPL-2.1",
+      "trust": "TrustedOfficial",
+      "minecraftId": "1.12.2",
+      "loaderId": "Forge",
+      "loaderVersion": "14.23.5.2864",
+      "toolchain": "ForgeGradle",
+      "toolchainVersion": null,
+      "buildJava": 8,
+      "scopes": [
+        "P0"
+      ],
+      "currentStable": false,
+      "allowedTasks": [
+        "clean",
+        "build"
+      ],
+      "officialChecksum": "380b34b382c06bc3bf4aa36383a84bee",
+      "officialChecksumAlgorithm": "MD5"
+    },
+    {
+      "fixtureId": "forge-1165",
+      "type": "OfficialArtifactFixture",
+      "source": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.16.5-36.2.8/forge-1.16.5-36.2.8-mdk.zip",
+      "commit": "3784604953780060c2177c1f003205356d89c09c990486eb7ee1dd400a68ca5c",
+      "license": "LGPL-2.1",
+      "trust": "TrustedOfficial",
+      "minecraftId": "1.16.5",
+      "loaderId": "Forge",
+      "loaderVersion": "36.2.8",
+      "toolchain": "ForgeGradle",
+      "toolchainVersion": null,
+      "buildJava": 8,
+      "scopes": [
+        "P0"
+      ],
+      "currentStable": false,
+      "allowedTasks": [
+        "clean",
+        "build"
+      ],
+      "officialChecksum": "074b8ed3688c8baa863b201f6bf6850d4b715b19",
+      "officialChecksumAlgorithm": "SHA1"
+    },
+    {
+      "fixtureId": "neoforge-1204",
+      "type": "OfficialFixture",
+      "source": "https://github.com/NeoForgeMDKs/MDK-1.20.4-NeoGradle",
+      "commit": "4162bcfc3128a67efaa6bf4849cb955645b7e41d",
+      "license": "MIT",
+      "trust": "TrustedOfficial",
+      "minecraftId": "1.20.4",
+      "loaderId": "NeoForge",
+      "loaderVersion": "20.4.251",
+      "toolchain": "NeoGradle",
+      "toolchainVersion": "7.1.38",
+      "buildJava": 17,
+      "scopes": [
+        "P0"
+      ],
+      "currentStable": false,
+      "allowedTasks": [
+        "clean",
+        "build"
+      ]
+    },
+    {
+      "fixtureId": "neoforge-1211",
+      "type": "OfficialFixture",
+      "source": "https://github.com/NeoForgeMDKs/MDK-1.21.1-NeoGradle",
+      "commit": "50b02952c596784d7c493866650021c1222846ca",
+      "license": "MIT",
+      "trust": "TrustedOfficial",
+      "minecraftId": "1.21.1",
+      "loaderId": "NeoForge",
+      "loaderVersion": "21.1.235",
+      "toolchain": "NeoGradle",
+      "toolchainVersion": "7.1.38",
+      "buildJava": 21,
+      "scopes": [
+        "P0"
+      ],
+      "currentStable": false,
+      "allowedTasks": [
+        "clean",
+        "build"
+      ]
+    },
+    {
+      "fixtureId": "quilt-1206",
+      "type": "OfficialFixture",
+      "source": "https://github.com/QuiltMC/quilt-template-mod",
+      "commit": "9a6f89cd481e3f58f128596b5b043353bee6b3f2",
+      "license": "CC0-1.0",
+      "trust": "TrustedOfficial",
+      "minecraftId": "1.20.6",
+      "loaderId": "Quilt",
+      "loaderVersion": "0.26.3",
+      "toolchain": "QuiltLoom",
+      "toolchainVersion": "1.7.4",
+      "buildJava": 21,
+      "scopes": [
+        "P0"
+      ],
+      "currentStable": false,
+      "allowedTasks": [
+        "clean",
+        "build"
+      ]
+    }
+  ]
+}
