@@ -10,6 +10,17 @@ BeforeAll {
 }
 
 Describe 'Deep validation runner safety and evidence' {
+    It 'does not classify Gradle unknown-property errors as network failures' {
+        $runnerModule = Get-Module -Name ValidationRunner
+        $classify = { param($text) Get-MmtlBuildFailureCode -Output $text }.GetNewClosure()
+        $unknownProperty = & $runnerModule $classify "Could not get unknown property 'forge_version' for task ':generateModMetadata'."
+        $unavailableArtifact = & $runnerModule $classify "Could not resolve all artifacts for configuration ':compileClasspath'. Could not find net.minecraftforge:forge:1.20.1-47.1.106."
+        $httpFetch = & $runnerModule $classify "Could not GET 'https://maven.example.invalid/metadata.xml'."
+        $unknownProperty | Should -BeExactly 'BUILD_FAILED_TOOLCHAIN'
+        $unavailableArtifact | Should -BeExactly 'BUILD_FAILED_TOOLCHAIN'
+        $httpFetch | Should -BeExactly 'BUILD_FAILED_NETWORK'
+    }
+
     It 'returns no observed Java instead of throwing when PATH contains no Java executable' {
         $oldPath = $env:PATH
         $oldJavaHome = $env:JAVA_HOME

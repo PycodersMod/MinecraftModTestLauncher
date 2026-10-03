@@ -64,7 +64,7 @@ function Test-MmtlBuildJavaRequirement {
 
 function Get-MmtlBuildFailureCode {
     param([string]$Output)
-    if($Output -match '(?i)(UnknownHostException|ConnectException|Connection timed out|Connect timed out|Read timed out|Could not GET|Could not resolve|Temporary failure in name resolution|unable to access .* network|PKIX path building failed)'){return 'BUILD_FAILED_NETWORK'}
+    if($Output -match '(?i)(UnknownHostException|ConnectException|Connection timed out|Connect timed out|Read timed out|Could not GET\s+["'']?https?://|Temporary failure in name resolution|unable to access .* network|PKIX path building failed)'){return 'BUILD_FAILED_NETWORK'}
     if($Output -match '(?im)(?:^|\s)(?:error:|cannot find symbol|compilation failed|compileJava FAILED|compileKotlin FAILED|Execution failed for task .*(?:compile|checkstyle))'){return 'BUILD_FAILED_PROJECT_SOURCE'}
     return 'BUILD_FAILED_TOOLCHAIN'
 }
