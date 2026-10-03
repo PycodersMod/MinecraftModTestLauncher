@@ -14,21 +14,31 @@ Describe '严格跨平台目录边界' {
     }
 
     It 'common 和各平台不得跨越允许的依赖方向' {
-        $sourceRoots = @('common/src','windows/src','linux/src','macos/src') | ForEach-Object { Join-Path $script:repositoryRoot $_ }
-        foreach ($sourceRoot in $sourceRoots) {
-            if (-not (Test-Path -LiteralPath $sourceRoot)) { continue }
-            foreach ($file in Get-ChildItem -LiteralPath $sourceRoot -Recurse -File -Include *.ps1,*.psm1) {
-                $content = Get-Content -LiteralPath $file.FullName -Raw
-                if ($file.FullName -match '[\\/]common[\\/]') {
-                    $content | Should -Not -Match '(?i)(windows|linux|macos)[\\/](src|launcher)'
-                } elseif ($file.FullName -match '[\\/]windows[\\/]') {
-                    $content | Should -Not -Match '(?i)(linux|macos)[\\/](src|launcher)'
-                } elseif ($file.FullName -match '[\\/]linux[\\/]') {
-                    $content | Should -Not -Match '(?i)(windows|macos)[\\/](src|launcher)'
-                } elseif ($file.FullName -match '[\\/]macos[\\/]') {
-                    $content | Should -Not -Match '(?i)(windows|linux)[\\/](src|launcher)'
-                }
+        $sourceFiles = foreach ($sourceRoot in @('common/src','windows/src','linux/src','macos/src')) {
+            Get-ChildItem -LiteralPath (Join-Path $script:repositoryRoot $sourceRoot) -Recurse -File -Include *.ps1,*.psm1,*.sh,*.cmd
+        }
+        $sourceFiles += Get-Item -LiteralPath (Join-Path $script:repositoryRoot 'common/launcher-posix.sh')
+        foreach ($file in $sourceFiles) {
+            $content = Get-Content -LiteralPath $file.FullName -Raw
+            if ($file.FullName -match '[\\/]common[\\/]') {
+                $content | Should -Not -Match '(?i)(windows|linux|macos)[\\/](src|launcher)'
+            } elseif ($file.FullName -match '[\\/]windows[\\/]') {
+                $content | Should -Not -Match '(?i)(linux|macos)[\\/](src|launcher)'
+            } elseif ($file.FullName -match '[\\/]linux[\\/]') {
+                $content | Should -Not -Match '(?i)(windows|macos)[\\/](src|launcher)'
+            } elseif ($file.FullName -match '[\\/]macos[\\/]') {
+                $content | Should -Not -Match '(?i)(windows|linux)[\\/](src|launcher)'
             }
         }
+    }
+
+    It '不会在不同平台目录复制相同的业务源码' {
+        $files = foreach ($platform in @('windows','linux','macos')) {
+            $sourceRoot = Join-Path $script:repositoryRoot $platform
+            Get-ChildItem -LiteralPath $sourceRoot -Recurse -File -Include *.ps1,*.psm1,*.sh,*.cmd |
+                Where-Object { $_.FullName -notmatch '[\\/]tests[\\/]' }
+        }
+        $duplicates = @($files | Get-FileHash -Algorithm SHA256 | Group-Object Hash | Where-Object { $_.Count -gt 1 })
+        $duplicates | Should -BeNullOrEmpty
     }
 }

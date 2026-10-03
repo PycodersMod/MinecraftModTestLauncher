@@ -22,7 +22,7 @@ macos   ──┘
 
 ## 入口与注入
 
-每个 `windows/launcher.ps1`、`linux/launcher.ps1`、`macos/launcher.ps1` 都是 composition root：它从 `$PSScriptRoot` 推导仓库根，加载 `common/` 契约与本平台 provider，注册 provider，再调用 `common/src/Launcher.ps1`。common 只读取已注册的契约和回调，不探测操作系统后加载实现，也不保存平台模块路径。
+每个 `windows/launcher.ps1`、`linux/launcher.ps1`、`macos/launcher.ps1` 都是 composition root：它从 `$PSScriptRoot` 推导仓库根，加载 `common/` 契约与本平台 provider，注册 provider，再调用 `common/src/Launcher.ps1`。`linux/launcher.sh` 与 `macos/launcher.sh` 只检查当前系统并把明确的平台入口交给共享的 `common/launcher-posix.sh`；共享脚本不探测操作系统，也不自行查找或加载平台实现。common 只读取已注册的契约和回调，不保存平台模块路径。
 
 Provider 声明平台身份、CPU 架构、运行目录、路径比较语义、Gradle wrapper、能力值和可选回调。进程快照/身份识别、内存查询、平台入口等通过回调注入。macOS 当前没有真实窗口管理或进程树实现，不会借用 Linux 或 Windows 实现。
 
