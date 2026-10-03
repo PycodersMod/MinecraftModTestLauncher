@@ -108,16 +108,20 @@ jobs:
         if: github.event_name != 'workflow_dispatch' || inputs.scope == matrix.scope
         shell: pwsh
         run: |
+          New-Item -ItemType Directory -Force ./fixture | Out-Null
+          Set-Content ./fixture/build.log 'Pinned fixture validation started.'
           $wrapper = Get-Content ./fixture/gradle/wrapper/gradle-wrapper.properties -Raw
-          if ($wrapper -notmatch '(?m)^distributionUrl=https://') { throw 'Fixture Gradle distribution must use HTTPS.' }
-          if ($wrapper -match '(?i)https?://[^/\s:]+:[^/@\s]+@') { throw 'Credentials are forbidden in fixture wrapper URLs.' }
+          $distributionLine = $wrapper -split "`r?`n" | Where-Object { $_ -match '^distributionUrl=' } | Select-Object -First 1
+          $distributionUrl = ($distributionLine -replace '^distributionUrl=', '') -replace '\\:', ':'
+          if ($distributionUrl -notmatch '^https://') { Add-Content ./fixture/build.log 'Fixture Gradle distribution must use HTTPS.'; throw 'Fixture Gradle distribution must use HTTPS.' }
+          if ($distributionUrl -match '(?i)^https?://[^/\s:]+:[^/@\s]+@') { Add-Content ./fixture/build.log 'Credentials are forbidden in fixture wrapper URLs.'; throw 'Credentials are forbidden in fixture wrapper URLs.' }
       - name: Clean build fixture
         id: fixture-build-windows
         if: (github.event_name != 'workflow_dispatch' || inputs.scope == matrix.scope) && runner.os == 'Windows'
         shell: pwsh
         working-directory: fixture
         run: |
-          [DateTimeOffset]::UtcNow.ToString('o') | Set-Content ./fixture/build-started-at.txt -NoNewline
+          [DateTimeOffset]::UtcNow.ToString('o') | Set-Content ./build-started-at.txt -NoNewline
           .\gradlew.bat --no-daemon --console=plain clean build 2>&1 | Tee-Object -FilePath build.log
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Clean build fixture
@@ -130,12 +134,12 @@ jobs:
         if: always() && (github.event_name != 'workflow_dispatch' || inputs.scope == matrix.scope)
         shell: pwsh
         run: |
-          $artifacts = @(Get-ChildItem ./fixture/build/libs -Filter '*.jar' -File | Where-Object { $_.Name -notmatch '(?i)(sources|javadoc|dev)(?:[-.]|\.jar$)' })
+          $artifacts = @(Get-ChildItem ./fixture/build/libs -Filter '*.jar' -File -ErrorAction SilentlyContinue | Where-Object { $_.Name -notmatch '(?i)(sources|javadoc|dev)(?:[-.]|\.jar$)' })
           $buildSucceeded = ('${{ steps.fixture-build-windows.outcome }}' -eq 'success') -or ('${{ steps.fixture-build-unix.outcome }}' -eq 'success')
           if ($buildSucceeded -and $artifacts.Count -ne 1) { throw "Expected one primary Mod JAR, found $($artifacts.Count)." }
           if (-not $buildSucceeded -and $artifacts.Count -gt 1) { $artifacts = @() }
           $item = if ($artifacts.Count -eq 1) { $artifacts[0] } else { $null }
-          $url = Get-Content ./fixture/gradle/wrapper/gradle-wrapper.properties | Where-Object { $_ -match '^distributionUrl=' } | Select-Object -First 1
+          $url = (Get-Content ./fixture/gradle/wrapper/gradle-wrapper.properties | Where-Object { $_ -match '^distributionUrl=' } | Select-Object -First 1) -replace '^distributionUrl=', '' -replace '\\:', ':'
           $logPath = if (Test-Path ./fixture/build.log) { './fixture/build.log' } else { throw 'Build log is missing.' }
           $logHash = (Get-FileHash $logPath -Algorithm SHA256).Hash.ToLowerInvariant()
           $javaLines = @(& java -version 2>&1 | ForEach-Object { [string]$_ })
@@ -156,7 +160,7 @@ jobs:
           $result = 'PASSED'
           if (-not $buildSucceeded) {
             $log = if (Test-Path $logPath) { Get-Content $logPath -Raw } else { '' }
-            $failureCode = if ($log -match '(?i)(UnknownHostException|ConnectException|Connection timed out|Could not resolve|Could not GET)') { 'BUILD_FAILED_NETWORK' } elseif ($log -match '(?im)(error:|cannot find symbol|compileJava FAILED|compileKotlin FAILED)') { 'BUILD_FAILED_PROJECT_SOURCE' } else { 'BUILD_FAILED_TOOLCHAIN' }
+            $failureCode = if ($log -match '(?i)Credentials are forbidden|must use HTTPS') { 'UNTRUSTED_FIXTURE_REJECTED' } elseif ($log -match '(?i)(UnknownHostException|ConnectException|Connection timed out|Could not resolve|Could not GET)') { 'BUILD_FAILED_NETWORK' } elseif ($log -match '(?im)(error:|cannot find symbol|compileJava FAILED|compileKotlin FAILED)') { 'BUILD_FAILED_PROJECT_SOURCE' } else { 'BUILD_FAILED_TOOLCHAIN' }
             $validationLevel = 'RESOLVED'
             $result = 'FAILED'
           }
