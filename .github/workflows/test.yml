@@ -1,4 +1,4 @@
-name: MMTL tests
+name: MMTL 跨平台测试
 on:
   push:
     branches: [main]
@@ -9,15 +9,18 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v7.0.1
-      - name: Install Pester
+      - name: 安装 Pester
         shell: pwsh
         run: Install-Module Pester -MinimumVersion 5.0 -Scope CurrentUser -Force -SkipPublisherCheck
-      - name: PowerShell syntax
+      - name: PowerShell 语法检查
         shell: pwsh
         run: Get-ChildItem -Recurse -Include *.ps1,*.psm1 | ForEach-Object { $tokens=$null; $errors=$null; [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$tokens,[ref]$errors) | Out-Null; if($errors){throw ($errors | Out-String)} }
-      - name: Full Windows Pester suite
+      - name: Windows 与 common Pester 测试
         shell: pwsh
-        run: Invoke-Pester ./tests -CI
+        run: ./.github/scripts/Invoke-MmtlPester.ps1
+      - name: Windows 入口安全 smoke
+        shell: pwsh
+        run: ./windows/launcher.ps1 --help
 
   ubuntu-platform-tests:
     runs-on: ubuntu-24.04
@@ -27,46 +30,49 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - name: Install Pester
+      - name: 安装 Pester
         shell: pwsh
         run: Install-Module Pester -MinimumVersion 5.0 -Scope CurrentUser -Force -SkipPublisherCheck
-      - name: PowerShell syntax
+      - name: PowerShell 语法检查
         shell: pwsh
         run: Get-ChildItem -Recurse -Include *.ps1,*.psm1 | ForEach-Object { $tokens=$null; $errors=$null; [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$tokens,[ref]$errors) | Out-Null; if($errors){throw ($errors | Out-String)} }
-      - name: Platform, runtime, Java, wrapper and Linux process tests
+      - name: Linux 与 common Pester 测试
         shell: pwsh
-        run: Invoke-Pester -Path ./tests/Architecture.Tests.ps1,./tests/Schema.Tests.ps1,./tests/Platform.Tests.ps1,./tests/RuntimeManager.Tests.ps1,./tests/JavaResolver.Tests.ps1,./tests/GradleRunner.Tests.ps1,./tests/ProcessManager.Linux.Tests.ps1,./tests/CrossPlatformCli.Tests.ps1,./tests/MinecraftVersionCatalog.Tests.ps1,./tests/JavaRuntimeResolver.Tests.ps1,./tests/MinecraftVersionCatalog.Cli.Tests.ps1,./tests/LoaderMetadata.Tests.ps1,./tests/ForgeProvider.Tests.ps1,./tests/FabricProvider.Tests.ps1,./tests/NeoForgeProvider.Tests.ps1,./tests/QuiltProvider.Tests.ps1,./tests/LoaderAvailability.Tests.ps1,./tests/AdapterV2.Tests.ps1,./tests/ProjectDetectorV2.Tests.ps1,./tests/LoaderProvider.Cli.Tests.ps1,./tests/HistoricalSource.Tests.ps1,./tests/HistoricalMetadata.Tests.ps1,./tests/HistoricalProviders.Tests.ps1,./tests/CoverageAudit.Tests.ps1,./tests/CoverageSchema.Tests.ps1,./tests/CoverageCli.Tests.ps1,./tests/CoverageGap.Tests.ps1,./tests/CoverageLiveInputs.Tests.ps1,./tests/CoverageProviderMapping.Tests.ps1,./tests/JavaEvidence.Tests.ps1,./tests/ValidationEvidence.Tests.ps1,./tests/ValidationMatrix.Tests.ps1,./tests/ValidationPlan.Tests.ps1,./tests/ValidationSchema.Tests.ps1,./tests/ValidationRunner.Tests.ps1,./tests/RunManager.Dependency.Tests.ps1,./tests/ProcessManager.Dependency.Tests.ps1,./tests/ValidationMatrix.Aggregation.Tests.ps1,./tests/ValidationMatrix.Cli.Tests.ps1,./tests/DocumentationConsistency.Tests.ps1 -CI
-      - name: launcher.sh smoke
+        run: ./.github/scripts/Invoke-MmtlPester.ps1
+      - name: Linux 入口安全 smoke
         shell: bash
-        run: ./launcher.sh --help
+        run: ./linux/launcher.sh --help
 
   macos-arm64-tests:
     runs-on: macos-26
     steps:
       - uses: actions/checkout@v7.0.1
-      - name: Install Pester
+      - name: 安装 Pester
         shell: pwsh
         run: Install-Module Pester -MinimumVersion 5.0 -Scope CurrentUser -Force -SkipPublisherCheck
-      - name: PowerShell syntax
+      - name: PowerShell 语法检查
         shell: pwsh
         run: Get-ChildItem -Recurse -Include *.ps1,*.psm1 | ForEach-Object { $tokens=$null; $errors=$null; [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$tokens,[ref]$errors) | Out-Null; if($errors){throw ($errors | Out-String)} }
-      - name: Platform/build-path Pester tests
+      - name: macOS ARM64 与 common Pester 测试
         shell: pwsh
-        run: Invoke-Pester -Path ./tests/Architecture.Tests.ps1,./tests/Schema.Tests.ps1,./tests/Platform.Tests.ps1,./tests/RuntimeManager.Tests.ps1,./tests/JavaResolver.Tests.ps1,./tests/GradleRunner.Tests.ps1,./tests/CrossPlatformCli.Tests.ps1,./tests/MinecraftVersionCatalog.Tests.ps1,./tests/JavaRuntimeResolver.Tests.ps1,./tests/MinecraftVersionCatalog.Cli.Tests.ps1,./tests/LoaderMetadata.Tests.ps1,./tests/ForgeProvider.Tests.ps1,./tests/FabricProvider.Tests.ps1,./tests/NeoForgeProvider.Tests.ps1,./tests/QuiltProvider.Tests.ps1,./tests/LoaderAvailability.Tests.ps1,./tests/AdapterV2.Tests.ps1,./tests/ProjectDetectorV2.Tests.ps1,./tests/LoaderProvider.Cli.Tests.ps1,./tests/HistoricalSource.Tests.ps1,./tests/HistoricalMetadata.Tests.ps1,./tests/HistoricalProviders.Tests.ps1,./tests/CoverageAudit.Tests.ps1,./tests/CoverageSchema.Tests.ps1,./tests/CoverageCli.Tests.ps1,./tests/CoverageGap.Tests.ps1,./tests/CoverageLiveInputs.Tests.ps1,./tests/CoverageProviderMapping.Tests.ps1,./tests/JavaEvidence.Tests.ps1,./tests/ValidationEvidence.Tests.ps1,./tests/ValidationMatrix.Tests.ps1,./tests/ValidationPlan.Tests.ps1,./tests/ValidationSchema.Tests.ps1,./tests/ValidationRunner.Tests.ps1,./tests/RunManager.Dependency.Tests.ps1,./tests/ProcessManager.Dependency.Tests.ps1,./tests/ValidationMatrix.Aggregation.Tests.ps1,./tests/ValidationMatrix.Cli.Tests.ps1,./tests/DocumentationConsistency.Tests.ps1 -CI
-      - name: launcher.sh smoke
+        run: ./.github/scripts/Invoke-MmtlPester.ps1
+      - name: macOS ARM64 入口安全 smoke
         shell: bash
-        run: sh ./launcher.sh --help
+        run: sh ./macos/launcher.sh --help
 
   macos-intel-tests:
     runs-on: macos-26-intel
     steps:
       - uses: actions/checkout@v7.0.1
-      - name: Install Pester
+      - name: 安装 Pester
         shell: pwsh
         run: Install-Module Pester -MinimumVersion 5.0 -Scope CurrentUser -Force -SkipPublisherCheck
-      - name: Platform/build-path Pester tests
+      - name: PowerShell 语法检查
         shell: pwsh
-        run: Invoke-Pester -Path ./tests/Architecture.Tests.ps1,./tests/Schema.Tests.ps1,./tests/Platform.Tests.ps1,./tests/RuntimeManager.Tests.ps1,./tests/JavaResolver.Tests.ps1,./tests/GradleRunner.Tests.ps1,./tests/CrossPlatformCli.Tests.ps1,./tests/MinecraftVersionCatalog.Tests.ps1,./tests/JavaRuntimeResolver.Tests.ps1,./tests/MinecraftVersionCatalog.Cli.Tests.ps1,./tests/LoaderMetadata.Tests.ps1,./tests/ForgeProvider.Tests.ps1,./tests/FabricProvider.Tests.ps1,./tests/NeoForgeProvider.Tests.ps1,./tests/QuiltProvider.Tests.ps1,./tests/LoaderAvailability.Tests.ps1,./tests/AdapterV2.Tests.ps1,./tests/ProjectDetectorV2.Tests.ps1,./tests/LoaderProvider.Cli.Tests.ps1,./tests/HistoricalSource.Tests.ps1,./tests/HistoricalMetadata.Tests.ps1,./tests/HistoricalProviders.Tests.ps1,./tests/CoverageAudit.Tests.ps1,./tests/CoverageSchema.Tests.ps1,./tests/CoverageGap.Tests.ps1,./tests/CoverageLiveInputs.Tests.ps1,./tests/CoverageProviderMapping.Tests.ps1,./tests/JavaEvidence.Tests.ps1,./tests/ValidationEvidence.Tests.ps1,./tests/ValidationMatrix.Tests.ps1,./tests/ValidationPlan.Tests.ps1,./tests/ValidationSchema.Tests.ps1,./tests/ValidationRunner.Tests.ps1,./tests/RunManager.Dependency.Tests.ps1,./tests/ProcessManager.Dependency.Tests.ps1,./tests/ValidationMatrix.Aggregation.Tests.ps1,./tests/ValidationMatrix.Cli.Tests.ps1,./tests/DocumentationConsistency.Tests.ps1 -CI
-      - name: launcher.sh smoke
+        run: Get-ChildItem -Recurse -Include *.ps1,*.psm1 | ForEach-Object { $tokens=$null; $errors=$null; [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$tokens,[ref]$errors) | Out-Null; if($errors){throw ($errors | Out-String)} }
+      - name: macOS Intel 与 common Pester 测试
+        shell: pwsh
+        run: ./.github/scripts/Invoke-MmtlPester.ps1
+      - name: macOS Intel 入口安全 smoke
         shell: bash
-        run: sh ./launcher.sh --help
+        run: sh ./macos/launcher.sh --help

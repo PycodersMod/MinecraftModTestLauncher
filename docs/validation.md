@@ -1,52 +1,52 @@
-# Deep validation
+# 深度验证
 
-The Mojang release catalogue and Loader availability audit describe metadata. They do not say that a project resolved, compiled, launched a dedicated server, or initialized a client. MMTL stores those claims as per-target evidence.
+Mojang 正式版本目录与 Loader availability 审计只描述元数据，不代表项目已解析、编译、启动 Dedicated Server 或初始化客户端。MMTL 按目标保存这些验证结论及其证据。
 
-## Validation levels
+## 验证等级
 
-| Level | Required evidence |
+| 等级 | 所需证据 |
 | --- | --- |
-| `CATALOGUED` | Minecraft release is present in the official release catalogue. |
-| `RESOLVED` | Project detector and Adapter identify the project stack and produce a safe build plan. |
-| `BUILD_VERIFIED` | The Gradle wrapper exits successfully, exactly one primary Mod JAR is present, and its SHA-256 is recorded. |
-| `SERVER_VERIFIED` | A real ready marker is observed while the matching process is alive, a server port listens, a supported stop is sent, and the process and port both exit. |
-| `CLIENT_LAUNCH_VERIFIED` | A Minecraft initialization marker is observed from the matching client process. Starting `runClient` alone is insufficient. |
-| `INTEGRATION_VERIFIED` | A named end-to-end scenario completes and its explicit assertions pass. |
+| `CATALOGUED` | Minecraft 正式版本存在于官方版本目录。 |
+| `RESOLVED` | 项目检测器与 Adapter 识别项目组合并生成安全构建计划。 |
+| `BUILD_VERIFIED` | Gradle wrapper 成功退出，生成且仅生成一个主 Mod JAR，并记录其 SHA-256。 |
+| `SERVER_VERIFIED` | 观察到真实就绪标记且对应进程仍在运行，服务器端口正在监听；向服务器发送受支持的停止命令后，进程与端口均已退出。 |
+| `CLIENT_LAUNCH_VERIFIED` | 从对应客户端进程观察到 Minecraft 初始化标记。仅启动 `runClient` 不足以通过。 |
+| `INTEGRATION_VERIFIED` | 指定的端到端场景完成，且明确列出的断言均通过。 |
 
-Evidence is scoped to the exact fixture, Minecraft version, Loader/toolchain, Java, OS, and architecture. A build result is not copied to another platform or version. Unsupported higher-level claims are rejected by the evidence audit.
+证据仅适用于完全一致的 fixture、Minecraft 版本、Loader/toolchain、Java、操作系统和 CPU 架构。构建结果不得套用到其它平台或版本。证据审计会拒绝缺少支持的高等级结论。
 
-## Platform and environment provenance
+## 平台和环境来源
 
-MMTL product OS values are Windows, Linux, and macOS (`MacOS` in the internal enum); CPU architecture is recorded separately. Ubuntu identifies a Linux distribution, WSL/WSL2 identifies a Linux execution environment, and GitHub-hosted runners identify where evidence was produced. These provenance fields do not create additional product platforms. WSL/WSLg and hosted CI do not establish real Ubuntu Desktop or Minecraft GUI client validation.
+MMTL 产品操作系统为 Windows、Linux 和 macOS（内部枚举为 `MacOS`）；CPU 架构单独记录。Ubuntu 是 Linux 发行版，WSL/WSL2 是 Linux 运行环境，GitHub-hosted runner 说明证据的生成位置。这些来源字段不会增加产品平台。WSL/WSLg 和托管 CI 不能作为真实 Ubuntu Desktop 或 Minecraft GUI 客户端验证。
 
-## Run the bounded official fixture matrix
+## 运行受限的官方 fixture 矩阵
 
-`fixtures/deep-validation/fixtures.json` pins trusted upstream repositories to immutable commits, records their license and Java requirement, and allowlists only `clean` and `build`. The workflow builds a small matrix on Windows, Ubuntu-hosted Linux, macOS ARM64, and macOS Intel. It runs on demand or twice per month; it is not a pull-request required check. Runner names describe validation environments, not product OS identities.
+`common/fixtures/deep-validation/fixtures.json` 将可信上游仓库固定到不可变 commit，记录许可证和 Java 要求，并只允许 `clean` 与 `build` 两种 Gradle task。工作流在 Windows、Ubuntu 托管 Linux、macOS ARM64 和 macOS Intel 上运行小型矩阵。它可手动触发，也会每月运行两次；它不是 Pull Request 的必需检查。Runner 名称表示验证环境，不表示产品操作系统。
 
 ```text
-GitHub Actions → MMTL deep validation → Run workflow
+GitHub Actions → MMTL 深度验证 → 运行工作流
 ```
 
-Choose `P0` or `CurrentStable`. The workflow uploads only short-retention build logs and schema-validated evidence with artifact/log hashes. It does not upload Minecraft distributions or Gradle caches. The checked-in CurrentStable fixture is pinned to 26.3, the latest official release resolved for this Phase G run; the local `--validation-plan` resolves CurrentStable from the live or cached Mojang catalogue.
+选择 `P0` 或 `CurrentStable`。工作流仅上传短期保留的构建日志和通过 schema 校验、带产物/日志哈希的证据，不上传 Minecraft 发行文件或 Gradle 缓存。本仓库的 CurrentStable fixture 固定到 Phase G 执行时解析到的最新正式版本 26.3；本地 `--validation-plan` 则从 Mojang 实时或缓存目录解析 CurrentStable。
 
-## Matrix and local evidence
+## 矩阵和本地证据
 
-Schemas are in `schemas/validation-matrix.schema.json` and `schemas/validation-evidence.schema.json`. Runtime run records are immutable and stored below `<RuntimeRoot>/validation/<targetId>/<runId>/result.json`; log contents are redacted before hashing and storage.
+Schema 位于 `common/schemas/validation-matrix.schema.json` 和 `common/schemas/validation-evidence.schema.json`。Runtime 运行记录不可变，保存在 `<RuntimeRoot>/validation/<targetId>/<runId>/result.json` 下；日志内容在哈希和存储前会进行脱敏。
 
-To aggregate exact-target evidence, prepare a JSON array of target definitions matching the matrix schema, then run:
+要汇总 exact-target 证据，先准备一个符合矩阵 schema 的目标定义 JSON 数组，再执行：
 
 ```powershell
-./launcher.ps1 --validation-matrix ./my-validation-targets.json --validation-output ./validation-matrix.json
+./windows/launcher.ps1 --validation-matrix ./my-validation-targets.json --validation-output ./validation-matrix.json
 ```
 
-The CLI reads run records from the configured Runtime Root. It refuses evidence for target IDs outside the supplied definitions and reports invalid evidence separately. The `ValidationRunner` PowerShell module exposes the bounded `Invoke-MmtlValidationBuild` API for trusted fixtures and user projects; arbitrary shell commands and non-allowlisted Gradle tasks are not accepted.
+CLI 从已配置的 Runtime Root 读取运行记录。它会拒绝不在目标定义中的 target ID 证据，并单独报告无效证据。`ValidationRunner` PowerShell 模块为可信 fixture 与用户项目提供受限的 `Invoke-MmtlValidationBuild` API；不接受任意 shell 命令或未列入允许清单的 Gradle task。
 
-## Dedicated server and client safety
+## Dedicated Server 与客户端安全
 
-`runServer` evidence requires a real readiness marker, process identity, port listen/release, and a safe stop. Do not create or change an EULA acceptance value to make a test pass. If the current explicit authorization/configuration precondition is absent, record `SKIPPED_EULA_NOT_PREAUTHORIZED`.
+`runServer` 证据需要真实就绪标记、进程身份、端口监听/释放以及安全停止。不得为了让测试通过而创建或更改 EULA 接受值。如果缺少当前任务明确授权或配置前置条件，应记录 `SKIPPED_EULA_NOT_PREAUTHORIZED`。
 
-Client verification must observe an initialization marker from the actual Minecraft process. Do not treat Gradle task startup, an unauthenticated placeholder session, WSLg, or a build-only runner as client verification. If Microsoft authentication is required, record `AUTH_REQUIRED` and continue other targets.
+客户端验证必须从真实 Minecraft 进程观察到初始化标记。Gradle task 启动、未认证的占位会话、WSLg 或仅构建的 runner 都不能作为客户端验证。如果需要 Microsoft 身份验证，应记录 `AUTH_REQUIRED` 并继续处理其它目标。
 
-## Fixture trust
+## Fixture 信任
 
-Official fixtures must use HTTPS GitHub sources from an allowlisted Loader organization, an exact commit, explicit license, and `TrustedOfficial` provenance. User projects are accepted as `UserOwned` and remain in their existing repository. Historical binaries, HTTP-only sources, unknown-owner repositories, and arbitrary metadata-generated shell commands are rejected.
+官方 fixture 必须使用允许清单内 Loader 组织的 HTTPS GitHub 来源、精确 commit、明确许可证和 `TrustedOfficial` provenance。用户项目按 `UserOwned` 接受并保留在原仓库中。历史二进制、仅 HTTP 来源、未知所有者仓库，以及由元数据任意生成的 shell 命令都会被拒绝。

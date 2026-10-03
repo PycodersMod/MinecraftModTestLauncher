@@ -177,7 +177,7 @@ jobs:
             sourceFixture=[pscustomobject]@{type='CIHosted';source='https://github.com/${{ matrix.repository }}';commit='${{ matrix.revision }}';license='${{ matrix.license }}';trust='TrustedOfficial'}
             logs=@([pscustomobject]@{path='fixture/build.log';sha256=$logHash}); artifact=$artifact; process=$null; marker=$null; stopMethod='NotApplicable'; scenario=$null; notes=@('${{ matrix.fixture }} pinned CI-hosted fixture; wrapper URL: '+$url)
           }
-          $schema = Get-Content ./schemas/validation-evidence.schema.json -Raw
+          $schema = Get-Content ./common/schemas/validation-evidence.schema.json -Raw
           $json = $evidence | ConvertTo-Json -Depth 40
           if (-not (Test-Json -Json $json -Schema $schema -ErrorAction SilentlyContinue)) { throw 'CI evidence does not match validation-evidence.schema.json.' }
           [IO.File]::WriteAllText('./fixture/build-evidence.json',$json,[Text.UTF8Encoding]::new($false))
