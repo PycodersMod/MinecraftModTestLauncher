@@ -30,6 +30,13 @@ function Get-MmtlPlatformProvider {
     }
 }
 
+function Get-MmtlPlatformDisplayName {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][ValidateSet('Windows','Linux','MacOS')][string]$OS)
+    if($OS -eq 'MacOS'){return 'macOS'}
+    return $OS
+}
+
 function Get-MmtlCanonicalPath {
     [CmdletBinding()]
     param([Parameter(Mandatory)][string]$Path)
@@ -72,4 +79,4 @@ function Get-MmtlPhysicalMemoryMb {
     return $null
 }
 
-Export-ModuleMember -Function Get-MmtlPlatformProvider,Get-MmtlPlatformContext,Get-MmtlCanonicalPath,Test-MmtlPathLink,Test-MmtlPlatformPathInsideRoot,Get-MmtlPhysicalMemoryMb
+Export-ModuleMember -Function Get-MmtlPlatformProvider,Get-MmtlPlatformDisplayName,Get-MmtlPlatformContext,Get-MmtlCanonicalPath,Test-MmtlPathLink,Test-MmtlPlatformPathInsideRoot,Get-MmtlPhysicalMemoryMb

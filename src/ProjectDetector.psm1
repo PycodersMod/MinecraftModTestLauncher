@@ -99,7 +99,55 @@ function Get-MmtlProject {
         $toolchain.version=$pluginVersion
         $toolchain.ecosystem=if($loader -eq 'LegacyFabric'){'LegacyFabric'}elseif($hasPloceus){'Ornithe'}else{'Gradle'}
     }
-    $project=[pscustomobject]@{ Root=$root; BuildFile=$gradle; Loader=$loader; LoaderVersion=$loaderVersion; MinecraftVersion=$mcVersion; JavaMajor=$major; BuildJavaMajor=$major; RuntimeJavaMajor=$null; BuildJavaRequirement=$buildJavaRequirement; RuntimeJavaRequirement=$runtimeJavaRequirement; GradleRuntimeJavaRequirement=$gradleRuntimeJavaRequirement; CompilerTargetJavaMajor=$compilerTargetMajor; ModId=$modId; Wrapper=(Test-Path $wrapper); WrapperPath=$wrapper; RunClient='runClient'; RunServer='runServer'; BuildTask='build';Evidence=@($evidence);DetectionStatus=$stackResolution.status;DetectionConflicts=@($stackResolution.conflicts);LoaderStack=$stackResolution.loaderStack;Toolchain=$toolchain;BuildSystem=$buildSystem}
+    $repositoryRoot=$root
+    $ancestor=Get-Item -LiteralPath $root
+    while($ancestor){
+        if(Test-Path -LiteralPath (Join-Path $ancestor.FullName '.git')){$repositoryRoot=$ancestor.FullName;break}
+        $ancestor=$ancestor.Parent
+    }
+    $project=[pscustomobject]@{ RepositoryRoot=$repositoryRoot; ProjectRoot=$root; Root=$root; BuildFile=$gradle; Loader=$loader; LoaderVersion=$loaderVersion; MinecraftVersion=$mcVersion; JavaMajor=$major; BuildJavaMajor=$major; RuntimeJavaMajor=$null; BuildJavaRequirement=$buildJavaRequirement; RuntimeJavaRequirement=$runtimeJavaRequirement; GradleRuntimeJavaRequirement=$gradleRuntimeJavaRequirement; CompilerTargetJavaMajor=$compilerTargetMajor; ModId=$modId; Wrapper=(Test-Path $wrapper); WrapperPath=$wrapper; RunClient='runClient'; RunServer='runServer'; BuildTask='build';Evidence=@($evidence);DetectionStatus=$stackResolution.status;DetectionConflicts=@($stackResolution.conflicts);LoaderStack=$stackResolution.loaderStack;Toolchain=$toolchain;BuildSystem=$buildSystem}
     $project
 }
-Export-ModuleMember -Function Get-MmtlProject
+
+function Find-MmtlGradleProjects {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][string]$Path)
+
+    $start=(Resolve-Path -LiteralPath $Path -ErrorAction Stop).Path
+    $excludedNames=@('.git','.gradle','build','run','out','runtime','node_modules','cache','temp','tmp','fixture','fixtures')
+    $repositoryRoots=[Collections.Generic.List[string]]::new()
+    if(Test-Path -LiteralPath (Join-Path $start '.git')){
+        $repositoryRoots.Add($start)
+    }else{
+        foreach($child in @(Get-ChildItem -LiteralPath $start -Directory -Force -ErrorAction SilentlyContinue)){
+            if($child.Name -in $excludedNames){continue}
+            if(Test-Path -LiteralPath (Join-Path $child.FullName '.git')){$repositoryRoots.Add($child.FullName)}
+        }
+        if($repositoryRoots.Count -eq 0 -and ((Test-Path -LiteralPath (Join-Path $start 'build.gradle')) -or (Test-Path -LiteralPath (Join-Path $start 'build.gradle.kts')))){
+            $repositoryRoots.Add($start)
+        }
+    }
+
+    foreach($repositoryRoot in $repositoryRoots){
+        $pending=[Collections.Generic.Stack[string]]::new()
+        $pending.Push($repositoryRoot)
+        while($pending.Count -gt 0){
+            $directory=$pending.Pop()
+            $buildFile=@('build.gradle','build.gradle.kts')|Where-Object { Test-Path -LiteralPath (Join-Path $directory $_) }|Select-Object -First 1
+            if($buildFile){
+                $project=Get-MmtlProject -Path $directory
+                $project.RepositoryRoot=$repositoryRoot
+                $project.ProjectRoot=$project.Root
+                $project
+            }
+            foreach($child in @(Get-ChildItem -LiteralPath $directory -Directory -Force -ErrorAction SilentlyContinue)){
+                if($child.Name -in $excludedNames){continue}
+                if(($child.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0){continue}
+                if(Test-Path -LiteralPath (Join-Path $child.FullName '.git')){continue}
+                $pending.Push($child.FullName)
+            }
+        }
+    }
+}
+
+Export-ModuleMember -Function Get-MmtlProject, Find-MmtlGradleProjects

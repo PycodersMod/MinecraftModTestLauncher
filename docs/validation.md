@@ -15,9 +15,13 @@ The Mojang release catalogue and Loader availability audit describe metadata. Th
 
 Evidence is scoped to the exact fixture, Minecraft version, Loader/toolchain, Java, OS, and architecture. A build result is not copied to another platform or version. Unsupported higher-level claims are rejected by the evidence audit.
 
+## Platform and environment provenance
+
+MMTL product OS values are Windows, Linux, and macOS (`MacOS` in the internal enum); CPU architecture is recorded separately. Ubuntu identifies a Linux distribution, WSL/WSL2 identifies a Linux execution environment, and GitHub-hosted runners identify where evidence was produced. These provenance fields do not create additional product platforms. WSL/WSLg and hosted CI do not establish real Ubuntu Desktop or Minecraft GUI client validation.
+
 ## Run the bounded official fixture matrix
 
-`fixtures/deep-validation/fixtures.json` pins trusted upstream repositories to immutable commits, records their license and Java requirement, and allowlists only `clean` and `build`. The workflow builds a small matrix on Windows, Ubuntu, macOS ARM64, and macOS Intel. It runs on demand or twice per month; it is not a pull-request required check.
+`fixtures/deep-validation/fixtures.json` pins trusted upstream repositories to immutable commits, records their license and Java requirement, and allowlists only `clean` and `build`. The workflow builds a small matrix on Windows, Ubuntu-hosted Linux, macOS ARM64, and macOS Intel. It runs on demand or twice per month; it is not a pull-request required check. Runner names describe validation environments, not product OS identities.
 
 ```text
 GitHub Actions → MMTL deep validation → Run workflow

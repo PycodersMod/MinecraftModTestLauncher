@@ -2,6 +2,16 @@
 
 Minecraft Java Edition 模组开发环境多实例测试启动器（MMTL），提供 Windows 游戏运行能力，以及 Linux/macOS CLI 与 Gradle 构建基础能力。Phase D 为 Forge、Fabric、NeoForge、Quilt 提供官方上游元数据查询与项目适配器基础；上游 availability 不代表 MMTL build、Dedicated Server、客户端或集成测试已验证。
 
+## 平台支持与验证环境
+
+| 产品平台 | 当前能力边界 | 验证来源 |
+|---|---|---|
+| Windows | CLI、Gradle 构建与 Windows Minecraft 游戏运行 | 本地 Windows 和 Windows CI |
+| Linux | CLI、Gradle 构建基础；Minecraft GUI 实机能力未声明 | Ubuntu GitHub-hosted CI、WSL2 本地 CLI/构建 |
+| macOS | CLI、Gradle 构建基础；Minecraft GUI 实机能力未声明 | macOS ARM64 与 Intel GitHub-hosted CI |
+
+`PlatformContext.OS` 的代码枚举值为 `Windows`、`Linux`、`MacOS`，面向用户的名称分别显示为 Windows、Linux、macOS；CPU 架构是独立字段。Ubuntu 是 Linux 发行版元数据，WSL/WSL2 是 Linux 运行环境元数据，GitHub Actions runner 是验证来源，三者都不是额外产品平台。WSL/WSLg 与 CI fixture 均不构成真实 Ubuntu Desktop 或 Minecraft GUI 实机证据。
+
 MMTL v2 的正式运行基线为 PowerShell 7。现有 Windows PowerShell 5.1 fallback 保留为旧版兼容前端（best effort）；新增 v2 架构能力不承诺完整兼容 5.1。
 
 ## v2 架构演进状态
@@ -10,7 +20,7 @@ MMTL v2 的正式运行基线为 PowerShell 7。现有 Windows PowerShell 5.1 fa
 
 **已实现（Phase B）：**Windows/Linux/macOS 平台 Provider 基础、平台 Runtime Root 与路径安全、按平台选择 Java 和 Gradle Wrapper、`launcher.sh`、Session 平台元数据、Linux `/proc` 进程身份和安全停止。Linux 与 macOS 的 `--help`、`--validate`、`--dry-run`、`--build` 不依赖 Windows 窗口或 Minecraft GUI；跨平台游戏启动尚不支持。
 
-Ubuntu CI 覆盖平台、路径、Java/Wrapper fixture 和 Linux 受控进程测试；macOS ARM64 与 Intel CI 覆盖平台/build-path fixture 和 `launcher.sh`。本机 WSL 已验证 Linux CLI 与代表性 Mod 构建。WSL 构建证据不代表真实 Ubuntu Desktop、Minecraft GUI、IntegratedLAN 或 Dedicated Server 实机验证。上游 Loader 元数据可用性也不等于 MMTL 已完成对应版本/系统的构建、服务端或客户端验证。
+Ubuntu-hosted CI 覆盖 Linux 平台、路径、Java/Wrapper fixture 和 Linux 受控进程测试；macOS ARM64 与 Intel CI 覆盖平台/build-path fixture 和 `launcher.sh`。本机 WSL2 已验证 Linux CLI 与代表性 Mod 构建。WSL 构建证据不代表真实 Ubuntu Desktop、Minecraft GUI、IntegratedLAN 或 Dedicated Server 实机验证。上游 Loader 元数据可用性也不等于 MMTL 已完成对应版本/系统的构建、服务端或客户端验证。
 
 ## 当前实现状态
 

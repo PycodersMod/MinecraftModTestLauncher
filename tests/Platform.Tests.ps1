@@ -5,6 +5,11 @@ BeforeAll {
 }
 
 Describe 'Platform provider' {
+    It 'uses macOS spelling in public display while retaining the canonical enum' {
+        Get-MmtlPlatformDisplayName -OS 'MacOS' | Should -BeExactly 'macOS'
+        Get-MmtlPlatformDisplayName -OS 'Linux' | Should -BeExactly 'Linux'
+    }
+
     It 'provides identity and OS-specific defaults' {
         $provider = Get-MmtlPlatformProvider
         $provider.OS | Should -BeIn @('Windows','Linux','MacOS')

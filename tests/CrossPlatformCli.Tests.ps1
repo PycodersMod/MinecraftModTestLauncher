@@ -35,7 +35,8 @@ if((Get-MmtlPlatformProvider).OS -in @('Linux','MacOS')) {
             $output=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --profile fixture --validate 2>&1|Out-String
             $LASTEXITCODE | Should -Be 0
             $output=[regex]::Replace($output,'\x1B\[[0-?]*[ -/]*[@-~]','')
-            $output | Should -Match "Platform\s+: $($script:platform.OS)"
+            $displayName=Get-MmtlPlatformDisplayName -OS $script:platform.OS
+            $output | Should -Match "Platform\s+: $displayName"
             $output | Should -Match 'Architecture'
             $output | Should -Match 'WSL'
         }

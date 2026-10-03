@@ -12,12 +12,12 @@ Describe 'Public documentation consistency' {
         $architecture | Should -Not -Match 'Linux/macOS Runtime、路径 provider、进程树实现、launcher\.sh。'
     }
 
-    It 'documents coverage queries and identifies Phase G as active deep validation' {
+    It 'documents coverage queries and identifies Phase G as completed deep validation' {
         $readme=Get-Content (Join-Path $script:repoRoot 'README.md') -Raw
         foreach($option in @('--coverage-report','--json','--coverage-gaps','--coverage-version','--catalog-offline','--loader-offline')){$readme | Should -Match ([regex]::Escape($option))}
         $architecture=Get-Content (Join-Path $script:repoRoot 'docs/architecture-v2.md') -Raw
         $architecture | Should -Match '## Phase F'
-        $architecture | Should -Match 'Phase G — Deep Validation Matrix（进行中）'
+        $architecture | Should -Match 'Phase G — Deep Validation Matrix（已完成）'
         $architecture | Should -Match 'Ornithe 官方 game-support 记录不会单独推导 Ornithe Loader 候选'
     }
 

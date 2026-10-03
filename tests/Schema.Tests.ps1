@@ -97,6 +97,10 @@ Describe 'MMTL v2 JSON Schemas' {
             profiles = @{ test = @{ project = 'demo'; mode = 'Single'; players = 1 } }; futureExtension = @{ keep = $true }
         }
         (Test-Json -Json ($v2 | ConvertTo-Json -Depth 10 -Compress) -SchemaFile $script:configSchema) | Should -BeTrue
+        $v2.javaHomesByPlatform = @{ Ubuntu = @{ '21' = '/opt/jdk-21' } }
+        (Test-Json -Json ($v2 | ConvertTo-Json -Depth 10 -Compress) -SchemaFile $script:configSchema -ErrorAction SilentlyContinue) | Should -BeFalse
+        $v2.javaHomesByPlatform = @{ GitHubHostedMacOS = @{ '21' = '/opt/jdk-21' } }
+        (Test-Json -Json ($v2 | ConvertTo-Json -Depth 10 -Compress) -SchemaFile $script:configSchema -ErrorAction SilentlyContinue) | Should -BeFalse
         $v2.javaHomes['0'] = '/jdk-0'
         (Test-Json -Json ($v2 | ConvertTo-Json -Depth 10 -Compress) -SchemaFile $script:configSchema -ErrorAction SilentlyContinue) | Should -BeFalse
     }

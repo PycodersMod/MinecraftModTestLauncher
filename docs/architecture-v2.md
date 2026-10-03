@@ -2,6 +2,10 @@
 
 本文记录 MMTL v2 Phase A–F 的落地边界。Catalog、上游 Loader availability、项目解析、实际构建、服务端和客户端验证是不同状态；查询结果不能替代 Compatibility Matrix 的实验证据。
 
+## 平台身份与验证来源
+
+产品平台身份只有 `Windows`、`Linux`、`MacOS`（用户界面显示为 macOS）；CPU 架构单独建模。Ubuntu 归属 Linux 发行版元数据，WSL/WSL2 归属 Linux 环境元数据，GitHub Actions 仅作为验证来源。Linux CLI/build 基础能力不代表 Ubuntu Desktop、Dedicated Server 或 GUI Client 已验证；macOS runner 上的 fixture/build 证据也只适用于报告中的精确 OS、架构和 target。
+
 ## 当前实现与后续计划
 
 ### Phase A 已实现
@@ -25,7 +29,7 @@
 - Catalog cache 默认 TTL 为 24 小时。--catalog-offline 不访问网络；stale 在线刷新失败会显式返回 Stale；--refresh-catalog 失败不会报告成功。
 - CATALOGUED 仅表示 Mojang manifest 记录了一个 release，不能推导 Loader、构建、服务端或客户端验证通过。
 
-### Phase G — Deep Validation Matrix（进行中）
+### Phase G — Deep Validation Matrix（已完成）
 
 - Phase G 在独立 schema 中记录精确 target identity 和每次 run 的不可变 evidence。Resolve、build、server、client、integration 是不同等级；没有专属 marker、进程身份与 stop/port 证据时，不接受高等级声明。
 - Tier 0 保持全 catalog/availability metadata-only；Tier 1 是本机真实 Mod portfolio；Tier 2/3 采用固定 commit 和许可证来源的代表性官方 fixture，不构造全 Cartesian 矩阵。
