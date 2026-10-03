@@ -188,5 +188,6 @@ jobs:
           path: |
             fixture/build.log
             fixture/build-evidence.json
+            fixture/build/libs/*.jar
           if-no-files-found: error
           retention-days: 14
