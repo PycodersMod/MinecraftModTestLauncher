@@ -22,6 +22,16 @@ Describe 'Evidence-driven validation matrix aggregation' {
         $matrix.matrix.targets[0].validation.client | Should -BeFalse
     }
 
+    It 'keeps failed run references and logs in the matrix for audit' {
+        $target=[pscustomobject]@{targetId='neoforge-1211-linux';tier='Tier2';resolved=$true;minecraftId='1.21.1';loaderStack=[pscustomobject]@{primary=[pscustomobject]@{id='NeoForge';version='21.1.235'};overlays=@()};loaderVersion='21.1.235';toolchain='NeoGradle';toolchainVersion='7.1.38';buildSystem='Gradle';platform=[pscustomobject]@{os='Linux';arch='x64';isWSL=$false};java=[pscustomobject]@{buildRequirement=[pscustomobject]@{kind='Minimum';major=21};observedBuildJava=$null;compilerTarget=$null;runtimeRequirement=[pscustomobject]@{kind='Unknown';major=$null};observedRuntimeJava=$null};sourceFixture=[pscustomobject]@{type='OfficialFixture';source='https://github.com/NeoForgeMDKs/MDK-1.21.1-NeoGradle';commit=('c'*40);license='MIT';trust='TrustedOfficial'};notes=@()}
+        $failed=[pscustomobject]@{targetId=$target.targetId;minecraftId='1.21.1';loaderId='NeoForge';loaderVersion='21.1.235';runId='failed-run';startedAt=[DateTimeOffset]::UtcNow.ToString('o');endedAt=[DateTimeOffset]::UtcNow.ToString('o');validationLevel='RESOLVED';result='FAILED';failureCode='BUILD_FAILED_TOOLCHAIN';platform=$target.platform;java=[pscustomobject]@{buildRequirement=$null;observedBuildJava=$null;compilerTarget=$null;runtimeRequirement=$null;observedRuntimeJava=$null};toolchain=[pscustomobject]@{id='NeoGradle';version='7.1.38'};buildSystem=[pscustomobject]@{id='Gradle';version='9.2.1'};sourceFixture=$target.sourceFixture;logs=@([pscustomobject]@{path='logs/build.log';sha256=('a'*64)});artifact=$null;process=$null;marker=$null;stopMethod='NotApplicable';scenario=$null;notes=@()}
+        $matrix=New-MmtlValidationMatrix -Targets @($target) -Evidence @($failed)
+        $matrix.matrix.targets[0].evidence.result | Should -Be 'FAILED'
+        $matrix.matrix.targets[0].evidence.runIds | Should -Contain 'failed-run'
+        $matrix.matrix.targets[0].evidence.logs | Should -Contain 'logs/build.log'
+        $matrix.matrix.targets[0].evidence.hashes | Should -Contain ('a'*64)
+    }
+
     It 'retains client verification when launcher evidence names the Gradle wrapper explicitly' {
         $target=[pscustomobject]@{targetId='fabric-263-win';tier='Tier2';resolved=$true;minecraftId='26.3';loaderStack=[pscustomobject]@{primary=[pscustomobject]@{id='Fabric';version='0.19.2'};overlays=@()};loaderVersion='0.19.2';toolchain='FabricLoom';toolchainVersion='1.16-SNAPSHOT';buildSystem='Gradle';platform=[pscustomobject]@{os='Windows';arch='x64';isWSL=$false};java=[pscustomobject]@{buildRequirement=[pscustomobject]@{kind='Exact';major=25};observedBuildJava=$null;compilerTarget=25;runtimeRequirement=[pscustomobject]@{kind='Exact';major=25};observedRuntimeJava=$null};sourceFixture=[pscustomobject]@{type='OfficialFixture';source='https://github.com/FabricMC/fabric-example-mod';commit=('b'*40);license='CC0-1.0';trust='TrustedOfficial'};notes=@()}
         $observedJava=[pscustomobject]@{major=25;exactVersion='25.0.1';vendor='Oracle';os='Windows';arch='x64'}
