@@ -1,5 +1,5 @@
 BeforeAll {
-    $script:root=Split-Path -Parent $PSScriptRoot
+    $script:root=Join-Path (Split-Path -Parent (Split-Path -Parent $PSScriptRoot)) 'common'
     Get-ChildItem (Join-Path $script:root 'src') -Filter '*.psm1' -Recurse | ForEach-Object { Import-Module $_.FullName -Force }
     Import-Module (Join-Path $script:root 'src/ProjectDetector.psm1') -Force
     Import-Module (Join-Path $script:root 'src/GradleRunner.psm1') -Force

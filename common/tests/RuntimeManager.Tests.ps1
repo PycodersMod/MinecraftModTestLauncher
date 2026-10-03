@@ -18,7 +18,7 @@ Describe 'Cross-platform path safety' {
 
     It 'follows the detected filesystem case policy' {
         Import-Module (Join-Path $script:repoRoot 'src/Platform/Platform.psm1')
-        $provider=Get-MmtlPlatformProvider;$root=Join-Path $TestDrive 'CaseRoot';$variant=Join-Path $TestDrive 'caseroot'
+        $root=Join-Path $TestDrive 'CaseRoot';$variant=Join-Path $TestDrive 'caseroot';$provider=Get-MmtlPlatformProvider -Path $root
         $inside=Test-MmtlInsideRoot -Root $root -Target $variant
         if($provider.PathComparison -eq [StringComparison]::OrdinalIgnoreCase){$inside|Should -BeTrue}else{$inside|Should -BeFalse}
     }

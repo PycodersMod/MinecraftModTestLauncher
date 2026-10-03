@@ -26,7 +26,8 @@ if((Get-MmtlPlatformProvider).OS -in @('Linux','MacOS')) {
 
     Describe 'Linux/macOS basic CLI and build path' {
         It 'runs launcher.sh help without project configuration' {
-            $output=& sh ($env:MMTL_PLATFORM_ENTRYPOINT -replace '\\.ps1$','.sh') --help 2>&1|Out-String
+            $shellEntrypoint=Join-Path (Split-Path -Parent $env:MMTL_PLATFORM_ENTRYPOINT) 'launcher.sh'
+            $output=& sh $shellEntrypoint --help 2>&1|Out-String
             $LASTEXITCODE | Should -Be 0
             $output | Should -Match 'Minecraft 模组测试启动器'
         }
