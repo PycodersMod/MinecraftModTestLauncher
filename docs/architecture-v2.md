@@ -25,9 +25,12 @@
 - Catalog cache 默认 TTL 为 24 小时。--catalog-offline 不访问网络；stale 在线刷新失败会显式返回 Stale；--refresh-catalog 失败不会报告成功。
 - CATALOGUED 仅表示 Mojang manifest 记录了一个 release，不能推导 Loader、构建、服务端或客户端验证通过。
 
-### Phase G 及后续工作
+### Phase G — Deep Validation Matrix（进行中）
 
-- Minecraft GUI 跨平台、IntegratedLAN/Dedicated 跨平台实机验证、历史组合深度 Resolve/Build 和全 OS/架构矩阵属于 Phase G 或后续阶段。
+- Phase G 在独立 schema 中记录精确 target identity 和每次 run 的不可变 evidence。Resolve、build、server、client、integration 是不同等级；没有专属 marker、进程身份与 stop/port 证据时，不接受高等级声明。
+- Tier 0 保持全 catalog/availability metadata-only；Tier 1 是本机真实 Mod portfolio；Tier 2/3 采用固定 commit 和许可证来源的代表性官方 fixture，不构造全 Cartesian 矩阵。
+- 深度 Gradle builds 位于手动/半月 workflow，不增加到每 PR required CI。覆盖审计数据与验证证据仍然是独立事实。
+- 当前分支已实现证据契约、fixture pin/trust/task 检查、超时受控的 Gradle build runner、产物哈希、日志脱敏、不可变 run 存储和矩阵聚合。客户端/服务端/跨平台实机验证仍须以实际 marker 和每 target 报告为准；实现存在不代表 target 已通过。
 - 本仓库当前 Linux/macOS 目标仍是 CLI、构建基础与 CI fixtures，不把 WSL/WSLg 当作完整 Linux Desktop 实机验证。
 
 ### Phase D Loader metadata 与 Adapter Contract v2

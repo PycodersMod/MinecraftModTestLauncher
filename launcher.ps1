@@ -6,12 +6,18 @@ $here=Split-Path -Parent $MyInvocation.MyCommand.Path
 Import-Module (Join-Path $here 'src/Platform/Platform.psm1') -Force
 $platform=Get-MmtlPlatformProvider
 Get-ChildItem (Join-Path $here 'src') -Filter '*.psm1' -Recurse | Where-Object { $platform.OS -eq 'Windows' -or $_.BaseName -ne 'WindowManager' } | ForEach-Object { Import-Module $_.FullName -Force }
+# ValidationRunner imports these dependencies inside its module scope with -Force; restore the CLI's public command bindings after the bulk module load.
+Import-Module (Join-Path $here 'src/ProjectDetector.psm1') -Force
+Import-Module (Join-Path $here 'src/GradleRunner.psm1') -Force
+Import-Module (Join-Path $here 'src/Platform/Platform.psm1') -Force
+Import-Module (Join-Path $here 'src/Validation/ValidationPlan.psm1') -Force
+Import-Module (Join-Path $here 'src/Validation/ValidationMatrix.psm1') -Force
 $configPath=Join-Path $here 'launcher.config.json'
 $configFileIndex=[Array]::IndexOf($Arguments,'--config-file')
 if($configFileIndex -ge 0){if($configFileIndex+1 -ge $Arguments.Count){throw '--config-file 缺少路径。'};$configPath=[IO.Path]::GetFullPath([string]$Arguments[$configFileIndex+1])}
 $portable=($Arguments -contains '--portable') -and -not ($configPath -and (Test-Path $configPath) -and (Read-MmtlConfig -Path $configPath).runtimeRoot)
 if($Arguments -contains '--help' -or $Arguments -contains '-h'){
-    Write-Host 'Minecraft Mod Test Launcher';Write-Host '用法：launcher.cmd / launcher.sh [--validate|--dry-run|--build|--launch] [--profile NAME]';Write-Host 'Catalog：--list-minecraft-versions | --minecraft-info <id|CurrentStable> | --refresh-catalog';Write-Host 'Loaders：--list-loaders <mc> [--include-historical] | --loader-info <mc> <loader> | --provider-status <loader>';Write-Host '覆盖审计：';foreach($option in Get-MmtlCoverageCliOptionDefinitions){Write-Host "  $($option.usage) — $($option.description)"};Write-Host 'Historical providers use HTTPS metadata/cache; HTTP-only artifacts are never auto-executed.';Write-Host 'Offline：--catalog-offline 仅影响 Mojang Catalog；--loader-offline 仅影响 Loader metadata；均不改变 Gradle Offline。';Write-Host 'Session：--list-sessions | --stop ID | --clean-session ID';Write-Host '运行目录：--portable';Write-Host '交互模式：不传参数；--config-file 仅供临时配置调用。';exit 0
+    Write-Host 'Minecraft Mod Test Launcher';Write-Host '用法：launcher.cmd / launcher.sh [--validate|--dry-run|--build|--launch] [--profile NAME]';Write-Host 'Catalog：--list-minecraft-versions | --minecraft-info <id|CurrentStable> | --refresh-catalog';Write-Host 'Loaders：--list-loaders <mc> [--include-historical] | --loader-info <mc> <loader> | --provider-status <loader>';Write-Host '覆盖审计：';foreach($option in Get-MmtlCoverageCliOptionDefinitions){Write-Host "  $($option.usage) — $($option.description)"};Write-Host '深度验证：--validation-plan --scope P0|CurrentStable | --validation-matrix <target-definitions.json> [--validation-output <path>] | --validation-summary [--validation-version <mc>] [--validation-loader <id>]';Write-Host 'Historical providers use HTTPS metadata/cache; HTTP-only artifacts are never auto-executed.';Write-Host 'Offline：--catalog-offline 仅影响 Mojang Catalog；--loader-offline 仅影响 Loader metadata；均不改变 Gradle Offline。';Write-Host 'Session：--list-sessions | --stop ID | --clean-session ID';Write-Host '运行目录：--portable';Write-Host '交互模式：不传参数；--config-file 仅供临时配置调用。';exit 0
 }
 $config=if(Test-Path $configPath){Read-MmtlConfig -Path $configPath}else{$null}
 $runtimeConfigured=if($config -and $config.runtimeRoot){[string]$config.runtimeRoot}else{''}
@@ -27,6 +33,67 @@ $coverageCommands=@('--coverage-report','--coverage-gaps','--coverage-version')
 $coverageCommandPresent=@($coverageCommands|Where-Object{$Arguments -ccontains $_}).Count -gt 0
 if($coverageCommandPresent){
     Invoke-MmtlCoverageCli -Arguments $Arguments -RuntimeRoot $runtimeRoot -CatalogOffline:$catalogOffline -LoaderOffline:$loaderOffline -ForceRefresh:($Arguments -contains '--refresh-catalog')
+    exit 0
+}
+$validationMatrixIndex=[Array]::IndexOf($Arguments,'--validation-matrix')
+if($validationMatrixIndex -ge 0){
+    if($validationMatrixIndex+1 -ge $Arguments.Count){throw '--validation-matrix 缺少 target definitions JSON 路径。'}
+    $targetPath=[IO.Path]::GetFullPath([string]$Arguments[$validationMatrixIndex+1])
+    if(-not(Test-Path -LiteralPath $targetPath -PathType Leaf)){throw 'Validation target definitions file was not found.'}
+    $targets=Get-Content -LiteralPath $targetPath -Raw|ConvertFrom-Json -ErrorAction Stop
+    $runEvidence=Get-MmtlValidationRunEvidence -RuntimeRoot $runtimeRoot
+    $outputIndex=[Array]::IndexOf($Arguments,'--validation-output')
+    $outputPath=if($outputIndex -ge 0 -and $outputIndex+1 -lt $Arguments.Count){[IO.Path]::GetFullPath([string]$Arguments[$outputIndex+1])}else{$null}
+    $targetIds=@($targets|ForEach-Object {[string]$_.targetId})
+    $relevantEvidence=@($runEvidence.evidence|Where-Object {[string]$_.targetId -in $targetIds})
+    $outOfScopeCount=@($runEvidence.evidence|Where-Object {[string]$_.targetId -notin $targetIds}).Count
+    $summary=New-MmtlValidationMatrix -Targets @($targets) -Evidence $relevantEvidence -OutputPath $outputPath
+    [pscustomobject]@{targetCount=$summary.targetCount;levelCounts=$summary.levelCounts;outOfScopeEvidenceIgnored=$outOfScopeCount;warnings=@($runEvidence.warnings)+@($summary.warnings);matrixPath=$outputPath}|ConvertTo-Json -Depth 20
+    exit 0
+}
+$validationSummaryIndex=[Array]::IndexOf($Arguments,'--validation-summary')
+$validationVersionIndex=[Array]::IndexOf($Arguments,'--validation-version')
+$validationLoaderIndex=[Array]::IndexOf($Arguments,'--validation-loader')
+if($validationSummaryIndex -ge 0 -or $validationVersionIndex -ge 0 -or $validationLoaderIndex -ge 0){
+    if($validationVersionIndex -ge 0 -and $validationVersionIndex+1 -ge $Arguments.Count){throw '--validation-version 缺少 Minecraft ID。'}
+    if($validationLoaderIndex -ge 0 -and $validationLoaderIndex+1 -ge $Arguments.Count){throw '--validation-loader 缺少 Loader ID。'}
+    $runRecords=Get-MmtlValidationRunEvidence -RuntimeRoot $runtimeRoot
+    $derived=Get-MmtlValidationTargetsFromEvidence -Evidence @($runRecords.evidence)
+    $targets=@($derived.targets)
+    if($validationVersionIndex -ge 0){$version=[string]$Arguments[$validationVersionIndex+1];$targets=@($targets|Where-Object minecraftId -CEQ $version)}
+    if($validationLoaderIndex -ge 0){$loader=[string]$Arguments[$validationLoaderIndex+1];$targets=@($targets|Where-Object {$_.loaderStack.primary.id -CEQ $loader})}
+    $evidence=[Collections.Generic.List[object]]::new()
+    foreach($target in $targets){
+        $sourceTargetId=if($target.PSObject.Properties['evidenceTargetId']){[string]$target.evidenceTargetId}else{[string]$target.targetId}
+        $source=[string]$target.sourceFixture.source;$commit=[string]$target.sourceFixture.commit
+        foreach($record in @($runRecords.evidence|Where-Object {[string]$_.targetId -ceq $sourceTargetId -and [string]$_.sourceFixture.source -ceq $source -and [string]$_.sourceFixture.commit -ceq $commit})){
+            $copy=$record|ConvertTo-Json -Depth 40|ConvertFrom-Json
+            $copy.targetId=[string]$target.targetId
+            $evidence.Add($copy)
+        }
+    }
+    if($targets.Count){$summary=New-MmtlValidationMatrix -Targets $targets -Evidence $evidence -Scope P0}
+    else{$summary=[pscustomobject]@{matrix=[pscustomobject]@{targets=@()};targetCount=0;warnings=@();levelCounts=[pscustomobject]@{catalogued=0;resolved=0;buildVerified=0;serverVerified=0;clientLaunchVerified=0;integrationVerified=0}}}
+    $response=[ordered]@{targetCount=$summary.targetCount;levelCounts=$summary.levelCounts;warnings=@($runRecords.warnings)+@($derived.warnings)+@($summary.warnings)}
+    if($Arguments -contains '--json'){$response.matrix=$summary.matrix}
+    [pscustomobject]$response|ConvertTo-Json -Depth 40
+    exit 0
+}
+$validationPlanIndex=[Array]::IndexOf($Arguments,'--validation-plan')
+if($validationPlanIndex -ge 0){
+    $scopeIndex=[Array]::IndexOf($Arguments,'--scope')
+    if($scopeIndex -lt 0 -or $scopeIndex+1 -ge $Arguments.Count){throw '--validation-plan requires --scope P0 or --scope CurrentStable.'}
+    $scope=[string]$Arguments[$scopeIndex+1]
+    if($scope -notin @('P0','CurrentStable')){throw 'Validation plan scope must be P0 or CurrentStable.'}
+    $catalog=Get-MmtlMinecraftVersionCatalog -RuntimeRoot $catalogRuntimeRoot -Offline:$catalogOffline
+    $fixturePath=Join-Path $here 'fixtures/deep-validation/fixtures.json'
+    if(-not(Test-Path -LiteralPath $fixturePath -PathType Leaf)){throw 'Pinned official fixture manifest is missing.'}
+    $fixtureManifest=Get-Content -LiteralPath $fixturePath -Raw|ConvertFrom-Json -ErrorAction Stop
+    $platform=Get-MmtlPlatformProvider
+    $fixtureTargets=@(New-MmtlValidationFixtureTargets -Fixtures @($fixtureManifest.fixtures) -Platform ([pscustomobject]@{os=$platform.OS;arch=$platform.Arch;isWSL=$platform.IsWSL}))
+    foreach($fixture in $fixtureManifest.fixtures){Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @('FabricMC','QuiltMC','NeoForgeMDKs','MinecraftForge')|Out-Null}
+    $plan=New-MmtlValidationPlan -Scope $scope -CurrentStable ([string]$catalog.latestRelease) -CatalogReleaseIds @($catalog.entries|ForEach-Object id) -FixtureTargets $fixtureTargets
+    [pscustomobject]@{scope=$plan.scope;currentStable=$plan.currentStable;tier0=$plan.tier0;targetCount=@($plan.targets).Count;targets=@($plan.targets);execution='NOT_STARTED'}|ConvertTo-Json -Depth 40
     exit 0
 }
 $includeHistorical=$Arguments -contains '--include-historical' -or $Arguments -contains '--loader-scope-all'

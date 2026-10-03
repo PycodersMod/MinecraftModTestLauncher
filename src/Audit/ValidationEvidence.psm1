@@ -1,5 +1,7 @@
 Set-StrictMode -Version Latest
 
+Import-Module (Join-Path $PSScriptRoot '..\Validation\Contracts.psm1') -Force
+
 $script:MmtlValidationLevels=@('CATALOGUED','RESOLVED','BUILD_VERIFIED','SERVER_VERIFIED','CLIENT_LAUNCH_VERIFIED','INTEGRATION_VERIFIED')
 
 function Get-MmtlValidationEvidenceAudit {
@@ -16,6 +18,7 @@ function Get-MmtlValidationEvidenceAudit {
         if($loaderId -notin @('Forge','Fabric','NeoForge','Quilt','LegacyFabric','OrnitheLoader','LiteLoader','Rift','ModLoader','ModLoaderMP','JarMod')){$warnings.Add([pscustomobject]@{reasonCode='VALIDATION_LOADER_UNKNOWN';minecraftId=$minecraftId;loaderId=$loaderId;message='Compatibility matrix uses an unregistered Loader identity.'});continue}
         $buildEvidence=if($validation.PSObject.Properties['buildEvidence']){@($validation.buildEvidence)}else{@()};$claimAccepted=$true;$effectiveLevel=$claimedLevel;$reasonCode='VALIDATION_EVIDENCE_ACCEPTED';$notes=@()
         $levelIndex=[array]::IndexOf($script:MmtlValidationLevels,$claimedLevel)
+        $buildAccepted=$false
         if($levelIndex -ge 2 -and $result -eq 'PASSED'){
             if(@($buildEvidence).Count -eq 0){$claimAccepted=$false;$effectiveLevel='RESOLVED';$reasonCode='BUILD_VERIFIED_CLAIM_MISSING_EVIDENCE';$notes+='Build verification claim has no structured build evidence.'}
             else{
@@ -27,10 +30,15 @@ function Get-MmtlValidationEvidenceAudit {
                     else{$json=$build|ConvertTo-Json -Depth 30 -Compress;if(-not (Test-Json -Json $json -SchemaFile $BuildEvidenceSchemaPath -ErrorAction SilentlyContinue)){$invalidReason='BUILD_EVIDENCE_SCHEMA_INVALID'}}
                     if($invalidReason){$claimAccepted=$false;$effectiveLevel='RESOLVED';$reasonCode=$invalidReason;$notes+="Build evidence is incomplete or invalid ($invalidReason).";break}
                 }
+                if(-not $reasonCode -or $reasonCode -eq 'VALIDATION_EVIDENCE_ACCEPTED'){$buildAccepted=$true}
             }
         }
+        if($claimAccepted -and $result -eq 'PASSED' -and $claimedLevel -in @('SERVER_VERIFIED','CLIENT_LAUNCH_VERIFIED','INTEGRATION_VERIFIED')){
+            $advanced=Test-MmtlAdvancedValidationEvidence -Level $claimedLevel -Validation $validation
+            if(-not $advanced.valid){$claimAccepted=$false;$effectiveLevel=if($buildAccepted){'BUILD_VERIFIED'}else{'RESOLVED'};$reasonCode=$advanced.reasonCode;$notes+=$advanced.message}
+        }
         $lastVerified=if($validation.PSObject.Properties['lastVerified']){$validation.lastVerified}else{$null};$evidenceItems=if($validation.PSObject.Properties['evidence']){@($validation.evidence)}else{@()};$matrixProvenance=if($matrix.PSObject.Properties['provenance']){@($matrix.provenance)}else{@()}
-        $record=[pscustomobject][ordered]@{minecraftId=$minecraftId;loaderId=$loaderId;level=$effectiveLevel;claimedLevel=$claimedLevel;result=$result;claimAccepted=$claimAccepted;reasonCode=$reasonCode;lastVerified=$lastVerified;evidence=$evidenceItems;buildEvidence=if($claimAccepted){$buildEvidence}else{@()};provenance=$matrixProvenance;notes=$notes}
+        $record=[pscustomobject][ordered]@{minecraftId=$minecraftId;loaderId=$loaderId;level=$effectiveLevel;claimedLevel=$claimedLevel;result=$result;claimAccepted=$claimAccepted;reasonCode=$reasonCode;lastVerified=$lastVerified;evidence=$evidenceItems;buildEvidence=if($buildAccepted){$buildEvidence}else{@()};serverEvidence=if($validation.PSObject.Properties['serverEvidence']){$validation.serverEvidence}else{$null};clientEvidence=if($validation.PSObject.Properties['clientEvidence']){$validation.clientEvidence}else{$null};integrationEvidence=if($validation.PSObject.Properties['integrationEvidence']){$validation.integrationEvidence}else{$null};provenance=$matrixProvenance;notes=$notes}
         $records.Add($record)
         if(-not $claimAccepted){$warnings.Add([pscustomobject]@{reasonCode=$reasonCode;minecraftId=$minecraftId;loaderId=$loaderId;message=$notes -join '; '})}
     }

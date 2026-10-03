@@ -1,3 +1,12 @@
+Import-Module (Join-Path $PSScriptRoot 'RuntimeManager.psm1')
+Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1')
+$script:ProcessManagerPlatform = Get-MmtlPlatformProvider
+if ($script:ProcessManagerPlatform.OS -eq 'Windows') {
+    Import-Module (Join-Path $PSScriptRoot 'Platform/Windows.Process.psm1')
+} elseif ($script:ProcessManagerPlatform.OS -eq 'Linux') {
+    Import-Module (Join-Path $PSScriptRoot 'Platform/Linux.Process.psm1')
+}
+
 function Get-MmtlProcessSnapshot {
     param([Parameter(Mandatory)][int]$RootProcessId)
     Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1')

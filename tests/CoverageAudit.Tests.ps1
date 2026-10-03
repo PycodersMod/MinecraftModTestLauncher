@@ -76,6 +76,18 @@ Describe 'Full coverage audit engine' {
         @($audit.gaps|Where-Object{$_.minecraftId -eq '1.0' -and $_.loaderId -eq 'Forge' -and $_.reasonCode -eq 'COVERAGE_INCONSISTENCY'}).Count | Should -Be 1
     }
 
+    It 'keeps offline historical candidate cache misses as unknown warnings, not endpoint contradictions' {
+        $input=$script:inputs|ConvertTo-Json -Depth 20|ConvertFrom-Json -AsHashtable
+        $input.byRelease['1.0'].Forge=[ordered]@{availability='Unavailable';reasonCode='NO_UPSTREAM_CANDIDATE';source='https://example.invalid/forge';sourceClass='ActiveOfficial';cacheStatus='Fresh';lastChecked='2026-10-03T00:00:00Z';notes=@();candidateCount=0;candidates=@()}
+        $input.byRelease['1.0'].LegacyFabric=[ordered]@{availability='Available';reasonCode='UPSTREAM_GAME_SUPPORT';source='https://meta.legacyfabric.net/v2/versions/game';sourceClass='ActiveOfficial';cacheStatus='OfflineCache';lastChecked='2026-10-03T00:00:00Z';notes=@();candidateCount=$null;candidates=@();candidateProbeStatus='NotProbed';provenance=@()}
+        $input.providerStatuses['LegacyFabric']=[ordered]@{status='OfflineCache';source='https://meta.legacyfabric.net/v2/versions/game';sourceClass='ActiveOfficial';cacheStatus='OfflineCache';lastChecked='2026-10-03T00:00:00Z';notes=@()}
+        $audit=New-MmtlLiveCoverageAudit -RuntimeRoot $TestDrive -Catalog $script:catalog -ProviderInputs $input -LoaderOffline
+        $audit.releases[0].historicalLoaders.LegacyFabric.availability | Should -BeExactly 'Unknown'
+        $audit.releases[0].historicalLoaders.LegacyFabric.reasonCode | Should -BeExactly 'CANDIDATE_PROBE_FAILED'
+        @($audit.gaps|Where-Object{$_.minecraftId -eq '1.0' -and $_.loaderId -eq 'LegacyFabric' -and $_.reasonCode -eq 'COVERAGE_INCONSISTENCY'}).Count | Should -Be 0
+        @($audit.warnings|Where-Object{$_.minecraftId -eq '1.0' -and $_.loaderId -eq 'LegacyFabric' -and $_.reasonCode -eq 'CANDIDATE_PROBE_FAILED'}).Count | Should -Be 1
+    }
+
     It 'does not infer Ornithe Loader availability from game support without a loader candidate' {
         $input=$script:inputs|ConvertTo-Json -Depth 20|ConvertFrom-Json -AsHashtable
         $input.byRelease['1.0'].OrnitheLoader=[ordered]@{availability='Unknown';reasonCode='ORNITHE_LOADER_CANDIDATE_NOT_PROBED';source='https://meta.ornithemc.net/v2/versions/game';sourceClass='ActiveOfficial';cacheStatus='Fresh';lastChecked='2026-10-03T00:00:00Z';notes=@('Game support alone does not prove a loader candidate.');candidateCount=$null;candidates=@();candidateProbeStatus='NotProbed';provenance=@([pscustomobject]@{source='https://meta.ornithemc.net/v2/versions/game'})}

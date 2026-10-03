@@ -1,3 +1,5 @@
+Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1')
+
 function Resolve-MmtlRuntimeRoot {
     param([Parameter(Mandatory)][AllowEmptyString()][string]$Path,[switch]$Portable,[string]$LauncherRoot)
     if ($Portable) { $Path=Join-Path $LauncherRoot '.runtime' }
