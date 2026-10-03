@@ -38,8 +38,13 @@ function Resolve-MmtlValidationProject {
 function Get-MmtlObservedBuildJava {
     param([string]$JavaHome)
     $provider=Get-MmtlPlatformProvider
-    $javaCommand=if(-not $JavaHome){Get-Command java -CommandType Application -ErrorAction SilentlyContinue}else{$null}
-    $javaPath=if($JavaHome){Join-Path (Join-Path $JavaHome 'bin') $provider.JavaExecutable}elseif($javaCommand -and $javaCommand.PSObject.Properties['Path'] -and $javaCommand.Path){$javaCommand.Path}elseif($javaCommand -and $javaCommand.PSObject.Properties['Source']){$javaCommand.Source}else{$null}
+    $javaPath=$null
+    if($JavaHome){$javaPath=Join-Path (Join-Path $JavaHome 'bin') $provider.JavaExecutable}
+    elseif($env:JAVA_HOME){$candidate=Join-Path (Join-Path $env:JAVA_HOME 'bin') $provider.JavaExecutable;if(Test-Path -LiteralPath $candidate -PathType Leaf){$javaPath=$candidate}}
+    if(-not $javaPath -and -not $JavaHome){
+        $javaCommand=Get-Command java -CommandType Application -ErrorAction SilentlyContinue
+        $javaPath=if($javaCommand -and $javaCommand.PSObject.Properties['Path'] -and $javaCommand.Path){$javaCommand.Path}elseif($javaCommand -and $javaCommand.PSObject.Properties['Source']){$javaCommand.Source}else{$null}
+    }
     if(-not $javaPath -or -not(Test-Path -LiteralPath $javaPath -PathType Leaf)){return $null}
     $lines=@(& $javaPath -version 2>&1 | ForEach-Object {[string]$_})
     $raw=$lines -join ' '

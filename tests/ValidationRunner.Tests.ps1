@@ -12,13 +12,32 @@ BeforeAll {
 Describe 'Deep validation runner safety and evidence' {
     It 'returns no observed Java instead of throwing when PATH contains no Java executable' {
         $oldPath = $env:PATH
+        $oldJavaHome = $env:JAVA_HOME
         $emptyPath = Join-Path $TestDrive 'empty-java-path'
+        New-Item -ItemType Directory -Path $emptyPath -Force | Out-Null
+        try {
+            $env:PATH = $emptyPath
+            $env:JAVA_HOME = ''
+            $runnerModule = Get-Module -Name ValidationRunner
+            $observed = & $runnerModule { Get-MmtlObservedBuildJava }
+            $observed | Should -BeNullOrEmpty
+        }
+        finally {
+            $env:PATH = $oldPath
+            $env:JAVA_HOME = $oldJavaHome
+        }
+    }
+
+    It 'observes Java from JAVA_HOME when PATH has no Java executable' -Skip:([string]::IsNullOrWhiteSpace($env:JAVA_HOME)) {
+        $oldPath = $env:PATH
+        $javaHome = $env:JAVA_HOME
+        $emptyPath = Join-Path $TestDrive 'java-home-only-path'
         New-Item -ItemType Directory -Path $emptyPath -Force | Out-Null
         try {
             $env:PATH = $emptyPath
             $runnerModule = Get-Module -Name ValidationRunner
             $observed = & $runnerModule { Get-MmtlObservedBuildJava }
-            $observed | Should -BeNullOrEmpty
+            $observed.major | Should -BeGreaterOrEqual 17
         }
         finally {
             $env:PATH = $oldPath
