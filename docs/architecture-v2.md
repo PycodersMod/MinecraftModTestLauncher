@@ -124,3 +124,9 @@ Phase F 完成全正式 Mojang release 覆盖审计。每个 release 都列出�
 Java 需求不代表构建时实际使用的 JDK。`BuildJavaRequirement.requirementKind` 可以是 Minimum、Preferred、Exact 或 Unknown；构建证据单独记录 `observedBuildJava`（主版本、完整版本、vendor、OS、arch）和 `compilerTarget`。例如 Gradle 最低要求 Java 17、实际使用 Oracle JDK 25、字节码目标 Java 8，三者必须分别保留。Mojang `runtimeJava` 是游戏运行需求，不推导 Mod 构建需求。
 
 Coverage CLI 使用统一入口：`--coverage-report` 输出摘要，`--coverage-report --json` 输出全量模型，`--coverage-gaps` 输出 gaps，`--coverage-version <id>` 输出单个正式 release。Provider 汇总额外给出首末 Available release、连续区间和状态 gap ranges；逐 canonical ID 记录仍是事实来源。`--catalog-offline` 与 `--loader-offline` 保持独立。Live 报告不得写入 source tree；必需 CI 只运行 fixture，不依赖上游服务在线。手动/weekly live workflow 分开报告 Provider health、coverage data errors 与 MMTL invariant errors；已解释的 provider outage 或 upstream unmapped version 不会单独使 workflow 判为代码回归，只有明确列出的 invariant violation 会失败。
+
+### Phase H–K — Runtime binding、Doctor 与可靠 Session
+
+Phase H 建立规范化执行计划、Build Java/Runtime Java 双轨解析和 Session Manifest v2。Phase I 由 Loader Adapter 产出 Runtime Java Binding Evidence，并由只读 Gradle task inspection 检查 `runClient`/`runServer` launcher；缺少匹配证据时保持 `Unknown`。Phase J 增加 Launch Preflight、Java Discovery、环境 Doctor 和平台 Capability 报告。Phase K 增加 Session 并发锁、原子 manifest/Plan 写入、崩溃后保守恢复，以及按平台注入的进程身份与生命周期能力。
+
+Planner 不包含按 Loader 名称散落的绑定判断，只消费 Adapter evidence。`BuildReady` 与 `LaunchReady` 独立；`LaunchReady` 不是 `CLIENT_LAUNCH_VERIFIED`。Doctor 只诊断，不安装 Java、不登录、不构建或启动进程、不修改配置或 EULA。Session recovery 只修复 owner identity 可以证明过期的元数据，不终止进程、不删除 Session。详见 [Runtime Binding](runtime-binding.md)、[Doctor](doctor.md)、[执行计划](execution-plan-session.md) 和 [Session 生命周期](session-lifecycle.md)。

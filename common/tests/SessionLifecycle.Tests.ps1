@@ -16,6 +16,12 @@ BeforeAll {
 }
 
 Describe 'Session 生命周期 v2' {
+    It '代码状态机与 schema 声明的合法转换完全一致' {
+        $schema=Get-Content (Join-Path $script:repoRoot 'schemas/session-v2.schema.json') -Raw|ConvertFrom-Json
+        $transitions=Get-MmtlSessionV2StateTransitions
+        foreach($state in $transitions.Keys){@($schema.'x-state-transitions'.$state) | Should -Be @($transitions[$state])}
+    }
+
     It '将语义 Plan 和工件摘要绑定到新 Session，允许合法状态转换' {
         $plan=New-TestSessionPlan
         $session=Join-Path $TestDrive 'runtime/sessions/fixture-session';New-Item -ItemType Directory -Path $session -Force|Out-Null
@@ -43,6 +49,42 @@ Describe 'Session 生命周期 v2' {
         $result=Test-MmtlSessionV2 -SessionPath $session
         $result.valid | Should -BeFalse
         $result.errors | Should -Contain 'SESSION_ARTIFACT_HASH_MISMATCH'
+    }
+
+    It '损坏的 manifest 保留原字节，不被状态写入覆盖' {
+        $plan=New-TestSessionPlan
+        $session=Join-Path $TestDrive 'runtime/corrupt-manifest-session';New-Item -ItemType Directory -Path $session -Force|Out-Null
+        Initialize-MmtlSessionV2 -SessionPath $session -ExecutionPlan $plan|Out-Null
+        $manifestPath=Join-Path $session 'session.v2.json';Set-Content -LiteralPath $manifestPath -Value '{broken manifest'
+        $before=(Get-FileHash -LiteralPath $manifestPath -Algorithm SHA256).Hash
+
+        {Set-MmtlSessionV2State -SessionPath $session -State Building} | Should -Throw '*SESSION_MANIFEST_CORRUPT*'
+
+        (Get-FileHash -LiteralPath $manifestPath -Algorithm SHA256).Hash | Should -BeExactly $before
+    }
+
+    It '有效 JSON 但 schema、Session ID 或 Plan 摘要损坏时拒绝状态写入并保留原字节' {
+        $plan=New-TestSessionPlan
+        $session=Join-Path $TestDrive 'runtime/invalid-json-manifest-session';New-Item -ItemType Directory -Path $session -Force|Out-Null
+        Initialize-MmtlSessionV2 -SessionPath $session -ExecutionPlan $plan|Out-Null
+        $manifestPath=Join-Path $session 'session.v2.json';$manifest=Get-Content $manifestPath -Raw|ConvertFrom-Json
+        $manifest.sessionId='wrong-session-id';$manifest.planDigest='sha256:invalid'
+        $manifest|ConvertTo-Json -Depth 20|Set-Content $manifestPath
+        $before=(Get-FileHash -LiteralPath $manifestPath -Algorithm SHA256).Hash
+
+        {Set-MmtlSessionV2State -SessionPath $session -State Building} | Should -Throw '*SESSION_MANIFEST_CORRUPT*'
+
+        (Get-FileHash -LiteralPath $manifestPath -Algorithm SHA256).Hash | Should -BeExactly $before
+    }
+
+    It 'Plan snapshot 与 manifest 使用同目录原子写入且不遗留临时文件' {
+        $plan=New-TestSessionPlan
+        $session=Join-Path $TestDrive 'runtime/atomic-session';New-Item -ItemType Directory -Path $session -Force|Out-Null
+
+        Initialize-MmtlSessionV2 -SessionPath $session -ExecutionPlan $plan|Out-Null
+
+        (Test-MmtlSessionV2 -SessionPath $session).valid | Should -BeTrue
+        @(Get-ChildItem -LiteralPath $session -Filter '*.tmp' -File).Count | Should -Be 0
     }
 
     It '拒绝 Session 外的 Plan 文件链接并保护目标内容' {

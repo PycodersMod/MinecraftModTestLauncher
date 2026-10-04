@@ -19,7 +19,7 @@
 - 使用不可转移的证据区分 RESOLVED、BUILD_VERIFIED、SERVER_VERIFIED、CLIENT_LAUNCH_VERIFIED 和 INTEGRATION_VERIFIED。
 - 保持 PR 必需 CI 轻量；深度验证仅手动/定期运行，并且只上传数量受限且已脱敏的证据。
 - 不得提交本地运行证据、密钥、Minecraft 资源、个人绝对路径或最终本地 HANDOVER 报告。
-- 保持 GitHub/GCM 身份为 `ZYQ-2020`；不得更改其他工作区选择 `Kite-P` 账号的设置。
+- 使用本工作区已配置的主 GitHub/GCM 身份；不得更改其他工作区的账号选择。
 
 ## Review Focus
 

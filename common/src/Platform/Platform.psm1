@@ -53,7 +53,26 @@ function Get-MmtlPlatformContext {
     [CmdletBinding()]
     param()
     $provider=Get-MmtlPlatformProvider
-    return [pscustomobject]@{os=$provider.OS;arch=$provider.Arch;isWSL=[bool]$provider.IsWSL;shell=$PSVersionTable.PSEdition;capabilities=[pscustomobject]@{Build='Native';WindowManagement=$provider.WindowManagement;ProcessManagement=$provider.ProcessManagement;FabricRuntimeLink=$provider.FabricRuntimeLink}}
+    return [pscustomobject]@{os=$provider.OS;arch=$provider.Arch;isWSL=[bool]$provider.IsWSL;shell=$PSVersionTable.PSEdition;capabilities=(Get-MmtlPlatformCapabilities -Platform $provider)}
+}
+
+function Get-MmtlPlatformCapabilities {
+    [CmdletBinding()]
+    param($Platform)
+    if(-not $Platform){$Platform=Get-MmtlPlatformProvider}
+    [pscustomobject][ordered]@{
+        os=[string]$Platform.OS
+        arch=[string]$Platform.Arch
+        Build='Native'
+        Launch=$(if($Platform.OS -eq 'Windows'){'Native'}else{'BuildOnly'})
+        WindowManagement=[string]$Platform.WindowManagement
+        ProcessManagement=[string]$Platform.ProcessManagement
+        FabricRuntimeLink=[string]$Platform.FabricRuntimeLink
+        RuntimeBinding='Native'
+        JavaDiscovery='Native'
+        Doctor='Native'
+        SessionManagement='Native'
+    }
 }
 
 function Get-MmtlPhysicalMemoryMb {
@@ -64,4 +83,4 @@ function Get-MmtlPhysicalMemoryMb {
     return [long](& $provider.GetPhysicalMemoryMb)
 }
 
-Export-ModuleMember -Function Set-MmtlPlatformProvider,Get-MmtlPlatformProvider,Get-MmtlPlatformDisplayName,Get-MmtlPlatformContext,Get-MmtlCanonicalPath,Test-MmtlPathLink,Test-MmtlPlatformPathInsideRoot,Get-MmtlPhysicalMemoryMb
+Export-ModuleMember -Function Set-MmtlPlatformProvider,Get-MmtlPlatformProvider,Get-MmtlPlatformDisplayName,Get-MmtlPlatformContext,Get-MmtlPlatformCapabilities,Get-MmtlCanonicalPath,Test-MmtlPathLink,Test-MmtlPlatformPathInsideRoot,Get-MmtlPhysicalMemoryMb

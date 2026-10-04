@@ -155,6 +155,14 @@ function New-MmtlExecutionPlan {
     elseif ($binding -eq 'Unsupported') { $diagnostics.Add((New-MmtlPlannerDiagnostic 'RUNTIME_JAVA_BINDING_UNSUPPORTED' 'Launch' '当前 Loader/Gradle 工具链不支持所要求的 Runtime Java 绑定。')) }
     elseif ($binding -eq 'ToolchainManaged') { $diagnostics.Add((New-MmtlPlannerDiagnostic 'RUNTIME_JAVA_BINDING_NOT_EXECUTABLE' 'Launch' '当前 MMTL 执行器尚无可调用的 ToolchainManaged Runtime provider。')) }
     elseif ($binding -eq 'SameAsBuildJvm' -and $buildResolution.status -eq 'Resolved' -and $runtimeResolution.status -eq 'Resolved' -and $buildResolution.actualMajor -ne $runtimeResolution.actualMajor) { $diagnostics.Add((New-MmtlPlannerDiagnostic 'RUNTIME_JAVA_BINDING_MISMATCH' 'Launch' '适配器声明 Runtime Java 与 Build JVM 相同，但两条解析结果的主版本不同。')) }
+    $roles=Get-MmtlPlannerRuntimeRoles -Profile $Profile -Mode $mode
+    $bindingEvidence=Get-MmtlPlannerProperty $AdapterEvidence 'runtimeJavaBindingEvidence' (Get-MmtlPlannerProperty $Project 'RuntimeJavaBindingEvidence')
+    if([string](Get-MmtlPlannerProperty $bindingEvidence 'evidenceSource' '') -eq 'GradleInitScriptJavaExecInspection'){
+        $requiredTasks=@($roles|ForEach-Object{if([string]$_.role -eq 'Server'){'runServer'}else{'runClient'}}|Select-Object -Unique)
+        $observedBindingTasks=@(Get-MmtlPlannerProperty $bindingEvidence 'evidenceDetails' @()|ForEach-Object{[string](Get-MmtlPlannerProperty $_ 'task' '')})
+        $missingBindingTasks=@($requiredTasks|Where-Object{$_ -notin $observedBindingTasks})
+        if($missingBindingTasks.Count){$diagnostics.Add((New-MmtlPlannerDiagnostic 'RUNTIME_BINDING_ROLE_TASK_UNAVAILABLE' 'Launch' 'Runtime Binding 证据没有覆盖当前 Profile 所需的全部角色任务。' ($missingBindingTasks -join ',')))}
+    }
 
     $capabilities=Get-MmtlPlannerProperty $Platform 'capabilities'
     $buildCapability=[string](Get-MmtlPlannerProperty $capabilities 'Build' 'Native')
@@ -165,7 +173,6 @@ function New-MmtlExecutionPlan {
     if ($mode -eq 'Dedicated' -and (Get-MmtlPlannerProperty $Profile 'acceptEula' $false) -ne $true) { $diagnostics.Add((New-MmtlPlannerDiagnostic 'EULA_NOT_PREAUTHORIZED' 'Launch' 'Dedicated Server 需要用户在配置中明确预先接受 EULA；Plan 不会修改配置或 EULA 文件。')) }
     if ($mode -eq 'IntegratedLAN') { $diagnostics.Add((New-MmtlPlannerDiagnostic 'AUTH_REQUIRED' 'Launch' 'IntegratedLAN 客户端需要合法的 Minecraft 身份认证；本阶段不处理认证。')) }
 
-    $roles=Get-MmtlPlannerRuntimeRoles -Profile $Profile -Mode $mode
     if ($PhysicalMemoryMb -le 0) { $physicalProperty=Get-MmtlPlannerProperty $Platform 'physicalMemoryMb'; if ($physicalProperty) { $PhysicalMemoryMb=[long]$physicalProperty } }
     $memory=Get-MmtlPlannerMemory -Profile $Profile -Mode $mode -Roles $roles -PhysicalMemoryMb $PhysicalMemoryMb
     if ($memory.exceedsLimit) { $diagnostics.Add((New-MmtlPlannerDiagnostic 'MEMORY_LIMIT_EXCEEDED' 'Launch' 'Profile 请求的内存超过当前平台可用预算。')) }
@@ -189,7 +196,15 @@ function New-MmtlExecutionPlan {
     $buildReady=($buildReasons.Count -eq 0 -and $buildResolution.status -eq 'Resolved' -and -not $pathOutsideRepo)
     $launchReady=($launchReasons.Count -eq 0 -and ($buildProfileRequired -eq $false -or $buildReady))
     $planStatus=if($launchReady){'Ready'}elseif($buildReady){'BuildReadyLaunchBlocked'}else{'Blocked'}
-    $bindingEvidence=Get-MmtlPlannerProperty $AdapterEvidence 'runtimeJavaBindingEvidence' (Get-MmtlPlannerProperty $Project 'RuntimeJavaBindingEvidence')
+    $roleRecords=@($roles|ForEach-Object{
+        $roleReasons=@($launchReasons)
+        if($mode -eq 'IntegratedLAN' -and $_.role -eq 'Host'){$roleReasons=@($roleReasons|Where-Object{$_ -ne 'AUTH_REQUIRED'})}
+        if($mode -eq 'Dedicated' -and $_.role -ne 'Server'){$roleReasons=@($roleReasons|Where-Object{$_ -ne 'EULA_NOT_PREAUTHORIZED'})}
+        $roleBuildReady=($buildProfileRequired -eq $false -or $buildReady)
+        [pscustomobject][ordered]@{role=$_.role;username=$_.username;launchReady=($roleBuildReady -and $roleReasons.Count -eq 0);blockingReasons=$roleReasons}
+    })
+    $launchBlockingReasons=@($blockArray|Where-Object{$_.action -eq 'Launch'})
+    $launchWarnings=@($warnings|Where-Object{$_.action -eq 'Launch'})
     $identity=[string](Get-MmtlPlannerProperty $Project 'ModId' '')
     if (-not $identity) { $identity=[IO.Path]::GetFileName($repositoryRoot) }
     $profileNameValue=if($ProfileName){$ProfileName}else{[string](Get-MmtlPlannerProperty $Config 'defaultProfile' 'default')}
@@ -219,11 +234,11 @@ function New-MmtlExecutionPlan {
         runtimeJava=[pscustomobject][ordered]@{requirement=$runtimeRequirement;resolution=$runtimeResolution;bindingMode=$binding;bindingEvidence=$bindingEvidence}
         profile=[pscustomobject]$profileRecord
         build=[pscustomobject][ordered]@{required=$buildProfileRequired;clean=$clean;task=[string](Get-MmtlPlannerProperty $Project 'BuildTask' 'build');wrapper=[IO.Path]::GetFileName([string](Get-MmtlPlannerProperty $Project 'WrapperPath' 'gradlew'));artifactExpectation='one-mod-jar'}
-        runtime=[pscustomobject][ordered]@{roles=@($roles);runtimeDirectories=$runtimeDirectories;memory=$memory;jvmArgs=$jvmArgs;gameArgs=$gameArgs}
+        runtime=[pscustomobject][ordered]@{roles=@($roleRecords);runtimeDirectories=$runtimeDirectories;memory=$memory;jvmArgs=$jvmArgs;gameArgs=$gameArgs}
         network=[pscustomobject][ordered]@{portPolicy=$portPolicy;fixedPort=$fixedPort;bindPolicy='Loopback'}
         session=[pscustomobject][ordered]@{intendedMode=$mode}
         capabilityGates=[pscustomobject][ordered]@{buildReady=$buildReady;launchReady=$launchReady;buildReasons=@($buildReasons);launchReasons=@($launchReasons)}
-        blockingReasons=$blockArray;warnings=@($warnings.ToArray());provenance=[pscustomobject][ordered]@{runtimeJavaSource=$runtimeRequirement.source;metadataStatus=$versionStatus;metadataProvenance=$versionSource;runtimeJavaBindingEvidence=$bindingEvidence}
+        blockingReasons=$blockArray;warnings=@($warnings.ToArray());launchBlockingReasons=$launchBlockingReasons;launchWarnings=$launchWarnings;provenance=[pscustomobject][ordered]@{runtimeJavaSource=$runtimeRequirement.source;metadataStatus=$versionStatus;metadataProvenance=$versionSource;runtimeJavaBindingEvidence=$bindingEvidence}
     }
     $plan.semanticDigest=Get-MmtlExecutionPlanSemanticDigest -Plan $plan
     $plan.planId='plan-'+$plan.semanticDigest.Substring(7,16)

@@ -1,5 +1,7 @@
 param([Parameter(Mandatory)][string]$LaunchPlanB64)
 $ErrorActionPreference='Stop'
+Import-Module (Join-Path $PSScriptRoot 'SessionLock.psm1') -Force
+Import-Module (Join-Path $PSScriptRoot 'AtomicFile.psm1') -Force
 $exitCode=1
 $failure=$null
 $plan=$null
@@ -41,7 +43,7 @@ try{
         }catch{[Console]::Error.WriteLine("无法清理 Fabric Runtime junction：$($_.Exception.Message)");if($exitCode -eq 0){$exitCode=1}}
     }
     if($plan -and $plan.sessionPath){
-        try{$statusPath=Join-Path ([IO.Path]::GetFullPath([string]$plan.sessionPath)) "process-$PID.exit.json";$record=[pscustomobject]@{PID=$PID;ExitCode=$exitCode;FinishedUtc=[DateTimeOffset]::UtcNow.ToString('o');Error=$failure};[IO.File]::WriteAllText($statusPath,($record|ConvertTo-Json -Compress),[Text.UTF8Encoding]::new($false))}catch{[Console]::Error.WriteLine("无法写入 Session 退出状态：$($_.Exception.Message)")}
+        try{$sessionPath=[IO.Path]::GetFullPath([string]$plan.sessionPath);$lock=New-MmtlSessionLock -LockPath (Join-Path $sessionPath '.session.lock') -AllowedRoot $sessionPath;try{$statusPath=Join-Path $sessionPath "process-$PID.exit.json";$record=[pscustomobject]@{PID=$PID;ExitCode=$exitCode;FinishedUtc=[DateTimeOffset]::UtcNow.ToString('o');Error=$failure};Write-MmtlAtomicTextFile -Path $statusPath -Content (($record|ConvertTo-Json -Compress)+"`n")}finally{Remove-MmtlSessionLock -Lock $lock}}catch{[Console]::Error.WriteLine("无法写入 Session 退出状态：$($_.Exception.Message)")}
     }
 }
 exit $exitCode

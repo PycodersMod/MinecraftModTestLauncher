@@ -92,7 +92,8 @@ Describe 'Deep validation runner safety and evidence' {
         $logRoot=Join-Path $TestDrive 'logs';$null=New-Item -ItemType Directory -Path $logRoot -Force
         $project=[pscustomobject]@{Root=$projectRoot;MinecraftVersion='1.20.1';Loader='Fabric';LoaderVersion='0.15.0';JavaMajor=17;Wrapper='gradlew'}
         $target=[pscustomobject]@{targetId='user-project';toolchain='FabricLoom';sourceFixture=[pscustomobject]@{type='UserProject';source='local';commit='working-tree';license='User-owned';trust='UserOwned';allowedTasks=@('build')}}
-        Set-TestGradleWrapper -ProjectRoot $projectRoot -WindowsBody '@echo token=ghp_1234567890123456789012345678901234567890' -UnixBody "#!/bin/sh`necho token=ghp_1234567890123456789012345678901234567890"
+        $fakeToken=('gh'+'p_')+'1234567890123456789012345678901234567890'
+        Set-TestGradleWrapper -ProjectRoot $projectRoot -WindowsBody "@echo token=$fakeToken" -UnixBody "#!/bin/sh`necho token=$fakeToken"
         $result=Invoke-MmtlValidationBuild -Project $project -Target $target -RuntimeRoot $logRoot -TimeoutSeconds 30
         $result.result | Should -Be 'PASSED'
         $result.validationLevel | Should -Be 'BUILD_VERIFIED'
