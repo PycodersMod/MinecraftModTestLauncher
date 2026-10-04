@@ -1,7 +1,10 @@
 BeforeAll {
     $script:root=Split-Path -Parent $PSScriptRoot
     Import-Module (Join-Path $script:root 'src/Platform/Platform.psm1') -Force
-    Set-MmtlPlatformProvider ([pscustomobject]@{OS='Windows';Arch='x64';PathComparison='OrdinalIgnoreCase';DefaultRuntimeRoot='';JavaExecutable='java.exe';JavacExecutable='javac.exe';GradleWrapper='gradlew.bat';WindowManagement='Native';ProcessManagement='Native';FabricRuntimeLink='Native';IsWSL=$false})
+    $repoRoot=Split-Path -Parent $script:root
+    if([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::Windows)){$platformDir='windows';$provider='WindowsPlatformProvider.psm1';$register='Register-MmtlWindowsPlatform'}elseif([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::Linux)){$platformDir='linux';$provider='LinuxPlatformProvider.psm1';$register='Register-MmtlLinuxPlatform'}else{$platformDir='macos';$provider='MacOSPlatformProvider.psm1';$register='Register-MmtlMacOSPlatform'}
+    Import-Module (Join-Path $repoRoot "$platformDir/src/$provider") -Force
+    & $register -RepositoryRoot $repoRoot
     Import-Module (Join-Path $script:root 'src/SessionManager.psm1') -Force
 }
 
