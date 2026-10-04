@@ -14,7 +14,7 @@ function Get-MmtlRecoveryTrackedProcessState {
         $expected=[string](Get-MmtlRecoveryProperty $entry 'ProcessStartIdentity');if(-not $expected){$expected=[string](Get-MmtlRecoveryProperty $entry 'processStartIdentity')}
         if($expected){$actual=Get-MmtlProcessStartIdentity -ProcessId $processId;if($actual -and $actual -ceq $expected){$live.Add([pscustomobject]@{PID=$processId;state='Alive'})};continue}
         if($entry.StartIdentity -or $entry.StartTimeUtc -or $entry.StartTimeToken){
-            try{Import-Module (Join-Path $PSScriptRoot 'ProcessManager.psm1') -Force;$record=Get-MmtlProcessRecord -ProcessId $processId;if($record -and (Test-MmtlProcessIdentity -Process $record -Record $entry)){$live.Add([pscustomobject]@{PID=$processId;state='Alive'})}}
+            try{$api=$global:MmtlPlatformProvider.ProcessApi;if(-not $api -or -not $api.GetRecord -or -not $api.TestIdentity){throw 'PROCESS_IDENTITY_API_UNAVAILABLE'};$record=& $api.GetRecord $processId;if($record -and (& $api.TestIdentity $record $entry)){$live.Add([pscustomobject]@{PID=$processId;state='Alive'})}}
             catch{$live.Add([pscustomobject]@{PID=$processId;state='IdentityUnknown'})}
             continue
         }
