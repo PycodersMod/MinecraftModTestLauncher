@@ -99,7 +99,10 @@ Describe 'Session 崩溃恢复计划' {
         Import-Module (Join-Path $script:root 'src/ProcessManager.psm1') -Force
         $fixture=New-RecoveryFixture;Write-StaleSessionLock $fixture.lock
         $record=Get-MmtlProcessRecord -ProcessId $PID
-        @{PID=$PID;StartIdentity=$record.StartIdentity;StartTimeUtc=$record.StartTimeUtc;StartTimeToken=$record.StartTimeToken;Role='fixture'}|ConvertTo-Json -AsArray|Set-Content (Join-Path $fixture.session 'pids.json')
+        $entry=[pscustomobject]@{PID=$PID;StartIdentity=$record.StartIdentity;StartTimeUtc=$record.StartTimeUtc;StartTimeToken=$record.StartTimeToken;Executable=$record.Executable;CommandLine=$record.CommandLine;ParentPID=$record.ParentPID;Role='fixture'}
+        $api=$global:MmtlPlatformProvider.ProcessApi;$actual=& $api.GetRecord $PID
+        (& $api.TestIdentity $actual $entry) | Should -BeTrue
+        @($entry)|ConvertTo-Json -Depth 5|Set-Content (Join-Path $fixture.session 'pids.json')
 
         $plan=Get-MmtlSessionRecoveryPlan -RuntimeRoot $fixture.runtime
 
