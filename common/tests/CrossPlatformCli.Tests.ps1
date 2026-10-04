@@ -12,6 +12,9 @@ if((Get-MmtlPlatformProvider).OS -in @('Linux','MacOS')) {
         Set-Content (Join-Path $script:project 'src/main/resources/fabric.mod.json') '{"schemaVersion":1,"id":"mmtl_fixture","version":"1.0.0","name":"Fixture","environment":"*","entrypoints":{}}'
         $script:java=Join-Path (Join-Path $script:javaHome 'bin') 'java'
         [IO.File]::WriteAllText($script:java,"#!/bin/sh`necho 'openjdk version `"17.0.1`"' >&2`nexit 0`n",[Text.UTF8Encoding]::new($false))
+        $releaseArch=if($script:platform.Arch -eq 'ARM64'){'aarch64'}else{'x86_64'}
+        $releaseOs=if($script:platform.OS -eq 'MacOS'){'macOS'}else{'Linux'}
+        @('JAVA_VERSION="17.0.1"','IMPLEMENTOR="Fixture JDK"',"OS_ARCH=`"$releaseArch`"","OS_NAME=`"$releaseOs`"")|Set-Content (Join-Path $script:javaHome 'release')
         $script:wrapper=Join-Path $script:project 'gradlew'
         [IO.File]::WriteAllText($script:wrapper,"#!/bin/sh`nmkdir -p build/libs`nprintf fixture > build/libs/fixture.jar`nexit 0`n",[Text.UTF8Encoding]::new($false))
         $exec=[IO.UnixFileMode]::UserRead -bor [IO.UnixFileMode]::UserWrite -bor [IO.UnixFileMode]::UserExecute -bor [IO.UnixFileMode]::GroupRead -bor [IO.UnixFileMode]::GroupExecute -bor [IO.UnixFileMode]::OtherRead -bor [IO.UnixFileMode]::OtherExecute
