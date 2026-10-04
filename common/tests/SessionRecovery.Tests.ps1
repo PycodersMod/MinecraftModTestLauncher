@@ -147,6 +147,56 @@ Describe 'Session 崩溃恢复计划' {
         (Get-Content (Join-Path $fixture.session 'session.v2.json') -Raw|ConvertFrom-Json).state | Should -BeExactly 'Abandoned'
     }
 
+    It '强制终止真实持锁 owner 后恢复锁并将活动 Session 标记为 Abandoned' {
+        Import-Module (Join-Path $script:root 'src/SessionLifecycle.psm1') -Force
+        Import-Module (Join-Path $script:root 'src/SessionLock.psm1') -Force
+        $fixture=New-RecoveryFixture;$sessionPlan=New-RecoveryTestPlan
+        Initialize-MmtlSessionV2 -SessionPath $fixture.session -ExecutionPlan $sessionPlan|Out-Null
+        Set-MmtlSessionV2State -SessionPath $fixture.session -State Building|Out-Null
+        $readyPath=Join-Path $TestDrive 'crash-owner-ready.txt'
+        $helperPath=Join-Path $TestDrive 'crash-owner.ps1'
+        @'
+param([string]$CommonRoot,[string]$SessionPath,[string]$ReadyPath)
+$ErrorActionPreference='Stop'
+$repositoryRoot=Split-Path -Parent $CommonRoot
+if([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::Windows)){$platform='windows';$provider='WindowsPlatformProvider.psm1';$register='Register-MmtlWindowsPlatform'}elseif([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::Linux)){$platform='linux';$provider='LinuxPlatformProvider.psm1';$register='Register-MmtlLinuxPlatform'}else{$platform='macos';$provider='MacOSPlatformProvider.psm1';$register='Register-MmtlMacOSPlatform'}
+Import-Module (Join-Path $repositoryRoot "$platform/src/$provider") -Force
+& $register -RepositoryRoot $repositoryRoot
+Import-Module (Join-Path $CommonRoot 'src/SessionLock.psm1') -Force
+$lock=New-MmtlSessionLock -LockPath (Join-Path $SessionPath '.session.lock') -AllowedRoot $SessionPath
+[IO.File]::WriteAllText($ReadyPath,[string]$PID)
+while($true){Start-Sleep -Seconds 1}
+'@ | Set-Content -LiteralPath $helperPath -Encoding utf8
+
+        $pwshPath=(Get-Process -Id $PID).Path
+        $startInfo=[Diagnostics.ProcessStartInfo]::new($pwshPath)
+        $startInfo.UseShellExecute=$false;$startInfo.RedirectStandardOutput=$true;$startInfo.RedirectStandardError=$true
+        foreach($argument in @('-NoProfile','-File',$helperPath,$script:root,$fixture.session,$readyPath)){[void]$startInfo.ArgumentList.Add([string]$argument)}
+        $owner=[Diagnostics.Process]::Start($startInfo)
+        try {
+            $deadline=[DateTimeOffset]::UtcNow.AddSeconds(15)
+            while(-not(Test-Path -LiteralPath $readyPath) -and -not $owner.HasExited -and [DateTimeOffset]::UtcNow -lt $deadline){Start-Sleep -Milliseconds 50}
+            if(-not(Test-Path -LiteralPath $readyPath)){$childError=$owner.StandardError.ReadToEnd();throw "崩溃测试子进程未能取得 Session 锁：$childError"}
+            [int](Get-Content -LiteralPath $readyPath -Raw) | Should -Be $owner.Id
+            (Get-MmtlSessionLockStatus -LockPath $fixture.lock -AllowedRoot $fixture.session).status | Should -BeExactly 'Locked'
+
+            $owner.Kill()
+            $owner.WaitForExit(10000) | Should -BeTrue
+            $lockRecord=Get-Content -LiteralPath $fixture.lock -Raw|ConvertFrom-Json
+            $lockRecord.ownerPid | Should -Be $owner.Id
+            $recoveryPlan=Get-MmtlSessionRecoveryPlan -RuntimeRoot $fixture.runtime
+            $recoveryPlan.actions | Where-Object sessionId -eq $fixture.sessionId | Where-Object code -eq 'STALE_LOCK_METADATA' | Should -Not -BeNullOrEmpty
+            $result=Invoke-MmtlSessionRecovery -RuntimeRoot $fixture.runtime -Plan $recoveryPlan
+
+            $result.recovered | Should -Be 1
+            (Get-Content (Join-Path $fixture.session 'session.v2.json') -Raw|ConvertFrom-Json).state | Should -BeExactly 'Abandoned'
+            (Get-Content -LiteralPath $fixture.lock -Raw|ConvertFrom-Json).recoveryState | Should -BeExactly 'Recovered'
+        } finally {
+            if($owner -and -not $owner.HasExited){$owner.Kill();[void]$owner.WaitForExit(10000)}
+            if($owner){$owner.Dispose()}
+        }
+    }
+
     It '恢复已崩溃的运行目录创建锁但保留未完成 Session 目录' {
         $fixture=New-RecoveryFixture;$creationLock=Join-Path $fixture.sessions '.creation.lock'
         Write-StaleSessionLock $creationLock
