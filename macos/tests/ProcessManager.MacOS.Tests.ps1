@@ -65,9 +65,15 @@ if([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropSe
         It '存活的登记进程会阻止 Session 恢复并报告 orphan' {
             $runtime=Join-Path $TestDrive 'orphan-runtime';$session=Join-Path $runtime 'sessions/orphan';New-Item -ItemType Directory $session -Force|Out-Null
             $record=Get-MacOSTestProcessRecord -ProcessId $PID
-            @([pscustomobject]@{PID=$PID;StartIdentity=$record.StartIdentity;StartTimeToken=$record.StartTimeToken;Executable=$record.Executable;CommandLine=$record.CommandLine})|ConvertTo-Json -Depth 5|Set-Content (Join-Path $session 'pids.json')
+            $entry=[pscustomobject]@{PID=$PID;StartIdentity=$record.StartIdentity;StartTimeToken=$record.StartTimeToken;Executable=$record.Executable;CommandLine=$record.CommandLine}
+            (& $script:processApi.TestIdentity $record $entry) | Should -BeTrue
+            @($entry)|ConvertTo-Json -Depth 5|Set-Content (Join-Path $session 'pids.json')
             @{schemaVersion=1;ownerPid=2147483647;processStartIdentity='0';createdUtc='2000-01-01T00:00:00Z';nonce='fixture'}|ConvertTo-Json -Compress|Set-Content (Join-Path $session '.session.lock')
             $before=(Get-FileHash (Join-Path $session '.session.lock') -Algorithm SHA256).Hash
+
+            $recoveryModule=Get-Module SessionRecovery|Select-Object -Last 1
+            $tracked=& $recoveryModule {param($path)Get-MmtlRecoveryTrackedProcessState -SessionPath $path} $session
+            $tracked.state | Should -BeExactly 'Alive' -Because "identity records: $($tracked.live|ConvertTo-Json -Compress)"
 
             $plan=Get-MmtlSessionRecoveryPlan -RuntimeRoot $runtime
 
