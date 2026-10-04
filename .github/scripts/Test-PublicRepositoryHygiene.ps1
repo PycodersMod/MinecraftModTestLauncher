@@ -1,5 +1,8 @@
 [CmdletBinding()]
-param([string]$RepositoryRoot = (Split-Path -Parent (Split-Path -Parent $PSScriptRoot)))
+param(
+    [string]$RepositoryRoot = (Split-Path -Parent (Split-Path -Parent $PSScriptRoot)),
+    [string[]]$SensitiveIdentities = @()
+)
 
 $ErrorActionPreference = 'Stop'
 $root = [IO.Path]::GetFullPath($RepositoryRoot)
@@ -7,7 +10,6 @@ if (-not (Test-Path -LiteralPath (Join-Path $root '.git'))) { throw 'REPOSITORY_
 
 $paths = @(git -C $root ls-files --cached --others --exclude-standard)
 if ($LASTEXITCODE -ne 0) { throw 'GIT_FILE_LIST_FAILED' }
-$identity = @('ZYQ-2020', 'Kite-P')
 $patterns = @(
     @{ code = 'WINDOWS_USER_PATH'; regex = '(?i)[A-Z]:\\Users\\[^\\\s"<>]+' },
     @{ code = 'WORKSPACE_ABSOLUTE_PATH'; regex = '(?i)[A-Z]:\\[^\r\n"<>]*自制材质包和辅助mod' },
@@ -31,8 +33,8 @@ foreach ($relative in $paths) {
     if ($hostname.Length -ge 5 -and $content.IndexOf($hostname, [StringComparison]::OrdinalIgnoreCase) -ge 0) {
         $findings.Add([pscustomobject]@{ path = $relative; code = 'LOCAL_HOSTNAME' })
     }
-    if ($relative -notin @('CODEOWNERS', 'LICENSE', '.github/scripts/Test-PublicRepositoryHygiene.ps1')) {
-        foreach ($name in $identity) {
+    if ($relative -notin @('CODEOWNERS', 'LICENSE')) {
+        foreach ($name in $SensitiveIdentities) {
             if ($content.IndexOf($name, [StringComparison]::OrdinalIgnoreCase) -ge 0) {
                 $findings.Add([pscustomobject]@{ path = $relative; code = 'PERSONAL_GITHUB_IDENTITY' })
                 break
