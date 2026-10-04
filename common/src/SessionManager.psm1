@@ -1,24 +1,31 @@
+Import-Module (Join-Path $PSScriptRoot 'AtomicFile.psm1') -Force
+Import-Module (Join-Path $PSScriptRoot 'SessionLock.psm1') -Force
+
 function New-MmtlSession {
     [CmdletBinding()]
     param([Parameter(Mandatory)][string]$RuntimeRoot,[Parameter(Mandatory)][string]$Name,[Parameter(Mandatory)]$Metadata)
     if ($Name -notmatch '^[A-Za-z0-9_-]{1,40}$') { throw 'Session 名称只允许字母、数字、下划线和短横线。' }
     $sessions=Join-Path ([IO.Path]::GetFullPath($RuntimeRoot)) 'sessions'
-    $id=(Get-Date).ToUniversalTime().ToString('yyyyMMddTHHmmssZ')+'_'+$Name+'_'+[guid]::NewGuid().ToString('N').Substring(0,8)
-    $path=Join-Path $sessions $id
-    New-Item -ItemType Directory -Path (Join-Path $path 'logs') -Force | Out-Null
-    New-Item -ItemType Directory -Path (Join-Path $path 'mods') -Force | Out-Null
-    $hostName=if($Metadata.hostUsername){[string]$Metadata.hostUsername}else{'Dev'}
-    $clientPrefix=if($Metadata.clientPrefix){[string]$Metadata.clientPrefix}else{'Dev_'}
-    $players=@($hostName)
-    for($i=1;$i -lt [int]$Metadata.players;$i++){$players+=("$clientPrefix$i")}
-    foreach($player in $players){New-Item -ItemType Directory -Path (Join-Path $path $player) -Force | Out-Null}
-    Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1');$platform=Get-MmtlPlatformProvider
-    if($Metadata -is [System.Collections.IDictionary]){$Metadata['platform']=$platform.OS;$Metadata['arch']=$platform.Arch;$Metadata['isWSL']=$platform.IsWSL}else{$Metadata|Add-Member -NotePropertyName platform -NotePropertyValue $platform.OS -Force;$Metadata|Add-Member -NotePropertyName arch -NotePropertyValue $platform.Arch -Force;$Metadata|Add-Member -NotePropertyName isWSL -NotePropertyValue $platform.IsWSL -Force}
-    $record=[ordered]@{sessionId=$id;createdUtc=(Get-Date).ToUniversalTime().ToString('o');metadata=$Metadata;players=$players;ports=@();processes=@()}
-    $record | ConvertTo-Json -Depth 20 | Set-Content -LiteralPath (Join-Path $path 'session.json') -Encoding utf8
-    '[]' | Set-Content -LiteralPath (Join-Path $path 'pids.json') -Encoding utf8
-    "# Session $id`n`n状态：已创建`n" | Set-Content -LiteralPath (Join-Path $path 'report.md') -Encoding utf8
-    return $path
+    New-Item -ItemType Directory -Path $sessions -Force|Out-Null
+    $lock=New-MmtlSessionLock -LockPath (Join-Path $sessions '.creation.lock') -AllowedRoot $sessions
+    try{
+        $id=(Get-Date).ToUniversalTime().ToString('yyyyMMddTHHmmssZ')+'_'+$Name+'_'+[guid]::NewGuid().ToString('N').Substring(0,8)
+        $path=Join-Path $sessions $id
+        New-Item -ItemType Directory -Path (Join-Path $path 'logs') -Force | Out-Null
+        New-Item -ItemType Directory -Path (Join-Path $path 'mods') -Force | Out-Null
+        $hostName=if($Metadata.hostUsername){[string]$Metadata.hostUsername}else{'Dev'}
+        $clientPrefix=if($Metadata.clientPrefix){[string]$Metadata.clientPrefix}else{'Dev_'}
+        $players=@($hostName)
+        for($i=1;$i -lt [int]$Metadata.players;$i++){$players+=("$clientPrefix$i")}
+        foreach($player in $players){New-Item -ItemType Directory -Path (Join-Path $path $player) -Force | Out-Null}
+        Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1');$platform=Get-MmtlPlatformProvider
+        if($Metadata -is [System.Collections.IDictionary]){$Metadata['platform']=$platform.OS;$Metadata['arch']=$platform.Arch;$Metadata['isWSL']=$platform.IsWSL}else{$Metadata|Add-Member -NotePropertyName platform -NotePropertyValue $platform.OS -Force;$Metadata|Add-Member -NotePropertyName arch -NotePropertyValue $platform.Arch -Force;$Metadata|Add-Member -NotePropertyName isWSL -NotePropertyValue $platform.IsWSL -Force}
+        $record=[ordered]@{sessionId=$id;createdUtc=(Get-Date).ToUniversalTime().ToString('o');metadata=$Metadata;players=$players;ports=@();processes=@()}
+        Write-MmtlAtomicTextFile -Path (Join-Path $path 'session.json') -Content (($record|ConvertTo-Json -Depth 20)+"`n")
+        Write-MmtlAtomicTextFile -Path (Join-Path $path 'pids.json') -Content "[]`n"
+        Write-MmtlAtomicTextFile -Path (Join-Path $path 'report.md') -Content "# Session $id`n`n状态：已创建`n"
+        return $path
+    }finally{Remove-MmtlSessionLock -Lock $lock}
 }
 function Update-MmtlSessionReport {
     [CmdletBinding()]

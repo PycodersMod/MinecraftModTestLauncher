@@ -14,5 +14,15 @@
     "planDigest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
     "planSha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
     "artifacts": {"type": "array", "items": {"type": "object", "required": ["path", "sha256", "kind"], "properties": {"path": {"type": "string"}, "sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}, "kind": {"type": "string"}}}}
+  },
+  "x-state-transitions": {
+    "Created": ["Preparing", "Building", "Launching", "Failed"],
+    "Preparing": ["Building", "Launching", "Failed"],
+    "Building": ["Launching", "Completed", "Failed"],
+    "Launching": ["Running", "Failed"],
+    "Running": ["Completed", "Failed", "Stopped"],
+    "Completed": [],
+    "Failed": [],
+    "Stopped": []
   }
 }

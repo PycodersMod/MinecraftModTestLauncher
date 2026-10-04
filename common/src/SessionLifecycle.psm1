@@ -1,5 +1,10 @@
 Set-StrictMode -Version Latest
 Import-Module (Join-Path $PSScriptRoot 'Execution/ExecutionPlan.psm1') -Force
+Import-Module (Join-Path $PSScriptRoot 'AtomicFile.psm1') -Force
+Import-Module (Join-Path $PSScriptRoot 'SessionLock.psm1') -Force
+$script:MmtlSessionV2Transitions=@{Created=@('Preparing','Building','Launching','Failed');Preparing=@('Building','Launching','Failed');Building=@('Launching','Completed','Failed');Launching=@('Running','Failed');Running=@('Completed','Failed','Stopped');Completed=@();Failed=@();Stopped=@()}
+
+function Get-MmtlSessionV2StateTransitions { return $script:MmtlSessionV2Transitions }
 
 function Assert-MmtlSessionV2PathNoReparse {
     param([Parameter(Mandatory)][string]$Path)
@@ -33,14 +38,18 @@ function Initialize-MmtlSessionV2 {
     Assert-MmtlSessionV2PathNoReparse -Path $paths.session|Out-Null
     Assert-MmtlSessionV2PathNoReparse -Path $paths.plan|Out-Null
     Assert-MmtlSessionV2PathNoReparse -Path $paths.manifest|Out-Null
-    $check=Test-MmtlExecutionPlan -Plan $ExecutionPlan
-    if(-not $check.valid){throw "SESSION_PLAN_INVALID: $($check.errors -join ',')"}
-    $json=ConvertTo-Json -InputObject $ExecutionPlan -Depth 100
-    [IO.File]::WriteAllText($paths.plan,$json+"`n",[Text.UTF8Encoding]::new($false))
-    $hash=(Get-FileHash -LiteralPath $paths.plan -Algorithm SHA256).Hash.ToLowerInvariant()
-    $manifest=[ordered]@{schemaVersion=2;sessionId=[IO.Path]::GetFileName($paths.session);state='Created';createdUtc=[DateTimeOffset]::UtcNow.ToString('o');updatedUtc=[DateTimeOffset]::UtcNow.ToString('o');planFile='execution-plan.json';planDigest=[string]$ExecutionPlan.semanticDigest;planSha256="sha256:$hash";artifacts=@([pscustomobject]@{path='execution-plan.json';sha256="sha256:$hash";kind='ExecutionPlan'})}
-    [IO.File]::WriteAllText($paths.manifest,(ConvertTo-Json -InputObject $manifest -Depth 20)+"`n",[Text.UTF8Encoding]::new($false))
-    return [pscustomobject]$manifest
+    $lock=New-MmtlSessionLock -LockPath (Join-Path $paths.session '.session.lock') -AllowedRoot $paths.session
+    try{
+        if(Test-Path -LiteralPath $paths.manifest -PathType Leaf){throw 'SESSION_MANIFEST_EXISTS'}
+        $check=Test-MmtlExecutionPlan -Plan $ExecutionPlan
+        if(-not $check.valid){throw "SESSION_PLAN_INVALID: $($check.errors -join ',')"}
+        $json=ConvertTo-Json -InputObject $ExecutionPlan -Depth 100
+        Write-MmtlAtomicTextFile -Path $paths.plan -Content ($json+"`n")
+        $hash=(Get-FileHash -LiteralPath $paths.plan -Algorithm SHA256).Hash.ToLowerInvariant()
+        $manifest=[ordered]@{schemaVersion=2;sessionId=[IO.Path]::GetFileName($paths.session);state='Created';createdUtc=[DateTimeOffset]::UtcNow.ToString('o');updatedUtc=[DateTimeOffset]::UtcNow.ToString('o');planFile='execution-plan.json';planDigest=[string]$ExecutionPlan.semanticDigest;planSha256="sha256:$hash";artifacts=@([pscustomobject]@{path='execution-plan.json';sha256="sha256:$hash";kind='ExecutionPlan'})}
+        Write-MmtlAtomicTextFile -Path $paths.manifest -Content ((ConvertTo-Json -InputObject $manifest -Depth 20)+"`n")
+        return [pscustomobject]$manifest
+    }finally{Remove-MmtlSessionLock -Lock $lock}
 }
 
 function Set-MmtlSessionV2State {
@@ -51,12 +60,15 @@ function Set-MmtlSessionV2State {
     Assert-MmtlSessionV2PathNoReparse -Path $paths.manifest|Out-Null
     Assert-MmtlSessionV2PathNoReparse -Path $paths.plan|Out-Null
     if(-not(Test-Path -LiteralPath $paths.manifest -PathType Leaf)){throw 'SESSION_MANIFEST_MISSING'}
-    $manifest=Get-Content -LiteralPath $paths.manifest -Raw|ConvertFrom-Json -ErrorAction Stop
-    $allowed=@{Created=@('Preparing','Building','Launching','Failed');Preparing=@('Building','Launching','Failed');Building=@('Launching','Completed','Failed');Launching=@('Running','Failed');Running=@('Completed','Failed','Stopped');Completed=@();Failed=@();Stopped=@()}
-    if($State -notin $allowed[[string]$manifest.state]){throw "SESSION_STATE_TRANSITION_INVALID: $($manifest.state)->$State"}
-    $manifest.state=$State;$manifest.updatedUtc=[DateTimeOffset]::UtcNow.ToString('o')
-    [IO.File]::WriteAllText($paths.manifest,($manifest|ConvertTo-Json -Depth 30)+"`n",[Text.UTF8Encoding]::new($false))
-    return $manifest
+    $lock=New-MmtlSessionLock -LockPath (Join-Path $paths.session '.session.lock') -AllowedRoot $paths.session
+    try{
+        try{$manifest=Get-Content -LiteralPath $paths.manifest -Raw|ConvertFrom-Json -ErrorAction Stop}catch{throw 'SESSION_MANIFEST_CORRUPT'}
+        if(-not $script:MmtlSessionV2Transitions.ContainsKey([string]$manifest.state)){throw 'SESSION_MANIFEST_CORRUPT'}
+        if($State -notin $script:MmtlSessionV2Transitions[[string]$manifest.state]){throw "SESSION_STATE_TRANSITION_INVALID: $($manifest.state)->$State"}
+        $manifest.state=$State;$manifest.updatedUtc=[DateTimeOffset]::UtcNow.ToString('o')
+        Write-MmtlAtomicTextFile -Path $paths.manifest -Content (($manifest|ConvertTo-Json -Depth 30)+"`n")
+        return $manifest
+    }finally{Remove-MmtlSessionLock -Lock $lock}
 }
 
 function Test-MmtlSessionV2 {
@@ -107,4 +119,4 @@ function Test-MmtlSessionV2 {
     return [pscustomobject]@{valid=($errors.Count -eq 0);status=$(if($errors.Count){'Corrupt'}else{'Valid'});errors=@($errors.ToArray());state=[string]$manifest.state;sessionId=[string]$manifest.sessionId;planDigest=[string]$manifest.planDigest}
 }
 
-Export-ModuleMember -Function Initialize-MmtlSessionV2,Set-MmtlSessionV2State,Test-MmtlSessionV2
+Export-ModuleMember -Function Initialize-MmtlSessionV2,Set-MmtlSessionV2State,Test-MmtlSessionV2,Get-MmtlSessionV2StateTransitions
