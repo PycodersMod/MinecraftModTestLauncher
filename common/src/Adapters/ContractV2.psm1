@@ -1,9 +1,13 @@
 Set-StrictMode -Version Latest
+Import-Module (Join-Path $PSScriptRoot 'RuntimeBinding.psm1') -Force
 
 function New-MmtlAdapterProbeResult {
     [CmdletBinding()]
-    param([Parameter(Mandatory)][string]$AdapterId,[Parameter(Mandatory)][AllowEmptyCollection()][object[]]$Evidence,[Parameter(Mandatory)][ValidateSet('High','Medium','Low','Unknown')][string]$Confidence)
-    [pscustomobject][ordered]@{contractVersion=2;adapterId=$AdapterId;matched=($Evidence.Count -gt 0);confidence=$Confidence;evidence=@($Evidence);conflicts=@()}
+    param([Parameter(Mandatory)][string]$AdapterId,[Parameter(Mandatory)][AllowEmptyCollection()][object[]]$Evidence,[Parameter(Mandatory)][ValidateSet('High','Medium','Low','Unknown')][string]$Confidence,[object]$RuntimeJavaBinding)
+    if (-not $RuntimeJavaBinding) {
+        $RuntimeJavaBinding = New-MmtlRuntimeBindingEvidence -AdapterId $AdapterId -Mode Unknown -Confidence Unknown -ProbeStrategy 'GradleJavaExecTaskInspection' -ReasonCode 'RUNTIME_JAVA_BINDING_UNPROBED'
+    }
+    [pscustomobject][ordered]@{contractVersion=2;adapterId=$AdapterId;matched=($Evidence.Count -gt 0);confidence=$Confidence;evidence=@($Evidence);conflicts=@();runtimeJavaBinding=$RuntimeJavaBinding}
 }
 
 function Resolve-MmtlProjectStack {
