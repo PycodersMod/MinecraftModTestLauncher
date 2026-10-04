@@ -57,6 +57,16 @@ Describe 'Runtime Binding contract' {
         $resolved.reasonCode | Should -BeExactly 'RUNTIME_BINDING_BUILD_JVM_MATCH_UNPROVEN'
     }
 
+    It 'SameAsBuildJvm 有显式匹配与 launcher 证据时可以解析通过' {
+        $evidence=New-TestRuntimeBindingEvidence @{AdapterId='FixtureToolchain';Mode='SameAsBuildJvm';EvidenceSource='GradleTaskInspection';Confidence='High';RuntimeJavaControllable=$false;RequiresBuildJvmMatch=$true;ProbeStrategy='GradleJavaExecTaskInspection';EvidenceDetails=@([pscustomobject]@{task='runClient';taskType='JavaExec';launcherSource='javaLauncher';executable='<JAVA_HOME>/bin/java';buildJavaHome='<JAVA_HOME>'})}
+
+        $resolved=Resolve-TestRuntimeBinding @($evidence)
+
+        $resolved.mode | Should -BeExactly 'SameAsBuildJvm'
+        $resolved.requiresBuildJvmMatch | Should -BeTrue
+        $resolved.evidenceDetails[0].executable | Should -BeExactly '<JAVA_HOME>/bin/java'
+    }
+
     It '冲突的独立 Adapter 证据不会被静默择一' {
         $first=New-TestRuntimeBindingEvidence @{AdapterId='FixtureA';Mode='SameAsBuildJvm';EvidenceSource='InspectionA';Confidence='High';RuntimeJavaControllable=$false;RequiresBuildJvmMatch=$true;ProbeStrategy='TaskInspection'}
         $second=New-TestRuntimeBindingEvidence @{AdapterId='FixtureB';Mode='ToolchainManaged';EvidenceSource='InspectionB';Confidence='High';RuntimeJavaControllable=$false;RequiresBuildJvmMatch=$false;ProbeStrategy='TaskInspection'}
@@ -79,6 +89,22 @@ Describe 'Runtime Binding contract' {
             $probe.runtimeJavaBinding.mode | Should -BeExactly 'Unknown'
             $probe.runtimeJavaBinding.probeStrategy | Should -BeExactly 'GradleJavaExecTaskInspection'
             $probe.runtimeJavaBinding.confidence | Should -BeExactly 'Unknown'
+        }
+    }
+
+    It 'Adapter 能保留 Runtime Binding Probe 产生的结构化证据' {
+        $binding=New-TestRuntimeBindingEvidence @{AdapterId='ForgeGradle';Mode='ToolchainManaged';EvidenceSource='GradleInitScriptJavaExecInspection';Confidence='High';RuntimeJavaControllable=$false;RequiresBuildJvmMatch=$false;ProbeStrategy='GradleJavaExecTaskInspection';EvidenceDetails=@([pscustomobject]@{task='runClient';taskType='JavaExec';launcherSource='javaLauncher'})}
+        $probes=@(
+            (Get-MmtlForgeAdapterProbe -Evidence @() -RuntimeJavaBinding $binding),
+            (Get-MmtlFabricAdapterProbe -Evidence @() -RuntimeJavaBinding $binding),
+            (Get-MmtlNeoForgeAdapterProbe -Evidence @() -RuntimeJavaBinding $binding),
+            (Get-MmtlQuiltAdapterProbe -Evidence @() -RuntimeJavaBinding $binding)
+        )
+        $probes.Count | Should -Be 4
+        foreach($probe in $probes){
+            $probe.runtimeJavaBinding.mode | Should -BeExactly 'ToolchainManaged'
+            $probe.runtimeJavaBinding.evidenceSource | Should -BeExactly 'GradleInitScriptJavaExecInspection'
+            $probe.runtimeJavaBinding.evidenceDetails[0].task | Should -BeExactly 'runClient'
         }
     }
 }
