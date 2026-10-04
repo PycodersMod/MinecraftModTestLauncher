@@ -39,6 +39,12 @@ if([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropSe
             (Test-MacOSTestProcessIdentity -Process $record -Record $reused) | Should -BeFalse
         }
 
+        It '兼容省略可选 ParentPID 的 Session 登记记录' {
+            $record=Get-MacOSTestProcessRecord -ProcessId $PID
+            $entry=[pscustomobject]@{PID=$PID;StartIdentity=$record.StartIdentity;StartTimeToken=$record.StartTimeToken;Executable=$record.Executable;CommandLine=$record.CommandLine}
+            (Test-MacOSTestProcessIdentity -Process $record -Record $entry) | Should -BeTrue
+        }
+
         It '跟踪并停止 dummy 父子进程且不影响未登记子进程' {
             $session=Join-Path $TestDrive 'sessions/tracked';New-Item -ItemType Directory -Path $session -Force|Out-Null
             $untracked=Start-Process -FilePath '/bin/sleep' -ArgumentList @('30') -PassThru

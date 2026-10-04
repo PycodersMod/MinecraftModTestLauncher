@@ -37,11 +37,16 @@ function Get-MmtlMacOSProcessSnapshot {
 function Test-MmtlMacOSProcessIdentity {
     [CmdletBinding()]
     param([Parameter(Mandatory)]$Process,[Parameter(Mandatory)]$Record)
-    $expected=if($Record.StartIdentity){[string]$Record.StartIdentity}else{[string]$Record.StartTimeToken}
-    $actual=if($Process.StartIdentity){[string]$Process.StartIdentity}else{[string]$Process.StartTimeToken}
-    if(-not $expected -or [int]$Process.PID -ne [int]$Record.PID -or $actual -cne $expected){return $false}
-    foreach($name in @('Executable','CommandLine')){if($Record.$name -and [string]$Record.$name -cne [string]$Process.$name){return $false}}
-    if($Record.ParentPID -and [int]$Record.ParentPID -ne [int]$Process.ParentPID){return $false}
+    $processPidProperty=$Process.PSObject.Properties['PID'];$recordPidProperty=$Record.PSObject.Properties['PID']
+    if(-not $processPidProperty -or -not $recordPidProperty){return $false}
+    $recordIdentityProperty=$Record.PSObject.Properties['StartIdentity'];$recordTokenProperty=$Record.PSObject.Properties['StartTimeToken']
+    $processIdentityProperty=$Process.PSObject.Properties['StartIdentity'];$processTokenProperty=$Process.PSObject.Properties['StartTimeToken']
+    $expected=if($recordIdentityProperty -and $recordIdentityProperty.Value){[string]$recordIdentityProperty.Value}elseif($recordTokenProperty){[string]$recordTokenProperty.Value}else{''}
+    $actual=if($processIdentityProperty -and $processIdentityProperty.Value){[string]$processIdentityProperty.Value}elseif($processTokenProperty){[string]$processTokenProperty.Value}else{''}
+    if(-not $expected -or [int]$processPidProperty.Value -ne [int]$recordPidProperty.Value -or $actual -cne $expected){return $false}
+    foreach($name in @('Executable','CommandLine')){$recordProperty=$Record.PSObject.Properties[$name];$processProperty=$Process.PSObject.Properties[$name];if($recordProperty -and $recordProperty.Value -and (-not $processProperty -or [string]$recordProperty.Value -cne [string]$processProperty.Value)){return $false}}
+    $recordParentProperty=$Record.PSObject.Properties['ParentPID'];$processParentProperty=$Process.PSObject.Properties['ParentPID']
+    if($recordParentProperty -and $recordParentProperty.Value -and (-not $processParentProperty -or [int]$recordParentProperty.Value -ne [int]$processParentProperty.Value)){return $false}
     return $true
 }
 
