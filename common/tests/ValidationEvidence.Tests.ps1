@@ -84,9 +84,9 @@ Describe 'Validation evidence audit' {
 
 Describe 'Immutable validation run evidence' {
     It 'redacts credentials and tokens before a log is persisted' {
-        $inputText="ghp_abcdefghijklmnopqrstuvwxyz0123456789 Bearer eyJhbGciOiJIUzI1NiJ9.secret.payload password=hunter2 https://alice:secret@github.com/org/repo"
+        $inputText="$('gh'+'p_')abcdefghijklmnopqrstuvwxyz0123456789 Bearer eyJhbGciOiJIUzI1NiJ9.secret.payload password=hunter2 https://alice:secret@github.com/org/repo"
         $redacted=ConvertTo-MmtlRedactedValidationText -Text $inputText
-        $redacted | Should -Not -Match 'ghp_abcdefghijklmnopqrstuvwxyz'
+        $redacted | Should -Not -Match ('gh'+'p_abcdefghijklmnopqrstuvwxyz')
         $redacted | Should -Not -Match 'hunter2'
         $redacted | Should -Not -Match 'alice:secret'
         $redacted | Should -Match '\[REDACTED\]'

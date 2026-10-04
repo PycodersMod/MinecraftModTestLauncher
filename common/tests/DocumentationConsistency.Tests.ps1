@@ -3,11 +3,11 @@ BeforeAll {
 }
 
 Describe 'Public documentation consistency' {
-    It 'keeps Phase A through F implementation boundaries aligned in README and architecture docs' {
+    It 'keeps the user README free of phase-by-phase development history' {
         $readme=Get-Content (Join-Path $script:repoRoot 'README.md') -Raw
         $architecture=Get-Content (Join-Path $script:repoRoot 'docs/architecture-v2.md') -Raw
-        foreach($phase in 'A','B','C','D','E','F'){$readme | Should -Match "(?i)(?:Phase|阶段) $phase";$architecture | Should -Match "(?i)(?:Phase|阶段) $phase"}
-        $readme | Should -Match '(?:Phase|阶段) F 已完成'
+        $readme | Should -Not -Match '(?i)(?:Phase|阶段) [A-K]'
+        foreach($phase in 'A','B','C','D','E','F'){$architecture | Should -Match "(?i)(?:Phase|阶段) $phase"}
         $architecture | Should -Match 'Phase F 完成'
         $architecture | Should -Not -Match 'Linux/macOS Runtime、路径 provider、进程树实现、launcher\.sh。'
     }

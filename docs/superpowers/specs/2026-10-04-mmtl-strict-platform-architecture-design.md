@@ -6,7 +6,7 @@
 
 ## 当前基线与缺陷
 
-- 12 个仓库的本地 `main`、`origin/main` 和 GitHub `main` SHA 相同，工作树干净；本地新提交身份为 `ZYQ-2020` 与该账号的 GitHub noreply 邮箱。
+- 12 个仓库的本地 `main`、`origin/main` 和 GitHub `main` SHA 相同，工作树干净；本地新提交使用已验证的主账号 noreply 身份。
 - 10 个 Mod README 的 Loader 与 Minecraft 目标目前链接到外部官网；模板表达式泄漏到 10 个 README 的项目说明与构建命令中。未发现生成这些 README 的受跟踪 generator。
 - 10 个 `introduction.md` 当前均为中文单语，需改为先完整英文、后完整中文，内容依据源码和现有公开文档，不补写未实现功能。
 - MMTL 当前 `src/`、`tests/`、`schemas/`、`fixtures/` 与三个 launcher 位于根部；`src/Platform/Platform.psm1` 混合检测 OS、路径行为、Runtime Root、内存查询和能力声明，ProcessManager/RuntimeManager 直接选择 OS 模块；common 核心还包含 WSL 检测和 OS-specific 实现分支。
