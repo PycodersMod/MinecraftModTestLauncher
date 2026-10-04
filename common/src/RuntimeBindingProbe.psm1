@@ -45,6 +45,25 @@ function Get-MmtlProbeGitState {
     [pscustomobject]@{isGitRepository=$true;sha=([string]($shaText -join '')).Trim();dirty=(@($status).Count -gt 0)}
 }
 
+function Get-MmtlCachedRuntimeBindingEvidence {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][string]$ProjectRoot,[Parameter(Mandatory)][string]$RuntimeRoot)
+    $projectFull=[IO.Path]::GetFullPath($ProjectRoot)
+    $state=Get-MmtlProbeGitState -ProjectRoot $projectFull
+    if(-not $state.isGitRepository -or $state.dirty){return $null}
+    $directory=Join-Path ([IO.Path]::GetFullPath($RuntimeRoot)) 'diagnostics/runtime-binding/evidence'
+    if(-not (Test-Path -LiteralPath $directory -PathType Container)){return $null}
+    if((Get-Item -LiteralPath $directory -Force).Attributes -band [IO.FileAttributes]::ReparsePoint){return $null}
+    foreach($file in (Get-ChildItem -LiteralPath $directory -Filter '*.json' -File | Sort-Object LastWriteTimeUtc -Descending)){
+        if($file.Attributes -band [IO.FileAttributes]::ReparsePoint){continue}
+        try{
+            $item=Get-Content -LiteralPath $file.FullName -Raw|ConvertFrom-Json -ErrorAction Stop
+            if([string]$item.projectRoot -ceq $projectFull -and [string]$item.projectSha -ceq $state.sha -and $item.dirty -eq $false -and $item.runtimeJavaBinding){return $item}
+        }catch{}
+    }
+    return $null
+}
+
 function New-MmtlRuntimeBindingGradleInitScript {
     @'
 gradle.taskGraph.whenReady {
@@ -257,4 +276,4 @@ function Invoke-MmtlRuntimeBindingProbe {
     return $result
 }
 
-Export-ModuleMember -Function Invoke-MmtlRuntimeBindingProbe
+Export-ModuleMember -Function Invoke-MmtlRuntimeBindingProbe,Get-MmtlCachedRuntimeBindingEvidence

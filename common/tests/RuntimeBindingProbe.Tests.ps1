@@ -89,6 +89,19 @@ Describe 'Runtime Binding 安全探测' {
         $state.invocations | Should -Be 1
     }
 
+    It 'Launch Preflight 只消费当前干净 SHA 的本地 probe evidence' {
+        $root=Join-Path $TestDrive 'trusted-project';$project=New-TestBindingProject -Root $root
+        $runtime=Join-Path $TestDrive 'runtime-evidence-read';$output='MMTL_RUNTIME_BINDING_JSON:{"tasks":[{"task":"runClient","taskType":"org.gradle.api.tasks.JavaExec","isJavaExec":true,"launcherSource":"javaLauncher","executable":"<JAVA_HOME>/bin/java"}],"buildJavaHome":"<JAVA_HOME>"}'
+        $invoke={ param($request) [pscustomobject]@{exitCode=0;output=@($output)} }.GetNewClosure()
+        $null=Invoke-TestRuntimeBindingProbe -Project $project -Plan (New-TestBindingPlan) -RuntimeRoot $runtime -TrustedProjectRoots @((Split-Path $root -Parent)) -GradleInvoker $invoke
+
+        $cached=Get-MmtlCachedRuntimeBindingEvidence -ProjectRoot $root -RuntimeRoot $runtime
+
+        $cached.runtimeJavaBinding.mode | Should -BeExactly 'SameAsBuildJvm'
+        Set-Content -LiteralPath (Join-Path $root 'build.gradle') -Value 'changed after evidence'
+        Get-MmtlCachedRuntimeBindingEvidence -ProjectRoot $root -RuntimeRoot $runtime | Should -BeNullOrEmpty
+    }
+
     It '默认执行器在隔离子进程中使用 Plan 的 JDK 且清理临时 init script' {
         $root=Join-Path $TestDrive 'trusted-project';$project=New-TestBindingProject -Root $root
         $javaHome=Join-Path $TestDrive 'build-java';$bin=Join-Path $javaHome 'bin';New-Item -ItemType Directory -Path $bin -Force|Out-Null

@@ -37,7 +37,7 @@ $portable=($Arguments -contains '--portable') -and -not ($configPath -and (Test-
 if($Arguments -contains '--help' -or $Arguments -contains '-h'){
     Write-Host 'Minecraft 模组测试启动器';Write-Host '用法：launcher.cmd / launcher.sh [--plan|--explain-java|--validate|--dry-run|--build|--launch] [--profile NAME]';Write-Host '执行计划：--plan [--json] [--plan-output <path>]；Java 解析：--explain-java [--json]';Write-Host '工作区发现：--discover-projects <workspace-or-repository> [--json]';Write-Host '版本目录：--list-minecraft-versions | --minecraft-info <id|CurrentStable> | --refresh-catalog';Write-Host '加载器：--list-loaders <mc> [--include-historical] | --loader-info <mc> <loader> | --provider-status <loader>';Write-Host '覆盖审计：';foreach($option in Get-MmtlCoverageCliOptionDefinitions){Write-Host "  $($option.usage) — $($option.description)"};Write-Host '深度验证：--validation-plan --scope P0|CurrentStable | --validation-matrix <target-definitions.json> [--validation-output <path>] | --validation-summary [--validation-version <mc>] [--validation-loader <id>]';Write-Host '历史生态提供器仅使用 HTTPS 元数据与缓存；不会自动执行仅提供 HTTP 的制品。';Write-Host '离线选项：--catalog-offline 仅影响 Mojang 版本目录；--loader-offline 仅影响加载器元数据；均不改变 Gradle 离线模式。';Write-Host '会话：--list-sessions [--json] | --session-info ID [--json] | --session-validate ID | --stop ID | --clean-session ID';Write-Host '运行目录：--portable';Write-Host '不传参数时进入交互模式；--config-file 仅供临时配置调用。';exit 0
 }
-$readOnlyPlanMode=($Arguments -contains '--plan' -or $Arguments -contains '--explain-java')
+$readOnlyPlanMode=($Arguments -contains '--plan' -or $Arguments -contains '--explain-java' -or $Arguments -contains '--launch-check' -or $Arguments -contains '--runtime-binding')
 $config=if(Test-Path $configPath){Read-MmtlConfig -Path $configPath -AllowInvalidProfiles:$readOnlyPlanMode}else{$null}
 $runtimeConfigured=if($config -and $config.runtimeRoot){[string]$config.runtimeRoot}else{''}
 $runtimeRoot=Resolve-MmtlRuntimeRoot -Path $runtimeConfigured -Portable:$portable -LauncherRoot $here
@@ -262,11 +262,45 @@ function New-MmtlCliExecutionPlan {
     $context.capabilities|Add-Member -NotePropertyName Launch -NotePropertyValue $launchCapability -Force
     $physicalMemory=0L;try{$physicalMemory=[long](Get-MmtlPhysicalMemoryMb)}catch{}
     $parameters=@{Project=$Primary;Profile=$Profile;Config=$Config;Platform=$context;RuntimeRoot=$RuntimeRoot;ProfileName=$Name;CatalogEntry=$catalogEntry;VersionMetadata=$versionMetadata;MetadataWarning=$metadataWarning;PhysicalMemoryMb=$physicalMemory}
+    $cachedBinding=Get-MmtlCachedRuntimeBindingEvidence -ProjectRoot ([string]$Primary.Root) -RuntimeRoot $RuntimeRoot
+    if($cachedBinding){$parameters.AdapterEvidence=[pscustomobject]@{runtimeJavaBindingMode=[string]$cachedBinding.runtimeJavaBinding.mode;runtimeJavaBindingEvidence=$cachedBinding.runtimeJavaBinding}}
     if($RequireBuild){$parameters.BuildRequired=$true}
     if($Clean){$parameters.CleanBuild=$true}
     return New-MmtlExecutionPlan @parameters
 }
 $planProfileName=if($profileName){$profileName}else{[string]$config.defaultProfile}
+if($Arguments -contains '--launch-check'){
+    $executionPlan=New-MmtlCliExecutionPlan -Primary $project -Profile $profile -Config $config -RuntimeRoot $runtimeRoot -Name $planProfileName
+    if($Arguments -contains '--json'){$executionPlan|ConvertTo-Json -Depth 100}else{
+        Write-Host "项目：$($executionPlan.repository.identity)"
+        Write-Host "Minecraft：$($executionPlan.project.minecraftId)；Loader：$($executionPlan.project.loader.id) $($executionPlan.project.loader.version)；模式：$($executionPlan.profile.mode)"
+        Write-Host "BuildReady：$($executionPlan.capabilityGates.buildReady)；LaunchReady：$($executionPlan.capabilityGates.launchReady)"
+        Write-Host "Build Java：$($executionPlan.buildJava.resolution.status) $($executionPlan.buildJava.resolution.actualMajor)；Runtime Java：$($executionPlan.runtimeJava.resolution.status) $($executionPlan.runtimeJava.resolution.actualMajor)；绑定：$($executionPlan.runtimeJava.bindingMode)"
+        Write-Host "内存：$($executionPlan.runtime.memory.requestedMb)/$($executionPlan.runtime.memory.limitMb) MB；端口策略：$($executionPlan.network.portPolicy)；平台 Launch：$($executionPlan.platform.capabilities.Launch)"
+        foreach($reason in $executionPlan.launchBlockingReasons){Write-Host "阻塞 [$($reason.code)]：$($reason.messageZh)"}
+        foreach($warning in $executionPlan.launchWarnings){Write-Host "提示 [$($warning.code)]：$($warning.messageZh)"}
+        foreach($role in $executionPlan.runtime.roles){Write-Host "角色 $($role.role)：LaunchReady=$($role.launchReady)；阻塞=$($role.blockingReasons -join ', ')"}
+        Write-Host 'LaunchReady 仅表示预检门禁通过，不代表 CLIENT_LAUNCH_VERIFIED。'
+    }
+    if(-not $executionPlan.capabilityGates.launchReady){exit 2};exit 0
+}
+if($Arguments -contains '--runtime-binding'){
+    $executionPlan=New-MmtlCliExecutionPlan -Primary $project -Profile $profile -Config $config -RuntimeRoot $runtimeRoot -Name $planProfileName
+    $probeResult=$null
+    if($Arguments -contains '--probe'){
+        $probeResult=Invoke-MmtlRuntimeBindingProbe -Project $project -Plan $executionPlan -RuntimeRoot $runtimeRoot -TrustedProjectRoots @([string]$project.Root) -Offline
+        $bindingMode=[string]$probeResult.runtimeJavaBinding.mode;$bindingEvidence=$probeResult.runtimeJavaBinding
+    }else{$bindingMode=[string]$executionPlan.runtimeJava.bindingMode;$bindingEvidence=$executionPlan.runtimeJava.bindingEvidence}
+    $buildMajor=$executionPlan.buildJava.resolution.actualMajor;$runtimeMajor=$executionPlan.runtimeJava.resolution.actualMajor
+    $compatibility=if($bindingMode -eq 'SameAsBuildJvm' -and $buildMajor -and $runtimeMajor -and $buildMajor -eq $runtimeMajor){'Compatible'}elseif($bindingMode -eq 'SameAsBuildJvm' -and $buildMajor -and $runtimeMajor){'RUNTIME_JAVA_BINDING_MISMATCH'}elseif($bindingMode -eq 'Unknown'){'Unknown'}elseif($bindingMode -eq 'ToolchainManaged'){'ProviderRequired'}else{'RuntimeJavaResolved'}
+    $bindingOutput=[ordered]@{mode=$bindingMode;evidence=$bindingEvidence;buildJavaMajor=$buildMajor;runtimeJavaMajor=$runtimeMajor;compatibility=$compatibility;probe=$probeResult}
+    if($Arguments -contains '--json'){$bindingOutput|ConvertTo-Json -Depth 60}else{
+        Write-Host "Runtime Java Binding：$bindingMode；兼容性：$compatibility"
+        if($bindingEvidence){Write-Host "证据来源：$($bindingEvidence.evidenceSource)；置信度：$($bindingEvidence.confidence)；方法：$($bindingEvidence.probeStrategy)"}
+        if($probeResult){Write-Host "探测状态：$($probeResult.status)；任务：$($probeResult.taskNames -join ', ')；缓存命中：$($probeResult.cacheHit)；错误码：$($probeResult.errorCode)"}
+    }
+    if($probeResult -and $probeResult.status -notin @('Observed','TaskNotFound')){exit 2};exit 0
+}
 if($Arguments -contains '--validate') {
     $executionPlan=New-MmtlCliExecutionPlan -Primary $project -Profile $profile -Config $config -RuntimeRoot $runtimeRoot -Name $planProfileName
     $checked=Test-MmtlExecutionPlan -Plan $executionPlan

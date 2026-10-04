@@ -183,6 +183,36 @@ Describe '统一 Execution Planner' {
         $plan.blockingReasons.code | Should -Contain 'RUNTIME_JAVA_BINDING_MISMATCH'
     }
 
+    It 'SameAsBuildJvm 满足相同 Java requirement 时保留 binding evidence 并允许 Launch' {
+        $input=New-TestPlannerInputs
+        $input.project.RuntimeJavaRequirement=[pscustomobject]@{purpose='RuntimeJava';major=17;requirementKind='Exact';source='MojangVersionMetadata';confidence='High'}
+        $binding=[pscustomobject]@{mode='SameAsBuildJvm';evidenceSource='GradleInitScriptJavaExecInspection';confidence='High';evidenceDetails=@([pscustomobject]@{task='runClient';taskType='org.gradle.api.tasks.JavaExec'})}
+        $input.AdapterEvidence=[pscustomobject]@{runtimeJavaBindingMode='SameAsBuildJvm';runtimeJavaBindingEvidence=$binding}
+
+        $plan=New-MmtlExecutionPlan @input
+
+        $plan.capabilityGates.buildReady | Should -BeTrue
+        $plan.capabilityGates.launchReady | Should -BeTrue
+        $plan.runtimeJava.requirement.major | Should -Be 17
+        $plan.runtimeJava.bindingEvidence.evidenceSource | Should -BeExactly 'GradleInitScriptJavaExecInspection'
+        $plan.blockingReasons.code | Should -Not -Contain 'RUNTIME_JAVA_BINDING_MISMATCH'
+    }
+
+    It 'IntegratedLAN 分别暴露 Host 就绪和需要认证的 Guest 阻塞' {
+        $input=New-TestPlannerInputs
+        $input.profile.mode='IntegratedLAN';$input.profile.players=2
+        $input.project.RuntimeJavaRequirement=[pscustomobject]@{purpose='RuntimeJava';major=17;requirementKind='Exact';source='MojangVersionMetadata';confidence='High'}
+        $input.AdapterEvidence=[pscustomobject]@{runtimeJavaBindingMode='SameAsBuildJvm';runtimeJavaBindingEvidence=[pscustomobject]@{mode='SameAsBuildJvm';evidenceSource='Fixture';confidence='High'}}
+
+        $plan=New-MmtlExecutionPlan @input
+
+        $plan.runtime.roles[0].launchReady | Should -BeTrue
+        $plan.runtime.roles[1].launchReady | Should -BeFalse
+        $plan.runtime.roles[1].blockingReasons | Should -Contain 'AUTH_REQUIRED'
+        $plan.capabilityGates.launchReady | Should -BeFalse
+        $plan.launchBlockingReasons.code | Should -Contain 'AUTH_REQUIRED'
+    }
+
     It 'Linux WSL 保留 BuildReady 并按注入 Launch capability 阻止 launch' {
         $input=New-TestPlannerInputs
         $input.platform=[pscustomobject]@{os='Linux';arch='x64';isWSL=$true;capabilities=[pscustomobject]@{Build='Native';Launch='BuildOnly'}}

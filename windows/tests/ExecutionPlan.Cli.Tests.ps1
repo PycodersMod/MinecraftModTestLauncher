@@ -51,6 +51,27 @@ Describe 'Execution Plan CLI' {
         $explanation.runtimeJava.bindingMode | Should -BeExactly 'Unknown'
     }
 
+    It '--launch-check --json 仅输出 Launch Preflight JSON，Blocked 使用稳定退出码 2' {
+        $output=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --launch-check --json 2>&1|Out-String
+
+        $LASTEXITCODE | Should -Be 2
+        $check=$output|ConvertFrom-Json -ErrorAction Stop
+        $check.capabilityGates.buildReady | Should -BeTrue
+        $check.capabilityGates.launchReady | Should -BeFalse
+        $check.launchBlockingReasons.code | Should -Contain 'RUNTIME_JAVA_BINDING_UNKNOWN'
+        Test-Path -LiteralPath $script:runtimeRoot | Should -BeFalse
+    }
+
+    It '--runtime-binding --json 在无可信 Probe 证据时保留 Unknown' {
+        $output=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --runtime-binding --json 2>&1|Out-String
+
+        $LASTEXITCODE | Should -Be 0
+        $binding=$output|ConvertFrom-Json -ErrorAction Stop
+        $binding.mode | Should -BeExactly 'Unknown'
+        $binding.compatibility | Should -BeExactly 'Unknown'
+        Test-Path -LiteralPath $script:runtimeRoot | Should -BeFalse
+    }
+
     It '--dry-run 与 --validate 消费同一 Planner 且不创建 Session 或 Runtime' {
         $dry = & $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --dry-run 2>&1 | Out-String
         if($LASTEXITCODE -ne 0){throw "dry-run exit=$LASTEXITCODE`n$dry"}

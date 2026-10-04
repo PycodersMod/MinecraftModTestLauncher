@@ -190,6 +190,15 @@ function New-MmtlExecutionPlan {
     $launchReady=($launchReasons.Count -eq 0 -and ($buildProfileRequired -eq $false -or $buildReady))
     $planStatus=if($launchReady){'Ready'}elseif($buildReady){'BuildReadyLaunchBlocked'}else{'Blocked'}
     $bindingEvidence=Get-MmtlPlannerProperty $AdapterEvidence 'runtimeJavaBindingEvidence' (Get-MmtlPlannerProperty $Project 'RuntimeJavaBindingEvidence')
+    $roleRecords=@($roles|ForEach-Object{
+        $roleReasons=@($launchReasons)
+        if($mode -eq 'IntegratedLAN' -and $_.role -eq 'Host'){$roleReasons=@($roleReasons|Where-Object{$_ -ne 'AUTH_REQUIRED'})}
+        if($mode -eq 'Dedicated' -and $_.role -ne 'Server'){$roleReasons=@($roleReasons|Where-Object{$_ -ne 'EULA_NOT_PREAUTHORIZED'})}
+        $roleBuildReady=($buildProfileRequired -eq $false -or $buildReady)
+        [pscustomobject][ordered]@{role=$_.role;username=$_.username;launchReady=($roleBuildReady -and $roleReasons.Count -eq 0);blockingReasons=$roleReasons}
+    })
+    $launchBlockingReasons=@($blockArray|Where-Object{$_.action -eq 'Launch'})
+    $launchWarnings=@($warnings|Where-Object{$_.action -eq 'Launch'})
     $identity=[string](Get-MmtlPlannerProperty $Project 'ModId' '')
     if (-not $identity) { $identity=[IO.Path]::GetFileName($repositoryRoot) }
     $profileNameValue=if($ProfileName){$ProfileName}else{[string](Get-MmtlPlannerProperty $Config 'defaultProfile' 'default')}
@@ -219,11 +228,11 @@ function New-MmtlExecutionPlan {
         runtimeJava=[pscustomobject][ordered]@{requirement=$runtimeRequirement;resolution=$runtimeResolution;bindingMode=$binding;bindingEvidence=$bindingEvidence}
         profile=[pscustomobject]$profileRecord
         build=[pscustomobject][ordered]@{required=$buildProfileRequired;clean=$clean;task=[string](Get-MmtlPlannerProperty $Project 'BuildTask' 'build');wrapper=[IO.Path]::GetFileName([string](Get-MmtlPlannerProperty $Project 'WrapperPath' 'gradlew'));artifactExpectation='one-mod-jar'}
-        runtime=[pscustomobject][ordered]@{roles=@($roles);runtimeDirectories=$runtimeDirectories;memory=$memory;jvmArgs=$jvmArgs;gameArgs=$gameArgs}
+        runtime=[pscustomobject][ordered]@{roles=@($roleRecords);runtimeDirectories=$runtimeDirectories;memory=$memory;jvmArgs=$jvmArgs;gameArgs=$gameArgs}
         network=[pscustomobject][ordered]@{portPolicy=$portPolicy;fixedPort=$fixedPort;bindPolicy='Loopback'}
         session=[pscustomobject][ordered]@{intendedMode=$mode}
         capabilityGates=[pscustomobject][ordered]@{buildReady=$buildReady;launchReady=$launchReady;buildReasons=@($buildReasons);launchReasons=@($launchReasons)}
-        blockingReasons=$blockArray;warnings=@($warnings.ToArray());provenance=[pscustomobject][ordered]@{runtimeJavaSource=$runtimeRequirement.source;metadataStatus=$versionStatus;metadataProvenance=$versionSource;runtimeJavaBindingEvidence=$bindingEvidence}
+        blockingReasons=$blockArray;warnings=@($warnings.ToArray());launchBlockingReasons=$launchBlockingReasons;launchWarnings=$launchWarnings;provenance=[pscustomobject][ordered]@{runtimeJavaSource=$runtimeRequirement.source;metadataStatus=$versionStatus;metadataProvenance=$versionSource;runtimeJavaBindingEvidence=$bindingEvidence}
     }
     $plan.semanticDigest=Get-MmtlExecutionPlanSemanticDigest -Plan $plan
     $plan.planId='plan-'+$plan.semanticDigest.Substring(7,16)
