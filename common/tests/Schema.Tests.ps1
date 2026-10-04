@@ -133,6 +133,26 @@ Describe 'MMTL v2 JSON Schemas' {
         { Read-MmtlConfig -Path $path } | Should -Throw '*正整数 major*'
     }
 
+    It '只读 Plan 模式可读取并解释无效 Profile，而常规配置读取继续拒绝' {
+        $path=Join-Path $TestDrive 'invalid-profile-plan.json'
+        $config=@{configVersion=2;defaultProfile='test';javaHomes=@{'17'='/jdk-17'};profiles=@{test=@{project='demo';mode='Invented';players=0}}}
+        $config|ConvertTo-Json -Depth 10|Set-Content -LiteralPath $path
+        {Read-MmtlConfig -Path $path}|Should -Throw '*mode 无效*'
+        $read=Read-MmtlConfig -Path $path -AllowInvalidProfiles
+        $read.profiles.test.mode | Should -BeExactly 'Invented'
+    }
+
+    It 'Config v2 的 Runtime Java override 可选、可读且要求正整数 major' {
+        $path=Join-Path $TestDrive 'runtime-java-override.json'
+        $config=@{configVersion=2;defaultProfile='test';javaHomes=@{'17'='/jdk-17'};profiles=@{test=@{project='demo';mode='Single';players=1;runtimeJavaOverride=@{major=21;component='java-runtime-gamma'}}}}
+        $config|ConvertTo-Json -Depth 10|Set-Content -LiteralPath $path
+        (Test-Json -Json (Get-Content $path -Raw) -SchemaFile $script:configSchema) | Should -BeTrue
+        (Read-MmtlConfig -Path $path).profiles.test.runtimeJavaOverride.major | Should -Be 21
+        $config.profiles.test.runtimeJavaOverride.major=0
+        $config|ConvertTo-Json -Depth 10|Set-Content -LiteralPath $path
+        { Read-MmtlConfig -Path $path } | Should -Throw '*runtimeJavaOverride*'
+    }
+
     It 'normalized Mojang Catalog schema accepts canonical release metadata and provenance' {
         $catalog=[ordered]@{
             schemaVersion=1;source='https://piston-meta.mojang.com/mc/game/version_manifest_v2.json';fetchedAt='2026-10-01T00:00:00Z';manifestHash=('a'*64);latestRelease='26.3';latestSnapshot='26.4-snapshot-2';minimumReleaseId='1.0'

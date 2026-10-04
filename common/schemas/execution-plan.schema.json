@@ -4,9 +4,10 @@
   "title": "MMTL Execution Plan",
   "description": "版本化的构建与运行计划；本机解析信息只存在于本地 Plan 实例。",
   "type": "object",
-  "required": ["schemaVersion", "planId", "semanticDigest", "createdAt", "platform", "repository", "project", "buildJava", "runtimeJava", "profile", "build", "runtime", "network", "session", "capabilityGates", "blockingReasons", "warnings", "provenance"],
+  "required": ["schemaVersion", "status", "planId", "semanticDigest", "createdAt", "platform", "repository", "project", "buildJava", "runtimeJava", "profile", "build", "runtime", "network", "session", "capabilityGates", "blockingReasons", "warnings", "provenance"],
   "properties": {
     "schemaVersion": {"const": 1},
+    "status": {"enum": ["Ready", "BuildReadyLaunchBlocked", "Blocked"]},
     "planId": {"type": "string", "minLength": 1},
     "semanticDigest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
     "createdAt": {"type": "string", "format": "date-time"},
@@ -19,7 +20,7 @@
     "build": {"$ref": "#/$defs/build"},
     "runtime": {"$ref": "#/$defs/runtime"},
     "network": {"$ref": "#/$defs/network"},
-    "session": {"type": "object", "required": ["intendedMode"], "properties": {"intendedMode": {"enum": ["Single", "IntegratedLAN", "Dedicated"]}}},
+    "session": {"type": "object", "required": ["intendedMode"], "properties": {"intendedMode": {"type": "string"}}},
     "capabilityGates": {"type": "object", "required": ["buildReady", "launchReady"], "properties": {"buildReady": {"type": "boolean"}, "launchReady": {"type": "boolean"}, "buildReasons": {"type": "array", "items": {"type": "string"}}, "launchReasons": {"type": "array", "items": {"type": "string"}}}},
     "blockingReasons": {"type": "array", "items": {"$ref": "#/$defs/diagnostic"}},
     "warnings": {"type": "array", "items": {"$ref": "#/$defs/diagnostic"}},
@@ -34,9 +35,9 @@
     "javaResolution": {"type": "object", "required": ["status", "javaPath", "home", "actualMajor", "exactVersion", "vendor", "os", "arch", "reasonCode"], "properties": {"status": {"enum": ["Resolved", "Unresolved"]}, "javaPath": {"type": ["string", "null"]}, "home": {"type": ["string", "null"]}, "actualMajor": {"type": ["integer", "null"], "minimum": 1}, "exactVersion": {"type": ["string", "null"]}, "vendor": {"type": ["string", "null"]}, "os": {"type": "string"}, "arch": {"type": ["string", "null"]}, "reasonCode": {"type": ["string", "null"]}, "source": {"type": ["string", "null"]}}},
     "javaTrack": {"type": "object", "required": ["requirement", "resolution"], "properties": {"requirement": {"$ref": "#/$defs/javaRequirement"}, "resolution": {"$ref": "#/$defs/javaResolution"}}},
     "runtimeJava": {"type": "object", "required": ["requirement", "resolution", "bindingMode"], "properties": {"requirement": {"$ref": "#/$defs/javaRequirement"}, "resolution": {"$ref": "#/$defs/javaResolution"}, "bindingMode": {"enum": ["Direct", "ToolchainManaged", "SameAsBuildJvm", "Unsupported", "Unknown"]}}},
-    "profile": {"type": "object", "required": ["name", "mode", "players"], "properties": {"name": {"type": "string"}, "mode": {"enum": ["Single", "IntegratedLAN", "Dedicated"]}, "players": {"type": "integer", "minimum": 1}, "jvmArgs": {"type": "array", "items": {"type": "string"}}, "gameArgs": {"type": "array", "items": {"type": "string"}}, "acceptEula": {"type": "boolean"}}},
+    "profile": {"type": "object", "required": ["name", "mode", "players"], "properties": {"name": {"type": "string"}, "mode": {"type": "string"}, "players": {"type": "integer"}, "jvmArgs": {"type": "array", "items": {"type": "string"}}, "gameArgs": {"type": "array", "items": {"type": "string"}}, "acceptEula": {"type": "boolean"}}},
     "build": {"type": "object", "required": ["required", "clean", "task", "wrapper", "artifactExpectation"], "properties": {"required": {"type": "boolean"}, "clean": {"type": "boolean"}, "task": {"type": "string"}, "wrapper": {"type": "string"}, "artifactExpectation": {"type": "string"}}},
-    "runtime": {"type": "object", "required": ["roles", "runtimeDirectories", "memory", "jvmArgs", "gameArgs"], "properties": {"roles": {"type": "array", "items": {"type": "string"}}, "runtimeDirectories": {"type": "array", "items": {"type": "object", "required": ["role", "path"], "properties": {"role": {"type": "string"}, "path": {"type": "string"}, "relativePath": {"type": "string"}}}}, "memory": {"type": "object"}, "jvmArgs": {"type": "array", "items": {"type": "string"}}, "gameArgs": {"type": "array", "items": {"type": "string"}}}},
+    "runtime": {"type": "object", "required": ["roles", "runtimeDirectories", "memory", "jvmArgs", "gameArgs"], "properties": {"roles": {"type": "array", "items": {"type": "object", "required": ["role", "username"], "properties": {"role": {"type": "string"}, "username": {"type": "string"}}}}, "runtimeDirectories": {"type": "array", "items": {"type": "object", "required": ["role", "path"], "properties": {"role": {"type": "string"}, "username": {"type": "string"}, "path": {"type": "string"}, "relativePath": {"type": "string"}}}}, "memory": {"type": "object"}, "jvmArgs": {"type": "array", "items": {"type": "string"}}, "gameArgs": {"type": "array", "items": {"type": "string"}}}},
     "network": {"type": "object", "required": ["portPolicy", "bindPolicy"], "properties": {"portPolicy": {"type": "string"}, "fixedPort": {"type": ["integer", "null"], "minimum": 1, "maximum": 65535}, "bindPolicy": {"type": "string"}}},
     "diagnostic": {"type": "object", "required": ["code", "action", "messageZh"], "properties": {"code": {"type": "string", "pattern": "^[A-Z0-9_]+$"}, "action": {"enum": ["Build", "Launch", "Plan"]}, "messageZh": {"type": "string"}, "source": {"type": ["string", "null"]}}}
   }

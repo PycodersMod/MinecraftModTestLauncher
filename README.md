@@ -57,6 +57,10 @@ Phase G 增加独立的 validation matrix 与 immutable per-run evidence schema�
 
 深度 fixture 构建通过 GitHub Actions 手动或半月调度运行，不成为每个 PR 的必需大型 build。每份成功构建证据含主产物 SHA-256；客户端与服务端等级还需要对应真实运行 marker 和进程/端口证据。
 
+### 阶段 H — 可复现执行计划与 Session 生命周期
+
+Phase H 增加规范化 Execution Plan、Build Java/Runtime Java 双轨解析和 Session Manifest v2。`--plan` / `--explain-java` 默认离线读取 Mojang 缓存；不会运行 Java/Gradle、创建 Session 或分配 Auto 端口。Plan 的语义 SHA-256 摘要不依赖工作区和 JDK 安装路径。没有可审计的 Adapter Runtime Java 绑定证据时，Launch gate 保持关闭，Build 仍可独立判断。Session v2 绑定创建时的 Plan 摘要和文件哈希，保留 v1 文件供旧 Session 只读兼容。详见 [docs/execution-plan-session.md](docs/execution-plan-session.md)。
+
 - 已实现 Forge、NeoForge、Fabric 项目元数据识别、Java 主版本映射、Profile、兼容性预检和 build/run Gradle Wrapper 调用。
 - 支持 Single、IntegratedLAN 引导式 Host/Client，以及 Dedicated Server 加本地客户端；多项目构建结果按 SHA-256 汇入独立 Session。
 - IntegratedLAN 由用户在 Host 游戏中创建或打开世界并手动发布 LAN；Host 是否允许命令以游戏中创建/发布世界时的选项为准，启动器检测游戏日志端口后启动本地客户端，不模拟鼠标点击。

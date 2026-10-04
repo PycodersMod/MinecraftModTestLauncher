@@ -1,0 +1,74 @@
+Set-StrictMode -Version Latest
+Import-Module (Join-Path $PSScriptRoot 'Execution/ExecutionPlan.psm1') -Force
+
+function Assert-MmtlSessionV2PathNoReparse {
+    param([Parameter(Mandatory)][string]$Path)
+    $full=[IO.Path]::GetFullPath($Path);$drive=[IO.Path]::GetPathRoot($full);$current=$drive
+    foreach($part in ($full.Substring($drive.Length) -split '[\\/]' | Where-Object {$_})){
+        $current=Join-Path $current $part
+        if(Test-Path -LiteralPath $current){$item=Get-Item -LiteralPath $current -Force;if(($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -or $item.LinkType){throw "SESSION_PATH_REPARSE_POINT: $current"}}
+    }
+    return $true
+}
+
+function Get-MmtlSessionV2Paths {
+    param([Parameter(Mandatory)][string]$SessionPath)
+    $session=[IO.Path]::GetFullPath($SessionPath)
+    return [pscustomobject]@{session=$session;manifest=(Join-Path $session 'session.v2.json');plan=(Join-Path $session 'execution-plan.json')}
+}
+
+function Initialize-MmtlSessionV2 {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)]$ExecutionPlan)
+    $paths=Get-MmtlSessionV2Paths $SessionPath
+    if(-not(Test-Path -LiteralPath $paths.session -PathType Container)){throw 'SESSION_PATH_MISSING'}
+    Assert-MmtlSessionV2PathNoReparse -Path $paths.session|Out-Null
+    Assert-MmtlSessionV2PathNoReparse -Path $paths.plan|Out-Null
+    Assert-MmtlSessionV2PathNoReparse -Path $paths.manifest|Out-Null
+    $check=Test-MmtlExecutionPlan -Plan $ExecutionPlan
+    if(-not $check.valid){throw "SESSION_PLAN_INVALID: $($check.errors -join ',')"}
+    $json=ConvertTo-Json -InputObject $ExecutionPlan -Depth 100
+    [IO.File]::WriteAllText($paths.plan,$json+"`n",[Text.UTF8Encoding]::new($false))
+    $hash=(Get-FileHash -LiteralPath $paths.plan -Algorithm SHA256).Hash.ToLowerInvariant()
+    $manifest=[ordered]@{schemaVersion=2;sessionId=[IO.Path]::GetFileName($paths.session);state='Created';createdUtc=[DateTimeOffset]::UtcNow.ToString('o');updatedUtc=[DateTimeOffset]::UtcNow.ToString('o');planFile='execution-plan.json';planDigest=[string]$ExecutionPlan.semanticDigest;planSha256="sha256:$hash";artifacts=@([pscustomobject]@{path='execution-plan.json';sha256="sha256:$hash";kind='ExecutionPlan'})}
+    [IO.File]::WriteAllText($paths.manifest,(ConvertTo-Json -InputObject $manifest -Depth 20)+"`n",[Text.UTF8Encoding]::new($false))
+    return [pscustomobject]$manifest
+}
+
+function Set-MmtlSessionV2State {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][ValidateSet('Preparing','Building','Launching','Running','Completed','Failed','Stopped')][string]$State)
+    $paths=Get-MmtlSessionV2Paths $SessionPath
+    if(Test-Path -LiteralPath $paths.session -PathType Container){Assert-MmtlSessionV2PathNoReparse -Path $paths.session|Out-Null}
+    Assert-MmtlSessionV2PathNoReparse -Path $paths.manifest|Out-Null
+    Assert-MmtlSessionV2PathNoReparse -Path $paths.plan|Out-Null
+    if(-not(Test-Path -LiteralPath $paths.manifest -PathType Leaf)){throw 'SESSION_MANIFEST_MISSING'}
+    $manifest=Get-Content -LiteralPath $paths.manifest -Raw|ConvertFrom-Json -ErrorAction Stop
+    $allowed=@{Created=@('Preparing','Building','Launching','Failed');Preparing=@('Building','Launching','Failed');Building=@('Launching','Completed','Failed');Launching=@('Running','Failed');Running=@('Completed','Failed','Stopped');Completed=@();Failed=@();Stopped=@()}
+    if($State -notin $allowed[[string]$manifest.state]){throw "SESSION_STATE_TRANSITION_INVALID: $($manifest.state)->$State"}
+    $manifest.state=$State;$manifest.updatedUtc=[DateTimeOffset]::UtcNow.ToString('o')
+    [IO.File]::WriteAllText($paths.manifest,($manifest|ConvertTo-Json -Depth 30)+"`n",[Text.UTF8Encoding]::new($false))
+    return $manifest
+}
+
+function Test-MmtlSessionV2 {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][string]$SessionPath)
+    $paths=Get-MmtlSessionV2Paths $SessionPath
+    try{Assert-MmtlSessionV2PathNoReparse -Path $paths.session|Out-Null;Assert-MmtlSessionV2PathNoReparse -Path $paths.manifest|Out-Null;Assert-MmtlSessionV2PathNoReparse -Path $paths.plan|Out-Null}catch{return [pscustomobject]@{valid=$false;status='UnsafePath';errors=@('SESSION_PATH_REPARSE_POINT');state=$null;sessionId=[IO.Path]::GetFileName($paths.session)}}
+    if(-not(Test-Path -LiteralPath $paths.manifest -PathType Leaf)){return [pscustomobject]@{valid=$false;status='LegacyOrManifestMissing';errors=@('SESSION_MANIFEST_MISSING');state=$null;sessionId=[IO.Path]::GetFileName($paths.session)}}
+    try{$manifest=Get-Content -LiteralPath $paths.manifest -Raw|ConvertFrom-Json -ErrorAction Stop}catch{return [pscustomobject]@{valid=$false;status='Corrupt';errors=@('SESSION_MANIFEST_CORRUPT');state=$null;sessionId=[IO.Path]::GetFileName($paths.session)}}
+    $errors=[Collections.Generic.List[string]]::new()
+    if($manifest.schemaVersion -ne 2){$errors.Add('SESSION_SCHEMA_UNSUPPORTED')}
+    if([string]$manifest.sessionId -cne [IO.Path]::GetFileName($paths.session)){$errors.Add('SESSION_ID_MISMATCH')}
+    $manifestJson=ConvertTo-Json -InputObject $manifest -Depth 50 -Compress
+    $manifestSchema=Join-Path $PSScriptRoot '../schemas/session-v2.schema.json'
+    if(-not(Test-Json -Json $manifestJson -SchemaFile $manifestSchema -ErrorAction SilentlyContinue)){$errors.Add('SESSION_MANIFEST_SCHEMA_INVALID')}
+    if(-not(Test-Path -LiteralPath $paths.plan -PathType Leaf)){return [pscustomobject]@{valid=$false;status='ArtifactMissing';errors=@('SESSION_ARTIFACT_MISSING');state=[string]$manifest.state;sessionId=[string]$manifest.sessionId}}
+    $hash=(Get-FileHash -LiteralPath $paths.plan -Algorithm SHA256).Hash.ToLowerInvariant()
+    if("sha256:$hash" -cne [string]$manifest.planSha256){$errors.Add('SESSION_ARTIFACT_HASH_MISMATCH')}
+    try{$plan=Get-Content -LiteralPath $paths.plan -Raw|ConvertFrom-Json -ErrorAction Stop;$planCheck=Test-MmtlExecutionPlan -Plan $plan;if(-not $planCheck.valid){$errors.AddRange([string[]]$planCheck.errors)};if([string]$plan.semanticDigest -cne [string]$manifest.planDigest){$errors.Add('SESSION_PLAN_DIGEST_MISMATCH')}}catch{$errors.Add('SESSION_ARTIFACT_CORRUPT')}
+    return [pscustomobject]@{valid=($errors.Count -eq 0);status=$(if($errors.Count){'Corrupt'}else{'Valid'});errors=@($errors.ToArray());state=[string]$manifest.state;sessionId=[string]$manifest.sessionId;planDigest=[string]$manifest.planDigest}
+}
+
+Export-ModuleMember -Function Initialize-MmtlSessionV2,Set-MmtlSessionV2State,Test-MmtlSessionV2

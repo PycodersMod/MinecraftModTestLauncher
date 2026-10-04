@@ -1,6 +1,14 @@
 BeforeAll {
     $script:repoRoot = Split-Path -Parent $PSScriptRoot
-    Import-Module (Join-Path $script:repoRoot 'src/ProjectDetector.psm1') -Force
+    $script:repositoryRoot = Split-Path -Parent $script:repoRoot
+    if(-not $global:MmtlPlatformProvider){
+        if([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::Windows)){$providerDir='windows';$providerModule='WindowsPlatformProvider.psm1';$register='Register-MmtlWindowsPlatform'}
+        elseif([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::OSX)){$providerDir='macos';$providerModule='MacOSPlatformProvider.psm1';$register='Register-MmtlMacOSPlatform'}
+        else{$providerDir='linux';$providerModule='LinuxPlatformProvider.psm1';$register='Register-MmtlLinuxPlatform'}
+        Import-Module (Join-Path $script:repositoryRoot "$providerDir/src/$providerModule") -Force
+        & $register -RepositoryRoot $script:repositoryRoot
+    }
+    if(-not(Get-Command Get-MmtlProject -ErrorAction SilentlyContinue)){Import-Module (Join-Path $script:repoRoot 'src/ProjectDetector.psm1')}
 }
 
 Describe 'Repository and nested Gradle project discovery' {
@@ -39,6 +47,19 @@ Describe 'Repository and nested Gradle project discovery' {
         }
 
         @(Find-MmtlGradleProjects -Path $workspace).Count | Should -Be 0
+    }
+
+    It '从 Kotlin DSL 的 Forge Maven 坐标解析 Loader 版本' {
+        $projectRoot=Join-Path $TestDrive 'kotlin-forge/forge/1.20.1'
+        New-Item -ItemType Directory -Path (Join-Path $projectRoot 'src/main/resources/META-INF') -Force|Out-Null
+        'plugins { id("net.minecraftforge.gradle") version "6.0.24" }'|Set-Content (Join-Path $projectRoot 'build.gradle.kts')
+        'org.gradle.jvmargs=-Xmx2G'|Set-Content (Join-Path $projectRoot 'gradle.properties')
+        'dependencies { minecraft("net.minecraftforge:forge:1.20.1-47.2.0") }'|Add-Content (Join-Path $projectRoot 'build.gradle.kts')
+        'modLoader="javafml"'|Set-Content (Join-Path $projectRoot 'src/main/resources/META-INF/mods.toml')
+        $project=Get-MmtlProject -Path $projectRoot
+        $project.Loader | Should -BeExactly 'Forge'
+        $project.MinecraftVersion | Should -BeExactly '1.20.1'
+        $project.LoaderVersion | Should -BeExactly '47.2.0'
     }
 
     It 'does not tie imported runtime directories to a fixed project depth' {

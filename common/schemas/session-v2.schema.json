@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pycodersmod.github.io/MinecraftModTestLauncher/schemas/session-v2.schema.json",
+  "title": "MMTL Session Manifest v2",
+  "type": "object",
+  "required": ["schemaVersion", "sessionId", "state", "createdUtc", "updatedUtc", "planFile", "planDigest", "planSha256", "artifacts"],
+  "properties": {
+    "schemaVersion": {"const": 2},
+    "sessionId": {"type": "string", "minLength": 1},
+    "state": {"enum": ["Created", "Preparing", "Building", "Launching", "Running", "Completed", "Failed", "Stopped"]},
+    "createdUtc": {"type": "string", "format": "date-time"},
+    "updatedUtc": {"type": "string", "format": "date-time"},
+    "planFile": {"const": "execution-plan.json"},
+    "planDigest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "planSha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "artifacts": {"type": "array", "items": {"type": "object", "required": ["path", "sha256", "kind"], "properties": {"path": {"type": "string"}, "sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}, "kind": {"type": "string"}}}}
+  }
+}

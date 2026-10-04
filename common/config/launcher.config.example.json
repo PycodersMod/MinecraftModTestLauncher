@@ -40,7 +40,8 @@
       "guiScale": "Auto",
       "windowLayout": "Auto",
       "jvmArgs": [],
-      "gameArgs": []
+      "gameArgs": [],
+      "runtimeJavaOverride": null
     }
   }
 }

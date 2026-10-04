@@ -101,7 +101,7 @@ function Resolve-MmtlJavaCandidate {
 
     $candidateMajors = @($JavaHomes.Keys | ForEach-Object { $number = 0; if ([int]::TryParse([string]$_, [ref]$number) -and $number -gt 0) { $number } } | Sort-Object -Unique)
     $kind = [string](Get-MmtlJavaRequirementProperty -Requirement $Requirement -Name 'requirementKind')
-    if ($purpose -eq 'RuntimeJava' -and $target -gt 0 -and $kind -ne 'Minimum') {
+    if (($purpose -eq 'RuntimeJava' -and $target -gt 0 -and $kind -ne 'Minimum') -or ($purpose -eq 'BuildJava' -and $exactValue -gt 0)) {
         $candidateMajors = @($candidateMajors | Where-Object { $_ -eq $target })
     }
     elseif ($target -gt 0) {

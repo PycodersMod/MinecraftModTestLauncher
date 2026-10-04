@@ -55,6 +55,17 @@ function Get-MmtlProject {
     $loaderVersionKey=switch($loader){'Forge'{'forge_version'}'NeoForge'{'neo_version'}'Fabric'{'loader_version'}'LegacyFabric'{'loader_version'}'OrnitheLoader'{'loader_version'}'LiteLoader'{'liteloader_version'}'Quilt'{'quilt_loader'}default{$null}}
     $loaderVersionMatch=if($loaderVersionKey -and $loader -eq 'Quilt'){[regex]::Match($versionCatalog,'(?m)^\s*'+$loaderVersionKey+'\s*=\s*["'']?([^"''\s#]+)')}elseif($loaderVersionKey){[regex]::Match($props,"(?m)^$loaderVersionKey\s*=\s*([^\r\n]+)")}else{[regex]::Match('','a^')}
     $loaderVersion=if($loaderVersionMatch.Success){$loaderVersionMatch.Groups[1].Value.Trim()}else{$null}
+    if(-not $loaderVersion){
+        $coordinatePattern=switch($loader){'Forge'{'net\.minecraftforge:forge:'}'NeoForge'{'net\.neoforged:neoforge:'}'Fabric'{'net\.fabricmc:fabric-loader:'}'Quilt'{'org\.quiltmc:quilt-loader:'}default{$null}}
+        if($coordinatePattern){
+            $coordinateMatch=[regex]::Match($allBuildText,'(?i)'+$coordinatePattern+'(?<version>[^"''\s)]+)')
+            if($coordinateMatch.Success){
+                $coordinateVersion=$coordinateMatch.Groups['version'].Value.Trim()
+                if($loader -in @('Forge','NeoForge') -and $mcVersion){$mcPrefix=[regex]::Escape($mcVersion)+'-';if($coordinateVersion -match ('^'+$mcPrefix+'(?<loader>\d+\.\d+(?:\.\d+)+(?:[-+][A-Za-z0-9._-]+)?)$')){$loaderVersion=$Matches.loader}}
+                elseif($coordinateVersion -match '^\d+\.\d+(?:\.\d+)+(?:[-+][A-Za-z0-9._-]+)?$'){$loaderVersion=$coordinateVersion}
+            }
+        }
+    }
     if($loader -eq 'Rift'){$riftVersion=[regex]::Match($allBuildText,'(?im)^version\s+["''](\d+\.\d+\.\d+)');if($riftVersion.Success){$loaderVersion=$riftVersion.Groups[1].Value}}
     $gradleRuntimeJavaRequirement=Get-MmtlGradleWrapperRuntimeJavaRequirement -ProjectRoot $root
     $compilerTargetMajor=if($compilerTargetMatch.Success){[int]$(if($compilerTargetMatch.Groups[1].Success){$compilerTargetMatch.Groups[1].Value}else{$compilerTargetMatch.Groups[2].Value})}else{$null}

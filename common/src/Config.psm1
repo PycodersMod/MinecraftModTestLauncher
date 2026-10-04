@@ -1,6 +1,6 @@
 function Read-MmtlConfig {
     [CmdletBinding()]
-    param([Parameter(Mandatory)][string]$Path)
+    param([Parameter(Mandatory)][string]$Path,[switch]$AllowInvalidProfiles)
     if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { throw "配置文件不存在：$Path" }
     try { $config = Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json -ErrorAction Stop }
     catch { throw "配置 JSON 无效：$($_.Exception.Message)" }
@@ -29,10 +29,16 @@ function Read-MmtlConfig {
     if(-not $config.defaultProfile -or -not $config.profiles.PSObject.Properties[$config.defaultProfile]){throw 'defaultProfile 必须引用 profiles 中存在的配置。'}
     foreach($profileProperty in $config.profiles.PSObject.Properties){
         $profile=$profileProperty.Value
-        if($profile.mode -notin @('Single','IntegratedLAN','Dedicated')){throw "Profile $($profileProperty.Name) 的 mode 无效。"}
+        if($AllowInvalidProfiles){continue}
+        if(-not $AllowInvalidProfiles -and $profile.mode -notin @('Single','IntegratedLAN','Dedicated')){throw "Profile $($profileProperty.Name) 的 mode 无效。"}
         $players=0;if(-not[int]::TryParse([string]$profile.players,[ref]$players) -or $players -lt 1 -or $players -gt 8){throw "Profile $($profileProperty.Name) 的 players 必须为 1 至 8。"}
         if($null -ne $profile.PSObject.Properties['guiScale']){$guiScale=0;if([string]$profile.guiScale -ine 'Auto' -and (-not[int]::TryParse([string]$profile.guiScale,[ref]$guiScale) -or $guiScale -lt 0 -or $guiScale -gt 4)){throw "Profile $($profileProperty.Name) 的 guiScale 必须为 Auto 或 0 至 4。"}}
         if($profile.port -and [string]$profile.port -ne 'Auto'){$port=0;if(-not[int]::TryParse([string]$profile.port,[ref]$port) -or $port -lt 1 -or $port -gt 65535){throw "Profile $($profileProperty.Name) 的 port 必须是 Auto 或 1 至 65535。"}}
+        if($null -ne $profile.PSObject.Properties['runtimeJavaOverride'] -and $null -ne $profile.runtimeJavaOverride){
+            $runtimeMajor=0
+            if(-not[int]::TryParse([string]$profile.runtimeJavaOverride.major,[ref]$runtimeMajor) -or $runtimeMajor -lt 1){throw "Profile $($profileProperty.Name) 的 runtimeJavaOverride.major 必须为正整数。"}
+            if($null -ne $profile.runtimeJavaOverride.PSObject.Properties['component'] -and $profile.runtimeJavaOverride.component -isnot [string]){throw "Profile $($profileProperty.Name) 的 runtimeJavaOverride.component 必须为字符串。"}
+        }
     }
     return $config
 }

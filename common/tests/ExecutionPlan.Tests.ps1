@@ -5,7 +5,7 @@ BeforeAll {
     function New-TestExecutionPlan {
         param([string]$ProjectRoot='C:/workspace-a/mod/forge/1.20.1',[string]$RepositoryRoot='C:/workspace-a/mod',[string]$JavaPath='C:/jdk-17/bin/java.exe',[string]$CreatedAt='2026-10-04T00:00:00Z',[string]$Mode='Single',[int]$Players=1)
         [pscustomobject][ordered]@{
-            schemaVersion=1;planId='plan-test';semanticDigest='';createdAt=$CreatedAt
+            schemaVersion=1;status='BuildReadyLaunchBlocked';planId='plan-test';semanticDigest='';createdAt=$CreatedAt
             platform=[pscustomobject][ordered]@{os='Windows';arch='x64';isWSL=$false;capabilities=[pscustomobject][ordered]@{Build='Native';Launch='Native'}}
             repository=[pscustomobject][ordered]@{identity='sample-mod';root=$RepositoryRoot}
             project=[pscustomobject][ordered]@{projectRoot=$ProjectRoot;locator='forge/1.20.1';minecraftId='1.20.1';loader=[pscustomobject]@{id='Forge';version='47.2.0'};loaderStack=@();toolchain=[pscustomobject]@{id='ForgeGradle';version='6.0'};buildSystem=[pscustomobject]@{id='GradleWrapper';version='8.8'};modId='samplemod'}
@@ -13,10 +13,10 @@ BeforeAll {
             runtimeJava=[pscustomobject][ordered]@{requirement=[pscustomobject]@{purpose='RuntimeJava';major=17;requirementKind='Exact';source='MojangVersionMetadata';confidence='High';component='java-runtime-gamma'};resolution=[pscustomobject]@{status='Resolved';javaPath='C:/jdk-17/bin/java.exe';home='C:/jdk-17';actualMajor=17;exactVersion='17.0.19';vendor='Oracle Corporation';os='Windows';arch='x64';reasonCode=$null};bindingMode='Unknown'}
             profile=[pscustomobject][ordered]@{name='single';mode=$Mode;players=$Players;hostUsername='Dev';clientPrefix='Dev_';memoryMb=4096;jvmArgs=@();gameArgs=@();acceptEula=$false}
             build=[pscustomobject][ordered]@{required=$true;clean=$false;task='build';wrapper='gradlew';artifactExpectation='one-mod-jar'}
-            runtime=[pscustomobject][ordered]@{roles=@('Client');runtimeDirectories=@([pscustomobject]@{role='Client';path='C:/runtime/sessions/one/Dev'});memory=[pscustomobject]@{requestedMb=4096;limitMb=12288};jvmArgs=@();gameArgs=@()}
+            runtime=[pscustomobject][ordered]@{roles=@([pscustomobject]@{role='Client';username='Dev'});runtimeDirectories=@([pscustomobject]@{role='Client';path='C:/runtime/sessions/one/Dev';relativePath='sessions/one/Dev'});memory=[pscustomobject]@{requestedMb=4096;limitMb=12288};jvmArgs=@();gameArgs=@()}
             network=[pscustomobject][ordered]@{portPolicy='None';bindPolicy='Loopback'}
             session=[pscustomobject][ordered]@{intendedMode=$Mode}
-            capabilityGates=[pscustomobject][ordered]@{buildReady=$true;launchReady=$true}
+            capabilityGates=[pscustomobject][ordered]@{buildReady=$true;launchReady=$false}
             blockingReasons=@();warnings=@();provenance=[pscustomobject]@{runtimeJavaSource='MojangVersionMetadata';metadataStatus='VERIFIED'}
         }
     }
@@ -60,5 +60,12 @@ Describe 'Execution Plan schema 与语义摘要' {
 
         $result.valid | Should -BeFalse
         $result.errors -join ';' | Should -Match 'BUILD_JAVA_RESOLUTION_INCONSISTENT'
+    }
+
+    It '对缺失嵌套字段返回结构化错误，不因严格模式异常退出' {
+        $result=Test-MmtlExecutionPlan -Plan ([pscustomobject]@{schemaVersion=1;semanticDigest='invalid';profile=[pscustomobject]@{};session=[pscustomobject]@{}})
+        $result.valid | Should -BeFalse
+        $result.errors | Should -Contain 'PLAN_SCHEMA_INVALID'
+        $result.errors | Should -Contain 'PLAN_DIGEST_INVALID'
     }
 }

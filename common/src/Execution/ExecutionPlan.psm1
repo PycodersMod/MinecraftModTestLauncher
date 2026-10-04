@@ -1,7 +1,8 @@
 Set-StrictMode -Version Latest
 
 function Get-MmtlPlanProperty {
-    param([Parameter(Mandatory)]$InputObject, [Parameter(Mandatory)][string]$Name)
+    param([Parameter(Mandatory)][AllowNull()]$InputObject, [Parameter(Mandatory)][string]$Name)
+    if($null -eq $InputObject){return $null}
     if ($InputObject -is [Collections.IDictionary]) {
         foreach ($key in $InputObject.Keys) { if ([string]$key -ceq $Name) { return $InputObject[$key] } }
         return $null
@@ -73,7 +74,7 @@ function Get-MmtlExecutionPlanSemanticProjection {
         if ($null -ne $value) { $runtimeSemantic[$name] = $value }
     }
     $profileSemantic = [ordered]@{}
-    foreach ($name in @('name','mode','players','hostCheats','clientPermissionLevel','gameMode','difficulty','worldName','seed','newWorld','resetWorld','memoryMb','hostMemoryMb','clientMemoryMb','serverMemoryMb','acceptEula','resolution','guiScale','windowLayout','autoBuild','cleanBuild','port')) {
+    foreach ($name in @('name','mode','players','hostUsername','clientPrefix','hostCheats','clientPermissionLevel','gameMode','difficulty','worldName','seed','newWorld','resetWorld','memoryMb','hostMemoryMb','clientMemoryMb','serverMemoryMb','acceptEula','resolution','guiScale','windowLayout','autoBuild','cleanBuild','port')) {
         $value = Get-MmtlPlanProperty $profile $name
         if ($null -ne $value) { $profileSemantic[$name] = $value }
     }
@@ -82,7 +83,9 @@ function Get-MmtlExecutionPlanSemanticProjection {
         if ($null -ne $items) { $profileSemantic[$name] = @($items | ForEach-Object { ConvertTo-MmtlSemanticArgument ([string]$_) }) }
     }
     $runtimeSemanticData = [ordered]@{ roles=@(Get-MmtlPlanProperty $runtime 'roles');runtimeDirectories=$runtimeDirs;memory=(Get-MmtlPlanProperty $runtime 'memory');jvmArgs=@((Get-MmtlPlanProperty $runtime 'jvmArgs') | ForEach-Object { ConvertTo-MmtlSemanticArgument ([string]$_) });gameArgs=@((Get-MmtlPlanProperty $runtime 'gameArgs') | ForEach-Object { ConvertTo-MmtlSemanticArgument ([string]$_) }) }
-    $stack = Get-MmtlPlanProperty $project 'loaderStack'
+    $stack = @((Get-MmtlPlanProperty $project 'loaderStack') | ForEach-Object {
+        [ordered]@{id=(Get-MmtlPlanProperty $_ 'id');version=(Get-MmtlPlanProperty $_ 'version');role=(Get-MmtlPlanProperty $_ 'role')}
+    })
     $projectSemantic = [ordered]@{
         minecraftId=(Get-MmtlPlanProperty $project 'minecraftId')
         loader=(Get-MmtlPlanProperty $project 'loader')
@@ -132,19 +135,26 @@ function Test-MmtlExecutionPlan {
     $buildRequirement = Get-MmtlPlanProperty $buildJava 'requirement'
     $buildResolution = Get-MmtlPlanProperty $buildJava 'resolution'
     $buildMinimum = Get-MmtlPlanProperty $buildRequirement 'minimumMajor'
+    $buildExact = Get-MmtlPlanProperty $buildRequirement 'exactMajor'
     $buildActual = Get-MmtlPlanProperty $buildResolution 'actualMajor'
-    if ($buildResolution.status -eq 'Resolved' -and $buildMinimum -and $buildActual -and [int]$buildActual -lt [int]$buildMinimum) { $errors.Add('BUILD_JAVA_RESOLUTION_INCONSISTENT') }
+    $buildStatus=Get-MmtlPlanProperty $buildResolution 'status'
+    if ($buildStatus -eq 'Resolved' -and $buildMinimum -and $buildActual -and [int]$buildActual -lt [int]$buildMinimum) { $errors.Add('BUILD_JAVA_RESOLUTION_INCONSISTENT') }
+    if ($buildStatus -eq 'Resolved' -and $buildExact -and $buildActual -and [int]$buildActual -ne [int]$buildExact) { $errors.Add('BUILD_JAVA_RESOLUTION_INCONSISTENT') }
 
     $runtimeJava = Get-MmtlPlanProperty $Plan 'runtimeJava'
     $runtimeRequirement = Get-MmtlPlanProperty $runtimeJava 'requirement'
     $runtimeResolution = Get-MmtlPlanProperty $runtimeJava 'resolution'
     $runtimeMajor = Get-MmtlPlanProperty $runtimeRequirement 'major'
-    if ($runtimeResolution.status -eq 'Resolved' -and $runtimeMajor -and $runtimeResolution.actualMajor -and $runtimeRequirement.requirementKind -ne 'Minimum' -and [int]$runtimeResolution.actualMajor -ne [int]$runtimeMajor) { $errors.Add('RUNTIME_JAVA_RESOLUTION_INCONSISTENT') }
-    if ($runtimeResolution.status -eq 'Resolved' -and $runtimeMajor -and $runtimeResolution.actualMajor -and $runtimeRequirement.requirementKind -eq 'Minimum' -and [int]$runtimeResolution.actualMajor -lt [int]$runtimeMajor) { $errors.Add('RUNTIME_JAVA_RESOLUTION_INCONSISTENT') }
+    $runtimeStatus=Get-MmtlPlanProperty $runtimeResolution 'status';$runtimeActual=Get-MmtlPlanProperty $runtimeResolution 'actualMajor';$runtimeKind=Get-MmtlPlanProperty $runtimeRequirement 'requirementKind'
+    if ($runtimeStatus -eq 'Resolved' -and $runtimeMajor -and $runtimeActual -and $runtimeKind -ne 'Minimum' -and [int]$runtimeActual -ne [int]$runtimeMajor) { $errors.Add('RUNTIME_JAVA_RESOLUTION_INCONSISTENT') }
+    if ($runtimeStatus -eq 'Resolved' -and $runtimeMajor -and $runtimeActual -and $runtimeKind -eq 'Minimum' -and [int]$runtimeActual -lt [int]$runtimeMajor) { $errors.Add('RUNTIME_JAVA_RESOLUTION_INCONSISTENT') }
 
     $profile = Get-MmtlPlanProperty $Plan 'profile'
     $session = Get-MmtlPlanProperty $Plan 'session'
-    if ($profile.mode -cne $session.intendedMode) { $errors.Add('PLAN_SESSION_MODE_MISMATCH') }
+    if ((Get-MmtlPlanProperty $profile 'mode') -cne (Get-MmtlPlanProperty $session 'intendedMode')) { $errors.Add('PLAN_SESSION_MODE_MISMATCH') }
+    $gates=Get-MmtlPlanProperty $Plan 'capabilityGates';$buildReady=[bool](Get-MmtlPlanProperty $gates 'buildReady');$launchReady=[bool](Get-MmtlPlanProperty $gates 'launchReady')
+    $expectedStatus=if($launchReady){'Ready'}elseif($buildReady){'BuildReadyLaunchBlocked'}else{'Blocked'}
+    if((Get-MmtlPlanProperty $Plan 'status') -cne $expectedStatus){$errors.Add('PLAN_STATUS_INCONSISTENT')}
     [pscustomobject][ordered]@{valid=($errors.Count -eq 0);errors=@($errors.ToArray())}
 }
 

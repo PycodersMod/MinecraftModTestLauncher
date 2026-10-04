@@ -1,0 +1,94 @@
+BeforeAll {
+    $script:repoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+    $script:projectRoot = Join-Path $TestDrive 'sample-repository/forge/1.20.1'
+    $script:javaHome = Join-Path $TestDrive 'jdk-17'
+    $script:runtimeRoot = Join-Path $TestDrive 'mmtl-runtime'
+    New-Item -ItemType Directory -Path (Join-Path $script:projectRoot 'gradle/wrapper'),(Join-Path $script:projectRoot 'src/main/resources/META-INF'),(Join-Path $script:javaHome 'bin') -Force | Out-Null
+    'plugins { id "net.minecraftforge.gradle" version "6.0.0" }' | Set-Content (Join-Path $script:projectRoot 'build.gradle')
+    "minecraft_version=1.20.1`nforge_version=47.2.0`njava_version=17`nmod_id=phaseh_fixture" | Set-Content (Join-Path $script:projectRoot 'gradle.properties')
+    '[[mods]]`nmodId="phaseh_fixture"' | Set-Content (Join-Path $script:projectRoot 'src/main/resources/META-INF/mods.toml')
+    'distributionUrl=https\://services.gradle.org/distributions/gradle-8.8-bin.zip' | Set-Content (Join-Path $script:projectRoot 'gradle/wrapper/gradle-wrapper.properties')
+    New-Item -ItemType File -Path (Join-Path $script:projectRoot 'gradlew.bat') -Force | Out-Null
+    New-Item -ItemType File -Path (Join-Path $script:javaHome 'bin/java.exe') -Force | Out-Null
+    @('JAVA_VERSION="17.0.19"','IMPLEMENTOR="Oracle Corporation"','OS_ARCH="amd64"','OS_NAME="Windows"') | Set-Content (Join-Path $script:javaHome 'release')
+    $script:configPath = Join-Path $TestDrive 'launcher.config.json'
+    $config=[ordered]@{configVersion=2;defaultProfile='fixture';runtimeRoot=$script:runtimeRoot;javaHomes=@{'17'=$script:javaHome};javaHomesByPlatform=@{Windows=@{};Linux=@{};MacOS=@{}};profiles=@{fixture=@{project=$script:projectRoot;linkedProjects=@();mode='Single';players=1;hostUsername='Dev';clientPrefix='Dev_';autoBuild=$true;cleanBuild=$false;acceptEula=$false;port='Auto';memoryMb=0;hostMemoryMb=0;clientMemoryMb=0;serverMemoryMb=0;jvmArgs=@();gameArgs=@();extraMods=@();resolution='1280x720';guiScale='Auto';windowLayout='None'}}}
+    $config | ConvertTo-Json -Depth 20 | Set-Content $script:configPath
+    $script:launcher = Join-Path $script:repoRoot 'windows/launcher.ps1'
+    $script:pwsh = (Get-Command pwsh -ErrorAction Stop).Source
+}
+
+Describe 'Execution Plan CLI' {
+    It '--plan --json 仅输出可解析 JSON 且不创建 Runtime/Session' {
+        $output = & $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --plan --json 2>&1 | Out-String
+
+        $LASTEXITCODE | Should -Be 0
+        $plan = $output | ConvertFrom-Json -ErrorAction Stop
+        $plan.schemaVersion | Should -Be 1
+        $plan.semanticDigest | Should -Match '^sha256:[0-9a-f]{64}$'
+        $plan.buildJava.resolution.actualMajor | Should -Be 17
+        Test-Path -LiteralPath $script:runtimeRoot | Should -BeFalse
+    }
+
+    It '--plan-output 只写入用户指定文件' {
+        $outputPath = Join-Path $TestDrive 'saved-plan.json'
+        $output = & $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --plan --plan-output $outputPath 2>&1 | Out-String
+
+        $LASTEXITCODE | Should -Be 0
+        Test-Path -LiteralPath $outputPath | Should -BeTrue
+        $saved = Get-Content -LiteralPath $outputPath -Raw | ConvertFrom-Json
+        $saved.planId | Should -Match '^plan-[0-9a-f]{16}$'
+        Test-Path -LiteralPath $script:runtimeRoot | Should -BeFalse
+    }
+
+    It '--explain-java --json 返回独立 Build/Runtime 轨和 binding mode' {
+        $output = & $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --explain-java --json 2>&1 | Out-String
+
+        $LASTEXITCODE | Should -Be 0
+        $explanation = $output | ConvertFrom-Json -ErrorAction Stop
+        $explanation.buildJava.requirement.purpose | Should -BeExactly 'BuildJava'
+        $explanation.runtimeJava.requirement.purpose | Should -BeExactly 'RuntimeJava'
+        $explanation.runtimeJava.bindingMode | Should -BeExactly 'Unknown'
+    }
+
+    It '--dry-run 与 --validate 消费同一 Planner 且不创建 Session 或 Runtime' {
+        $dry = & $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --dry-run 2>&1 | Out-String
+        if($LASTEXITCODE -ne 0){throw "dry-run exit=$LASTEXITCODE`n$dry"}
+        $LASTEXITCODE | Should -Be 0
+        $dry | Should -Match 'Build Java'
+        $dry | Should -Match 'Auto 端口'
+        $validate = & $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --validate 2>&1 | Out-String
+        $LASTEXITCODE | Should -Be 0
+        $validate | Should -Match 'Plan 校验：PASS'
+        Test-Path -LiteralPath $script:runtimeRoot | Should -BeFalse
+    }
+
+    It 'Session CLI 可读取 v1 legacy、列出 v2 并校验 Plan 摘要' {
+        Import-Module (Join-Path $script:repoRoot 'common/src/Execution/ExecutionPlan.psm1') -Force
+        Import-Module (Join-Path $script:repoRoot 'common/src/SessionLifecycle.psm1') -Force
+        $planRaw=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --plan --json 2>&1|Out-String
+        $plan=$planRaw|ConvertFrom-Json -ErrorAction Stop
+        $legacyId='20261004T130000Z_legacy_fixture';$legacyPath=Join-Path $script:runtimeRoot "sessions/$legacyId"
+        New-Item -ItemType Directory -Path $legacyPath -Force|Out-Null
+        @{sessionId=$legacyId;createdUtc='2026-10-04T00:00:00Z';metadata=@{mode='Single'}}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $legacyPath 'session.json')
+        $legacyBytes=(Get-FileHash (Join-Path $legacyPath 'session.json') -Algorithm SHA256).Hash
+        $legacyInfoRaw=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --session-info $legacyId --json 2>&1|Out-String
+        $legacyInfo=$legacyInfoRaw|ConvertFrom-Json -ErrorAction Stop
+        $legacyInfo.schemaVersion | Should -Be 1
+        $legacyInfo.state | Should -BeExactly 'LegacyReadOnly'
+        (Get-FileHash (Join-Path $legacyPath 'session.json') -Algorithm SHA256).Hash | Should -BeExactly $legacyBytes
+
+        $v2Id='20261004T130001Z_v2_fixture';$v2Path=Join-Path $script:runtimeRoot "sessions/$v2Id"
+        New-Item -ItemType Directory -Path $v2Path -Force|Out-Null
+        Initialize-MmtlSessionV2 -SessionPath $v2Path -ExecutionPlan $plan|Out-Null
+        $listRaw=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --list-sessions --json 2>&1|Out-String
+        $list=@($listRaw|ConvertFrom-Json -ErrorAction Stop)
+        ($list|Where-Object sessionId -eq $v2Id).validation | Should -BeExactly 'Valid'
+        $infoRaw=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --session-info $v2Id --json 2>&1|Out-String
+        ($infoRaw|ConvertFrom-Json -ErrorAction Stop).planDigest | Should -BeExactly $plan.semanticDigest
+        $validateRaw=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --session-validate $v2Id --json 2>&1|Out-String
+        $validate=$validateRaw|ConvertFrom-Json -ErrorAction Stop
+        $LASTEXITCODE | Should -Be 0
+        $validate.valid | Should -BeTrue
+    }
+}

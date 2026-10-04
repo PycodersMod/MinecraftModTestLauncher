@@ -37,6 +37,14 @@ Describe 'Build/Runtime Java 本机候选解析' {
         $result.actualMajor | Should -BeNullOrEmpty
     }
 
+    It 'Build Java Exact requirement 不接受其他已配置主版本' {
+        $requirement = [pscustomobject]@{ purpose='BuildJava'; major=17; exactMajor=17; requirementKind='Exact'; source='Fixture'; confidence='High' }
+        $result = Resolve-MmtlJavaCandidate -Requirement $requirement -JavaHomes @{ '21'=$script:jdk21 } -Platform ([pscustomobject]@{ os='Windows'; arch='x64' })
+
+        $result.status | Should -BeExactly 'Unresolved'
+        $result.reasonCode | Should -BeExactly 'BUILD_JAVA_NOT_RESOLVED'
+    }
+
     It '优先使用平台专属 Java 配置并保留通用回退项' {
         $platformJdk17 = Join-Path $TestDrive 'jdk-17-windows-override'
         New-Item -ItemType Directory -Path (Join-Path $platformJdk17 'bin') -Force | Out-Null
