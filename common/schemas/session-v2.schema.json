@@ -7,7 +7,7 @@
   "properties": {
     "schemaVersion": {"const": 2},
     "sessionId": {"type": "string", "minLength": 1},
-    "state": {"enum": ["Created", "Preparing", "Building", "Launching", "Running", "Completed", "Failed", "Stopped"]},
+    "state": {"enum": ["Created", "Preparing", "Building", "Launching", "Running", "Completed", "Failed", "Stopped", "Abandoned"]},
     "createdUtc": {"type": "string", "format": "date-time"},
     "updatedUtc": {"type": "string", "format": "date-time"},
     "planFile": {"const": "execution-plan.json"},
@@ -16,13 +16,14 @@
     "artifacts": {"type": "array", "items": {"type": "object", "required": ["path", "sha256", "kind"], "properties": {"path": {"type": "string"}, "sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}, "kind": {"type": "string"}}}}
   },
   "x-state-transitions": {
-    "Created": ["Preparing", "Building", "Launching", "Failed"],
-    "Preparing": ["Building", "Launching", "Failed"],
-    "Building": ["Launching", "Completed", "Failed"],
-    "Launching": ["Running", "Failed"],
-    "Running": ["Completed", "Failed", "Stopped"],
+    "Created": ["Preparing", "Building", "Launching", "Failed", "Abandoned"],
+    "Preparing": ["Building", "Launching", "Failed", "Abandoned"],
+    "Building": ["Launching", "Completed", "Failed", "Abandoned"],
+    "Launching": ["Running", "Failed", "Abandoned"],
+    "Running": ["Completed", "Failed", "Stopped", "Abandoned"],
     "Completed": [],
     "Failed": [],
-    "Stopped": []
+    "Stopped": [],
+    "Abandoned": []
   }
 }

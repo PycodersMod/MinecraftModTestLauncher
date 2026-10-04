@@ -4,7 +4,7 @@ Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1') -Force
 function Get-MmtlProcessStartIdentity {
     [CmdletBinding()]
     param([Parameter(Mandatory)][int]$ProcessId)
-    try{$target=Get-Process -Id $ProcessId -ErrorAction Stop;return $target.StartTime.ToUniversalTime().ToString('o')}catch{return $null}
+    try{$target=Get-Process -Id $ProcessId -ErrorAction Stop;return $target.StartTime.ToUniversalTime().Ticks.ToString([Globalization.CultureInfo]::InvariantCulture)}catch{return $null}
 }
 
 function Assert-MmtlSessionLockPath {

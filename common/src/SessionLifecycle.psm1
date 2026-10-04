@@ -2,7 +2,7 @@ Set-StrictMode -Version Latest
 Import-Module (Join-Path $PSScriptRoot 'Execution/ExecutionPlan.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot 'AtomicFile.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot 'SessionLock.psm1') -Force
-$script:MmtlSessionV2Transitions=@{Created=@('Preparing','Building','Launching','Failed');Preparing=@('Building','Launching','Failed');Building=@('Launching','Completed','Failed');Launching=@('Running','Failed');Running=@('Completed','Failed','Stopped');Completed=@();Failed=@();Stopped=@()}
+$script:MmtlSessionV2Transitions=@{Created=@('Preparing','Building','Launching','Failed','Abandoned');Preparing=@('Building','Launching','Failed','Abandoned');Building=@('Launching','Completed','Failed','Abandoned');Launching=@('Running','Failed','Abandoned');Running=@('Completed','Failed','Stopped','Abandoned');Completed=@();Failed=@();Stopped=@();Abandoned=@()}
 
 function Get-MmtlSessionV2StateTransitions { return $script:MmtlSessionV2Transitions }
 
@@ -54,7 +54,7 @@ function Initialize-MmtlSessionV2 {
 
 function Set-MmtlSessionV2State {
     [CmdletBinding()]
-    param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][ValidateSet('Preparing','Building','Launching','Running','Completed','Failed','Stopped')][string]$State)
+    param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][ValidateSet('Preparing','Building','Launching','Running','Completed','Failed','Stopped','Abandoned')][string]$State)
     $paths=Get-MmtlSessionV2Paths $SessionPath
     if(Test-Path -LiteralPath $paths.session -PathType Container){Assert-MmtlSessionV2PathNoReparse -Path $paths.session|Out-Null}
     Assert-MmtlSessionV2PathNoReparse -Path $paths.manifest|Out-Null

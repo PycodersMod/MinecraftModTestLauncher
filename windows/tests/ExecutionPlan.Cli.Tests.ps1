@@ -134,4 +134,30 @@ Describe 'Execution Plan CLI' {
         $LASTEXITCODE | Should -Be 0
         $validate.valid | Should -BeTrue
     }
+
+    It '--recover-sessions --dry-run --json 只输出无路径的恢复计划，默认执行只修复 stale 元数据' {
+        $sessionId='20261004T130002Z_recovery_fixture';$session=Join-Path $script:runtimeRoot "sessions/$sessionId";New-Item -ItemType Directory $session -Force|Out-Null
+        @{schemaVersion=1;ownerPid=2147483647;processStartIdentity='0';createdUtc='2000-01-01T00:00:00Z';nonce='fixture'}|ConvertTo-Json -Compress|Set-Content (Join-Path $session '.session.lock')
+        $lockPath=Join-Path $session '.session.lock';$before=(Get-FileHash $lockPath -Algorithm SHA256).Hash
+        $dry=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --recover-sessions --dry-run --json 2>&1|Out-String
+        $LASTEXITCODE|Should -Be 0;$preview=$dry|ConvertFrom-Json -ErrorAction Stop
+        $preview.dryRun|Should -BeTrue;$dry|Should -Not -Match [regex]::Escape($script:runtimeRoot)
+        (Get-FileHash $lockPath -Algorithm SHA256).Hash|Should -BeExactly $before
+
+        $applied=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --recover-sessions --json 2>&1|Out-String
+        $LASTEXITCODE|Should -Be 0;($applied|ConvertFrom-Json -ErrorAction Stop).recovered|Should -Be 1
+        (Get-Content $lockPath -Raw|ConvertFrom-Json).recoveryState|Should -BeExactly 'Recovered'
+    }
+
+    It '--list-sessions --json 按 createdUtc 降序稳定排序' {
+        $sessions=Join-Path $script:runtimeRoot 'sessions';New-Item -ItemType Directory $sessions -Force|Out-Null
+        foreach($entry in @(@{id='20261004T130010Z_old';created='2026-10-03T00:00:00Z'},@{id='20261004T130011Z_tie_b';created='2026-10-05T00:00:00Z'},@{id='20261004T130012Z_tie_a';created='2026-10-05T00:00:00Z'})){
+            $path=Join-Path $sessions $entry.id;New-Item -ItemType Directory $path -Force|Out-Null
+            @{sessionId=$entry.id;createdUtc=$entry.created;metadata=@{}}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $path 'session.json')
+        }
+        $output=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --list-sessions --json 2>&1|Out-String
+        $LASTEXITCODE|Should -Be 0;$rows=@($output|ConvertFrom-Json -ErrorAction Stop)
+        $fixtureRows=@($rows|Where-Object sessionId -in @('20261004T130012Z_tie_a','20261004T130011Z_tie_b','20261004T130010Z_old'))
+        @($fixtureRows|Select-Object -ExpandProperty sessionId)|Should -Be @('20261004T130011Z_tie_b','20261004T130012Z_tie_a','20261004T130010Z_old')
+    }
 }

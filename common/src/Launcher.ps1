@@ -16,6 +16,7 @@ Import-Module (Join-Path $commonRoot 'src/Platform/Platform.psm1') -Force
 Import-Module (Join-Path $commonRoot 'src/Execution/ExecutionPlan.psm1') -Force -Global
 Import-Module (Join-Path $commonRoot 'src/Execution/ExecutionPlanner.psm1') -Force
 Import-Module (Join-Path $commonRoot 'src/SessionLifecycle.psm1') -Force -Global
+Import-Module (Join-Path $commonRoot 'src/SessionRecovery.psm1') -Force -Global
 Import-Module (Join-Path $commonRoot 'src/RuntimeManager.psm1') -Force -Global
 Import-Module (Join-Path $commonRoot 'src/Execution/ExecutionPlan.psm1') -Force -Global
 Import-Module (Join-Path $commonRoot 'src/Platform/Platform.psm1') -Force -Global
@@ -39,7 +40,7 @@ $configFileIndex=[Array]::IndexOf($Arguments,'--config-file')
 if($configFileIndex -ge 0){if($configFileIndex+1 -ge $Arguments.Count){throw '--config-file 缺少路径。'};$configPath=[IO.Path]::GetFullPath([string]$Arguments[$configFileIndex+1])}
 $portable=($Arguments -contains '--portable') -and -not ($configPath -and (Test-Path $configPath) -and (Read-MmtlConfig -Path $configPath).runtimeRoot)
 if($Arguments -contains '--help' -or $Arguments -contains '-h'){
-    Write-Host 'Minecraft 模组测试启动器';Write-Host '用法：launcher.cmd / launcher.sh [--plan|--launch-check|--runtime-binding|--doctor|--capabilities|--explain-java|--validate|--dry-run|--build|--launch] [--profile NAME]';Write-Host '执行计划：--plan [--json] [--plan-output <path>]；启动预检：--launch-check [--json]；Runtime Binding：--runtime-binding [--probe] [--json]';Write-Host '环境诊断：--doctor [--offline] [--json]；平台能力：--capabilities [--json]；Java 解析：--explain-java [--json]';Write-Host '工作区发现：--discover-projects <workspace-or-repository> [--json]';Write-Host '版本目录：--list-minecraft-versions | --minecraft-info <id|CurrentStable> | --refresh-catalog';Write-Host '加载器：--list-loaders <mc> [--include-historical] | --loader-info <mc> <loader> | --provider-status <loader>';Write-Host '覆盖审计：';foreach($option in Get-MmtlCoverageCliOptionDefinitions){Write-Host "  $($option.usage) — $($option.description)"};Write-Host '深度验证：--validation-plan --scope P0|CurrentStable | --validation-matrix <target-definitions.json> [--validation-output <path>] | --validation-summary [--validation-version <mc>] [--validation-loader <id>]';Write-Host '历史生态提供器仅使用 HTTPS 元数据与缓存；不会自动执行仅提供 HTTP 的制品。';Write-Host '离线选项：--catalog-offline 仅影响 Mojang 版本目录；--loader-offline 仅影响加载器元数据；均不改变 Gradle 离线模式。';Write-Host '会话：--list-sessions [--json] | --session-info ID [--json] | --session-validate ID | --stop ID | --clean-session ID';Write-Host '运行目录：--portable';Write-Host '不传参数时进入交互模式；--config-file 仅供临时配置调用。';exit 0
+    Write-Host 'Minecraft 模组测试启动器';Write-Host '用法：launcher.cmd / launcher.sh [--plan|--launch-check|--runtime-binding|--doctor|--capabilities|--explain-java|--validate|--dry-run|--build|--launch] [--profile NAME]';Write-Host '执行计划：--plan [--json] [--plan-output <path>]；启动预检：--launch-check [--json]；Runtime Binding：--runtime-binding [--probe] [--json]';Write-Host '环境诊断：--doctor [--offline] [--json]；平台能力：--capabilities [--json]；Java 解析：--explain-java [--json]';Write-Host '工作区发现：--discover-projects <workspace-or-repository> [--json]';Write-Host '版本目录：--list-minecraft-versions | --minecraft-info <id|CurrentStable> | --refresh-catalog';Write-Host '加载器：--list-loaders <mc> [--include-historical] | --loader-info <mc> <loader> | --provider-status <loader>';Write-Host '覆盖审计：';foreach($option in Get-MmtlCoverageCliOptionDefinitions){Write-Host "  $($option.usage) — $($option.description)"};Write-Host '深度验证：--validation-plan --scope P0|CurrentStable | --validation-matrix <target-definitions.json> [--validation-output <path>] | --validation-summary [--validation-version <mc>] [--validation-loader <id>]';Write-Host '历史生态提供器仅使用 HTTPS 元数据与缓存；不会自动执行仅提供 HTTP 的制品。';Write-Host '离线选项：--catalog-offline 仅影响 Mojang 版本目录；--loader-offline 仅影响加载器元数据；均不改变 Gradle 离线模式。';Write-Host '会话：--list-sessions [--json] | --recover-sessions [--dry-run] [--json] | --session-info ID [--json] | --session-validate ID | --stop ID | --clean-session ID';Write-Host '运行目录：--portable';Write-Host '不传参数时进入交互模式；--config-file 仅供临时配置调用。';exit 0
 }
 $capabilitiesIndex=[Array]::IndexOf($Arguments,'--capabilities')
 if($capabilitiesIndex -ge 0){
@@ -203,8 +204,23 @@ if($listMinecraftVersions -or $hasMinecraftInfo -or $refreshCatalog){
 }
 if ($Arguments -contains '--list-sessions') {
     $sessions=Join-Path $runtimeRoot 'sessions'
-    $rows=@();if(Test-Path $sessions){foreach($dir in Get-ChildItem $sessions -Directory){$v2=Test-MmtlSessionV2 -SessionPath $dir.FullName;if($v2.status -ne 'LegacyOrManifestMissing'){$rows+=@([pscustomobject]@{sessionId=$dir.Name;schemaVersion=2;state=$v2.state;validation=$v2.status;planDigest=$v2.planDigest})}else{$legacy=Join-Path $dir.FullName 'session.json';$state=if(Test-Path $legacy){try{(Get-Content $legacy -Raw|ConvertFrom-Json).sessionId}catch{$null}}else{$null};$rows+=@([pscustomobject]@{sessionId=$dir.Name;schemaVersion=1;state='LegacyReadOnly';validation='Legacy';planDigest=$null})}}}
+    $rows=@();if(Test-Path $sessions){foreach($dir in Get-ChildItem $sessions -Directory){$v2=Test-MmtlSessionV2 -SessionPath $dir.FullName;if($v2.status -ne 'LegacyOrManifestMissing'){$created=$null;try{$created=[DateTimeOffset](Get-Content (Join-Path $dir.FullName 'session.v2.json') -Raw|ConvertFrom-Json).createdUtc}catch{};$rows+=@([pscustomobject]@{sessionId=$dir.Name;schemaVersion=2;state=$v2.state;validation=$v2.status;planDigest=$v2.planDigest;createdUtc=$created})}else{$legacy=Join-Path $dir.FullName 'session.json';$state=$null;$created=$null;if(Test-Path $legacy){try{$legacyState=Get-Content $legacy -Raw|ConvertFrom-Json;$state=$legacyState.sessionId;$created=[DateTimeOffset]$legacyState.createdUtc}catch{}};$rows+=@([pscustomobject]@{sessionId=$dir.Name;schemaVersion=1;state='LegacyReadOnly';validation='Legacy';planDigest=$null;createdUtc=$created})}}}
+    $sessionSort=[Collections.Generic.List[object]]::new();foreach($row in $rows){$sessionSort.Add($row)}
+    $sessionSort.Sort([System.Comparison[object]]{param($left,$right)$leftTicks=0L;$rightTicks=0L;if($left.createdUtc){$leftTicks=([DateTimeOffset]$left.createdUtc).UtcTicks};if($right.createdUtc){$rightTicks=([DateTimeOffset]$right.createdUtc).UtcTicks};$dateOrder=$rightTicks.CompareTo($leftTicks);if($dateOrder -ne 0){return $dateOrder};return [StringComparer]::Ordinal.Compare([string]$left.sessionId,[string]$right.sessionId)})
+    $rows=@($sessionSort.ToArray())
     if($Arguments -contains '--json'){$rows|ConvertTo-Json -Depth 10;exit 0};foreach($row in $rows){Write-Output "$($row.sessionId) [v$($row.schemaVersion):$($row.state); $($row.validation)]"};exit 0
+}
+if($Arguments -contains '--recover-sessions'){
+    $plan=Get-MmtlSessionRecoveryPlan -RuntimeRoot $runtimeRoot
+    $result=if($Arguments -contains '--dry-run'){[pscustomobject]@{schemaVersion=1;dryRun=$true;actions=$plan.actions}}else{Invoke-MmtlSessionRecovery -RuntimeRoot $runtimeRoot -Plan $plan}
+    if($Arguments -contains '--json'){
+        $safeActions=@($result.actions|ForEach-Object{[pscustomobject][ordered]@{sessionId=$_.sessionId;code=$_.code;reasonCode=$_.reasonCode;plannedAction=$_.plannedAction;tempName=$_.tempName}})
+        if($Arguments -contains '--dry-run'){[pscustomobject]@{schemaVersion=1;dryRun=$true;actions=$safeActions}|ConvertTo-Json -Depth 20}else{[pscustomobject]@{schemaVersion=1;recovered=$result.recovered;skipped=$result.skipped;results=$result.results}|ConvertTo-Json -Depth 20}
+    }else{
+        if($Arguments -contains '--dry-run'){Write-Host "Session 恢复预览：$($result.actions.Count) 项";foreach($action in $result.actions){Write-Host "[$($action.code)] $($action.sessionId)：$($action.reasonCode)；操作=$($action.plannedAction)"}}
+        else{Write-Host "Session 恢复：修复 $($result.recovered)；跳过 $($result.skipped)";foreach($item in $result.results){Write-Host "[$($item.status)] $($item.sessionId)：$($item.code)"}}
+    }
+    exit 0
 }
 foreach($operation in @('--session-info','--session-validate')){
     $index=[Array]::IndexOf($Arguments,$operation)
