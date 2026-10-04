@@ -16,7 +16,15 @@ Adapter evidence 包含模式、来源、置信度、控制能力、Build JVM �
 
 ## Probe 与证据
 
-`--runtime-binding` 读取当前 Plan 上的绑定结论；`--runtime-binding --probe` 只允许对配置的受信项目或可信 fixture 执行 Gradle configuration/task inspection。Probe 检查 `runClient` / `runServer` 的任务类型与 launcher 来源，不执行这些任务、不启动 Minecraft，也不把设置 `JAVA_HOME` 当作 `Direct` 证据。
+`--runtime-binding` 读取当前 Plan 上的绑定结论；`--runtime-binding --probe` 只允许对 `trustedProjectRoots` 单独列出的项目或可信 fixture 执行 Gradle configuration/task inspection。Profile 的 `project` 路径不会自动获得信任。没有配置可信根时，Probe 以安全错误退出且不启动 Wrapper。可以在本机配置中按需加入：
+
+```json
+{
+  "trustedProjectRoots": ["<TRUSTED_PROJECT_ROOT>"]
+}
+```
+
+Probe 检查 `runClient` / `runServer` 的任务类型与 launcher 来源，不执行这些任务、不启动 Minecraft，也不把设置 `JAVA_HOME` 当作 `Direct` 证据。
 
 Probe evidence 绑定项目 Git SHA、Toolchain、Loader、Minecraft、平台和 Adapter 版本。仅在项目工作树干净且 identity 匹配时复用缓存；项目变脏或 SHA 变化后不沿用旧结论。原始 evidence 可含本机路径，只能保存在本机 Runtime Root。公共文档、测试和 fixture 使用占位路径。
 

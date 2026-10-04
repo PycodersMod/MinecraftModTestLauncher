@@ -45,23 +45,46 @@ function Get-MmtlProbeGitState {
     [pscustomobject]@{isGitRepository=$true;sha=([string]($shaText -join '')).Trim();dirty=(@($status).Count -gt 0)}
 }
 
+function Get-MmtlProbeCacheIdentity {
+    param([Parameter(Mandatory)]$Project,[Parameter(Mandatory)]$Plan,[Parameter(Mandatory)]$GitState)
+    $buildResolution=Get-MmtlProbeProperty (Get-MmtlProbeProperty $Plan 'buildJava') 'resolution'
+    $runtimeRequirement=Get-MmtlProbeProperty (Get-MmtlProbeProperty $Plan 'runtimeJava') 'requirement'
+    $buildJavaHome=[string](Get-MmtlProbeProperty $buildResolution 'javaHome' '')
+    if(-not $buildJavaHome){$buildJavaHome=[string](Get-MmtlProbeProperty $buildResolution 'home' '')}
+    $toolchain=Get-MmtlProbeProperty $Project 'Toolchain';$buildSystem=Get-MmtlProbeProperty $Project 'BuildSystem';$platform=Get-MmtlProbeProperty $Plan 'platform'
+    $projectRoot=[IO.Path]::GetFullPath([string](Get-MmtlProbeProperty $Project 'Root' ''))
+    $roles=@(Get-MmtlProbeProperty (Get-MmtlProbeProperty $Plan 'runtime') 'roles' @())
+    $requiredTasks=@($roles|ForEach-Object{if([string](Get-MmtlProbeProperty $_ 'role' '') -eq 'Server'){'runServer'}else{'runClient'}}|Select-Object -Unique|Sort-Object)
+    if(-not $requiredTasks.Count){$requiredTasks=@('runClient')}
+    [ordered]@{
+        schemaVersion=1;projectRoot=$projectRoot;projectSha=[string]$GitState.sha
+        toolchainId=[string](Get-MmtlProbeProperty $toolchain 'id' 'Unknown');toolchainVersion=[string](Get-MmtlProbeProperty $toolchain 'version' '')
+        buildSystemId=[string](Get-MmtlProbeProperty $buildSystem 'id' 'Unknown');loader=[string](Get-MmtlProbeProperty $Project 'Loader' 'Unknown')
+        loaderVersion=[string](Get-MmtlProbeProperty $Project 'LoaderVersion' '');minecraft=[string](Get-MmtlProbeProperty $Project 'MinecraftVersion' '')
+        platformOs=[string](Get-MmtlProbeProperty $platform 'os' 'Unknown');platformArch=[string](Get-MmtlProbeProperty $platform 'arch' 'Unknown')
+        buildJavaHome=$buildJavaHome;buildJavaMajor=[string](Get-MmtlProbeProperty $buildResolution 'actualMajor' '')
+        runtimeJavaMajor=[string](Get-MmtlProbeProperty $runtimeRequirement 'major' '')
+        runtimeJavaKind=[string](Get-MmtlProbeProperty $runtimeRequirement 'requirementKind' '')
+        runtimeJavaSource=[string](Get-MmtlProbeProperty $runtimeRequirement 'source' '');requiredTasks=@($requiredTasks);adapterVersion='8'
+    }
+}
+
 function Get-MmtlCachedRuntimeBindingEvidence {
     [CmdletBinding()]
-    param([Parameter(Mandatory)][string]$ProjectRoot,[Parameter(Mandatory)][string]$RuntimeRoot)
-    $projectFull=[IO.Path]::GetFullPath($ProjectRoot)
-    $state=Get-MmtlProbeGitState -ProjectRoot $projectFull
+    param([Parameter(Mandatory)]$Project,[Parameter(Mandatory)]$Plan,[Parameter(Mandatory)][string]$RuntimeRoot)
+    $projectRoot=[IO.Path]::GetFullPath([string](Get-MmtlProbeProperty $Project 'Root' ''))
+    $state=Get-MmtlProbeGitState -ProjectRoot $projectRoot
     if(-not $state.isGitRepository -or $state.dirty){return $null}
-    $directory=Join-Path ([IO.Path]::GetFullPath($RuntimeRoot)) 'diagnostics/runtime-binding/evidence'
-    if(-not (Test-Path -LiteralPath $directory -PathType Container)){return $null}
-    if((Get-Item -LiteralPath $directory -Force).Attributes -band [IO.FileAttributes]::ReparsePoint){return $null}
-    foreach($file in (Get-ChildItem -LiteralPath $directory -Filter '*.json' -File | Sort-Object LastWriteTimeUtc -Descending)){
-        if($file.Attributes -band [IO.FileAttributes]::ReparsePoint){continue}
-        try{
-            $item=Get-Content -LiteralPath $file.FullName -Raw|ConvertFrom-Json -ErrorAction Stop
-            if([string]$item.projectRoot -ceq $projectFull -and [string]$item.projectSha -ceq $state.sha -and $item.dirty -eq $false -and $item.runtimeJavaBinding){return $item}
-        }catch{}
-    }
-    return $null
+    $identity=Get-MmtlProbeCacheIdentity -Project $Project -Plan $Plan -GitState $state
+    $cacheBytes=[Text.Encoding]::UTF8.GetBytes(($identity|ConvertTo-Json -Compress -Depth 8))
+    $expectedKey=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($cacheBytes)).ToLowerInvariant()
+    $cachePath=Join-Path ([IO.Path]::GetFullPath($RuntimeRoot)) "diagnostics/runtime-binding/$expectedKey.json"
+    if(-not(Test-Path -LiteralPath $cachePath -PathType Leaf)){return $null}
+    if((Get-Item -LiteralPath $cachePath -Force).Attributes -band [IO.FileAttributes]::ReparsePoint){return $null}
+    try{$item=Get-Content -LiteralPath $cachePath -Raw|ConvertFrom-Json -ErrorAction Stop}catch{return $null}
+    if([string]$item.cacheKey -cne $expectedKey -or [string]$item.projectRoot -cne $projectRoot -or [string]$item.projectSha -cne [string]$state.sha -or $item.dirty -ne $false -or -not $item.runtimeJavaBinding){return $null}
+    $item.cacheHit=$true
+    return $item
 }
 
 function New-MmtlRuntimeBindingGradleInitScript {
@@ -91,7 +114,7 @@ gradle.taskGraph.whenReady {
             }
         }
     }
-    println('MMTL_RUNTIME_BINDING_JSON:' + groovy.json.JsonOutput.toJson([tasks: records, buildJavaHome: System.getProperty('java.home')]))
+    println('MMTL_RUNTIME_BINDING_JSON:' + groovy.json.JsonOutput.toJson([tasks: records, buildJavaHome: System.getProperty('java.home'), buildJavaVersion: System.getProperty('java.version')]))
 }
 '@
 }
@@ -144,13 +167,26 @@ function Test-MmtlProbeSameJavaHome {
     try { return [IO.Path]::GetFullPath($runtimeHome).TrimEnd('\','/').Equals([IO.Path]::GetFullPath($BuildJavaHome).TrimEnd('\','/'),[StringComparison]::OrdinalIgnoreCase) } catch { return $false }
 }
 
+function Test-MmtlProbeBuildJavaMatchesPlan {
+    param([AllowNull()][string]$ObservedBuildJavaHome,[AllowNull()][string]$ObservedBuildJavaVersion,[AllowNull()]$BuildResolution)
+    $expectedHome=[string](Get-MmtlProbeProperty $BuildResolution 'javaHome' '')
+    if(-not $expectedHome){$expectedHome=[string](Get-MmtlProbeProperty $BuildResolution 'home' '')}
+    if(-not $expectedHome){$javaPath=[string](Get-MmtlProbeProperty $BuildResolution 'javaPath' '');if($javaPath){$expectedHome=Resolve-MmtlProbeJavaHome -Executable $javaPath}}
+    if(-not $expectedHome -or -not $ObservedBuildJavaHome -or -not $ObservedBuildJavaVersion){return $false}
+    $expectedMajor=[int](Get-MmtlProbeProperty $BuildResolution 'actualMajor' 0);$versionText=$ObservedBuildJavaVersion.Trim();$versionMajor=0
+    if($versionText -match '^1\.(?<legacy>\d+)'){$versionMajor=[int]$Matches.legacy}elseif($versionText -match '^(?<major>\d+)'){$versionMajor=[int]$Matches.major}else{return $false}
+    if($expectedMajor -le 0 -or $versionMajor -ne $expectedMajor){return $false}
+    if($expectedHome.StartsWith('<') -or $ObservedBuildJavaHome.StartsWith('<')){return $expectedHome -ceq $ObservedBuildJavaHome}
+    try{return [IO.Path]::GetFullPath($expectedHome).TrimEnd('\','/').Equals([IO.Path]::GetFullPath($ObservedBuildJavaHome).TrimEnd('\','/'),[StringComparison]::OrdinalIgnoreCase)}catch{return $false}
+}
+
 function Invoke-MmtlRuntimeBindingProbe {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]$Project,
         [Parameter(Mandatory)]$Plan,
         [Parameter(Mandatory)][string]$RuntimeRoot,
-        [Parameter(Mandatory)][string[]]$TrustedProjectRoots,
+        [string[]]$TrustedProjectRoots=@(),
         [switch]$Offline,
         [scriptblock]$GradleInvoker
     )
@@ -183,21 +219,7 @@ function Invoke-MmtlRuntimeBindingProbe {
     if(-not $buildJavaHome){$buildJavaHome=[string](Get-MmtlProbeProperty $buildResolution 'home' '')}
     $buildJavaMajor=[string](Get-MmtlProbeProperty $buildResolution 'actualMajor' '')
     $runtimeRequirement=Get-MmtlProbeProperty (Get-MmtlProbeProperty $Plan 'runtimeJava') 'requirement'
-    $cacheIdentity=[ordered]@{
-        schemaVersion=1
-        projectSha=$gitState.sha
-        toolchainId=[string](Get-MmtlProbeProperty $toolchain 'id' 'Unknown')
-        toolchainVersion=[string](Get-MmtlProbeProperty $toolchain 'version' '')
-        buildSystemId=[string](Get-MmtlProbeProperty $buildSystem 'id' 'Unknown')
-        loader=$loader
-        loaderVersion=[string](Get-MmtlProbeProperty $Project 'LoaderVersion' '')
-        minecraft=$minecraft
-        platformOs=[string](Get-MmtlProbeProperty $platform 'os' 'Unknown')
-        platformArch=[string](Get-MmtlProbeProperty $platform 'arch' 'Unknown')
-        buildJavaHome=$buildJavaHome
-        buildJavaMajor=$buildJavaMajor
-        adapterVersion='7'
-    }
+    $cacheIdentity=Get-MmtlProbeCacheIdentity -Project $Project -Plan $Plan -GitState $gitState
     $cacheBytes=[Text.Encoding]::UTF8.GetBytes(($cacheIdentity|ConvertTo-Json -Compress -Depth 8))
     $cacheKey=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($cacheBytes)).ToLowerInvariant()
     $cacheDirectory=Join-Path ([IO.Path]::GetFullPath($RuntimeRoot)) 'diagnostics/runtime-binding'
@@ -233,17 +255,23 @@ function Invoke-MmtlRuntimeBindingProbe {
     if($marker.Count){try{$observed=$marker[0].Substring('MMTL_RUNTIME_BINDING_JSON:'.Length)|ConvertFrom-Json -ErrorAction Stop}catch{}}
     $observedTasks=if($observed){@($observed.tasks)}else{@()}
     $selected=@($observedTasks|Where-Object{[string]$_.task -in @('runClient','runServer')})
+    $roleNames=@(Get-MmtlProbeProperty (Get-MmtlProbeProperty $Plan 'runtime') 'roles' @()|ForEach-Object{[string](Get-MmtlProbeProperty $_ 'role' '')})
+    if(-not $roleNames.Count){$roleNames=@('Client')}
+    $requiredTasks=@($roleNames|ForEach-Object{if($_ -eq 'Server'){'runServer'}else{'runClient'}}|Select-Object -Unique)
+    $missingTasks=@($requiredTasks|Where-Object{$_ -notin @($selected|ForEach-Object{[string]$_.task})})
     $runtimeEvidence=@()
     $binding=$null
     $status='Observed'
     $reason='RUNTIME_BINDING_TASK_ABSENT'
     if($exitCode -ne 0 -or -not $observed){$status='ProbeFailed';$reason='RUNTIME_BINDING_GRADLE_PROBE_FAILED'}
     elseif($selected.Count -eq 0){$status='TaskNotFound'}
+    elseif($missingTasks.Count){$status='Unresolved';$reason='RUNTIME_BINDING_ROLE_TASK_UNAVAILABLE'}
+    elseif(-not (Test-MmtlProbeBuildJavaMatchesPlan -ObservedBuildJavaHome ([string]$observed.buildJavaHome) -ObservedBuildJavaVersion ([string]$observed.buildJavaVersion) -BuildResolution $buildResolution)){$status='Unresolved';$reason='RUNTIME_BINDING_BUILD_JVM_MISMATCH'}
     else {
-        foreach($task in $selected){
+        foreach($task in @($selected|Where-Object{[string]$_.task -in $requiredTasks})){
             if($task.isJavaExec -ne $true -or [string]::IsNullOrWhiteSpace([string]$task.executable)){$status='Unresolved';$reason='RUNTIME_BINDING_FINAL_LAUNCHER_UNOBSERVED';continue}
             $mode=if(Test-MmtlProbeSameJavaHome -RuntimeExecutable ([string]$task.executable) -BuildJavaHome ([string]$observed.buildJavaHome)){'SameAsBuildJvm'}else{'ToolchainManaged'}
-            $runtimeEvidence+=New-MmtlRuntimeBindingEvidence -AdapterId ([string](Get-MmtlProbeProperty $toolchain 'id' 'Unknown')) -Mode $mode -EvidenceSource 'GradleInitScriptJavaExecInspection' -Confidence High -RuntimeJavaControllable:$false -RequiresBuildJvmMatch:($mode -eq 'SameAsBuildJvm') -ProbeStrategy 'GradleJavaExecTaskInspection' -ReasonCode '' -EvidenceDetails @([pscustomobject][ordered]@{task=[string]$task.task;taskType=[string]$task.taskType;executable=[string]$task.executable;launcherSource=[string]$task.launcherSource;buildJavaHome=[string]$observed.buildJavaHome})
+            $runtimeEvidence+=New-MmtlRuntimeBindingEvidence -AdapterId ([string](Get-MmtlProbeProperty $toolchain 'id' 'Unknown')) -Mode $mode -EvidenceSource 'GradleInitScriptJavaExecInspection' -Confidence High -RuntimeJavaControllable:$false -RequiresBuildJvmMatch:($mode -eq 'SameAsBuildJvm') -ProbeStrategy 'GradleJavaExecTaskInspection' -ReasonCode '' -EvidenceDetails @([pscustomobject][ordered]@{task=[string]$task.task;taskType=[string]$task.taskType;executable=[string]$task.executable;launcherSource=[string]$task.launcherSource;buildJavaHome=[string]$observed.buildJavaHome;buildJavaVersion=[string]$observed.buildJavaVersion})
         }
         if($runtimeEvidence.Count -and @($runtimeEvidence|ForEach-Object mode|Select-Object -Unique).Count -gt 1){
             $binding=Resolve-MmtlRuntimeBinding -Evidence $runtimeEvidence
@@ -261,7 +289,9 @@ function Invoke-MmtlRuntimeBindingProbe {
         if($diagnosticSummary.Length -gt 1600){$diagnosticSummary=$diagnosticSummary.Substring(0,1600)}
     }
     $taskNames=@($observedTasks|ForEach-Object{[string]$_.task})
-    $result=[pscustomobject][ordered]@{schemaVersion=1;status=$status;projectRoot=$projectRoot;runtimeJavaBinding=$binding;evidenceDetails=@($binding.evidenceDetails);cacheKey=$cacheKey;cacheHit=$false;dirty=[bool]$gitState.dirty;projectSha=$gitState.sha;buildJavaHome=$buildJavaHome;buildJavaMajor=$buildJavaMajor;runtimeJavaRequirement=$runtimeRequirement;toolchain=$cacheIdentity.toolchainId;toolchainVersion=$cacheIdentity.toolchainVersion;buildSystem=$cacheIdentity.buildSystemId;adapterVersion=$cacheIdentity.adapterVersion;loader=$loader;loaderVersion=$cacheIdentity.loaderVersion;minecraft=$minecraft;platform=[pscustomobject]@{os=$cacheIdentity.platformOs;arch=$cacheIdentity.platformArch};method='Gradle task graph configuration + JavaExec inspection';observedTasks=$observedTasks;taskNames=$taskNames;diagnosticSummary=$diagnosticSummary;timestamp=[DateTimeOffset]::UtcNow.ToString('o');errorCode=$(if($status -eq 'Observed'){$null}else{$reason});evidencePath=$null}
+    $observedBuildJavaHome=[string](Get-MmtlProbeProperty $observed 'buildJavaHome' '')
+    $observedBuildJavaVersion=[string](Get-MmtlProbeProperty $observed 'buildJavaVersion' '')
+    $result=[pscustomobject][ordered]@{schemaVersion=1;status=$status;projectRoot=$projectRoot;runtimeJavaBinding=$binding;evidenceDetails=@($binding.evidenceDetails);cacheKey=$cacheKey;cacheHit=$false;dirty=[bool]$gitState.dirty;projectSha=$gitState.sha;buildJavaHome=$buildJavaHome;buildJavaMajor=$buildJavaMajor;observedBuildJavaHome=$observedBuildJavaHome;observedBuildJavaVersion=$observedBuildJavaVersion;runtimeJavaRequirement=$runtimeRequirement;toolchain=$cacheIdentity.toolchainId;toolchainVersion=$cacheIdentity.toolchainVersion;buildSystem=$cacheIdentity.buildSystemId;adapterVersion=$cacheIdentity.adapterVersion;loader=$loader;loaderVersion=$cacheIdentity.loaderVersion;minecraft=$minecraft;platform=[pscustomobject]@{os=$cacheIdentity.platformOs;arch=$cacheIdentity.platformArch};method='Gradle task graph configuration + JavaExec inspection';observedTasks=$observedTasks;taskNames=$taskNames;diagnosticSummary=$diagnosticSummary;timestamp=[DateTimeOffset]::UtcNow.ToString('o');errorCode=$(if($status -eq 'Observed'){$null}else{$reason});evidencePath=$null}
     $evidenceDirectory=Join-Path $cacheDirectory 'evidence'
     New-Item -ItemType Directory -Path $evidenceDirectory -Force|Out-Null
     $evidencePath=Join-Path $evidenceDirectory ($cacheKey+'-'+[guid]::NewGuid().ToString('N')+'.json')

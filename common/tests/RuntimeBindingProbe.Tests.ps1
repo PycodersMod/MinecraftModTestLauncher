@@ -46,7 +46,7 @@ Describe 'Runtime Binding 安全探测' {
 
     It '观察 JavaExec 的 javaLauncher 并记录证据与缓存身份' {
         $project=New-TestBindingProject -Root (Join-Path $TestDrive 'trusted-project')
-        $output='MMTL_RUNTIME_BINDING_JSON:{"tasks":[{"task":"runClient","taskType":"org.gradle.api.tasks.JavaExec","isJavaExec":true,"launcherSource":"javaLauncher","executable":"<JAVA_HOME>/bin/java"}],"buildJavaHome":"<JAVA_HOME>"}'
+        $output='MMTL_RUNTIME_BINDING_JSON:{"tasks":[{"task":"runClient","taskType":"org.gradle.api.tasks.JavaExec","isJavaExec":true,"launcherSource":"javaLauncher","executable":"<JAVA_HOME>/bin/java"}],"buildJavaHome":"<JAVA_HOME>","buildJavaVersion":"17.0.1"}'
         $invoke={ param($request) [pscustomobject]@{exitCode=0;output=@($output)} }.GetNewClosure()
 
         $result=Invoke-TestRuntimeBindingProbe -Project $project -Plan (New-TestBindingPlan) -RuntimeRoot (Join-Path $TestDrive 'runtime-javaexec') -TrustedProjectRoots @((Split-Path $project.Root -Parent)) -GradleInvoker $invoke
@@ -56,7 +56,7 @@ Describe 'Runtime Binding 安全探测' {
         $result.runtimeJavaBinding.requiresBuildJvmMatch | Should -BeTrue
         $result.evidenceDetails[0].task | Should -BeExactly 'runClient'
         $result.runtimeJavaRequirement.major | Should -Be 17
-        $result.adapterVersion | Should -BeExactly '7'
+        $result.adapterVersion | Should -BeExactly '8'
         $result.cacheKey | Should -Match '^[a-f0-9]{64}$'
         $result.cacheHit | Should -BeFalse
         $result.dirty | Should -BeFalse
@@ -91,15 +91,62 @@ Describe 'Runtime Binding 安全探测' {
 
     It 'Launch Preflight 只消费当前干净 SHA 的本地 probe evidence' {
         $root=Join-Path $TestDrive 'trusted-project';$project=New-TestBindingProject -Root $root
-        $runtime=Join-Path $TestDrive 'runtime-evidence-read';$output='MMTL_RUNTIME_BINDING_JSON:{"tasks":[{"task":"runClient","taskType":"org.gradle.api.tasks.JavaExec","isJavaExec":true,"launcherSource":"javaLauncher","executable":"<JAVA_HOME>/bin/java"}],"buildJavaHome":"<JAVA_HOME>"}'
+        $runtime=Join-Path $TestDrive 'runtime-evidence-read';$output='MMTL_RUNTIME_BINDING_JSON:{"tasks":[{"task":"runClient","taskType":"org.gradle.api.tasks.JavaExec","isJavaExec":true,"launcherSource":"javaLauncher","executable":"<JAVA_HOME>/bin/java"}],"buildJavaHome":"<JAVA_HOME>","buildJavaVersion":"17.0.1"}'
         $invoke={ param($request) [pscustomobject]@{exitCode=0;output=@($output)} }.GetNewClosure()
         $null=Invoke-TestRuntimeBindingProbe -Project $project -Plan (New-TestBindingPlan) -RuntimeRoot $runtime -TrustedProjectRoots @((Split-Path $root -Parent)) -GradleInvoker $invoke
 
-        $cached=Get-MmtlCachedRuntimeBindingEvidence -ProjectRoot $root -RuntimeRoot $runtime
+        $cached=Get-MmtlCachedRuntimeBindingEvidence -Project $project -Plan (New-TestBindingPlan) -RuntimeRoot $runtime
 
         $cached.runtimeJavaBinding.mode | Should -BeExactly 'SameAsBuildJvm'
         Set-Content -LiteralPath (Join-Path $root 'build.gradle') -Value 'changed after evidence'
-        Get-MmtlCachedRuntimeBindingEvidence -ProjectRoot $root -RuntimeRoot $runtime | Should -BeNullOrEmpty
+        Get-MmtlCachedRuntimeBindingEvidence -Project $project -Plan (New-TestBindingPlan) -RuntimeRoot $runtime | Should -BeNullOrEmpty
+    }
+
+    It '缓存读取必须匹配当前 Build Java 与平台完整身份' {
+        $root=Join-Path $TestDrive 'trusted-project-cache-identity';$project=New-TestBindingProject -Root $root
+        $runtime=Join-Path $TestDrive 'runtime-cache-identity';$plan=New-TestBindingPlan
+        $output='MMTL_RUNTIME_BINDING_JSON:{"tasks":[{"task":"runClient","taskType":"org.gradle.api.tasks.JavaExec","isJavaExec":true,"launcherSource":"javaLauncher","executable":"<JAVA_HOME>/bin/java"}],"buildJavaHome":"<JAVA_HOME>","buildJavaVersion":"17.0.1"}'
+        $invoke={param($request)[pscustomobject]@{exitCode=0;output=@($output)}}.GetNewClosure()
+        $null=Invoke-TestRuntimeBindingProbe -Project $project -Plan $plan -RuntimeRoot $runtime -TrustedProjectRoots @((Split-Path $root -Parent)) -GradleInvoker $invoke
+
+        (Get-MmtlCachedRuntimeBindingEvidence -Project $project -Plan $plan -RuntimeRoot $runtime).runtimeJavaBinding.mode | Should -BeExactly 'SameAsBuildJvm'
+        $plan.buildJava.resolution.javaHome='<OTHER_JAVA_HOME>'
+        Get-MmtlCachedRuntimeBindingEvidence -Project $project -Plan $plan -RuntimeRoot $runtime | Should -BeNullOrEmpty
+        $plan.buildJava.resolution.javaHome='<JAVA_HOME>';$plan.platform.os='Linux'
+        Get-MmtlCachedRuntimeBindingEvidence -Project $project -Plan $plan -RuntimeRoot $runtime | Should -BeNullOrEmpty
+    }
+
+    It '每个运行角色都必须有对应且可解析的最终 task 证据' {
+        $project=New-TestBindingProject -Root (Join-Path $TestDrive 'trusted-project-role-task')
+        $plan=New-TestBindingPlan;$plan|Add-Member -NotePropertyName runtime -NotePropertyValue ([pscustomobject]@{roles=@([pscustomobject]@{role='Server'})})
+        $invoke={param($request)[pscustomobject]@{exitCode=0;output=@('MMTL_RUNTIME_BINDING_JSON:{"tasks":[{"task":"runClient","taskType":"org.gradle.api.tasks.JavaExec","isJavaExec":true,"launcherSource":"javaLauncher","executable":"<JAVA_HOME>/bin/java"}],"buildJavaHome":"<JAVA_HOME>","buildJavaVersion":"17.0.1"}')}}
+
+        $result=Invoke-TestRuntimeBindingProbe -Project $project -Plan $plan -RuntimeRoot (Join-Path $TestDrive 'runtime-role-task') -TrustedProjectRoots @((Split-Path $project.Root -Parent)) -GradleInvoker $invoke
+
+        $result.runtimeJavaBinding.mode | Should -BeExactly 'Unknown'
+        $result.errorCode | Should -BeExactly 'RUNTIME_BINDING_ROLE_TASK_UNAVAILABLE'
+    }
+
+    It '只在观测到的 Gradle JVM 与 Plan Build Java 一致时声明 SameAsBuildJvm' {
+        $project=New-TestBindingProject -Root (Join-Path $TestDrive 'trusted-project-build-jvm')
+        $plan=New-TestBindingPlan;$plan.buildJava.resolution.javaHome='<JAVA_HOME>'; $plan.buildJava.resolution.actualMajor=21
+        $invoke={param($request)[pscustomobject]@{exitCode=0;output=@('MMTL_RUNTIME_BINDING_JSON:{"tasks":[{"task":"runClient","taskType":"org.gradle.api.tasks.JavaExec","isJavaExec":true,"launcherSource":"javaLauncher","executable":"<JAVA_HOME>/bin/java"}],"buildJavaHome":"<OTHER_JAVA_HOME>","buildJavaVersion":"17.0.1"}')}}
+
+        $result=Invoke-TestRuntimeBindingProbe -Project $project -Plan $plan -RuntimeRoot (Join-Path $TestDrive 'runtime-build-jvm') -TrustedProjectRoots @((Split-Path $project.Root -Parent)) -GradleInvoker $invoke
+
+        $result.runtimeJavaBinding.mode | Should -BeExactly 'Unknown'
+        $result.errorCode | Should -BeExactly 'RUNTIME_BINDING_BUILD_JVM_MISMATCH'
+    }
+
+    It 'Gradle JVM 版本与 Plan Build Java 不一致时不声明 SameAsBuildJvm' {
+        $project=New-TestBindingProject -Root (Join-Path $TestDrive 'trusted-project-build-version')
+        $invoke={param($request)[pscustomobject]@{exitCode=0;output=@('MMTL_RUNTIME_BINDING_JSON:{"tasks":[{"task":"runClient","taskType":"org.gradle.api.tasks.JavaExec","isJavaExec":true,"launcherSource":"javaLauncher","executable":"<JAVA_HOME>/bin/java"}],"buildJavaHome":"<JAVA_HOME>","buildJavaVersion":"21.0.1"}')}}
+
+        $result=Invoke-TestRuntimeBindingProbe -Project $project -Plan (New-TestBindingPlan) -RuntimeRoot (Join-Path $TestDrive 'runtime-build-version') -TrustedProjectRoots @((Split-Path $project.Root -Parent)) -GradleInvoker $invoke
+
+        $result.runtimeJavaBinding.mode | Should -BeExactly 'Unknown'
+        $result.errorCode | Should -BeExactly 'RUNTIME_BINDING_BUILD_JVM_MISMATCH'
+        $result.observedBuildJavaVersion | Should -BeExactly '21.0.1'
     }
 
     It '默认执行器在隔离子进程中使用 Plan 的 JDK 且清理临时 init script' {

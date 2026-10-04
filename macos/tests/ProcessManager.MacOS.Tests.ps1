@@ -32,7 +32,7 @@ if([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropSe
             $record.PID | Should -Be $PID
             $record.StartTimeToken | Should -Not -BeNullOrEmpty
             (Test-MmtlMacOSProcessIdentity -Process $record -Record $record) | Should -BeTrue
-            $reused=$record.PSObject.Copy();$reused.StartTimeToken='reused-pid-token'
+            $reused=$record.PSObject.Copy();$reused.StartIdentity='reused-pid-identity'
             (Test-MmtlMacOSProcessIdentity -Process $record -Record $reused) | Should -BeFalse
         }
 

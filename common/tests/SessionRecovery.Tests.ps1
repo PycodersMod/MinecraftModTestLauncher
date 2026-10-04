@@ -7,6 +7,8 @@ BeforeAll {
     & $register -RepositoryRoot $repoRoot
     Import-Module (Join-Path $script:root 'src/SessionLock.psm1') -Force
     Import-Module (Join-Path $script:root 'src/SessionRecovery.psm1') -Force
+    Import-Module (Join-Path $script:root 'src/Execution/ExecutionPlanner.psm1') -Force
+    Import-Module (Join-Path $script:root 'src/SessionLifecycle.psm1') -Force
     function New-RecoveryFixture {
         $runtime=Join-Path $TestDrive ('runtime-'+[guid]::NewGuid().ToString('N'));$sessions=Join-Path $runtime 'sessions';$sessionId='fixture-'+[guid]::NewGuid().ToString('N').Substring(0,8);$session=Join-Path $sessions $sessionId
         New-Item -ItemType Directory -Path $session -Force|Out-Null
@@ -14,6 +16,17 @@ BeforeAll {
     }
     function Write-StaleSessionLock($Path,[int]$OwnerProcessId=2147483647,[string]$Identity='0') {
         @{schemaVersion=1;ownerPid=$OwnerProcessId;processStartIdentity=$Identity;createdUtc='2000-01-01T00:00:00Z';nonce='fixture'}|ConvertTo-Json -Compress|Set-Content -LiteralPath $Path
+    }
+    function New-RecoveryTestPlan {
+        $repo=Join-Path $TestDrive 'recovery-plan-repo';$projectRoot=Join-Path $repo 'mod';$jdk=Join-Path $TestDrive 'recovery-plan-jdk'
+        New-Item -ItemType Directory -Path $projectRoot,(Join-Path $jdk 'bin') -Force|Out-Null
+        New-Item -ItemType File -Path (Join-Path $jdk 'bin/java.exe') -Force|Out-Null
+        @('JAVA_VERSION="17.0.1"','IMPLEMENTOR="Test Vendor"','OS_ARCH="amd64"')|Set-Content (Join-Path $jdk 'release')
+        $platform=[pscustomobject]@{os='Windows';arch='x64';isWSL=$false;capabilities=[pscustomobject]@{Build='Native';Launch='Native'}}
+        $project=[pscustomobject]@{RepositoryRoot=$repo;Root=$projectRoot;MinecraftVersion='1.20.1';Loader='Forge';LoaderVersion='47.2.0';ModId='fixture';LoaderStack=[pscustomobject]@{primaryLoader=[pscustomobject]@{id='Forge';version='47.2.0'};overlayLoaders=@()};Toolchain=[pscustomobject]@{id='ForgeGradle';version='6.0'};BuildSystem=[pscustomobject]@{id='GradleWrapper';version='8.8'};BuildTask='build';Wrapper=$true;BuildJavaRequirement=[pscustomobject]@{major=17;minimumMajor=17;requirementKind='Minimum';source='Fixture';confidence='High'}}
+        $profile=[pscustomobject]@{project=$projectRoot;mode='Single';players=1;hostUsername='Dev';autoBuild=$true;cleanBuild=$false;acceptEula=$false;port='Auto';memoryMb=1024;jvmArgs=@();gameArgs=@()}
+        $config=[pscustomobject]@{defaultProfile='fixture';javaHomes=[pscustomobject]@{'17'=$jdk};javaHomesByPlatform=[pscustomobject]@{Windows=[pscustomobject]@{};Linux=[pscustomobject]@{};MacOS=[pscustomobject]@{}}}
+        New-MmtlExecutionPlan -Project $project -Profile $profile -Config $config -Platform $platform -RuntimeRoot (Join-Path $TestDrive 'recovery-plan-runtime') -ProfileName fixture -PhysicalMemoryMb 8192
     }
 }
 
@@ -82,6 +95,17 @@ Describe 'Session 崩溃恢复计划' {
         (Get-FileHash $fixture.lock -Algorithm SHA256).Hash | Should -BeExactly $before
     }
 
+    It '接受 ProcessManager 正式写入的 StartIdentity PID 登记格式' {
+        Import-Module (Join-Path $script:root 'src/ProcessManager.psm1') -Force
+        $fixture=New-RecoveryFixture;Write-StaleSessionLock $fixture.lock
+        $record=Get-MmtlProcessRecord -ProcessId $PID
+        @{PID=$PID;StartIdentity=$record.StartIdentity;StartTimeUtc=$record.StartTimeUtc;StartTimeToken=$record.StartTimeToken;Role='fixture'}|ConvertTo-Json -AsArray|Set-Content (Join-Path $fixture.session 'pids.json')
+
+        $plan=Get-MmtlSessionRecoveryPlan -RuntimeRoot $fixture.runtime
+
+        $plan.actions.code | Should -Contain 'OrphanedTrackedProcess'
+    }
+
     It '损坏 manifest 只报告且保持原字节' {
         $fixture=New-RecoveryFixture;Write-StaleSessionLock $fixture.lock
         $manifest=Join-Path $fixture.session 'session.v2.json';Set-Content $manifest '{broken';$before=(Get-FileHash $manifest -Algorithm SHA256).Hash
@@ -94,9 +118,25 @@ Describe 'Session 崩溃恢复计划' {
         (Get-FileHash $manifest -Algorithm SHA256).Hash | Should -BeExactly $before
     }
 
-    It '确认 owner 已崩溃后将非终态 manifest 标记为 Abandoned' {
+    It '有效 JSON 但缺少 schema 与 Plan 绑定的 manifest 也保持原字节' {
         $fixture=New-RecoveryFixture;Write-StaleSessionLock $fixture.lock
-        @{schemaVersion=2;sessionId=$fixture.sessionId;state='Running';createdUtc='2000-01-01T00:00:00Z';updatedUtc='2000-01-01T00:00:00Z';planFile='execution-plan.json';planDigest=('sha256:'+('a'*64));planSha256=('sha256:'+('b'*64));artifacts=@()}|ConvertTo-Json -Depth 8|Set-Content (Join-Path $fixture.session 'session.v2.json')
+        $manifest=Join-Path $fixture.session 'session.v2.json';@{schemaVersion=2;sessionId=$fixture.sessionId;state='Running';updatedUtc='2000-01-01T00:00:00Z'}|ConvertTo-Json|Set-Content $manifest
+        $before=(Get-FileHash $manifest -Algorithm SHA256).Hash
+
+        $plan=Get-MmtlSessionRecoveryPlan -RuntimeRoot $fixture.runtime
+        $result=Invoke-MmtlSessionRecovery -RuntimeRoot $fixture.runtime -Plan $plan
+
+        $plan.actions.code | Should -Contain 'SESSION_MANIFEST_CORRUPT'
+        $result.recovered | Should -Be 0
+        (Get-FileHash $manifest -Algorithm SHA256).Hash | Should -BeExactly $before
+    }
+
+    It '确认 owner 已崩溃后将非终态 manifest 标记为 Abandoned' {
+        Import-Module (Join-Path $script:root 'src/SessionLifecycle.psm1') -Force
+        $fixture=New-RecoveryFixture;$sessionPlan=New-RecoveryTestPlan
+        Initialize-MmtlSessionV2 -SessionPath $fixture.session -ExecutionPlan $sessionPlan|Out-Null
+        Set-MmtlSessionV2State -SessionPath $fixture.session -State Building|Out-Null
+        Write-StaleSessionLock $fixture.lock
 
         $plan=Get-MmtlSessionRecoveryPlan -RuntimeRoot $fixture.runtime
         Invoke-MmtlSessionRecovery -RuntimeRoot $fixture.runtime -Plan $plan|Out-Null

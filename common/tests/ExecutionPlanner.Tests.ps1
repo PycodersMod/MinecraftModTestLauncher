@@ -198,6 +198,19 @@ Describe '统一 Execution Planner' {
         $plan.blockingReasons.code | Should -Not -Contain 'RUNTIME_JAVA_BINDING_MISMATCH'
     }
 
+    It 'Single 客户端不能使用只有 runServer 证据的 Runtime Binding' {
+        $input=New-TestPlannerInputs
+        $input.project.RuntimeJavaRequirement=[pscustomobject]@{purpose='RuntimeJava';major=17;requirementKind='Exact';source='MojangVersionMetadata';confidence='High'}
+        $binding=[pscustomobject]@{mode='SameAsBuildJvm';evidenceSource='GradleInitScriptJavaExecInspection';confidence='High';evidenceDetails=@([pscustomobject]@{task='runServer';taskType='org.gradle.api.tasks.JavaExec'})}
+        $input.AdapterEvidence=[pscustomobject]@{runtimeJavaBindingMode='SameAsBuildJvm';runtimeJavaBindingEvidence=$binding}
+
+        $plan=New-MmtlExecutionPlan @input
+
+        $plan.capabilityGates.launchReady | Should -BeFalse
+        $plan.launchBlockingReasons.code | Should -Contain 'RUNTIME_BINDING_ROLE_TASK_UNAVAILABLE'
+        $plan.runtime.roles[0].launchReady | Should -BeFalse
+    }
+
     It 'IntegratedLAN 分别暴露 Host 就绪和需要认证的 Guest 阻塞' {
         $input=New-TestPlannerInputs
         $input.profile.mode='IntegratedLAN';$input.profile.players=2

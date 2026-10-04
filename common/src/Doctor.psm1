@@ -26,6 +26,8 @@ function Invoke-MmtlDoctor {
     try{$provider=Get-MmtlPlatformProvider;$checks.Add((New-MmtlDoctorCheck 'PLATFORM_PROVIDER' 'Platform' 'PASS' 'INFO' '平台提供器已注册。' @{os=$provider.OS;architecture=$provider.Arch;isWSL=[bool]$provider.IsWSL}))}catch{$checks.Add((New-MmtlDoctorCheck 'PLATFORM_PROVIDER' 'Platform' 'FAIL' 'ERROR' '平台提供器未注册。' $null 'PLATFORM_PROVIDER_UNAVAILABLE'))}
     if($provider){
         $checks.Add((New-MmtlDoctorCheck 'OS_ARCH' 'Platform' 'PASS' 'INFO' "$($provider.OS) / $($provider.Arch)" @{os=$provider.OS;architecture=$provider.Arch;isWSL=[bool]$provider.IsWSL}))
+        $processNative=[string]$provider.ProcessManagement -eq 'Native'
+        $checks.Add((New-MmtlDoctorCheck 'PROCESS_MANAGEMENT' 'Process' $(if($processNative){'PASS'}else{'WARN'}) $(if($processNative){'INFO'}else{'WARNING'}) $(if($processNative){'平台进程快照与身份能力已注册。'}else{'平台不提供完整原生进程管理能力。'}) @{capability=[string]$provider.ProcessManagement} 'PROCESS_MANAGEMENT_UNAVAILABLE'))
         $discovery=Get-MmtlJavaDiscovery -Platform $provider
         $checks.Add((New-MmtlDoctorCheck 'JAVA_DISCOVERY' 'Java' $(if($discovery.count){'PASS'}else{'WARN'}) $(if($discovery.count){'INFO'}else{'WARNING'}) $(if($discovery.count){"发现 $($discovery.count) 个 Java 候选。"}else{'没有发现 Java 安装候选。'}) @{candidates=@($discovery.candidates);configModified=$false} 'JAVA_DISCOVERY_EMPTY'))
     }
@@ -46,6 +48,17 @@ function Invoke-MmtlDoctor {
     $wrapperExecutable=$wrapperExists
     if($wrapperExists -and $provider.OS -ne 'Windows'){try{$wrapperExecutable=[bool]((Get-Item -LiteralPath $wrapper -Force).UnixFileMode -band [IO.UnixFileMode]::UserExecute)}catch{$wrapperExecutable=$false}}
     $checks.Add((New-MmtlDoctorCheck 'GRADLE_WRAPPER' 'Gradle' $(if($wrapperExecutable){'PASS'}elseif($wrapperExists){'WARN'}else{'FAIL'}) $(if($wrapperExecutable){'INFO'}else{'ERROR'}) $(if($wrapperExecutable){'Gradle Wrapper 存在且可执行。'}elseif($wrapperExists){'Gradle Wrapper 缺少执行权限。'}else{'未找到 Gradle Wrapper。'}) @{exists=[bool]$wrapperExists;executable=[bool]$wrapperExecutable} 'GRADLE_WRAPPER_UNAVAILABLE'))
+    $wrapperMetadataRoot=if($projectRoot){Join-Path $projectRoot 'gradle/wrapper'}else{''}
+    $wrapperJar=if($wrapperMetadataRoot){Join-Path $wrapperMetadataRoot 'gradle-wrapper.jar'}else{''}
+    $wrapperProperties=if($wrapperMetadataRoot){Join-Path $wrapperMetadataRoot 'gradle-wrapper.properties'}else{''}
+    $wrapperJarExists=$wrapperJar -and (Test-Path -LiteralPath $wrapperJar -PathType Leaf)
+    $checks.Add((New-MmtlDoctorCheck 'GRADLE_WRAPPER_JAR' 'Gradle' $(if($wrapperJarExists){'PASS'}elseif($projectRoot){'FAIL'}else{'SKIP'}) $(if($wrapperJarExists){'INFO'}elseif($projectRoot){'ERROR'}else{'WARNING'}) $(if($wrapperJarExists){'Gradle Wrapper JAR 存在。'}elseif($projectRoot){'Gradle Wrapper JAR 缺失。'}else{'没有项目目录可供检查。'}) @{exists=[bool]$wrapperJarExists} 'GRADLE_WRAPPER_JAR_UNAVAILABLE'))
+    $wrapperPropertiesExists=$wrapperProperties -and (Test-Path -LiteralPath $wrapperProperties -PathType Leaf)
+    $distributionUrl='';if($wrapperPropertiesExists){$distributionLine=Get-Content -LiteralPath $wrapperProperties -ErrorAction SilentlyContinue|Where-Object{$_ -match '^\s*distributionUrl\s*='}|Select-Object -First 1;if($distributionLine){$distributionUrl=([string]$distributionLine -split '=',2)[1].Trim()}}
+    $normalizedDistributionUrl=$distributionUrl -replace '\\:', ':'
+    $validDistributionUrl=$normalizedDistributionUrl -match '^https://[^\s]+$'
+    $checks.Add((New-MmtlDoctorCheck 'GRADLE_WRAPPER_PROPERTIES' 'Gradle' $(if($wrapperPropertiesExists){'PASS'}elseif($projectRoot){'FAIL'}else{'SKIP'}) $(if($wrapperPropertiesExists){'INFO'}elseif($projectRoot){'ERROR'}else{'WARNING'}) $(if($wrapperPropertiesExists){'Gradle Wrapper properties 文件存在。'}elseif($projectRoot){'Gradle Wrapper properties 文件缺失。'}else{'没有项目目录可供检查。'}) @{exists=[bool]$wrapperPropertiesExists} 'GRADLE_WRAPPER_PROPERTIES_UNAVAILABLE'))
+    $checks.Add((New-MmtlDoctorCheck 'GRADLE_DISTRIBUTION_URL' 'Gradle' $(if($validDistributionUrl){'PASS'}elseif($wrapperPropertiesExists){'FAIL'}elseif($projectRoot){'FAIL'}else{'SKIP'}) $(if($validDistributionUrl){'INFO'}elseif($projectRoot){'ERROR'}else{'WARNING'}) $(if($validDistributionUrl){'Wrapper distribution URL 是 HTTPS。'}elseif($projectRoot){'Wrapper 缺少有效 HTTPS distribution URL。'}else{'没有项目目录可供检查。'}) @{configured=[bool]$distributionUrl;https=[bool]$validDistributionUrl} 'GRADLE_DISTRIBUTION_URL_INVALID'))
     $buildResolution=if($Plan -and $Plan.PSObject.Properties['buildJava']){$Plan.buildJava.resolution}else{$null};$buildJavaReady=$buildResolution -and $buildResolution.status -eq 'Resolved' -and $buildResolution.javaPath -and (Test-Path -LiteralPath $buildResolution.javaPath -PathType Leaf)
     $checks.Add((New-MmtlDoctorCheck 'BUILD_JAVA' 'Java' $(if($buildJavaReady){'PASS'}elseif($Plan){'FAIL'}else{'SKIP'}) $(if($buildJavaReady){'INFO'}else{'ERROR'}) $(if($buildJavaReady){'Build Java 可用。'}elseif($Plan){'Build Java 未解析或不可访问。'}else{'没有 Execution Plan 可供核验。'}) @{status=$(if($buildResolution){$buildResolution.status}else{'Unavailable'});major=$(if($buildResolution){$buildResolution.actualMajor}else{$null})} 'BUILD_JAVA_UNAVAILABLE'))
     $runtimeResolution=if($Plan -and $Plan.PSObject.Properties['runtimeJava']){$Plan.runtimeJava.resolution}else{$null};$runtimeReady=$runtimeResolution -and $runtimeResolution.status -eq 'Resolved' -and $runtimeResolution.javaPath -and (Test-Path -LiteralPath $runtimeResolution.javaPath -PathType Leaf)
@@ -59,6 +72,9 @@ function Invoke-MmtlDoctor {
     $diskPath=if($rootExists){$runtimeFull}else{Split-Path -Parent $runtimeFull};$freeBytes=$null
     try{$drive=[IO.DriveInfo]::new([IO.Path]::GetPathRoot($diskPath));if($drive.IsReady){$freeBytes=[long]$drive.AvailableFreeSpace}}catch{}
     $checks.Add((New-MmtlDoctorCheck 'DISK_SPACE' 'Filesystem' $(if($null -ne $freeBytes){'PASS'}else{'WARN'}) $(if($null -ne $freeBytes){'INFO'}else{'WARNING'}) $(if($null -ne $freeBytes){'已读取剩余磁盘空间。'}else{'无法读取剩余磁盘空间。'}) @{availableBytes=$freeBytes} 'DISK_SPACE_UNAVAILABLE'))
+    $projectFreeBytes=$null
+    if($projectExists){try{$projectDrive=[IO.DriveInfo]::new([IO.Path]::GetPathRoot([IO.Path]::GetFullPath($projectRoot)));if($projectDrive.IsReady){$projectFreeBytes=[long]$projectDrive.AvailableFreeSpace}}catch{}}
+    $checks.Add((New-MmtlDoctorCheck 'PROJECT_DISK_SPACE' 'Filesystem' $(if($null -ne $projectFreeBytes){'PASS'}elseif($projectExists){'WARN'}else{'SKIP'}) $(if($null -ne $projectFreeBytes){'INFO'}else{'WARNING'}) $(if($null -ne $projectFreeBytes){'已读取项目所在卷的剩余空间。'}elseif($projectExists){'无法读取项目所在卷的剩余空间。'}else{'没有项目目录可供检查。'}) @{availableBytes=$projectFreeBytes} 'PROJECT_DISK_SPACE_UNAVAILABLE'))
     $memoryMb=0L;try{$memoryMb=[long](Get-MmtlPhysicalMemoryMb)}catch{}
     $checks.Add((New-MmtlDoctorCheck 'MEMORY' 'Platform' $(if($memoryMb -gt 0){'PASS'}else{'WARN'}) $(if($memoryMb -gt 0){'INFO'}else{'WARNING'}) $(if($memoryMb -gt 0){'已读取物理内存容量。'}else{'无法读取物理内存容量。'}) @{physicalMemoryMb=$(if($memoryMb -gt 0){$memoryMb}else{$null})} 'MEMORY_UNAVAILABLE'))
     $directories=@();if($Plan -and $Plan.PSObject.Properties['runtime'] -and $Plan.runtime.runtimeDirectories){$directories=@($Plan.runtime.runtimeDirectories)}

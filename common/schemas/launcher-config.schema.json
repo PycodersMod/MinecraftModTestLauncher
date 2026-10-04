@@ -9,6 +9,7 @@
     "defaultProfile": {"type": "string", "minLength": 1},
     "javaHomes": {"$ref": "#/$defs/javaHomeMap"},
     "javaHomesByPlatform": {"type": "object", "propertyNames": {"enum": ["Windows", "Linux", "MacOS"]}, "additionalProperties": {"$ref": "#/$defs/javaHomeMap"}},
+    "trustedProjectRoots": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
     "runtimeRoot": {"type": "string"},
     "profiles": {"type": "object", "minProperties": 1, "additionalProperties": {"$ref": "#/$defs/profile"}}
   },

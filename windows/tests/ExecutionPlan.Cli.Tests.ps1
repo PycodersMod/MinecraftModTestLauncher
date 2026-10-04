@@ -1,5 +1,8 @@
 BeforeAll {
     $script:repoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+    Import-Module (Join-Path $script:repoRoot 'common/src/Platform/Platform.psm1') -Force
+    Import-Module (Join-Path $script:repoRoot 'windows/src/WindowsPlatformProvider.psm1') -Force
+    Register-MmtlWindowsPlatform -RepositoryRoot $script:repoRoot
     $script:projectRoot = Join-Path $TestDrive 'sample-repository/forge/1.20.1'
     $script:javaHome = Join-Path $TestDrive 'jdk-17'
     $script:runtimeRoot = Join-Path $TestDrive 'mmtl-runtime'
@@ -8,7 +11,8 @@ BeforeAll {
     "minecraft_version=1.20.1`nforge_version=47.2.0`njava_version=17`nmod_id=phaseh_fixture" | Set-Content (Join-Path $script:projectRoot 'gradle.properties')
     '[[mods]]`nmodId="phaseh_fixture"' | Set-Content (Join-Path $script:projectRoot 'src/main/resources/META-INF/mods.toml')
     'distributionUrl=https\://services.gradle.org/distributions/gradle-8.8-bin.zip' | Set-Content (Join-Path $script:projectRoot 'gradle/wrapper/gradle-wrapper.properties')
-    New-Item -ItemType File -Path (Join-Path $script:projectRoot 'gradlew.bat') -Force | Out-Null
+    @('@echo off','if not exist build\libs mkdir build\libs','echo fixture > build\libs\fixture.jar','exit /b 0') | Set-Content -LiteralPath (Join-Path $script:projectRoot 'gradlew.bat')
+    New-Item -ItemType File -Path (Join-Path $script:projectRoot 'gradle/wrapper/gradle-wrapper.jar') -Force | Out-Null
     New-Item -ItemType File -Path (Join-Path $script:javaHome 'bin/java.exe') -Force | Out-Null
     @('JAVA_VERSION="17.0.19"','IMPLEMENTOR="Oracle Corporation"','OS_ARCH="amd64"','OS_NAME="Windows"') | Set-Content (Join-Path $script:javaHome 'release')
     $script:configPath = Join-Path $TestDrive 'launcher.config.json'
@@ -62,6 +66,20 @@ Describe 'Execution Plan CLI' {
         Test-Path -LiteralPath $script:runtimeRoot | Should -BeFalse
     }
 
+    It '--build 路径可调用 Session 元数据锁并完成会话初始化' {
+        try {
+            $output=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --build 2>&1|Out-String
+
+            $LASTEXITCODE | Should -Be 0
+            $session=Get-ChildItem -LiteralPath (Join-Path $script:runtimeRoot 'sessions') -Directory | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+            $state=Get-Content -LiteralPath (Join-Path $session.FullName 'session.json') -Raw | ConvertFrom-Json
+            $state.buildResult.exitCode | Should -Be 0
+            $state.executionPlanDigest | Should -Match '^sha256:[0-9a-f]{64}$'
+        } finally {
+            if(Test-Path -LiteralPath $script:runtimeRoot){Remove-Item -LiteralPath $script:runtimeRoot -Recurse -Force}
+        }
+    }
+
     It '--runtime-binding --json 在无可信 Probe 证据时保留 Unknown' {
         $output=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --runtime-binding --json 2>&1|Out-String
 
@@ -70,6 +88,21 @@ Describe 'Execution Plan CLI' {
         $binding.mode | Should -BeExactly 'Unknown'
         $binding.compatibility | Should -BeExactly 'Unknown'
         Test-Path -LiteralPath $script:runtimeRoot | Should -BeFalse
+    }
+
+    It '--runtime-binding --probe 不信任配置中的任意项目且不执行其 wrapper' {
+        $project=Join-Path $TestDrive 'untrusted-project';Copy-Item -LiteralPath $script:projectRoot -Destination $project -Recurse -Force
+        $marker=Join-Path $TestDrive 'untrusted-wrapper-executed.txt'
+        @('@echo off',"echo executed>$marker",'echo MMTL_RUNTIME_BINDING_JSON:{"tasks":[]}')|Set-Content -LiteralPath (Join-Path $project 'gradlew.bat')
+        $config=Get-Content -LiteralPath $script:configPath -Raw|ConvertFrom-Json
+        $config.profiles.fixture.project=$project
+        $testConfig=Join-Path $TestDrive 'untrusted-config.json';$config|ConvertTo-Json -Depth 30|Set-Content $testConfig
+
+        $output=& $script:pwsh -NoProfile -File $script:launcher --config-file $testConfig --runtime-binding --probe --json 2>&1|Out-String
+
+        $LASTEXITCODE | Should -Be 2
+        $output | Should -Match 'RUNTIME_BINDING_PROJECT_NOT_TRUSTED'
+        Test-Path -LiteralPath $marker | Should -BeFalse
     }
 
     It '--capabilities --json 无配置依赖并输出平台能力' {
@@ -91,6 +124,11 @@ Describe 'Execution Plan CLI' {
         $doctor.checks.Count | Should -BeGreaterThan 10
         ($doctor.checks|Where-Object id -eq 'NETWORK_METADATA').status | Should -BeExactly 'SKIP'
         ($doctor.checks|Where-Object id -eq 'JAVA_DISCOVERY').Count | Should -Be 1
+        ($doctor.checks|Where-Object id -eq 'BUILD_JAVA').status | Should -Not -BeExactly 'SKIP'
+        ($doctor.checks|Where-Object id -eq 'RUNTIME_JAVA').status | Should -Not -BeExactly 'SKIP'
+        ($doctor.checks|Where-Object id -eq 'LAUNCH_TASKS').status | Should -Not -BeExactly 'SKIP'
+        ($doctor.checks|Where-Object id -eq 'GRADLE_WRAPPER_JAR').Count | Should -Be 1
+        ($doctor.checks|Where-Object id -eq 'PROCESS_MANAGEMENT').Count | Should -Be 1
         $output | Should -Not -Match 'token-value|secret.invalid'
     }
 
@@ -107,8 +145,8 @@ Describe 'Execution Plan CLI' {
     }
 
     It 'Session CLI 可读取 v1 legacy、列出 v2 并校验 Plan 摘要' {
-        Import-Module (Join-Path $script:repoRoot 'common/src/Execution/ExecutionPlan.psm1') -Force
-        Import-Module (Join-Path $script:repoRoot 'common/src/SessionLifecycle.psm1') -Force
+        Import-Module (Join-Path $script:repoRoot 'common/src/Execution/ExecutionPlan.psm1')
+        Import-Module (Join-Path $script:repoRoot 'common/src/SessionLifecycle.psm1')
         $planRaw=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --plan --json 2>&1|Out-String
         $plan=$planRaw|ConvertFrom-Json -ErrorAction Stop
         $legacyId='20261004T130000Z_legacy_fixture';$legacyPath=Join-Path $script:runtimeRoot "sessions/$legacyId"

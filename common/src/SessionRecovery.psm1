@@ -1,6 +1,7 @@
 Set-StrictMode -Version Latest
 Import-Module (Join-Path $PSScriptRoot 'SessionLock.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot 'AtomicFile.psm1') -Force
+Import-Module (Join-Path $PSScriptRoot 'SessionLifecycle.psm1')
 
 function Get-MmtlRecoveryTrackedProcessState {
     param([Parameter(Mandatory)][string]$SessionPath)
@@ -10,7 +11,7 @@ function Get-MmtlRecoveryTrackedProcessState {
     $live=[Collections.Generic.List[object]]::new()
     foreach($entry in $entries){
         $processId=0;try{$processId=[int]$entry.PID}catch{continue}
-        $expected=[string]$entry.ProcessStartIdentity;if(-not $expected){$expected=[string]$entry.processStartIdentity}
+        $expected=[string](Get-MmtlRecoveryProperty $entry 'ProcessStartIdentity');if(-not $expected){$expected=[string](Get-MmtlRecoveryProperty $entry 'processStartIdentity')}
         if($expected){$actual=Get-MmtlProcessStartIdentity -ProcessId $processId;if($actual -and $actual -ceq $expected){$live.Add([pscustomobject]@{PID=$processId;state='Alive'})};continue}
         if($entry.StartIdentity -or $entry.StartTimeUtc -or $entry.StartTimeToken){
             try{Import-Module (Join-Path $PSScriptRoot 'ProcessManager.psm1') -Force;$record=Get-MmtlProcessRecord -ProcessId $processId;if($record -and (Test-MmtlProcessIdentity -Process $record -Record $entry)){$live.Add([pscustomobject]@{PID=$processId;state='Alive'})}}
@@ -47,6 +48,8 @@ function Get-MmtlSessionRecoveryPlan {
             $sessionPath=$dir.FullName;$sessionId=$dir.Name;$manifestPath=Join-Path $sessionPath 'session.v2.json';$manifest=$null
             if(Test-Path -LiteralPath $manifestPath -PathType Leaf){
                 try{$manifest=Get-Content -LiteralPath $manifestPath -Raw|ConvertFrom-Json -ErrorAction Stop}catch{$actions.Add([pscustomobject]@{sessionId=$sessionId;code='SESSION_MANIFEST_CORRUPT';reasonCode='SESSION_MANIFEST_CORRUPT';plannedAction='None'});continue}
+                $manifestValidation=Test-MmtlSessionV2 -SessionPath $sessionPath
+                if(-not $manifestValidation.valid){$actions.Add([pscustomobject]@{sessionId=$sessionId;code='SESSION_MANIFEST_CORRUPT';reasonCode=if($manifestValidation.errors.Count){[string]$manifestValidation.errors[0]}else{'SESSION_MANIFEST_INVALID'};plannedAction='None'});continue}
             }
             $tracked=Get-MmtlRecoveryTrackedProcessState -SessionPath $sessionPath
             $lockPath=Join-Path $sessionPath '.session.lock';$lock=Get-MmtlSessionLockStatus -LockPath $lockPath -AllowedRoot $sessionPath
@@ -111,6 +114,9 @@ function Invoke-MmtlSessionRecovery {
             $reader=[IO.StreamReader]::new($stream,[Text.Encoding]::UTF8,$true,1024,$true);$raw=$reader.ReadToEnd();$reader.Dispose()
             try{$current=$raw|ConvertFrom-Json -ErrorAction Stop}catch{$results.Add([pscustomobject]@{sessionId=$sessionId;status='Skipped';code='SESSION_LOCK_CHANGED'});$skipped++;continue}
             if([int]$current.ownerPid -ne [int]$staleAction.ownerPid -or [string]$current.processStartIdentity -cne [string]$staleAction.processStartIdentity -or [string]$current.nonce -cne [string]$staleAction.ownerNonce -or [string](Get-MmtlRecoveryProperty $current 'recoveryState') -eq 'Recovered'){$results.Add([pscustomobject]@{sessionId=$sessionId;status='Skipped';code='SESSION_LOCK_CHANGED'});$skipped++;continue}
+            if(Test-Path -LiteralPath $manifestPath -PathType Leaf){$manifestValidation=Test-MmtlSessionV2 -SessionPath $sessionPath;if(-not $manifestValidation.valid){$results.Add([pscustomobject]@{sessionId=$sessionId;status='Skipped';code='SESSION_MANIFEST_CORRUPT'});$skipped++;continue};$manifest=Get-Content -LiteralPath $manifestPath -Raw|ConvertFrom-Json -ErrorAction Stop}
+            $tracked=Get-MmtlRecoveryTrackedProcessState -SessionPath $sessionPath
+            if($tracked.state -ne 'None'){$results.Add([pscustomobject]@{sessionId=$sessionId;status='Skipped';code=$(if($tracked.state -eq 'Alive'){'OrphanedTrackedProcess'}else{'TRACKED_PROCESS_IDENTITY_UNKNOWN'})});$skipped++;continue}
             $actual=Get-MmtlProcessStartIdentity -ProcessId ([int]$current.ownerPid)
             if($actual -and $actual -ceq [string]$current.processStartIdentity){$results.Add([pscustomobject]@{sessionId=$sessionId;status='Skipped';code='SESSION_LOCK_OWNER_STILL_RUNNING'});$skipped++;continue}
             $allowedTemps=@($actions|Where-Object{ $_.code -eq 'PARTIAL_ATOMIC_TEMP' -and $_.plannedAction -eq 'RemoveMetadataTemp' }|ForEach-Object{[string]$_.tempName})

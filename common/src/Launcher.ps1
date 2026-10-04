@@ -17,6 +17,8 @@ Import-Module (Join-Path $commonRoot 'src/Execution/ExecutionPlan.psm1') -Force 
 Import-Module (Join-Path $commonRoot 'src/Execution/ExecutionPlanner.psm1') -Force
 Import-Module (Join-Path $commonRoot 'src/SessionLifecycle.psm1') -Force -Global
 Import-Module (Join-Path $commonRoot 'src/SessionRecovery.psm1') -Force -Global
+Import-Module (Join-Path $commonRoot 'src/SessionLock.psm1') -Force -Global
+Import-Module (Join-Path $commonRoot 'src/AtomicFile.psm1') -Force -Global
 Import-Module (Join-Path $commonRoot 'src/RuntimeManager.psm1') -Force -Global
 Import-Module (Join-Path $commonRoot 'src/Execution/ExecutionPlan.psm1') -Force -Global
 Import-Module (Join-Path $commonRoot 'src/Platform/Platform.psm1') -Force -Global
@@ -52,12 +54,6 @@ $readOnlyPlanMode=($Arguments -contains '--plan' -or $Arguments -contains '--exp
 $config=if(Test-Path $configPath){try{Read-MmtlConfig -Path $configPath -AllowInvalidProfiles:$readOnlyPlanMode}catch{if($Arguments -contains '--doctor'){$null}else{throw}}}else{$null}
 $runtimeConfigured=if($config -and $config.runtimeRoot){[string]$config.runtimeRoot}else{''}
 $runtimeRoot=Resolve-MmtlRuntimeRoot -Path $runtimeConfigured -Portable:$portable -LauncherRoot $here
-$doctorIndex=[Array]::IndexOf($Arguments,'--doctor')
-if($doctorIndex -ge 0){
-    $doctor=Invoke-MmtlDoctor -Config $config -ConfigPath $configPath -RuntimeRoot $runtimeRoot -Offline:($Arguments -contains '--offline')
-    if($Arguments -contains '--json'){$doctor|ConvertTo-Json -Depth 80}else{Write-Host "Doctor：PASS=$($doctor.summary.pass) WARN=$($doctor.summary.warn) FAIL=$($doctor.summary.fail) SKIP=$($doctor.summary.skip)";foreach($check in $doctor.checks){Write-Host "[$($check.status)] $($check.id)：$($check.message)"}}
-    if($doctor.summary.fail -gt 0){exit 2};exit 0
-}
 $catalogRuntimeRoot=$runtimeRoot
 if($platform.OS -in @('Linux','MacOS') -and $runtimeConfigured -match '^%LOCALAPPDATA%([\\/]|$)'){
     $catalogRuntimeRoot=$platform.DefaultRuntimeRoot
@@ -277,9 +273,8 @@ if($Arguments.Count -eq 0){
 }
 $profileNameIndex=[Array]::IndexOf($Arguments,'--profile')
 $profileName=if($profileNameIndex -ge 0 -and $profileNameIndex+1 -lt $Arguments.Count){[string]$Arguments[$profileNameIndex+1]}else{$null}
-$profile=Get-MmtlProfile -Config $config -Name $profileName
-if(-not $readOnlyPlanMode){Assert-MmtlProfile -Profile $profile | Out-Null}
-$project=Get-MmtlProject -Path $profile.project
+$profile=$null;$project=$null
+if($config){$profile=Get-MmtlProfile -Config $config -Name $profileName;if(-not $readOnlyPlanMode){Assert-MmtlProfile -Profile $profile | Out-Null};$project=Get-MmtlProject -Path $profile.project}
 function New-MmtlCliExecutionPlan {
     param([Parameter(Mandatory)]$Primary,[Parameter(Mandatory)]$Profile,[Parameter(Mandatory)]$Config,[Parameter(Mandatory)][string]$RuntimeRoot,[string]$Name,[switch]$RequireBuild,[switch]$Clean)
     $catalogEntry=$null;$versionMetadata=$null;$metadataWarning=$null
@@ -294,13 +289,23 @@ function New-MmtlCliExecutionPlan {
     $context.capabilities|Add-Member -NotePropertyName Launch -NotePropertyValue $launchCapability -Force
     $physicalMemory=0L;try{$physicalMemory=[long](Get-MmtlPhysicalMemoryMb)}catch{}
     $parameters=@{Project=$Primary;Profile=$Profile;Config=$Config;Platform=$context;RuntimeRoot=$RuntimeRoot;ProfileName=$Name;CatalogEntry=$catalogEntry;VersionMetadata=$versionMetadata;MetadataWarning=$metadataWarning;PhysicalMemoryMb=$physicalMemory}
-    $cachedBinding=Get-MmtlCachedRuntimeBindingEvidence -ProjectRoot ([string]$Primary.Root) -RuntimeRoot $RuntimeRoot
-    if($cachedBinding){$parameters.AdapterEvidence=[pscustomobject]@{runtimeJavaBindingMode=[string]$cachedBinding.runtimeJavaBinding.mode;runtimeJavaBindingEvidence=$cachedBinding.runtimeJavaBinding}}
     if($RequireBuild){$parameters.BuildRequired=$true}
     if($Clean){$parameters.CleanBuild=$true}
+    $basePlan=New-MmtlExecutionPlan @parameters
+    $cachedBinding=Get-MmtlCachedRuntimeBindingEvidence -Project $Primary -Plan $basePlan -RuntimeRoot $RuntimeRoot
+    if(-not $cachedBinding){return $basePlan}
+    $parameters.AdapterEvidence=[pscustomobject]@{runtimeJavaBindingMode=[string]$cachedBinding.runtimeJavaBinding.mode;runtimeJavaBindingEvidence=$cachedBinding.runtimeJavaBinding}
     return New-MmtlExecutionPlan @parameters
 }
-$planProfileName=if($profileName){$profileName}else{[string]$config.defaultProfile}
+$planProfileName=if($profileName){$profileName}elseif($config){[string]$config.defaultProfile}else{$null}
+$doctorIndex=[Array]::IndexOf($Arguments,'--doctor')
+if($doctorIndex -ge 0){
+    $doctorPlan=$null
+    if($config -and $profile -and $project){try{$doctorPlan=New-MmtlCliExecutionPlan -Primary $project -Profile $profile -Config $config -RuntimeRoot $runtimeRoot -Name $planProfileName}catch{}}
+    $doctor=Invoke-MmtlDoctor -Config $config -Plan $doctorPlan -ConfigPath $configPath -RuntimeRoot $runtimeRoot -Offline:($Arguments -contains '--offline')
+    if($Arguments -contains '--json'){$doctor|ConvertTo-Json -Depth 80}else{Write-Host "Doctor：PASS=$($doctor.summary.pass) WARN=$($doctor.summary.warn) FAIL=$($doctor.summary.fail) SKIP=$($doctor.summary.skip)";foreach($check in $doctor.checks){Write-Host "[$($check.status)] $($check.id)：$($check.message)"}}
+    if($doctor.summary.fail -gt 0){exit 2};exit 0
+}
 if($Arguments -contains '--launch-check'){
     $executionPlan=New-MmtlCliExecutionPlan -Primary $project -Profile $profile -Config $config -RuntimeRoot $runtimeRoot -Name $planProfileName
     if($Arguments -contains '--json'){$executionPlan|ConvertTo-Json -Depth 100}else{
@@ -320,7 +325,9 @@ if($Arguments -contains '--runtime-binding'){
     $executionPlan=New-MmtlCliExecutionPlan -Primary $project -Profile $profile -Config $config -RuntimeRoot $runtimeRoot -Name $planProfileName
     $probeResult=$null
     if($Arguments -contains '--probe'){
-        $probeResult=Invoke-MmtlRuntimeBindingProbe -Project $project -Plan $executionPlan -RuntimeRoot $runtimeRoot -TrustedProjectRoots @([string]$project.Root) -Offline
+        $trustedProjectRoots=@();if($config -and $config.PSObject.Properties['trustedProjectRoots']){$trustedProjectRoots=@($config.trustedProjectRoots|ForEach-Object{[string]$_})}
+        try{$probeResult=Invoke-MmtlRuntimeBindingProbe -Project $project -Plan $executionPlan -RuntimeRoot $runtimeRoot -TrustedProjectRoots $trustedProjectRoots -Offline}
+        catch{[Console]::Error.WriteLine([string]$_);exit 2}
         $bindingMode=[string]$probeResult.runtimeJavaBinding.mode;$bindingEvidence=$probeResult.runtimeJavaBinding
     }else{$bindingMode=[string]$executionPlan.runtimeJava.bindingMode;$bindingEvidence=$executionPlan.runtimeJava.bindingEvidence}
     $buildMajor=$executionPlan.buildJava.resolution.actualMajor;$runtimeMajor=$executionPlan.runtimeJava.resolution.actualMajor
@@ -383,6 +390,11 @@ function Get-MmtlProjectOutputJar {
     $jars=@(Get-ChildItem -LiteralPath (Join-Path $Project.Root 'build/libs') -Filter '*.jar' -File -ErrorAction SilentlyContinue|Where-Object{$_.Name -notmatch '(?i)(sources|javadoc|dev)(?:[-.]|\.jar$)'})
     if($jars.Count -ne 1){throw "项目 $($Project.Root) 应有且仅有一个可用 Mod JAR，实际 $($jars.Count) 个。"}
     return $jars[0].FullName
+}
+function Invoke-MmtlSessionMetadataWrite {
+    param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][scriptblock]$Action)
+    $session=[IO.Path]::GetFullPath($SessionPath);$lock=New-MmtlSessionLock -LockPath (Join-Path $session '.session.lock') -AllowedRoot $session
+    try{& $Action}finally{Remove-MmtlSessionLock -Lock $lock}
 }
 function Start-MmtlConfiguredRun {
     param([Parameter(Mandatory)]$Primary,[Parameter(Mandatory)]$Profile,[Parameter(Mandatory)]$Config,[Parameter(Mandatory)][string]$RuntimeRoot,[Parameter(Mandatory)]$ExecutionPlan)
@@ -491,10 +503,12 @@ function Start-MmtlConfiguredRun {
             catch{$metadata.windowLayoutStatus='UnavailableFallbackNone';Write-Warning "窗口布局失败并安全跳过：$($_.Exception.Message)"}
         }else{$metadata.windowLayoutStatus='Skipped'}
         $metadata.builds=@($builds)
-        $statePath=Join-Path $session 'session.json';$state=Get-Content -LiteralPath $statePath -Raw|ConvertFrom-Json;$state.metadata=$metadata;$state|ConvertTo-Json -Depth 30|Set-Content -LiteralPath $statePath -Encoding utf8
-        $report=@("# 会话 $sessionId",'',"- 模式：$($Profile.mode)","- 项目：$($Primary.Root)","- Minecraft：$($Primary.MinecraftVersion)","- Loader：$($Primary.Loader) $($Primary.LoaderVersion)","- Java：$($Primary.JavaMajor)","- 玩家：$($metadata.processes.username -join ', ')","- 端口：$($metadata.port)","- 内存预算 MB：$($memoryBudget.RequestedMb) / $($memoryBudget.LimitMb)；已确认超额=$memoryOverageConfirmed","- 世界重置次数：$($metadata.worldResetCount)","- 窗口布局：$($metadata.windowLayoutStatus)","- 运行目录：$session",'', '## 构建')
-        foreach($build in $builds){$report+=@("- 项目：$($build.Project)","  - Git SHA：$($build.GitSha)","  - Jar：$($build.JarPath)","  - SHA-256：$($build.JarSha256)","  - 日志：$($build.LogPath)")}
-        $report+=@('','## Processes');foreach($process in $metadata.processes){$report+="- $($process.role) $($process.username) PID $($process.PID): $($process.log)"};Set-Content -LiteralPath (Join-Path $session 'report.md') -Value $report -Encoding utf8
+        Invoke-MmtlSessionMetadataWrite -SessionPath $session -Action {
+            $statePath=Join-Path $session 'session.json';$state=Get-Content -LiteralPath $statePath -Raw|ConvertFrom-Json;$state.metadata=$metadata;Write-MmtlAtomicTextFile -Path $statePath -Content (($state|ConvertTo-Json -Depth 30)+"`n")
+            $report=@("# 会话 $sessionId",'',"- 模式：$($Profile.mode)","- 项目：$($Primary.Root)","- Minecraft：$($Primary.MinecraftVersion)","- Loader：$($Primary.Loader) $($Primary.LoaderVersion)","- Java：$($Primary.JavaMajor)","- 玩家：$($metadata.processes.username -join ', ')","- 端口：$($metadata.port)","- 内存预算 MB：$($memoryBudget.RequestedMb) / $($memoryBudget.LimitMb)；已确认超额=$memoryOverageConfirmed","- 世界重置次数：$($metadata.worldResetCount)","- 窗口布局：$($metadata.windowLayoutStatus)","- 运行目录：$session",'', '## 构建')
+            foreach($build in $builds){$report+=@("- 项目：$($build.Project)","  - Git SHA：$($build.GitSha)","  - Jar：$($build.JarPath)","  - SHA-256：$($build.JarSha256)","  - 日志：$($build.LogPath)")}
+            $report+=@('','## Processes');foreach($process in $metadata.processes){$report+="- $($process.role) $($process.username) PID $($process.PID): $($process.log)"};Write-MmtlAtomicTextFile -Path (Join-Path $session 'report.md') -Content (($report -join "`n")+"`n")
+        }
         Write-Host "会话清单：$session`n停止命令：launcher.cmd --stop $sessionId`n清理命令：launcher.cmd --clean-session $sessionId"
     }catch{try{$current=Test-MmtlSessionV2 -SessionPath $session;if($current.valid -and $current.state -notin @('Completed','Failed','Stopped')){Set-MmtlSessionV2State -SessionPath $session -State Failed|Out-Null}}catch{};Write-Error "Session $sessionId 已保留现场和日志。检查后可用 --stop $sessionId 停止登记进程。$($_.Exception.Message)";throw}
 }
@@ -514,14 +528,16 @@ if($Arguments -contains '--build') {
     Set-MmtlSessionV2State -SessionPath $session -State Building|Out-Null
     try{$build=Invoke-MmtlGradleBuild -Project $project -JavaPath ([string]$executionPlan.buildJava.resolution.javaPath) -SessionPath $session -Clean:([bool]$executionPlan.build.clean)}catch{Set-MmtlSessionV2State -SessionPath $session -State Failed|Out-Null;throw}
     Set-MmtlSessionV2State -SessionPath $session -State Completed|Out-Null
-    $statePath=Join-Path $session 'session.json';$state=Get-Content $statePath -Raw|ConvertFrom-Json
-    $state|Add-Member -NotePropertyName buildResult -NotePropertyValue $build -Force
-    $state|Add-Member -NotePropertyName executionPlanDigest -NotePropertyValue $executionPlan.semanticDigest -Force
-    $state|Add-Member -NotePropertyName exitCode -NotePropertyValue $build.ExitCode -Force
-    $state|Add-Member -NotePropertyName gitSha -NotePropertyValue $build.GitSha -Force
-    $state|Add-Member -NotePropertyName jarPath -NotePropertyValue $build.JarPath -Force
-    $state|Add-Member -NotePropertyName jarSha256 -NotePropertyValue $build.JarSha256 -Force
-    $state|ConvertTo-Json -Depth 40|Set-Content $statePath -Encoding utf8
+    Invoke-MmtlSessionMetadataWrite -SessionPath $session -Action {
+        $statePath=Join-Path $session 'session.json';$state=Get-Content $statePath -Raw|ConvertFrom-Json
+        $state|Add-Member -NotePropertyName buildResult -NotePropertyValue $build -Force
+        $state|Add-Member -NotePropertyName executionPlanDigest -NotePropertyValue $executionPlan.semanticDigest -Force
+        $state|Add-Member -NotePropertyName exitCode -NotePropertyValue $build.ExitCode -Force
+        $state|Add-Member -NotePropertyName gitSha -NotePropertyValue $build.GitSha -Force
+        $state|Add-Member -NotePropertyName jarPath -NotePropertyValue $build.JarPath -Force
+        $state|Add-Member -NotePropertyName jarSha256 -NotePropertyValue $build.JarSha256 -Force
+        Write-MmtlAtomicTextFile -Path $statePath -Content (($state|ConvertTo-Json -Depth 40)+"`n")
+    }
     Write-Host "构建完成：$($build.ExitCode)`n会话：$session`nPlan 摘要：$($executionPlan.semanticDigest)`n日志：$($build.LogPath)`nJAR SHA-256：$($build.JarSha256)"
     if($build.ExitCode -ne 0){exit $build.ExitCode};exit 0
 }

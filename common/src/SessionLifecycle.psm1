@@ -63,6 +63,8 @@ function Set-MmtlSessionV2State {
     $lock=New-MmtlSessionLock -LockPath (Join-Path $paths.session '.session.lock') -AllowedRoot $paths.session
     try{
         try{$manifest=Get-Content -LiteralPath $paths.manifest -Raw|ConvertFrom-Json -ErrorAction Stop}catch{throw 'SESSION_MANIFEST_CORRUPT'}
+        $validation=Test-MmtlSessionV2 -SessionPath $SessionPath
+        if(-not $validation.valid){throw 'SESSION_MANIFEST_CORRUPT'}
         if(-not $script:MmtlSessionV2Transitions.ContainsKey([string]$manifest.state)){throw 'SESSION_MANIFEST_CORRUPT'}
         if($State -notin $script:MmtlSessionV2Transitions[[string]$manifest.state]){throw "SESSION_STATE_TRANSITION_INVALID: $($manifest.state)->$State"}
         $manifest.state=$State;$manifest.updatedUtc=[DateTimeOffset]::UtcNow.ToString('o')

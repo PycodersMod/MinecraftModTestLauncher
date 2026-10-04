@@ -27,9 +27,9 @@ function New-MmtlSession {
         return $path
     }finally{Remove-MmtlSessionLock -Lock $lock}
 }
-function Update-MmtlSessionReport {
+function Update-MmtlSessionReportCore {
     [CmdletBinding()]
-    param([Parameter(Mandatory)][string]$SessionPath)
+    param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)]$SessionLock)
     $session=[IO.Path]::GetFullPath($SessionPath);Assert-MmtlNoReparsePath -Path $session|Out-Null
     $statePath=Join-Path $session 'session.json';$pidPath=Join-Path $session 'pids.json';$reportPath=Join-Path $session 'report.md'
     if(-not(Test-Path -LiteralPath $statePath) -or -not(Test-Path -LiteralPath $pidPath)){throw 'Session 缺少 session.json 或 pids.json。'}
@@ -57,14 +57,22 @@ function Update-MmtlSessionReport {
     if(Test-Path -LiteralPath $reportPath){$old=Get-Content -LiteralPath $reportPath -Raw;$base=($old -split '(?m)^## (?:Processes|Process Results)\s*$',2)[0].TrimEnd()}
     $body=@($base,'','## Process Results')+$processLines+@('','## Crash Reports')
     if($crashes.Count){$body+=@($crashes|ForEach-Object{"- $_"})}else{$body+='- None detected.'}
-    Set-Content -LiteralPath $reportPath -Value $body -Encoding utf8
-    Write-MmtlPidRegistry -Path $pidPath -Entries $entries
+    Write-MmtlAtomicTextFile -Path $reportPath -Content (($body -join "`n")+"`n")
+    Write-MmtlPidRegistry -Path $pidPath -Entries $entries -Lock $SessionLock
     $state|Add-Member -NotePropertyName processStatuses -NotePropertyValue @($statuses) -Force
     if($state.metadata){$state.metadata|Add-Member -NotePropertyName processes -NotePropertyValue @($statuses) -Force}
     $state|Add-Member -NotePropertyName crashReports -NotePropertyValue $crashes -Force
     $state|Add-Member -NotePropertyName reportUpdatedUtc -NotePropertyValue ([DateTimeOffset]::UtcNow.ToString('o')) -Force
-    $state|ConvertTo-Json -Depth 30|Set-Content -LiteralPath $statePath -Encoding utf8
+    Write-MmtlAtomicTextFile -Path $statePath -Content (($state|ConvertTo-Json -Depth 30)+"`n")
     $overall=if($crashes.Count -or @($statuses|Where-Object Status -eq 'Failed').Count){'Failed'}elseif(@($statuses|Where-Object Status -eq 'Running').Count){'Running'}elseif($statuses.Count -and @($statuses|Where-Object Status -eq 'StoppedByUser').Count){'Stopped'}elseif($statuses.Count -and @($statuses|Where-Object Status -eq 'Completed').Count -eq $statuses.Count){'Completed'}else{'ExitedUnknown'}
     [pscustomobject]@{SessionPath=$session;Status=$overall;Processes=@($statuses);CrashReports=$crashes;ReportPath=$reportPath}
+}
+
+function Update-MmtlSessionReport {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][string]$SessionPath)
+    $session=[IO.Path]::GetFullPath($SessionPath);Assert-MmtlNoReparsePath -Path $session|Out-Null
+    $lock=New-MmtlSessionLock -LockPath (Join-Path $session '.session.lock') -AllowedRoot $session
+    try{return Update-MmtlSessionReportCore -SessionPath $session -SessionLock $lock}finally{Remove-MmtlSessionLock -Lock $lock}
 }
 Export-ModuleMember -Function New-MmtlSession,Update-MmtlSessionReport
