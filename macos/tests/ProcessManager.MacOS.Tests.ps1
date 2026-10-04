@@ -3,11 +3,14 @@ if([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropSe
     $script:repoRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
     Import-Module (Join-Path $script:repoRoot 'common/src/Platform/Platform.psm1') -Force
     Import-Module (Join-Path $script:repoRoot 'common/src/ProcessManager.psm1') -Force
-    Import-Module (Join-Path $script:repoRoot 'macos/src/MacOS.Process.psm1') -Force
     Import-Module (Join-Path $script:repoRoot 'macos/src/MacOSPlatformProvider.psm1') -Force
     Import-Module (Join-Path $script:repoRoot 'common/src/SessionRecovery.psm1') -Force
     Register-MmtlMacOSPlatform -RepositoryRoot $script:repoRoot
     $global:MmtlPlatformProvider.ProcessManagement='Native'
+    $script:processApi=$global:MmtlPlatformProvider.ProcessApi
+    function Get-MacOSTestProcessRecord { param([int]$ProcessId) return & $script:processApi.GetRecord $ProcessId }
+    function Get-MacOSTestProcessSnapshot { param([int]$RootProcessId) return @(& $script:processApi.GetSnapshot $RootProcessId) }
+    function Test-MacOSTestProcessIdentity { param($Process,$Record) return [bool](& $script:processApi.TestIdentity $Process $Record) }
     function New-MacOSTestProcess {
         param([string]$SessionPath,[string]$Name)
         $scriptPath=Join-Path $TestDrive "$Name.sh"
@@ -28,12 +31,12 @@ if([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropSe
         }
 
         It '验证 PID、start-time token、可执行命令与 PID 重用隔离' {
-            $record=Get-MmtlMacOSProcessRecord -ProcessId $PID
+            $record=Get-MacOSTestProcessRecord -ProcessId $PID
             $record.PID | Should -Be $PID
             $record.StartTimeToken | Should -Not -BeNullOrEmpty
-            (Test-MmtlMacOSProcessIdentity -Process $record -Record $record) | Should -BeTrue
+            (Test-MacOSTestProcessIdentity -Process $record -Record $record) | Should -BeTrue
             $reused=$record.PSObject.Copy();$reused.StartIdentity='reused-pid-identity'
-            (Test-MmtlMacOSProcessIdentity -Process $record -Record $reused) | Should -BeFalse
+            (Test-MacOSTestProcessIdentity -Process $record -Record $reused) | Should -BeFalse
         }
 
         It '跟踪并停止 dummy 父子进程且不影响未登记子进程' {
@@ -42,26 +45,26 @@ if([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropSe
             $parent=New-MacOSTestProcess -SessionPath $session -Name 'tracked-parent'
             try {
                 $deadline=[DateTime]::UtcNow.AddSeconds(8);$snapshot=@()
-                do{$snapshot=@(Get-MmtlMacOSProcessSnapshot -RootProcessId $parent);if($snapshot.Count -lt 2){Start-Sleep -Milliseconds 100}}while($snapshot.Count -lt 2 -and [DateTime]::UtcNow -lt $deadline)
+                do{$snapshot=@(Get-MacOSTestProcessSnapshot -RootProcessId $parent);if($snapshot.Count -lt 2){Start-Sleep -Milliseconds 100}}while($snapshot.Count -lt 2 -and [DateTime]::UtcNow -lt $deadline)
                 $snapshot.Count | Should -BeGreaterOrEqual 2
                 @($snapshot|Where-Object Depth -gt 0).Count | Should -BeGreaterThan 0
                 $entries=@(Get-Content (Join-Path $session 'pids.json') -Raw|ConvertFrom-Json);$registered=$entries[0];$actualIdentity=$registered.StartIdentity;$registered.StartIdentity='stale-process-identity';Write-MmtlPidRegistry -Path (Join-Path $session 'pids.json') -Entries @($registered)
                 {Stop-MmtlTrackedProcess -SessionPath $session -ProcessId $parent -Confirm:$false}|Should -Throw
-                (Get-MmtlMacOSProcessRecord -ProcessId $parent)|Should -Not -BeNullOrEmpty
+                (Get-MacOSTestProcessRecord -ProcessId $parent)|Should -Not -BeNullOrEmpty
                 $registered.StartIdentity=$actualIdentity;Write-MmtlPidRegistry -Path (Join-Path $session 'pids.json') -Entries @($registered)
                 Stop-MmtlTrackedProcess -SessionPath $session -ProcessId $parent -Confirm:$false | Should -BeTrue
-                (Get-MmtlMacOSProcessRecord -ProcessId $parent) | Should -BeNullOrEmpty
-                (Get-MmtlMacOSProcessRecord -ProcessId $untracked.Id) | Should -Not -BeNullOrEmpty
+                (Get-MacOSTestProcessRecord -ProcessId $parent) | Should -BeNullOrEmpty
+                (Get-MacOSTestProcessRecord -ProcessId $untracked.Id) | Should -Not -BeNullOrEmpty
             } finally {
                 $tracked=@(Get-Content (Join-Path $session 'pids.json') -Raw|ConvertFrom-Json)
-                if($tracked.Count -and (Get-MmtlMacOSProcessRecord -ProcessId $parent)){Stop-MmtlTrackedProcess -SessionPath $session -ProcessId $parent -Confirm:$false|Out-Null}
+                if($tracked.Count -and (Get-MacOSTestProcessRecord -ProcessId $parent)){Stop-MmtlTrackedProcess -SessionPath $session -ProcessId $parent -Confirm:$false|Out-Null}
                 try{$untracked.Refresh();if(-not $untracked.HasExited){$untracked.Kill();$untracked.WaitForExit(3000)}}catch{}
             }
         }
 
         It '存活的登记进程会阻止 Session 恢复并报告 orphan' {
             $runtime=Join-Path $TestDrive 'orphan-runtime';$session=Join-Path $runtime 'sessions/orphan';New-Item -ItemType Directory $session -Force|Out-Null
-            $record=Get-MmtlMacOSProcessRecord -ProcessId $PID
+            $record=Get-MacOSTestProcessRecord -ProcessId $PID
             @([pscustomobject]@{PID=$PID;StartIdentity=$record.StartIdentity;StartTimeToken=$record.StartTimeToken;Executable=$record.Executable;CommandLine=$record.CommandLine})|ConvertTo-Json -Depth 5|Set-Content (Join-Path $session 'pids.json')
             @{schemaVersion=1;ownerPid=2147483647;processStartIdentity='0';createdUtc='2000-01-01T00:00:00Z';nonce='fixture'}|ConvertTo-Json -Compress|Set-Content (Join-Path $session '.session.lock')
             $before=(Get-FileHash (Join-Path $session '.session.lock') -Algorithm SHA256).Hash

@@ -22,6 +22,18 @@ Describe 'ProcessManager 模块依赖' {
         @(Get-ChildItem -LiteralPath $session -Filter '.pids.json.*.tmp' -File).Count | Should -Be 0
     }
 
+    It '进程管理能力 Unsupported 时仍允许只读身份快照' {
+        $provider=$global:MmtlPlatformProvider
+        $capability=$provider.ProcessManagement
+        try {
+            $provider.ProcessManagement='Unsupported'
+            $record=Get-MmtlProcessRecord -ProcessId $PID
+            $record.PID | Should -Be $PID
+        } finally {
+            $provider.ProcessManagement=$capability
+        }
+    }
+
     It '独立导入后可登记并安全停止当前 Session 的子进程' -Skip:(-not $script:supportsProcessManagement) {
         $runtime = Join-Path $TestDrive 'runtime'
         $session = Join-Path $runtime 'sessions\tracked-process'

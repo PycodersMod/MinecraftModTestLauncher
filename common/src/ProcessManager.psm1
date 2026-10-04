@@ -6,8 +6,11 @@ Import-Module (Join-Path $PSScriptRoot 'SessionLifecycle.psm1')
 
 function Get-MmtlProcessApi {
     $provider=$global:MmtlPlatformProvider;$api=$provider.ProcessApi
-    if (-not $api -or $provider.ProcessManagement -ne 'Native') { throw '当前平台不支持进程管理。' }
+    if (-not $api) { throw '当前平台未注册进程身份接口。' }
     return $api
+}
+function Assert-MmtlNativeProcessManagement {
+    if([string]$global:MmtlPlatformProvider.ProcessManagement -ne 'Native'){throw '当前平台不支持受跟踪进程管理。'}
 }
 function Get-MmtlProcessRecord { param([Parameter(Mandatory)][int]$ProcessId) $api=Get-MmtlProcessApi;return & $api.GetRecord $ProcessId }
 function Get-MmtlProcessSnapshot { param([Parameter(Mandatory)][int]$RootProcessId) $api=Get-MmtlProcessApi;return @(& $api.GetSnapshot $RootProcessId) }
@@ -28,7 +31,7 @@ function Test-MmtlProcessIdentity {
 function Start-MmtlTrackedProcess {
     [CmdletBinding()]
     param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][string]$FilePath,[string[]]$ArgumentList=@(),[Parameter(Mandatory)][string]$WorkingDirectory,[Parameter(Mandatory)][string]$LogPath,[string]$Role='Process',[string]$Username='',[string]$RuntimeLinkPath,[string]$RuntimeTargetPath)
-    $api=Get-MmtlProcessApi
+    $api=Get-MmtlProcessApi;Assert-MmtlNativeProcessManagement
     $session=[IO.Path]::GetFullPath($SessionPath);$runtime=[IO.Path]::GetFullPath((Split-Path (Split-Path $session -Parent) -Parent))
     if(-not(Test-MmtlInsideRoot -Root (Join-Path $runtime 'sessions') -Target $session)){throw 'Session 路径无效。'}
     if([IO.Path]::GetFullPath((Split-Path $session -Parent)) -ne [IO.Path]::GetFullPath((Join-Path $runtime 'sessions'))){throw 'Session 必须是 sessions 的直接子目录。'}
@@ -54,7 +57,7 @@ function Start-MmtlTrackedProcess {
 function Stop-MmtlTrackedProcess {
     [CmdletBinding(SupportsShouldProcess)]
     param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][int]$ProcessId)
-    $null=Get-MmtlProcessApi
+    $null=Get-MmtlProcessApi;Assert-MmtlNativeProcessManagement
     $session=[IO.Path]::GetFullPath($SessionPath);Assert-MmtlNoReparsePath -Path $session|Out-Null
     $lock=New-MmtlSessionLock -LockPath (Join-Path $session '.session.lock') -AllowedRoot $session
     try{
