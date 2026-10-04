@@ -72,6 +72,28 @@ Describe 'Execution Plan CLI' {
         Test-Path -LiteralPath $script:runtimeRoot | Should -BeFalse
     }
 
+    It '--capabilities --json 无配置依赖并输出平台能力' {
+        $output=& $script:pwsh -NoProfile -File $script:launcher --capabilities --json 2>&1|Out-String
+
+        $LASTEXITCODE | Should -Be 0
+        $capabilities=$output|ConvertFrom-Json -ErrorAction Stop
+        $capabilities.os | Should -BeExactly 'Windows'
+        $capabilities.Build | Should -BeExactly 'Native'
+        $capabilities.PSObject.Properties.Name | Should -Contain 'ProcessManagement'
+        $capabilities.PSObject.Properties.Name | Should -Contain 'RuntimeBinding'
+    }
+
+    It '--doctor --offline --json 返回状态化 checks 且不联网' {
+        $output=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --doctor --offline --json 2>&1|Out-String
+
+        $doctor=$output|ConvertFrom-Json -ErrorAction Stop
+        $doctor.offline | Should -BeTrue
+        $doctor.checks.Count | Should -BeGreaterThan 10
+        ($doctor.checks|Where-Object id -eq 'NETWORK_METADATA').status | Should -BeExactly 'SKIP'
+        ($doctor.checks|Where-Object id -eq 'JAVA_DISCOVERY').Count | Should -Be 1
+        $output | Should -Not -Match 'token-value|secret.invalid'
+    }
+
     It '--dry-run 与 --validate 消费同一 Planner 且不创建 Session 或 Runtime' {
         $dry = & $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --dry-run 2>&1 | Out-String
         if($LASTEXITCODE -ne 0){throw "dry-run exit=$LASTEXITCODE`n$dry"}
