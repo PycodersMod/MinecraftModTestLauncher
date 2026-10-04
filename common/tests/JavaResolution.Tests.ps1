@@ -37,6 +37,20 @@ Describe 'Build/Runtime Java 本机候选解析' {
         $result.actualMajor | Should -BeNullOrEmpty
     }
 
+    It '优先使用平台专属 Java 配置并保留通用回退项' {
+        $platformJdk17 = Join-Path $TestDrive 'jdk-17-windows-override'
+        New-Item -ItemType Directory -Path (Join-Path $platformJdk17 'bin') -Force | Out-Null
+        New-Item -ItemType File -Path (Join-Path $platformJdk17 'bin/java.exe') -Force | Out-Null
+        @('JAVA_VERSION="17.0.20"','IMPLEMENTOR="Oracle Corporation"','OS_ARCH="amd64"') | Set-Content (Join-Path $platformJdk17 'release')
+        $config = [pscustomobject]@{
+            javaHomes = [pscustomobject]@{ '17'=$script:jdk17; '21'=$script:jdk21 }
+            javaHomesByPlatform = [pscustomobject]@{ Windows=[pscustomobject]@{ '17'=$platformJdk17 }; Linux=[pscustomobject]@{}; MacOS=[pscustomobject]@{} }
+        }
+        $homes = Get-MmtlJavaHomesForPlatform -Config $config -Platform ([pscustomobject]@{os='Windows';arch='x64'})
+        $homes['21'] | Should -BeExactly $script:jdk21
+        $homes['17'] | Should -BeExactly $platformJdk17
+    }
+
     It '拒绝与运行平台架构不符的 Java candidate' {
         $requirement = [pscustomobject]@{ purpose='BuildJava'; major=17; minimumMajor=17; requirementKind='Minimum'; source='GradleWrapperRuntimeCompatibility'; confidence='High' }
         New-Item -ItemType File -Path (Join-Path $script:jdk17 'bin/java') -Force | Out-Null

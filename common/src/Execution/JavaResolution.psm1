@@ -42,6 +42,22 @@ function Get-MmtlJavaRequirementProperty {
     return $null
 }
 
+function Get-MmtlJavaHomesForPlatform {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)]$Config, [Parameter(Mandatory)]$Platform)
+    $homes = @{}
+    $common = $Config.PSObject.Properties['javaHomes']
+    if ($common) {
+        foreach ($property in $common.Value.PSObject.Properties) { $homes[[string]$property.Name] = [string]$property.Value }
+    }
+    $platformMaps = $Config.PSObject.Properties['javaHomesByPlatform']
+    if ($platformMaps) {
+        $specific = $platformMaps.Value.PSObject.Properties[[string]$Platform.os]
+        if ($specific) { foreach ($property in $specific.Value.PSObject.Properties) { $homes[[string]$property.Name] = [string]$property.Value } }
+    }
+    return $homes
+}
+
 function Resolve-MmtlJavaCandidate {
     [CmdletBinding()]
     param(
@@ -128,4 +144,4 @@ function Resolve-MmtlJavaCandidate {
     return [pscustomobject]$base
 }
 
-Export-ModuleMember -Function Get-MmtlJavaReleaseProperties,ConvertTo-MmtlJavaArchitecture,Test-MmtlJavaReleaseOperatingSystem,Resolve-MmtlJavaCandidate
+Export-ModuleMember -Function Get-MmtlJavaReleaseProperties,ConvertTo-MmtlJavaArchitecture,Test-MmtlJavaReleaseOperatingSystem,Get-MmtlJavaHomesForPlatform,Resolve-MmtlJavaCandidate
