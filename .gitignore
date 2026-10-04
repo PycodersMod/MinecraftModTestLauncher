@@ -8,5 +8,14 @@ logs/
 *.user
 *.tmp
 testResults.xml
-testResults.xml
 .worktrees/
+
+# 本机配置、运行数据与根目录生成产物
+/HANDOVER/
+/local-config/
+/runtime/
+/cache/
+/.gradle/
+/build/
+/run/
+/%LOCALAPPDATA%/
