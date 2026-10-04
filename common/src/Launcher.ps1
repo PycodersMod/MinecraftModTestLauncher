@@ -271,6 +271,9 @@ if($Arguments -contains '--validate') {
     $executionPlan=New-MmtlCliExecutionPlan -Primary $project -Profile $profile -Config $config -RuntimeRoot $runtimeRoot -Name $planProfileName
     $checked=Test-MmtlExecutionPlan -Plan $executionPlan
     if(-not $checked.valid){throw "Execution Plan 校验失败：$($checked.errors -join ', ')"}
+    Write-Host ("Platform          : {0}" -f (Get-MmtlPlatformDisplayName -OS $executionPlan.platform.os))
+    Write-Host ("Architecture      : {0}" -f $executionPlan.platform.arch)
+    Write-Host ("WSL               : {0}" -f $executionPlan.platform.isWSL)
     Write-Host "Plan 校验：PASS ($($executionPlan.semanticDigest))"
     Write-Host "Build Java：$($executionPlan.buildJava.resolution.status)；Runtime Java：$($executionPlan.runtimeJava.resolution.status)；绑定：$($executionPlan.runtimeJava.bindingMode)"
     Write-Host "BuildReady：$($executionPlan.capabilityGates.buildReady)；LaunchReady：$($executionPlan.capabilityGates.launchReady)"
@@ -448,6 +451,10 @@ if($Arguments -contains '--build') {
     $statePath=Join-Path $session 'session.json';$state=Get-Content $statePath -Raw|ConvertFrom-Json
     $state|Add-Member -NotePropertyName buildResult -NotePropertyValue $build -Force
     $state|Add-Member -NotePropertyName executionPlanDigest -NotePropertyValue $executionPlan.semanticDigest -Force
+    $state|Add-Member -NotePropertyName exitCode -NotePropertyValue $build.ExitCode -Force
+    $state|Add-Member -NotePropertyName gitSha -NotePropertyValue $build.GitSha -Force
+    $state|Add-Member -NotePropertyName jarPath -NotePropertyValue $build.JarPath -Force
+    $state|Add-Member -NotePropertyName jarSha256 -NotePropertyValue $build.JarSha256 -Force
     $state|ConvertTo-Json -Depth 40|Set-Content $statePath -Encoding utf8
     Write-Host "构建完成：$($build.ExitCode)`n会话：$session`nPlan 摘要：$($executionPlan.semanticDigest)`n日志：$($build.LogPath)`nJAR SHA-256：$($build.JarSha256)"
     if($build.ExitCode -ne 0){exit $build.ExitCode};exit 0

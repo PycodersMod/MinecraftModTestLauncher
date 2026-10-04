@@ -72,4 +72,22 @@ Describe 'Session 生命周期 v2' {
         {Set-MmtlSessionV2State -SessionPath $session -State Building} | Should -Throw '*SESSION_PATH_REPARSE_POINT*'
         (Get-Content -LiteralPath $external -Raw | ConvertFrom-Json).state | Should -BeExactly 'Created'
     }
+
+    It '重新验证 Session 中已记录 JAR 的 SHA-256，并区分丢失与篡改' {
+        $plan=New-TestSessionPlan
+        $session=Join-Path $TestDrive 'runtime/artifact-session';New-Item -ItemType Directory -Path $session -Force|Out-Null
+        Initialize-MmtlSessionV2 -SessionPath $session -ExecutionPlan $plan|Out-Null
+        $artifact=Join-Path $plan.project.projectRoot 'build/libs/fixture.jar';New-Item -ItemType Directory -Path (Split-Path $artifact) -Force|Out-Null
+        Set-Content -LiteralPath $artifact -Value 'fixture jar bytes'
+        $hash=(Get-FileHash -LiteralPath $artifact -Algorithm SHA256).Hash
+        @{metadata=@{project=$plan.project.projectRoot};jarPath=$artifact;jarSha256=$hash}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $session 'session.json')
+
+        (Test-MmtlSessionV2 -SessionPath $session).valid | Should -BeTrue
+        Set-Content -LiteralPath $artifact -Value 'changed bytes'
+        (Test-MmtlSessionV2 -SessionPath $session).errors | Should -Contain 'SESSION_ARTIFACT_HASH_MISMATCH'
+        Remove-Item -LiteralPath $artifact
+        $missing=Test-MmtlSessionV2 -SessionPath $session
+        $missing.status | Should -BeExactly 'ArtifactMissing'
+        $missing.errors | Should -Contain 'SESSION_ARTIFACT_MISSING'
+    }
 }

@@ -17,6 +17,14 @@ function Get-MmtlSessionV2Paths {
     return [pscustomobject]@{session=$session;manifest=(Join-Path $session 'session.v2.json');plan=(Join-Path $session 'execution-plan.json')}
 }
 
+function Get-MmtlSessionProperty {
+    param([AllowNull()]$Object,[Parameter(Mandatory)][string]$Name)
+    if($null -eq $Object){return $null}
+    $property=$Object.PSObject.Properties[$Name]
+    if($property){return $property.Value}
+    return $null
+}
+
 function Initialize-MmtlSessionV2 {
     [CmdletBinding()]
     param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)]$ExecutionPlan)
@@ -68,6 +76,34 @@ function Test-MmtlSessionV2 {
     $hash=(Get-FileHash -LiteralPath $paths.plan -Algorithm SHA256).Hash.ToLowerInvariant()
     if("sha256:$hash" -cne [string]$manifest.planSha256){$errors.Add('SESSION_ARTIFACT_HASH_MISMATCH')}
     try{$plan=Get-Content -LiteralPath $paths.plan -Raw|ConvertFrom-Json -ErrorAction Stop;$planCheck=Test-MmtlExecutionPlan -Plan $plan;if(-not $planCheck.valid){$errors.AddRange([string[]]$planCheck.errors)};if([string]$plan.semanticDigest -cne [string]$manifest.planDigest){$errors.Add('SESSION_PLAN_DIGEST_MISMATCH')}}catch{$errors.Add('SESSION_ARTIFACT_CORRUPT')}
+    $statePath=Join-Path $paths.session 'session.json'
+    if(Test-Path -LiteralPath $statePath -PathType Leaf){
+        try{$state=Get-Content -LiteralPath $statePath -Raw|ConvertFrom-Json -ErrorAction Stop}catch{$errors.Add('SESSION_STATE_CORRUPT');$state=$null}
+        $buildResult=Get-MmtlSessionProperty $state 'buildResult'
+        $artifactHash=Get-MmtlSessionProperty $state 'jarSha256';if(-not $artifactHash){$artifactHash=Get-MmtlSessionProperty $buildResult 'JarSha256'}
+        $artifactPath=Get-MmtlSessionProperty $state 'jarPath';if(-not $artifactPath){$artifactPath=Get-MmtlSessionProperty $buildResult 'JarPath'}
+        if($artifactHash -or $artifactPath){
+            if([string]$artifactHash -notmatch '^(?:sha256:)?[0-9A-Fa-f]{64}$'){$errors.Add('SESSION_ARTIFACT_HASH_INVALID')}
+            if(-not $artifactPath){$errors.Add('SESSION_ARTIFACT_PATH_INVALID')}
+            else{
+                try{
+                    $artifactFull=[IO.Path]::GetFullPath([string]$artifactPath)
+                    $projectRoot=[string](Get-MmtlSessionProperty (Get-MmtlSessionProperty $state 'metadata') 'project')
+                    if(-not $projectRoot){$errors.Add('SESSION_ARTIFACT_PATH_INVALID')}
+                    else{
+                        $projectFull=[IO.Path]::GetFullPath($projectRoot);$relative=[IO.Path]::GetRelativePath($projectFull,$artifactFull)
+                        if([IO.Path]::IsPathRooted($relative) -or $relative -eq '..' -or $relative.StartsWith('..'+[IO.Path]::DirectorySeparatorChar,[StringComparison]::Ordinal) -or $relative.StartsWith('..'+[IO.Path]::AltDirectorySeparatorChar,[StringComparison]::Ordinal)){$errors.Add('SESSION_ARTIFACT_PATH_INVALID')}
+                        else{
+                            $artifactSafe=$true
+                            try{Assert-MmtlSessionV2PathNoReparse -Path $artifactFull|Out-Null}catch{$errors.Add('SESSION_PATH_REPARSE_POINT');$artifactSafe=$false}
+                            if(-not(Test-Path -LiteralPath $artifactFull -PathType Leaf)){return [pscustomobject]@{valid=$false;status='ArtifactMissing';errors=@(@($errors.ToArray())+'SESSION_ARTIFACT_MISSING');state=[string]$manifest.state;sessionId=[string]$manifest.sessionId;planDigest=[string]$manifest.planDigest}}
+                            if($artifactSafe -and $artifactHash -match '^(?:sha256:)?(?<hash>[0-9A-Fa-f]{64})$'){$actualArtifactHash=(Get-FileHash -LiteralPath $artifactFull -Algorithm SHA256).Hash;if($actualArtifactHash -cne $Matches.hash){$errors.Add('SESSION_ARTIFACT_HASH_MISMATCH')}}
+                        }
+                    }
+                }catch{$errors.Add('SESSION_ARTIFACT_PATH_INVALID')}
+            }
+        }
+    }
     return [pscustomobject]@{valid=($errors.Count -eq 0);status=$(if($errors.Count){'Corrupt'}else{'Valid'});errors=@($errors.ToArray());state=[string]$manifest.state;sessionId=[string]$manifest.sessionId;planDigest=[string]$manifest.planDigest}
 }
 
