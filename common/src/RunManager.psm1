@@ -1,6 +1,7 @@
 Import-Module (Join-Path $PSScriptRoot 'RuntimeManager.psm1')
 Import-Module (Join-Path $PSScriptRoot 'LogManager.psm1')
 Import-Module (Join-Path $PSScriptRoot 'ProcessManager.psm1')
+Import-Module (Join-Path $PSScriptRoot 'AtomicFile.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1') -Force
 
 function Invoke-MmtlGradleBuild {
@@ -25,6 +26,51 @@ function Invoke-MmtlGradleBuild {
     $gitSha=(& git -C $Project.Root rev-parse HEAD 2>$null);if($LASTEXITCODE -ne 0){$gitSha=$null}
     [pscustomobject]@{Project=$Project.Root;JavaPath=$JavaPath;BuildStartedUtc=$started.ToString('o');BuildFinishedUtc=[DateTimeOffset]::UtcNow.ToString('o');ExitCode=$exitCode;JarPath=$jars[0].FullName;JarSha256=(Get-FileHash -LiteralPath $jars[0].FullName -Algorithm SHA256).Hash;GitSha=([string]$gitSha).Trim();LogPath=$log}
 }
+
+function Invoke-MmtlProjectBuildPipeline {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]$Primary,
+        [Parameter(Mandatory)][AllowEmptyCollection()][object[]]$LinkedProjects,
+        [Parameter(Mandatory)][string]$JavaPath,
+        [Parameter(Mandatory)][string]$SessionPath,
+        [switch]$AutoBuild,
+        [switch]$Clean,
+        [scriptblock]$BuildAction,
+        [scriptblock]$ArtifactResolver
+    )
+    $builds=[Collections.Generic.List[object]]::new();$artifacts=[Collections.Generic.List[object]]::new()
+    $allProjects=@($Primary)+@($LinkedProjects)
+    if($AutoBuild){
+        foreach($candidate in $allProjects){
+            $build=if($BuildAction){& $BuildAction -Project $candidate -JavaPath $JavaPath -SessionPath $SessionPath -Clean:$Clean}else{Invoke-MmtlGradleBuild -Project $candidate -JavaPath $JavaPath -SessionPath $SessionPath -Clean:$Clean}
+            if(-not $build -or [int]$build.ExitCode -ne 0){throw "PROJECT_BUILD_FAILED: $($candidate.Root)"}
+            $jarPath=[IO.Path]::GetFullPath([string]$build.JarPath)
+            if([IO.Path]::GetExtension($jarPath) -cne '.jar' -or -not(Test-Path -LiteralPath $jarPath -PathType Leaf)){throw "PROJECT_BUILD_ARTIFACT_MISSING: $($candidate.Root)"}
+            $relative=[IO.Path]::GetRelativePath([IO.Path]::GetFullPath([string]$candidate.Root),$jarPath)
+            if([IO.Path]::IsPathRooted($relative) -or $relative -eq '..' -or $relative.StartsWith('..'+[IO.Path]::DirectorySeparatorChar,[StringComparison]::Ordinal)){throw "PROJECT_BUILD_ARTIFACT_OUTSIDE_ROOT: $($candidate.Root)"}
+            $actualHash=(Get-FileHash -LiteralPath $jarPath -Algorithm SHA256).Hash
+            if(-not $build.JarSha256 -or [string]$build.JarSha256 -cne $actualHash){throw "LINKED_ARTIFACT_HASH_MISMATCH: $($candidate.Root)"}
+            $builds.Add($build)
+            if($candidate.Root -ne $Primary.Root){$artifacts.Add([pscustomobject]@{project=[string]$candidate.Root;path=$jarPath;sha256=$actualHash;source='BuildEvidence'})}
+        }
+    }else{
+        foreach($candidate in $LinkedProjects){
+            $jarPath=if($ArtifactResolver){[string](& $ArtifactResolver -Project $candidate)}else{throw 'LINKED_ARTIFACT_RESOLVER_REQUIRED'}
+            $jarPath=[IO.Path]::GetFullPath($jarPath)
+            if([IO.Path]::GetExtension($jarPath) -cne '.jar' -or -not(Test-Path -LiteralPath $jarPath -PathType Leaf)){throw "PROJECT_BUILD_ARTIFACT_MISSING: $($candidate.Root)"}
+            $relative=[IO.Path]::GetRelativePath([IO.Path]::GetFullPath([string]$candidate.Root),$jarPath)
+            if([IO.Path]::IsPathRooted($relative) -or $relative -eq '..' -or $relative.StartsWith('..'+[IO.Path]::DirectorySeparatorChar,[StringComparison]::Ordinal)){throw "PROJECT_BUILD_ARTIFACT_OUTSIDE_ROOT: $($candidate.Root)"}
+            $artifacts.Add([pscustomobject]@{project=[string]$candidate.Root;path=$jarPath;sha256=(Get-FileHash -LiteralPath $jarPath -Algorithm SHA256).Hash;source='ExistingArtifact'})
+        }
+    }
+    foreach($artifact in $artifacts){
+        if(-not(Test-Path -LiteralPath $artifact.path -PathType Leaf) -or (Get-FileHash -LiteralPath $artifact.path -Algorithm SHA256).Hash -cne $artifact.sha256){throw "LINKED_ARTIFACT_CHANGED_BEFORE_INJECTION: $($artifact.project)"}
+    }
+    $expectedHashes=@{};foreach($artifact in $artifacts){$expectedHashes[[IO.Path]::GetFullPath([string]$artifact.path)]=[string]$artifact.sha256}
+    return [pscustomobject]@{builds=@($builds.ToArray());linkedArtifacts=@($artifacts.ToArray());linkedJars=@($artifacts|ForEach-Object path);expectedModHashes=$expectedHashes}
+}
+
 function Get-MmtlMemoryBudget {
     [CmdletBinding()]
     param([Parameter(Mandatory)]$Profile,[ValidateSet('Single','IntegratedLAN','Dedicated')][string]$Mode='Single',[long]$PhysicalMemoryMb=0)
@@ -90,23 +136,75 @@ function Set-MmtlClientGuiScale {
     [IO.File]::WriteAllLines($options,[string[]]$lines,[Text.UTF8Encoding]::new($false))
     return $true
 }
+
+function Copy-MmtlRuntimeMods {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][string]$RuntimeDirectory,[string[]]$ModJars=@(),[Parameter(Mandatory)][ValidateSet('Client','Host','Guest','Server')][string]$Role,[string]$Username='',[hashtable]$ExpectedHashes=@{})
+    $session=[IO.Path]::GetFullPath($SessionPath);$runtime=[IO.Path]::GetFullPath($RuntimeDirectory)
+    if(-not(Test-MmtlInsideRoot -Root $session -Target $runtime)){throw 'MOD_JAR_RUNTIME_OUTSIDE_SESSION'}
+    Assert-MmtlNoReparsePath -Path $session|Out-Null;Assert-MmtlNoReparsePath -Path $runtime|Out-Null
+    if(-not(Test-Path -LiteralPath $runtime -PathType Container)){throw 'MOD_JAR_RUNTIME_MISSING'}
+    $mods=Join-Path $runtime 'mods';New-Item -ItemType Directory -Path $mods -Force|Out-Null
+    if(-not(Test-MmtlInsideRoot -Root $runtime -Target $mods)){throw 'MOD_JAR_DESTINATION_OUTSIDE_RUNTIME'}
+    Assert-MmtlNoReparsePath -Path $mods|Out-Null
+    $nameComparer=[StringComparer]::Ordinal
+    if([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::Windows)){$nameComparer=[StringComparer]::OrdinalIgnoreCase}
+    $names=[Collections.Generic.HashSet[string]]::new($nameComparer);$hashes=[Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+    $sources=[Collections.Generic.List[object]]::new()
+    foreach($sourceValue in $ModJars){
+        if(-not $sourceValue){continue}
+        $source=[IO.Path]::GetFullPath([string]$sourceValue)
+        if(-not(Test-Path -LiteralPath $source -PathType Leaf) -or [IO.Path]::GetExtension($source) -ine '.jar'){throw 'MOD_JAR_SOURCE_INVALID'}
+        Assert-MmtlNoReparsePath -Path $source|Out-Null
+        $name=[IO.Path]::GetFileName($source);$destination=[IO.Path]::GetFullPath((Join-Path $mods $name))
+        if(-not(Test-MmtlInsideRoot -Root $mods -Target $destination)){throw 'MOD_JAR_DESTINATION_OUTSIDE_RUNTIME'}
+        $hash=(Get-FileHash -LiteralPath $source -Algorithm SHA256 -ErrorAction Stop).Hash.ToLowerInvariant()
+        if($ExpectedHashes.ContainsKey($source) -and $hash -cne ([string]$ExpectedHashes[$source]).ToLowerInvariant()){throw "MOD_JAR_EXPECTED_HASH_MISMATCH: $name"}
+        $newName=$names.Add($name);$newHash=$hashes.Add($hash)
+        if(-not $newName -or -not $newHash){throw "MOD_JAR_DUPLICATE: 拒绝重复名称或重复内容的 Mod JAR：$name"}
+        if(Test-Path -LiteralPath $destination){throw "MOD_JAR_DUPLICATE: 当前 Runtime 已存在同名 Mod JAR：$name"}
+        $sources.Add([pscustomobject]@{source=$source;name=$name;destination=$destination;sha256=$hash;sizeBytes=[long](Get-Item -LiteralPath $source).Length})
+    }
+    $created=[Collections.Generic.List[string]]::new();$temporaries=[Collections.Generic.List[string]]::new()
+    $safeRole=($Role+'-'+$Username)-replace '[^A-Za-z0-9_-]','_'
+    $artifacts=Join-Path $session 'artifacts';New-Item -ItemType Directory -Path $artifacts -Force|Out-Null
+    if(-not(Test-MmtlInsideRoot -Root $session -Target $artifacts)){throw 'MOD_JAR_MANIFEST_OUTSIDE_SESSION'}
+    Assert-MmtlNoReparsePath -Path $artifacts|Out-Null
+    $manifestPath=Join-Path $artifacts "mods-$safeRole.json"
+    if(Test-Path -LiteralPath $manifestPath){throw 'MOD_JAR_MANIFEST_ALREADY_EXISTS'}
+    try{
+        $records=[Collections.Generic.List[object]]::new()
+        foreach($item in $sources){
+            $temporary=Join-Path $mods ('.'+$item.name+'.'+[guid]::NewGuid().ToString('N')+'.tmp');$temporaries.Add($temporary)
+            Copy-Item -LiteralPath $item.source -Destination $temporary -ErrorAction Stop
+            $copiedHash=(Get-FileHash -LiteralPath $temporary -Algorithm SHA256 -ErrorAction Stop).Hash.ToLowerInvariant()
+            if($copiedHash -cne $item.sha256 -or [long](Get-Item -LiteralPath $temporary).Length -ne $item.sizeBytes){throw "MOD_JAR_COPY_INTEGRITY_MISMATCH: $($item.name)"}
+            [IO.File]::Move($temporary,$item.destination);$null=$temporaries.Remove($temporary);$created.Add($item.destination)
+            $records.Add([pscustomobject][ordered]@{filename=$item.name;sizeBytes=$item.sizeBytes;sha256=$copiedHash;role=$Role;username=$Username})
+        }
+        $manifest=[ordered]@{schemaVersion=1;artifacts=@($records.ToArray())}
+        Write-MmtlAtomicTextFile -Path $manifestPath -Content (($manifest|ConvertTo-Json -Depth 8)+"`n")
+        return @($records.ToArray())
+    }catch{
+        foreach($path in $temporaries){if(Test-Path -LiteralPath $path){Remove-Item -LiteralPath $path -Force -ErrorAction SilentlyContinue}}
+        foreach($path in $created){if(Test-Path -LiteralPath $path){Remove-Item -LiteralPath $path -Force -ErrorAction SilentlyContinue}}
+        throw
+    }
+}
 function Start-MmtlGradleInstance {
     [CmdletBinding()]
-    param([Parameter(Mandatory)]$Project,[Parameter(Mandatory)]$Plan,[Parameter(Mandatory)][string]$JavaPath,[Parameter(Mandatory)][string]$SessionPath,[string[]]$ModJars=@())
+    param([Parameter(Mandatory)]$Project,[Parameter(Mandatory)]$Plan,[Parameter(Mandatory)][string]$JavaPath,[Parameter(Mandatory)][string]$SessionPath,[string[]]$ModJars=@(),[hashtable]$ExpectedModHashes=@{})
     $session=[IO.Path]::GetFullPath($SessionPath);$runtime=[IO.Path]::GetFullPath([string]$Plan.RuntimeDirectory)
     if(-not(Test-MmtlInsideRoot -Root $session -Target $runtime)){throw '实例 Runtime 必须位于当前 Session。'}
     Assert-MmtlNoReparsePath -Path $session|Out-Null
     New-Item -ItemType Directory -Path $runtime -Force|Out-Null
     Assert-MmtlNoReparsePath -Path $runtime|Out-Null
+    $sessionMarkerPath=Join-Path $runtime 'mmtl-session.id';$sessionId=[IO.Path]::GetFileName($session)
+    if(Test-Path -LiteralPath $sessionMarkerPath -PathType Leaf){$markerItem=Get-Item -LiteralPath $sessionMarkerPath -Force;if($markerItem.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Session marker 不得是链接。'};if((Get-Content -LiteralPath $sessionMarkerPath -Raw).Trim() -cne $sessionId){throw '当前 RuntimeDirectory 已绑定其他 Session。'}}else{[IO.File]::WriteAllText($sessionMarkerPath,$sessionId,[Text.UTF8Encoding]::new($false))}
     $mods=Join-Path $runtime 'mods';New-Item -ItemType Directory -Path $mods -Force|Out-Null
     Assert-MmtlNoReparsePath -Path $mods|Out-Null
     if($Plan.Role -ne 'Server' -and $null -ne $Plan.GuiScale -and [string]$Plan.GuiScale -ne ''){Set-MmtlClientGuiScale -SessionPath $session -RuntimeDirectory $runtime -GuiScale $Plan.GuiScale|Out-Null}
-    foreach($jar in $ModJars){
-        if(-not(Test-Path -LiteralPath $jar -PathType Leaf) -or [IO.Path]::GetExtension($jar) -ne '.jar'){throw "模组文件无效：$jar"}
-        $destination=Join-Path $mods ([IO.Path]::GetFileName($jar))
-        if(Test-Path -LiteralPath $destination){throw "当前实例存在同名 Mod JAR：$([IO.Path]::GetFileName($jar))"}
-        Copy-Item -LiteralPath $jar -Destination $destination
-    }
+    $null=Copy-MmtlRuntimeMods -SessionPath $session -RuntimeDirectory $runtime -ModJars $ModJars -Role ([string]$Plan.Role) -Username ([string]$Plan.Username) -ExpectedHashes $ExpectedModHashes
     $logName=if($Plan.Role -eq 'Server'){'server'}else{"$($Plan.Role)-$($Plan.Username)"}
     $helper=[string]$global:MmtlPlatformProvider.GradleTaskEntrypoint
     if(-not(Test-Path -LiteralPath $helper -PathType Leaf)){throw '缺少 Gradle Session Runner。'}
@@ -128,7 +226,7 @@ function Start-MmtlGradleInstance {
     try{
         $env:JAVA_HOME=$javaHome;$env:Path=(Join-Path $javaHome 'bin')+$pathSeparator+$oldPath
         $args=@('-NoProfile','-NonInteractive','-File',('"'+$helper+'"'),'-LaunchPlanB64',$payloadB64)
-        $processId=Start-MmtlTrackedProcess -SessionPath $session -FilePath $powerShellHost.Source -ArgumentList $args -WorkingDirectory $Project.Root -LogPath $log -Role $Plan.Role -Username $Plan.Username -RuntimeLinkPath $runtimeLink -RuntimeTargetPath $(if($runtimeLink){$runtime}else{''})
+        $processId=Start-MmtlTrackedProcess -SessionPath $session -FilePath $powerShellHost.Source -ArgumentList $args -WorkingDirectory $Project.Root -LogPath $log -Role $Plan.Role -Username $Plan.Username -RuntimeDirectory $runtime -RuntimeLinkPath $runtimeLink -RuntimeTargetPath $(if($runtimeLink){$runtime}else{''})
     }catch{if($runtimeLink){Remove-MmtlFabricRuntimeLink -ProjectRoot $Project.Root -LinkPath $runtimeLink -TargetPath $runtime|Out-Null};throw
     }finally{$env:JAVA_HOME=$oldHome;$env:Path=$oldPath}
     [pscustomobject]@{ProcessId=[int]$processId;Role=$Plan.Role;Username=$Plan.Username;Project=$Project.Root;Task=$Plan.Task;RuntimeDirectory=$runtime;LogPath=$log;ErrorLogPath=($log+'.err')}
@@ -167,4 +265,22 @@ function Initialize-MmtlDedicatedServerRuntime {
     if($ops.Count){[IO.File]::WriteAllText((Join-Path $server 'ops.json'),($ops|ConvertTo-Json -Depth 5),[Text.UTF8Encoding]::new($false))}
     [pscustomobject]@{ServerDirectory=$server;EulaPath=$eula;PropertiesPath=$properties;Port=$Port;WorldName=$world;Players=$players;Ops=$ops}
 }
-Export-ModuleMember -Function Invoke-MmtlGradleBuild,Get-MmtlMemoryBudget,Assert-MmtlMemoryBudget,Start-MmtlGradleInstance,Initialize-MmtlDedicatedServerRuntime,New-MmtlFabricRuntimeLink,Remove-MmtlFabricRuntimeLink,Set-MmtlClientGuiScale
+function Set-MmtlDedicatedServerPort {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][ValidateRange(1,65535)][int]$Port)
+    $session=[IO.Path]::GetFullPath($SessionPath)
+    if(-not(Test-Path -LiteralPath $session -PathType Container)){throw 'DEDICATED_SESSION_MISSING'}
+    Assert-MmtlNoReparsePath -Path $session|Out-Null
+    $properties=Join-Path $session 'Server/server.properties'
+    if(-not(Test-MmtlInsideRoot -Root $session -Target $properties)){throw 'DEDICATED_PROPERTIES_OUTSIDE_SESSION'}
+    Assert-MmtlNoReparsePath -Path $properties|Out-Null
+    if(-not(Test-Path -LiteralPath $properties -PathType Leaf)){throw 'DEDICATED_PROPERTIES_MISSING'}
+    $lines=[Collections.Generic.List[string]]::new([string[]][IO.File]::ReadAllLines($properties))
+    $indices=@(for($i=0;$i -lt $lines.Count;$i++){if($lines[$i] -match '^server-port='){$i}})
+    if($indices.Count -ne 1){throw 'DEDICATED_SERVER_PORT_PROPERTY_INVALID: server-port 必须恰好出现一次。'}
+    $lines[$indices[0]]="server-port=$Port"
+    $content=($lines.ToArray() -join [Environment]::NewLine)+[Environment]::NewLine
+    Write-MmtlAtomicTextFile -Path $properties -Content $content
+    return $true
+}
+Export-ModuleMember -Function Invoke-MmtlGradleBuild,Invoke-MmtlProjectBuildPipeline,Get-MmtlMemoryBudget,Assert-MmtlMemoryBudget,Start-MmtlGradleInstance,Initialize-MmtlDedicatedServerRuntime,Set-MmtlDedicatedServerPort,New-MmtlFabricRuntimeLink,Remove-MmtlFabricRuntimeLink,Set-MmtlClientGuiScale,Copy-MmtlRuntimeMods
