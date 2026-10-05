@@ -27,6 +27,8 @@ PowerShell 7 是 v2 的正式命令环境。Ubuntu、WSL/WSL2 和 GitHub Actions
 ./windows/launcher.ps1 --coverage-report --json
 ./windows/launcher.ps1 --coverage-gaps
 ./windows/launcher.ps1 --coverage-version 1.20.1
+./windows/launcher.ps1 --observe-session <SessionID> --json
+./windows/launcher.ps1 --session-events <SessionID> --json
 ```
 
 `--catalog-offline` 与 `--loader-offline` 分别控制版本目录和 Loader 元数据的离线读取。覆盖报告表示候选与来源审计，不代表项目已构建或客户端已验证。Linux 和 macOS 分别使用 `linux/launcher.sh`、`macos/launcher.sh`。具体参数和输出见 [执行计划与 Launch Readiness](docs/execution-plan-session.md)。
@@ -49,3 +51,7 @@ PowerShell 7 是 v2 的正式命令环境。Ubuntu、WSL/WSL2 和 GitHub Actions
 - [Session 生命周期与恢复](docs/session-lifecycle.md)
 - [环境 Doctor](docs/doctor.md)
 - [验证等级与证据](docs/validation.md)
+- [运行时观察与事件](docs/runtime-observation.md)
+- [人工实机验证计划](docs/human-validation.md)
+- [配置与 Profile 字段审计](docs/config-profile-field-audit.md)
+- [人工验证前发布门禁审计](docs/pre-human-validation-audit.md)

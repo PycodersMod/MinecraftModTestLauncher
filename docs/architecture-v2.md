@@ -130,3 +130,9 @@ Coverage CLI 使用统一入口：`--coverage-report` 输出摘要，`--coverage
 Phase H 建立规范化执行计划、Build Java/Runtime Java 双轨解析和 Session Manifest v2。Phase I 由 Loader Adapter 产出 Runtime Java Binding Evidence，并由只读 Gradle task inspection 检查 `runClient`/`runServer` launcher；缺少匹配证据时保持 `Unknown`。Phase J 增加 Launch Preflight、Java Discovery、环境 Doctor 和平台 Capability 报告。Phase K 增加 Session 并发锁、原子 manifest/Plan 写入、崩溃后保守恢复，以及按平台注入的进程身份与生命周期能力。
 
 Planner 不包含按 Loader 名称散落的绑定判断，只消费 Adapter evidence。`BuildReady` 与 `LaunchReady` 独立；`LaunchReady` 不是 `CLIENT_LAUNCH_VERIFIED`。Doctor 只诊断，不安装 Java、不登录、不构建或启动进程、不修改配置或 EULA。Session recovery 只修复 owner identity 可以证明过期的元数据，不终止进程、不删除 Session。详见 [Runtime Binding](runtime-binding.md)、[Doctor](doctor.md)、[执行计划](execution-plan-session.md) 和 [Session 生命周期](session-lifecycle.md)。
+
+### Phase L–O — 运行时观察、编排演练与人工验证准备
+
+Phase L 为当前 Session 的已登记进程与日志建立结构化 Runtime Event、Client/Server/LAN/Auth/Crash Observer 和独立 Observed Runtime Java 证据。Observer 只读 Session 身份，不重建执行计划；synthetic/rehearsal evidence 永远不能晋级真实验证等级。Phase M 通过 Single、Dedicated 和 IntegratedLAN dummy harness 验证 ready 顺序、端口、停止、补偿清理、内存预算与 linked project/JAR 完整性，不启动真实 Minecraft。
+
+Phase N 的 `--human-validation-plan` 生成本机人工验证矩阵、步骤清单和安全 helper；helper 默认只展示计划，只有用户显式确认才允许未来调用真实 Launch。Phase O 汇总 CLI、文档、配置字段、TODO 分类、公开仓库卫生与架构边界。交接包留在本机 `HANDOVER/manual-validation/`，不得提交或上传。完整边界见 [运行时观察](runtime-observation.md)、[人工验证计划](human-validation.md)、[配置字段审计](config-profile-field-audit.md) 与 [发布门禁审计](pre-human-validation-audit.md)。
