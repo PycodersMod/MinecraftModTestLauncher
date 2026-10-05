@@ -6,7 +6,6 @@ if([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropSe
     Import-Module (Join-Path $script:repoRoot 'macos/src/MacOSPlatformProvider.psm1') -Force
     Import-Module (Join-Path $script:repoRoot 'common/src/SessionRecovery.psm1') -Force
     Register-MmtlMacOSPlatform -RepositoryRoot $script:repoRoot
-    $global:MmtlPlatformProvider.ProcessManagement='Native'
     $script:processApi=$global:MmtlPlatformProvider.ProcessApi
     function Get-MacOSTestProcessRecord { param([int]$ProcessId) return & $script:processApi.GetRecord $ProcessId }
     function Get-MacOSTestProcessSnapshot { param([int]$RootProcessId) return @(& $script:processApi.GetSnapshot $RootProcessId) }
@@ -23,9 +22,9 @@ if([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropSe
     }
     }
     Describe 'macOS 进程身份与跟踪生命周期' {
-        It '默认仍将 macOS 进程能力标记为 Unsupported，避免未验证前提前承诺' {
+        It '经过 ARM64 和 Intel 实机 CI 合同验证后默认声明 macOS 进程能力 Native' {
             $provider=New-MmtlMacOSPlatformProvider -RepositoryRoot $script:repoRoot
-            $provider.ProcessManagement | Should -BeExactly 'Unsupported'
+            $provider.ProcessManagement | Should -BeExactly 'Native'
             $provider.WindowManagement | Should -BeExactly 'Unsupported'
             $provider.ProcessApi.GetRecord | Should -Not -BeNullOrEmpty
         }

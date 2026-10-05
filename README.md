@@ -8,7 +8,7 @@ MMTL 是 Minecraft Java Edition 模组项目的跨平台 CLI、构建与运行�
 |---|---|---|
 | Windows | CLI、Gradle 构建、Windows 客户端运行准备、窗口与进程管理 | `LaunchReady` 只表示预检通过，不代表客户端实机验证 |
 | Linux | CLI、Gradle 构建、Session 与进程管理 | 当前不声明 Minecraft GUI 启动能力 |
-| macOS | CLI、Gradle 构建、Session 管理 | 窗口和进程管理能力仍为 `Unsupported`，直到 ARM64 与 Intel CI 验证完成 |
+| macOS | CLI、Gradle 构建、Session 与进程管理 | macOS ARM64 与 Intel CI 已验证进程身份、PID 重用隔离、进程树停止和 orphan 恢复；窗口管理仍为 `Unsupported` |
 
 PowerShell 7 是 v2 的正式命令环境。Ubuntu、WSL/WSL2 和 GitHub Actions runner 都是验证环境信息，不是额外的产品平台。WSL 或托管 CI 的结果不能替代 Linux 桌面客户端实机验证。
 

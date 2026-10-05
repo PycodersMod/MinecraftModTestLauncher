@@ -113,7 +113,7 @@
 
 **Files:** 如满足合同才修改 `macos/src/MacOS.Process.psm1`、provider、tests、architecture docs；否则保持状态并写清具体缺失项。
 
-- [ ] 从实际 provider、ARM64/Intel CI、stop semantics、PID reuse 逐条件审查 Native 合同；不得只因本地模拟通过而声明支持。
+- [x] 从实际 provider、macOS ARM64/Intel runner 的 5 项专项测试、stop semantics、PID reuse 逐条件审查 Native 合同；默认能力与 Session 清理 gate 已按证据更新，未仅依赖本地模拟。
 - [x] WSL 只读发现 Linux JDK 与能力；无 JDK 时不安装/下载/sudo，标为明确限制。
 - [x] GUI client 维持 LIMITED；WSLg 不代表真实 Ubuntu Desktop 实机验证。
 
@@ -142,8 +142,8 @@
 **Files:** 修改测试/CI 脚本仅在发现缺口时；生成验证数据只留本机。
 
 - [x] 逐一运行 10 项 Project Discovery、Plan、Runtime Binding、LaunchCheck、默认 Windows `--validate`；每项目执行 MMTL real clean build，目标 10/10。
-- [x] Pester 全集 397 passed、0 failed、2 skipped；Windows 全集 PASS。WSL Help/Capabilities PASS；Plan/Binding 可运行；Doctor/LaunchCheck 与 Java-backed Rehearsal 记录 Linux JDK 缺失阻塞；已通过 `/bin/sleep` fixture 验证登记进程 Observer 与安全停止。
-- [ ] GitHub Actions required Windows、Ubuntu、macOS ARM64、macOS Intel 全绿；CI 已验证 macOS/Linux 文件系统与测试修复、Windows 端口标记竞态修复；Ubuntu 又发现 `/proc` 实际路径与计划路径经目录 symlink 别名导致 Java binding mismatch，已新增逐组件规范化与回归测试，需等待新 CI 验证；不在 CI 启动 Minecraft GUI、真实 server 或依赖在线服务。
+- [x] Pester 全集 400 passed、0 failed、2 skipped；Windows 全集 PASS。WSL Help/Capabilities PASS；Plan/Binding 可运行；Doctor/LaunchCheck 与 Java-backed Rehearsal 记录 Linux JDK 缺失阻塞；已通过 `/bin/sleep` fixture 验证登记进程 Observer 与安全停止。
+- [ ] GitHub Actions required Windows、Ubuntu、macOS ARM64、macOS Intel 在提交 `6765961` 全绿；此后更新 macOS Provider 为 `ProcessManagement=Native` 并按 capability 放行 Session 清理，需在当前提交再次取得四平台 CI 全绿；不在 CI 启动 Minecraft GUI、真实 server 或依赖在线服务。
 - [x] 任务前后只检查任务自有 process；不杀其他 Java/Gradle daemon；运行后核验无泄漏。
 
 ### Task 13：本地证据、PR、CI、合并与清理

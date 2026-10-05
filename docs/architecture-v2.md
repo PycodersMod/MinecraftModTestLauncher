@@ -15,12 +15,12 @@
 - `common/src/Architecture/Contracts.psm1` 集中定义 OS、架构、能力、验证等级、Artifact Trust、provenance、Loader、Toolchain 和 Build System identities。
 - `PlatformContext`、`LoaderStack`、`BuildJava`/`RuntimeJava` requirement、Toolchain context、Build System context 和 provenance 使用纯数据结构表达。
 - Compatibility Matrix v1、Exception Registry 和 Config v2 基础结构由 JSON Schema 描述；旧配置读取器保留旧格式与未知字段。
-- CI 在 Ubuntu/macOS 上运行 PowerShell parser 和跨平台纯 fixture 测试；Windows job 运行完整 Pester suite。
+- CI 的 Windows、Ubuntu、macOS ARM64 与 macOS Intel jobs 均运行 PowerShell parser、common Pester 与对应平台 Pester；每个平台还运行入口安全 smoke。
 
 ### Phase B 已实现
 
 - Windows/Linux/macOS 平台 Provider、各平台 Runtime Root 与路径安全、Java/Gradle Wrapper 选择和各平台 CLI 入口已落地。
-- Session 平台元数据、Linux `/proc` 进程身份与受控停止均有实现和 fixture 覆盖。Linux/macOS CLI 与 Gradle build 能力不等价于这些平台上的 Minecraft GUI 实机运行。
+- Session 平台元数据、Linux `/proc` 与 macOS `ps` 进程身份及受控停止均有实现和平台 fixture 覆盖。macOS ProcessManagement 已由 ARM64/Intel CI 验证为 `Native`；Linux/macOS CLI、Build 与进程能力不等价于 Minecraft GUI 实机运行。
 
 ### Phase C 已实现
 
@@ -115,7 +115,7 @@ Loader identity 目前包括 Forge、Fabric、NeoForge、Quilt、LegacyFabric、
 
 ## CI 验证边界
 
-Windows 执行完整 Pester。Ubuntu、macOS ARM64 和 macOS Intel 执行 parser、Architecture、Schema、Provider、Availability Index、Adapter 与 ProjectDetector fixtures；CI 不调用 live upstream API，也不启动 Minecraft GUI。具体 required job 结果以对应提交的 Actions run 为准。
+Windows、Ubuntu、macOS ARM64 和 macOS Intel 均执行 PowerShell parser、common Pester 与对应平台完整 Pester；CI 不调用 live upstream API，也不启动 Minecraft GUI。macOS ProcessManager 测试覆盖 PID/start-time 身份、PID 重用拒绝、父子进程安全停止、未登记进程隔离和 Session orphan 恢复。具体 required job 结果以对应提交的 Actions run 为准。
 
 ## 阶段 F — 全版本覆盖审计
 

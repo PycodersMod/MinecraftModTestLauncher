@@ -16,7 +16,7 @@ Manifest 与 Plan snapshot 先写入同目录唯一临时文件、刷新数据�
 
 ## 进程所有权
 
-停止操作只能针对 Session 登记并再次验证身份的进程。未登记的同级或子进程不受影响。Windows 与 Linux 的进程管理按平台实现；macOS 当前默认保持 `ProcessManagement=Unsupported`，直到 ARM64 与 Intel CI 的 dummy process-tree/identity 测试都通过。所有平台的窗口管理能力需独立声明。
+停止操作只能针对 Session 登记并再次验证身份的进程。未登记的同级或子进程不受影响。Windows、Linux 与 macOS 的进程管理均按平台实现；macOS ARM64 与 Intel CI 已通过 dummy process-tree、PID identity/reuse 与 orphan recovery 测试，当前 `ProcessManagement=Native`。所有平台的窗口管理能力需独立声明。
 
 ```powershell
 ./windows/launcher.ps1 --list-sessions --json
