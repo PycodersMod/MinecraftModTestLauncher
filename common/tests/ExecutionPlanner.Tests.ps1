@@ -34,6 +34,25 @@ BeforeAll {
 }
 
 Describe '统一 Execution Planner' {
+    It '对只记录为 Profile 元数据的游戏内行为输出稳定非阻断 warning' {
+        $input=New-TestPlannerInputs
+        $input.Profile|Add-Member -NotePropertyName hostCheats -NotePropertyValue $true -Force
+        $input.Profile|Add-Member -NotePropertyName gameMode -NotePropertyValue 'creative' -Force
+        $input.Profile|Add-Member -NotePropertyName difficulty -NotePropertyValue 'normal' -Force
+        $input.Profile|Add-Member -NotePropertyName worldName -NotePropertyValue 'AuditWorld' -Force
+        $input.Profile|Add-Member -NotePropertyName seed -NotePropertyValue '42' -Force
+        $input.Profile|Add-Member -NotePropertyName newWorld -NotePropertyValue $true -Force
+        $input.Profile|Add-Member -NotePropertyName clientPermissionLevel -NotePropertyValue 0 -Force
+        $input.Profile|Add-Member -NotePropertyName resetWorld -NotePropertyValue $true -Force
+        $plan=New-MmtlExecutionPlan @input
+        @($plan.warnings|Where-Object code -eq 'PROFILE_FIELD_METADATA_ONLY'|ForEach-Object source) | Should -Contain 'hostCheats'
+        @($plan.warnings|Where-Object code -eq 'PROFILE_FIELD_METADATA_ONLY'|ForEach-Object source) | Should -Contain 'worldName'
+        @($plan.warnings|Where-Object code -eq 'PROFILE_FIELD_METADATA_ONLY'|ForEach-Object source) | Should -Contain 'clientPermissionLevel'
+        $plan.warnings.code | Should -Contain 'WORLD_RESET_SCOPED_TO_SESSION'
+        $plan.capabilityGates.launchReady | Should -BeFalse
+        $plan.blockingReasons.code | Should -Contain 'RUNTIME_JAVA_REQUIREMENT_UNKNOWN'
+    }
+
     It '分离 Build Java 与 Runtime Java requirement/resolution' {
         $input = New-TestPlannerInputs
         $input.project.RuntimeJavaRequirement=[pscustomobject]@{purpose='RuntimeJava';major=21;requirementKind='Exact';source='MojangVersionMetadata';confidence='High';component='java-runtime-gamma'}

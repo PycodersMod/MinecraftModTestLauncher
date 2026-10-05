@@ -42,7 +42,7 @@ function Remove-MmtlSession {
     if(Test-Path $registry){
         $entries=@(Get-Content $registry -Raw | ConvertFrom-Json)
         $platform=$global:MmtlPlatformProvider;$processApi=$platform.ProcessApi
-        if($platform.OS -eq 'MacOS' -and $entries.Count){throw '当前 macOS 平台不支持进程管理，因此不能清理仍登记有进程的 Session。'}
+        if([string]$platform.ProcessManagement -ne 'Native' -and $entries.Count){throw '当前平台没有 Native 进程管理能力，拒绝清理仍登记有进程的 Session。'}
         foreach($entry in $entries){
             $current=if($platform.ProcessManagement -eq 'Native'){& $processApi.GetRecord ([int]$entry.PID)}else{$null}
             if($current -and (& $processApi.TestIdentity $current $entry)){throw "Session 仍有启动器登记进程 PID $($entry.PID)，请先停止。"}

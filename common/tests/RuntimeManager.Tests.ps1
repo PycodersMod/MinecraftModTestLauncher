@@ -33,3 +33,26 @@ Describe 'Cross-platform path safety' {
         { Assert-MmtlNoReparsePath -Path (Join-Path $link 'child') } | Should -Throw
     }
 }
+
+Describe 'macOS Session process capability gate' {
+    BeforeEach {
+        $script:originalProvider=$global:MmtlPlatformProvider
+        $global:MmtlPlatformProvider=[pscustomobject]@{OS='MacOS';PathComparison=[StringComparison]::Ordinal;ProcessManagement='Native';FabricRuntimeLink='Unsupported';ProcessApi=[pscustomobject]@{GetRecord={param($id)$null};TestIdentity={param($process,$entry)$false}}}
+    }
+    AfterEach {$global:MmtlPlatformProvider=$script:originalProvider}
+
+    It '允许 Native macOS 删除没有存活登记进程的 Session' {
+        $runtime=Join-Path $TestDrive 'mac-native-runtime';$session=Join-Path $runtime 'sessions/native';New-Item -ItemType Directory -Path $session -Force|Out-Null
+        @([pscustomobject]@{PID=42;StartIdentity='ended-process'})|ConvertTo-Json|Set-Content (Join-Path $session 'pids.json')
+        Remove-MmtlSession -RuntimeRoot $runtime -SessionPath $session
+        Test-Path -LiteralPath $session | Should -BeFalse
+    }
+
+    It 'macOS ProcessManagement 仍为 Unsupported 时保留拒绝门禁' {
+        $global:MmtlPlatformProvider.ProcessManagement='Unsupported'
+        $runtime=Join-Path $TestDrive 'mac-unsupported-runtime';$session=Join-Path $runtime 'sessions/unsupported';New-Item -ItemType Directory -Path $session -Force|Out-Null
+        @([pscustomobject]@{PID=42;StartIdentity='unknown-process'})|ConvertTo-Json|Set-Content (Join-Path $session 'pids.json')
+        {Remove-MmtlSession -RuntimeRoot $runtime -SessionPath $session} | Should -Throw '*进程管理能力*'
+        Test-Path -LiteralPath $session | Should -BeTrue
+    }
+}

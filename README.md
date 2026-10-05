@@ -8,7 +8,7 @@ MMTL 是 Minecraft Java Edition 模组项目的跨平台 CLI、构建与运行�
 |---|---|---|
 | Windows | CLI、Gradle 构建、Windows 客户端运行准备、窗口与进程管理 | `LaunchReady` 只表示预检通过，不代表客户端实机验证 |
 | Linux | CLI、Gradle 构建、Session 与进程管理 | 当前不声明 Minecraft GUI 启动能力 |
-| macOS | CLI、Gradle 构建、Session 管理 | 窗口和进程管理能力仍为 `Unsupported`，直到 ARM64 与 Intel CI 验证完成 |
+| macOS | CLI、Gradle 构建、Session 与进程管理 | macOS ARM64 与 Intel CI 已验证进程身份、PID 重用隔离、进程树停止和 orphan 恢复；窗口管理仍为 `Unsupported` |
 
 PowerShell 7 是 v2 的正式命令环境。Ubuntu、WSL/WSL2 和 GitHub Actions runner 都是验证环境信息，不是额外的产品平台。WSL 或托管 CI 的结果不能替代 Linux 桌面客户端实机验证。
 
@@ -27,6 +27,8 @@ PowerShell 7 是 v2 的正式命令环境。Ubuntu、WSL/WSL2 和 GitHub Actions
 ./windows/launcher.ps1 --coverage-report --json
 ./windows/launcher.ps1 --coverage-gaps
 ./windows/launcher.ps1 --coverage-version 1.20.1
+./windows/launcher.ps1 --observe-session <SessionID> --json
+./windows/launcher.ps1 --session-events <SessionID> --json
 ```
 
 `--catalog-offline` 与 `--loader-offline` 分别控制版本目录和 Loader 元数据的离线读取。覆盖报告表示候选与来源审计，不代表项目已构建或客户端已验证。Linux 和 macOS 分别使用 `linux/launcher.sh`、`macos/launcher.sh`。具体参数和输出见 [执行计划与 Launch Readiness](docs/execution-plan-session.md)。
@@ -49,3 +51,7 @@ PowerShell 7 是 v2 的正式命令环境。Ubuntu、WSL/WSL2 和 GitHub Actions
 - [Session 生命周期与恢复](docs/session-lifecycle.md)
 - [环境 Doctor](docs/doctor.md)
 - [验证等级与证据](docs/validation.md)
+- [运行时观察与事件](docs/runtime-observation.md)
+- [人工实机验证计划](docs/human-validation.md)
+- [配置与 Profile 字段审计](docs/config-profile-field-audit.md)
+- [人工验证前发布门禁审计](docs/pre-human-validation-audit.md)

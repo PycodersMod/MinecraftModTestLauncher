@@ -30,12 +30,13 @@ function Test-MmtlProcessIdentity {
 }
 function Start-MmtlTrackedProcess {
     [CmdletBinding()]
-    param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][string]$FilePath,[string[]]$ArgumentList=@(),[Parameter(Mandatory)][string]$WorkingDirectory,[Parameter(Mandatory)][string]$LogPath,[string]$Role='Process',[string]$Username='',[string]$RuntimeLinkPath,[string]$RuntimeTargetPath)
+    param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][string]$FilePath,[string[]]$ArgumentList=@(),[Parameter(Mandatory)][string]$WorkingDirectory,[Parameter(Mandatory)][string]$LogPath,[string]$Role='Process',[string]$Username='',[string]$RuntimeDirectory,[string]$RuntimeLinkPath,[string]$RuntimeTargetPath,[switch]$Rehearsal,[switch]$PassThru)
     $api=Get-MmtlProcessApi;Assert-MmtlNativeProcessManagement
     $session=[IO.Path]::GetFullPath($SessionPath);$runtime=[IO.Path]::GetFullPath((Split-Path (Split-Path $session -Parent) -Parent))
     if(-not(Test-MmtlInsideRoot -Root (Join-Path $runtime 'sessions') -Target $session)){throw 'Session 路径无效。'}
     if([IO.Path]::GetFullPath((Split-Path $session -Parent)) -ne [IO.Path]::GetFullPath((Join-Path $runtime 'sessions'))){throw 'Session 必须是 sessions 的直接子目录。'}
     if(-not(Test-MmtlInsideRoot -Root $session -Target $LogPath)){throw '日志路径必须位于当前 Session。'}
+    if($RuntimeDirectory -and -not(Test-MmtlInsideRoot -Root $session -Target $RuntimeDirectory)){throw '进程 RuntimeDirectory 必须位于当前 Session。'}
     Assert-MmtlNoReparsePath -Path $session|Out-Null
     $registry=Join-Path $session 'pids.json';if(-not(Test-Path -LiteralPath $registry)){throw 'Session 缺少 pids.json。'}
     $lock=New-MmtlSessionLock -LockPath (Join-Path $session '.session.lock') -AllowedRoot $session;$proc=$null;$trackedIdentity=$null
@@ -46,12 +47,31 @@ function Start-MmtlTrackedProcess {
         $proc.Refresh();$current=& $api.GetRecord $proc.Id
         if(-not $current){throw '无法取得新进程的身份快照。'}
         $trackedIdentity=$current
-        $entry=[pscustomobject]@{PID=$proc.Id;Role=$Role;Username=$Username;StartIdentity=[string]$current.StartIdentity;StartTimeUtc=[string]$current.StartTimeUtc;StartTimeToken=[string]$current.StartTimeToken;Executable=[string]$current.Executable;ParentPID=[int]$current.ParentPID;CommandLine=[string]$current.CommandLine;SessionID=$current.SessionID;Command=$FilePath;WorkingDirectory=$WorkingDirectory;Arguments=@($ArgumentList);LogPath=$LogPath;StatePath=(Join-Path $session "process-$($proc.Id).exit.json");ProcessTree=@();RuntimeLinkPath=$RuntimeLinkPath;RuntimeTargetPath=$RuntimeTargetPath}
+        $entry=[pscustomobject]@{PID=$proc.Id;Role=$Role;Username=$Username;StartIdentity=[string]$current.StartIdentity;StartTimeUtc=[string]$current.StartTimeUtc;StartTimeToken=[string]$current.StartTimeToken;Executable=[string]$current.Executable;ParentPID=[int]$current.ParentPID;CommandLine=[string]$current.CommandLine;SessionID=$current.SessionID;Command=$FilePath;WorkingDirectory=$WorkingDirectory;Arguments=@($ArgumentList);LogPath=$LogPath;RuntimeDirectory=if($RuntimeDirectory){[IO.Path]::GetFullPath($RuntimeDirectory)}else{$null};StatePath=(Join-Path $session "process-$($proc.Id).exit.json");ProcessTree=@();RuntimeLinkPath=$RuntimeLinkPath;RuntimeTargetPath=$RuntimeTargetPath;Rehearsal=[bool]$Rehearsal.IsPresent}
         $items=@(Get-Content -LiteralPath $registry -Raw|ConvertFrom-Json);$items+= $entry;Write-MmtlPidRegistry -Path $registry -Entries $items -Lock $lock
+        if($PassThru){return [pscustomobject]@{ProcessId=[int]$proc.Id;Process=$proc;StartIdentity=[string]$current.StartIdentity;StatePath=[string]$entry.StatePath;Rehearsal=[bool]$Rehearsal.IsPresent}}
         return $proc.Id
     }catch{
         if($proc -and $trackedIdentity){try{$current=& $api.GetRecord $proc.Id;if($current -and $api.TestIdentity -and (& $api.TestIdentity $current $trackedIdentity)){$proc.Kill();$null=$proc.WaitForExit(3000)}}catch{}}
         throw
+    }finally{Remove-MmtlSessionLock -Lock $lock}
+}
+function Complete-MmtlTrackedProcess {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][Diagnostics.Process]$Process,[Parameter(Mandatory)][string]$StartIdentity,[switch]$StopRequested)
+    $session=[IO.Path]::GetFullPath($SessionPath);Assert-MmtlNoReparsePath -Path $session|Out-Null
+    $processId=[int]$Process.Id;$registry=Join-Path $session 'pids.json';$expectedState=Join-Path $session "process-$processId.exit.json"
+    if(-not(Test-MmtlInsideRoot -Root $session -Target $expectedState)){throw '进程退出状态路径越出 Session。'}
+    Assert-MmtlNoReparsePath -Path $expectedState|Out-Null
+    $lock=New-MmtlSessionLock -LockPath (Join-Path $session '.session.lock') -AllowedRoot $session
+    try{
+        $entries=@(Get-Content -LiteralPath $registry -Raw|ConvertFrom-Json -ErrorAction Stop);$entry=$entries|Where-Object{[int]$_.PID -eq $processId}|Select-Object -First 1
+        $entryIdentity=if($entry -and $entry.StartIdentity -is [DateTime]){$entry.StartIdentity.ToUniversalTime().ToString('o')}elseif($entry){[string]$entry.StartIdentity}else{''}
+        if(-not $entry -or $entryIdentity -cne $StartIdentity){throw '进程退出记录与 Session 登记身份不符。'}
+        if(-not $Process.HasExited){return $null}
+        $state=[pscustomobject]@{PID=$processId;ExitCode=[int]$Process.ExitCode;FinishedUtc=[DateTimeOffset]::UtcNow.ToString('o');Error=$(if([int]$Process.ExitCode -eq 0){$null}else{'已登记进程以非零退出码结束'});StopRequested=[bool]$StopRequested.IsPresent}
+        Write-MmtlAtomicTextFile -Path $expectedState -Content (($state|ConvertTo-Json -Compress)+"`n")
+        return $state
     }finally{Remove-MmtlSessionLock -Lock $lock}
 }
 function Stop-MmtlTrackedProcess {
@@ -78,4 +98,4 @@ function Stop-MmtlTrackedProcess {
         return $true
     }finally{Remove-MmtlSessionLock -Lock $lock}
 }
-Export-ModuleMember -Function Start-MmtlTrackedProcess,Stop-MmtlTrackedProcess,Write-MmtlPidRegistry,Test-MmtlProcessIdentity,Get-MmtlProcessSnapshot,Get-MmtlProcessRecord
+Export-ModuleMember -Function Start-MmtlTrackedProcess,Complete-MmtlTrackedProcess,Stop-MmtlTrackedProcess,Write-MmtlPidRegistry,Test-MmtlProcessIdentity,Get-MmtlProcessSnapshot,Get-MmtlProcessRecord

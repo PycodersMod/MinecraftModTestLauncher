@@ -118,6 +118,21 @@ function New-MmtlExecutionPlan {
     $diagnostics=[Collections.Generic.List[object]]::new()
     $warnings=[Collections.Generic.List[object]]::new()
     $mode=[string](Get-MmtlPlannerProperty $Profile 'mode' '')
+    $metadataOnlyFields=switch($mode){
+        'Single' {@('hostCheats','clientPermissionLevel','gameMode','difficulty','worldName','seed','newWorld')}
+        'IntegratedLAN' {@('hostCheats','clientPermissionLevel','gameMode','difficulty','worldName','seed','newWorld')}
+        'Dedicated' {@('hostCheats','newWorld')}
+        default {@()}
+    }
+    foreach($field in $metadataOnlyFields){
+        $fieldProperty=$Profile.PSObject.Properties[$field]
+        if($fieldProperty -and $null -ne $fieldProperty.Value){
+            $warnings.Add((New-MmtlPlannerDiagnostic 'PROFILE_FIELD_METADATA_ONLY' 'Plan' "Profile 字段 $field 仅记录在计划/会话元数据中，不会由 MMTL 自动应用；需要时请在游戏内手动设置或确认。" $field))
+        }
+    }
+    if((Get-MmtlPlannerProperty $Profile 'resetWorld' $false) -eq $true){
+        $warnings.Add((New-MmtlPlannerDiagnostic 'WORLD_RESET_SCOPED_TO_SESSION' 'Plan' 'resetWorld 只作用于本次隔离 Session 的世界目录；新建 Session 不会清理或修改其他 Session 的世界。' 'resetWorld'))
+    }
     $players=0;$playersValid=[int]::TryParse([string](Get-MmtlPlannerProperty $Profile 'players' ''),[ref]$players)
     if (-not $playersValid -or $mode -notin @('Single','IntegratedLAN','Dedicated') -or $players -lt 1 -or $players -gt 8 -or ($mode -eq 'Single' -and $players -ne 1)) {
         $diagnostics.Add((New-MmtlPlannerDiagnostic 'INVALID_PROFILE' 'Launch' 'Profile 的 mode 或 players 不符合配置规范。'))

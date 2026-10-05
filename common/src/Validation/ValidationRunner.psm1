@@ -22,6 +22,22 @@ function Get-MmtlValidationArtifact {
     [pscustomobject]@{path='build/libs/'+$item.Name;filename=$item.Name;sizeBytes=[long]$item.Length;sha256=(Get-FileHash -LiteralPath $item.FullName -Algorithm SHA256).Hash.ToLowerInvariant()}
 }
 
+function Get-MmtlValidationSourceFingerprint {
+    param([Parameter(Mandatory)][string]$ProjectRoot)
+    $root=[IO.Path]::GetFullPath($ProjectRoot);$excluded=@('.git','.gradle','build');$records=[Collections.Generic.List[string]]::new()
+    foreach($file in Get-ChildItem -LiteralPath $root -File -Recurse -Force -ErrorAction Stop){
+        $relative=[IO.Path]::GetRelativePath($root,$file.FullName).Replace([string][IO.Path]::DirectorySeparatorChar,'/')
+        if(@($relative.Split('/')|Where-Object{$_ -in $excluded}).Count){continue}
+        if(($file.Attributes -band [IO.FileAttributes]::ReparsePoint) -or $file.LinkType){throw 'SOURCE_FINGERPRINT_REPARSE_PATH'}
+        $hash=(Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256 -ErrorAction Stop).Hash.ToLowerInvariant()
+        $records.Add($relative+'|'+$hash)
+    }
+    $orderedRecords=$records.ToArray();[Array]::Sort($orderedRecords,[StringComparer]::Ordinal)
+    $payload=[Text.Encoding]::UTF8.GetBytes(($orderedRecords -join "`n"))
+    $digest=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($payload)).ToLowerInvariant()
+    return 'sha256:'+$digest
+}
+
 function Resolve-MmtlValidationProject {
     [CmdletBinding()]
     param([Parameter(Mandatory)][string]$Path,[Parameter(Mandatory)]$Target)
@@ -92,6 +108,10 @@ function Invoke-MmtlValidationBuild {
     $task=if($Target.PSObject.Properties['task'] -and $Target.task){[string]$Target.task}else{'build'}
     if($task -notin @($fixture.allowedTasks)){throw '请求的 Gradle 任务未被 Fixture 明确列入许可清单。'}
     if($task -ne 'build'){throw '构建运行器仅接受 build 任务；启动操作必须使用专用启动验证器。'}
+    $sourceFingerprintBefore=Get-MmtlValidationSourceFingerprint -ProjectRoot $Project.Root
+    $artifactBefore=Get-MmtlValidationArtifact -ProjectRoot $Project.Root
+    $artifactBeforeTime=$null
+    if($artifactBefore){$artifactBeforeTime=(Get-Item -LiteralPath (Join-Path (Join-Path $Project.Root 'build/libs') $artifactBefore.filename)).LastWriteTimeUtc}
     $command=Get-MmtlValidationGradleCommand -Project $Project -Task $task -Clean:$Clean
     $runId=$started.ToString('yyyyMMddTHHmmssZ')+'_'+[guid]::NewGuid().ToString('N').Substring(0,8)
     $validationRoot=Join-Path ([IO.Path]::GetFullPath($RuntimeRoot)) 'validation'
@@ -138,8 +158,21 @@ function Invoke-MmtlValidationBuild {
         $process.Dispose()
     }
     $artifact=Get-MmtlValidationArtifact -ProjectRoot $Project.Root
+    $sourceFingerprintAfter=Get-MmtlValidationSourceFingerprint -ProjectRoot $Project.Root
+    $sourceUnchanged=($sourceFingerprintBefore -ceq $sourceFingerprintAfter)
+    $artifactFresh=$false
+    if($artifact){
+        if(-not $artifactBefore){$artifactFresh=$true}
+        else{
+            $artifactAfterTime=(Get-Item -LiteralPath (Join-Path (Join-Path $Project.Root 'build/libs') $artifact.filename)).LastWriteTimeUtc
+            $artifactFresh=($artifact.sha256 -cne $artifactBefore.sha256 -or $artifactAfterTime -gt $artifactBeforeTime)
+        }
+    }
     if($result -ne 'BLOCKED' -and $exitCode -eq 0){
-        if($artifact){$result='PASSED';$level='BUILD_VERIFIED'}else{$failure='ARTIFACT_MISSING';$result='FAILED'}
+        if(-not $sourceUnchanged){$failure='BUILD_SOURCE_CHANGED_DURING_RUN';$result='FAILED'}
+        elseif(-not $artifact){$failure='ARTIFACT_MISSING';$result='FAILED'}
+        elseif(-not $artifactFresh){$failure='ARTIFACT_STALE';$result='FAILED'}
+        else{$result='PASSED';$level='BUILD_VERIFIED'}
     } elseif($failure -eq 'NONE'){$failure=Get-MmtlBuildFailureCode -Output ($stdoutText+"`n"+$stderrText)}
     $platform=Get-MmtlPlatformProvider
     $logs=@(foreach($path in @($stdoutPath,$stderrPath)){[pscustomobject]@{path=[IO.Path]::GetRelativePath($runDirectory,$path);sha256=(Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()}})
@@ -155,6 +188,7 @@ function Invoke-MmtlValidationBuild {
         loaderId=[string]$Project.Loader;loaderVersion=[string]$Project.LoaderVersion
         toolchain=[pscustomobject]@{id=if($Target.PSObject.Properties['toolchain']){[string]$Target.toolchain}elseif($Project.PSObject.Properties['Toolchain']){[string]$Project.Toolchain}else{'Unknown'};version=if($Target.PSObject.Properties['toolchainVersion']){$Target.toolchainVersion}elseif($Project.PSObject.Properties['ToolchainVersion']){$Project.ToolchainVersion}else{$null}}
         buildSystem=[pscustomobject]@{id=if($Target.PSObject.Properties['buildSystem']){[string]$Target.buildSystem}elseif($Project.PSObject.Properties['BuildSystem']){[string]$Project.BuildSystem.id}else{'Gradle'};version=if($Project.Root -and (Test-Path (Join-Path $Project.Root 'gradle/wrapper/gradle-wrapper.properties'))){$g=Get-Content (Join-Path $Project.Root 'gradle/wrapper/gradle-wrapper.properties')|Where-Object {$_ -match '^distributionUrl='}|Select-Object -First 1;if($g -match 'gradle-([^-/]+)-(?:bin|all)\.zip'){$Matches[1]}else{$null}}else{$null}}
+        source=[pscustomobject]@{fingerprint=$sourceFingerprintBefore;unchangedDuringBuild=$sourceUnchanged;artifactFresh=$artifactFresh}
         sourceFixture=[pscustomobject]$sourceFixtureEvidence
         logs=$logs;artifact=$artifact;process=$null;marker=$null;stopMethod='NotApplicable';scenario=$null;notes=@("Gradle task: $task",("Exit code: {0}" -f $exitCode))
     }

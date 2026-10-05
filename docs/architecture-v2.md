@@ -15,12 +15,12 @@
 - `common/src/Architecture/Contracts.psm1` 集中定义 OS、架构、能力、验证等级、Artifact Trust、provenance、Loader、Toolchain 和 Build System identities。
 - `PlatformContext`、`LoaderStack`、`BuildJava`/`RuntimeJava` requirement、Toolchain context、Build System context 和 provenance 使用纯数据结构表达。
 - Compatibility Matrix v1、Exception Registry 和 Config v2 基础结构由 JSON Schema 描述；旧配置读取器保留旧格式与未知字段。
-- CI 在 Ubuntu/macOS 上运行 PowerShell parser 和跨平台纯 fixture 测试；Windows job 运行完整 Pester suite。
+- CI 的 Windows、Ubuntu、macOS ARM64 与 macOS Intel jobs 均运行 PowerShell parser、common Pester 与对应平台 Pester；每个平台还运行入口安全 smoke。
 
 ### Phase B 已实现
 
 - Windows/Linux/macOS 平台 Provider、各平台 Runtime Root 与路径安全、Java/Gradle Wrapper 选择和各平台 CLI 入口已落地。
-- Session 平台元数据、Linux `/proc` 进程身份与受控停止均有实现和 fixture 覆盖。Linux/macOS CLI 与 Gradle build 能力不等价于这些平台上的 Minecraft GUI 实机运行。
+- Session 平台元数据、Linux `/proc` 与 macOS `ps` 进程身份及受控停止均有实现和平台 fixture 覆盖。macOS ProcessManagement 已由 ARM64/Intel CI 验证为 `Native`；Linux/macOS CLI、Build 与进程能力不等价于 Minecraft GUI 实机运行。
 
 ### Phase C 已实现
 
@@ -115,7 +115,7 @@ Loader identity 目前包括 Forge、Fabric、NeoForge、Quilt、LegacyFabric、
 
 ## CI 验证边界
 
-Windows 执行完整 Pester。Ubuntu、macOS ARM64 和 macOS Intel 执行 parser、Architecture、Schema、Provider、Availability Index、Adapter 与 ProjectDetector fixtures；CI 不调用 live upstream API，也不启动 Minecraft GUI。具体 required job 结果以对应提交的 Actions run 为准。
+Windows、Ubuntu、macOS ARM64 和 macOS Intel 均执行 PowerShell parser、common Pester 与对应平台完整 Pester；CI 不调用 live upstream API，也不启动 Minecraft GUI。macOS ProcessManager 测试覆盖 PID/start-time 身份、PID 重用拒绝、父子进程安全停止、未登记进程隔离和 Session orphan 恢复。具体 required job 结果以对应提交的 Actions run 为准。
 
 ## 阶段 F — 全版本覆盖审计
 
@@ -130,3 +130,9 @@ Coverage CLI 使用统一入口：`--coverage-report` 输出摘要，`--coverage
 Phase H 建立规范化执行计划、Build Java/Runtime Java 双轨解析和 Session Manifest v2。Phase I 由 Loader Adapter 产出 Runtime Java Binding Evidence，并由只读 Gradle task inspection 检查 `runClient`/`runServer` launcher；缺少匹配证据时保持 `Unknown`。Phase J 增加 Launch Preflight、Java Discovery、环境 Doctor 和平台 Capability 报告。Phase K 增加 Session 并发锁、原子 manifest/Plan 写入、崩溃后保守恢复，以及按平台注入的进程身份与生命周期能力。
 
 Planner 不包含按 Loader 名称散落的绑定判断，只消费 Adapter evidence。`BuildReady` 与 `LaunchReady` 独立；`LaunchReady` 不是 `CLIENT_LAUNCH_VERIFIED`。Doctor 只诊断，不安装 Java、不登录、不构建或启动进程、不修改配置或 EULA。Session recovery 只修复 owner identity 可以证明过期的元数据，不终止进程、不删除 Session。详见 [Runtime Binding](runtime-binding.md)、[Doctor](doctor.md)、[执行计划](execution-plan-session.md) 和 [Session 生命周期](session-lifecycle.md)。
+
+### Phase L–O — 运行时观察、编排演练与人工验证准备
+
+Phase L 为当前 Session 的已登记进程与日志建立结构化 Runtime Event、Client/Server/LAN/Auth/Crash Observer 和独立 Observed Runtime Java 证据。Observer 只读 Session 身份，不重建执行计划；synthetic/rehearsal evidence 永远不能晋级真实验证等级。Phase M 通过 Single、Dedicated 和 IntegratedLAN dummy harness 验证 ready 顺序、端口、停止、补偿清理、内存预算与 linked project/JAR 完整性，不启动真实 Minecraft。
+
+Phase N 的 `--human-validation-plan` 生成本机人工验证矩阵、步骤清单和安全 helper；helper 默认只展示计划，只有用户显式确认才允许未来调用真实 Launch。Phase O 汇总 CLI、文档、配置字段、TODO 分类、公开仓库卫生与架构边界。交接包留在本机 `HANDOVER/manual-validation/`，不得提交或上传。完整边界见 [运行时观察](runtime-observation.md)、[人工验证计划](human-validation.md)、[配置字段审计](config-profile-field-audit.md) 与 [发布门禁审计](pre-human-validation-audit.md)。

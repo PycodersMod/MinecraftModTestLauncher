@@ -1,10 +1,21 @@
 BeforeAll {
     $script:repoRoot=Split-Path -Parent $PSScriptRoot
+    $script:platformRoot=Split-Path -Parent $script:repoRoot
+    Import-Module (Join-Path $script:repoRoot 'src/Platform/Platform.psm1') -Force -Global
+    if([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::Windows)){
+        Import-Module (Join-Path $script:platformRoot 'windows/src/WindowsPlatformProvider.psm1') -Force
+        Register-MmtlWindowsPlatform -RepositoryRoot $script:platformRoot
+    }elseif([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::Linux)){
+        Import-Module (Join-Path $script:platformRoot 'linux/src/LinuxPlatformProvider.psm1') -Force
+        Register-MmtlLinuxPlatform -RepositoryRoot $script:platformRoot
+    }else{
+        Import-Module (Join-Path $script:platformRoot 'macos/src/MacOSPlatformProvider.psm1') -Force
+        Register-MmtlMacOSPlatform -RepositoryRoot $script:platformRoot
+    }
     Import-Module (Join-Path $script:repoRoot 'src/Validation/ValidationRunner.psm1') -Force
-    Import-Module (Join-Path $script:repoRoot 'src/Platform/Platform.psm1') -Force
     function Set-TestGradleWrapper {
         param([string]$ProjectRoot,[string]$WindowsBody,[string]$UnixBody)
-        if((Get-MmtlPlatformProvider).OS -eq 'Windows') { Set-Content -LiteralPath (Join-Path $ProjectRoot 'gradlew.bat') -Value $WindowsBody -Encoding ascii }
+        if([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::Windows)) { Set-Content -LiteralPath (Join-Path $ProjectRoot 'gradlew.bat') -Value $WindowsBody -Encoding ascii }
         else { $path=Join-Path $ProjectRoot 'gradlew';Set-Content -LiteralPath $path -Value $UnixBody -Encoding utf8;& chmod +x $path }
     }
 }
@@ -93,12 +104,43 @@ Describe 'Deep validation runner safety and evidence' {
         $project=[pscustomobject]@{Root=$projectRoot;MinecraftVersion='1.20.1';Loader='Fabric';LoaderVersion='0.15.0';JavaMajor=17;Wrapper='gradlew'}
         $target=[pscustomobject]@{targetId='user-project';toolchain='FabricLoom';sourceFixture=[pscustomobject]@{type='UserProject';source='local';commit='working-tree';license='User-owned';trust='UserOwned';allowedTasks=@('build')}}
         $fakeToken=('gh'+'p_')+'1234567890123456789012345678901234567890'
-        Set-TestGradleWrapper -ProjectRoot $projectRoot -WindowsBody "@echo token=$fakeToken" -UnixBody "#!/bin/sh`necho token=$fakeToken"
+        Set-TestGradleWrapper -ProjectRoot $projectRoot -WindowsBody "@echo token=$fakeToken>>`"$jar`"" -UnixBody "#!/bin/sh`necho token=$fakeToken >> '$jar'"
         $result=Invoke-MmtlValidationBuild -Project $project -Target $target -RuntimeRoot $logRoot -TimeoutSeconds 30
         $result.result | Should -Be 'PASSED'
         $result.validationLevel | Should -Be 'BUILD_VERIFIED'
         $result.artifact.sha256 | Should -Match '^[a-f0-9]{64}$'
         (Get-Content $result.logPath -Raw) | Should -Not -Match 'ghp_'
+    }
+
+    It '拒绝 Wrapper 返回成功但遗留未刷新旧 JAR 的陈旧产物' {
+        $projectRoot=Join-Path $TestDrive 'stale-artifact-project';$null=New-Item -ItemType Directory -Path (Join-Path $projectRoot 'build/libs') -Force
+        $jar=Join-Path $projectRoot 'build/libs/example.jar';[IO.File]::WriteAllText($jar,'old artifact')
+        $oldTime=[DateTime]::UtcNow.AddDays(-2);[IO.File]::SetLastWriteTimeUtc($jar,$oldTime)
+        $project=[pscustomobject]@{Root=$projectRoot;MinecraftVersion='1.20.1';Loader='Fabric';LoaderVersion='0.15.0';JavaMajor=17;Wrapper='gradlew'}
+        $target=[pscustomobject]@{targetId='stale-artifact';toolchain='FabricLoom';sourceFixture=[pscustomobject]@{type='UserProject';source='local';commit='working-tree';license='User-owned';trust='UserOwned';allowedTasks=@('build')}}
+        Set-TestGradleWrapper -ProjectRoot $projectRoot -WindowsBody '@exit /b 0' -UnixBody "#!/bin/sh`nexit 0"
+        $result=Invoke-MmtlValidationBuild -Project $project -Target $target -RuntimeRoot (Join-Path $TestDrive 'stale-logs') -TimeoutSeconds 30
+        $result.result | Should -Be 'FAILED'
+        $result.failureCode | Should -Be 'ARTIFACT_STALE'
+        $result.validationLevel | Should -Not -Be 'BUILD_VERIFIED'
+        $evidence=Get-Content -LiteralPath $result.evidencePath -Raw|ConvertFrom-Json
+        $evidence.source.artifactFresh | Should -BeFalse
+        $evidence.source.fingerprint | Should -Match '^sha256:[a-f0-9]{64}$'
+        (Get-Content -LiteralPath $result.evidencePath -Raw) | Should -Not -Match ([regex]::Escape($projectRoot))
+    }
+
+    It '构建期间源码变化时记录 mismatch 并拒绝 BUILD_VERIFIED' {
+        $projectRoot=Join-Path $TestDrive 'source-change-project';$src=Join-Path $projectRoot 'src/main/java';$libs=Join-Path $projectRoot 'build/libs'
+        New-Item -ItemType Directory -Path $src,$libs -Force|Out-Null
+        $source=Join-Path $src 'Example.java';[IO.File]::WriteAllText($source,'class Example {}')
+        $jar=Join-Path $libs 'example.jar'
+        $project=[pscustomobject]@{Root=$projectRoot;MinecraftVersion='1.20.1';Loader='Fabric';LoaderVersion='0.15.0';JavaMajor=17;Wrapper='gradlew'}
+        $target=[pscustomobject]@{targetId='source-change';toolchain='FabricLoom';sourceFixture=[pscustomobject]@{type='UserProject';source='local';commit='working-tree';license='User-owned';trust='UserOwned';allowedTasks=@('build')}}
+        Set-TestGradleWrapper -ProjectRoot $projectRoot -WindowsBody "@echo changed>>`"$source`"`n@echo jar>>`"$jar`"" -UnixBody "#!/bin/sh`necho changed >> '$source'`necho jar > '$jar'"
+        $result=Invoke-MmtlValidationBuild -Project $project -Target $target -RuntimeRoot (Join-Path $TestDrive 'source-change-logs') -TimeoutSeconds 30
+        $result.result | Should -Be 'FAILED'
+        $result.failureCode | Should -Be 'BUILD_SOURCE_CHANGED_DURING_RUN'
+        (Get-Content -LiteralPath $result.evidencePath -Raw|ConvertFrom-Json).source.unchangedDuringBuild | Should -BeFalse
     }
 
     It 'records timeout as blocked evidence without claiming a build pass' {
