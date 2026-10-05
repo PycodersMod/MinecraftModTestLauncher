@@ -20,10 +20,28 @@ function Get-MmtlJavaReleaseMetadata {
     return [pscustomobject]@{major=$major;exactVersion=$version;vendor=$(if($values.ContainsKey('IMPLEMENTOR')){[string]$values['IMPLEMENTOR']}else{$null});operatingSystem=$(if($values.ContainsKey('OS_NAME')){[string]$values['OS_NAME']}else{$null});architecture=$arch;fingerprint=$fingerprint}
 }
 
+function Resolve-MmtlExecutableIdentityPath {
+    param([Parameter(Mandatory)][string]$Path)
+    $full=[IO.Path]::GetFullPath($Path)
+    $root=[IO.Path]::GetPathRoot($full)
+    $parts=$full.Substring($root.Length).Split([char[]]@([IO.Path]::DirectorySeparatorChar,[IO.Path]::AltDirectorySeparatorChar),[StringSplitOptions]::RemoveEmptyEntries)
+    $resolved=$root
+    foreach($part in $parts){
+        $resolved=[IO.Path]::Combine($resolved,$part)
+        try{$item=Get-Item -LiteralPath $resolved -Force -ErrorAction Stop;$target=$item.ResolveLinkTarget($false);if($target){$resolved=[IO.Path]::GetFullPath($target.FullName)}}catch{}
+    }
+    return [IO.Path]::GetFullPath($resolved)
+}
+
 function Test-MmtlSameExecutable {
     param([string]$Observed,[string]$Expected)
     if (-not $Observed -or -not $Expected) { return $false }
-    try { $left=[IO.Path]::GetFullPath($Observed);$right=[IO.Path]::GetFullPath($Expected);return $left.Equals($right,[StringComparison]::OrdinalIgnoreCase) } catch { return $false }
+    try {
+        $left=Resolve-MmtlExecutableIdentityPath -Path $Observed
+        $right=Resolve-MmtlExecutableIdentityPath -Path $Expected
+        $comparison=if([IO.Path]::DirectorySeparatorChar -eq '\'){[StringComparison]::OrdinalIgnoreCase}else{[StringComparison]::Ordinal}
+        return $left.Equals($right,$comparison)
+    } catch { return $false }
 }
 
 function Invoke-MmtlJavaRuntimeObserver {

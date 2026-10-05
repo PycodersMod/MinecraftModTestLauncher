@@ -40,6 +40,26 @@ Describe 'Java Runtime Process Evidence' {
         $result.runtimes.Count | Should -Be 0
     }
 
+    It '计划路径符号链接与进程实际可执行路径一致' {
+        $targetRoot = Join-Path $TestDrive 'canonical-jdk'
+        $targetBin = Join-Path $targetRoot 'bin'
+        New-Item -ItemType Directory -Path $targetBin -Force | Out-Null
+        $targetJava = Join-Path $targetBin 'java'
+        'synthetic-java-executable' | Set-Content -LiteralPath $targetJava
+        @('JAVA_VERSION="21.0.7"','IMPLEMENTOR="Eclipse Adoptium"','OS_NAME="Linux"','OS_ARCH="amd64"') | Set-Content -LiteralPath (Join-Path $targetRoot 'release')
+        $aliasRoot = Join-Path $TestDrive 'jdk-alias'
+        [IO.Directory]::CreateSymbolicLink($aliasRoot, $targetRoot) | Out-Null
+        $aliasJava = Join-Path (Join-Path $aliasRoot 'bin') 'java'
+        $plan = Get-Content -LiteralPath (Join-Path $session 'execution-plan.json') -Raw | ConvertFrom-Json
+        $plan.runtimeJava.resolution.javaPath = $aliasJava
+        $plan.buildJava.resolution.javaPath = $aliasJava
+        $plan | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath (Join-Path $session 'execution-plan.json')
+        $script:javaPath = $targetJava
+        $result = Invoke-MmtlJavaRuntimeObserver -SessionPath $session -ProcessSnapshot $snapshot -ProcessLookup $lookup -IdentityCheck $identity
+        $result.runtimes.Count | Should -Be 1
+        $result.runtimes[0].bindingMatch | Should -BeTrue
+    }
+
     It '标记为 Rehearsal 的进程只输出 synthetic evidence' {
         $registry = Get-Content (Join-Path $session 'pids.json') -Raw | ConvertFrom-Json
         $registry[0] | Add-Member -NotePropertyName Rehearsal -NotePropertyValue $true

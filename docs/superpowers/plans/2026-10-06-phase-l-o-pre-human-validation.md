@@ -143,7 +143,7 @@
 
 - [x] 逐一运行 10 项 Project Discovery、Plan、Runtime Binding、LaunchCheck、默认 Windows `--validate`；每项目执行 MMTL real clean build，目标 10/10。
 - [x] Pester 全集 397 passed、0 failed、2 skipped；Windows 全集 PASS。WSL Help/Capabilities PASS；Plan/Binding 可运行；Doctor/LaunchCheck 与 Java-backed Rehearsal 记录 Linux JDK 缺失阻塞；已通过 `/bin/sleep` fixture 验证登记进程 Observer 与安全停止。
-- [ ] GitHub Actions required Windows、Ubuntu、macOS ARM64、macOS Intel 全绿；首轮 CI 暴露 macOS/Linux 跨平台测试缺陷及 Windows 合成 server 端口标记竞态，已修复并需等待新 CI 验证；不在 CI 启动 Minecraft GUI、真实 server 或依赖在线服务。
+- [ ] GitHub Actions required Windows、Ubuntu、macOS ARM64、macOS Intel 全绿；CI 已验证 macOS/Linux 文件系统与测试修复、Windows 端口标记竞态修复；Ubuntu 又发现 `/proc` 实际路径与计划路径经目录 symlink 别名导致 Java binding mismatch，已新增逐组件规范化与回归测试，需等待新 CI 验证；不在 CI 启动 Minecraft GUI、真实 server 或依赖在线服务。
 - [x] 任务前后只检查任务自有 process；不杀其他 Java/Gradle daemon；运行后核验无泄漏。
 
 ### Task 13：本地证据、PR、CI、合并与清理
