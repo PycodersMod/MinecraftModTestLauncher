@@ -36,7 +36,10 @@ function Test-MmtlPathLink {
     param([Parameter(Mandatory)][string]$Path)
     if (-not (Test-Path -LiteralPath $Path)) { return $false }
     $item = Get-Item -LiteralPath $Path -Force
-    return [bool](($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -or $item.LinkType)
+    $linkTarget=$item.PSObject.Properties['LinkTarget']
+    $isLink=[bool](($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -or $item.LinkType -or ($linkTarget -and $linkTarget.Value))
+    if(-not $isLink){try{$isLink=$null -ne $item.ResolveLinkTarget($false)}catch{}}
+    return [bool]$isLink
 }
 
 function Test-MmtlPlatformPathInsideRoot {

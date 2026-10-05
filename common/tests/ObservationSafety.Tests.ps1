@@ -16,7 +16,7 @@ Describe 'Observer 路径安全边界' {
         $outside = Join-Path $TestDrive ('outside_' + [guid]::NewGuid().ToString('N'))
         New-Item -ItemType Directory -Path $session,$outside -Force | Out-Null
         $link = Join-Path $session 'linked'
-        New-Item -ItemType Junction -Path $link -Target $outside | Out-Null
+        [IO.Directory]::CreateSymbolicLink($link, $outside) | Out-Null
         { Resolve-MmtlObserverSafePath -SessionPath $session -Target (Join-Path $link 'latest.log') -AllowMissing } | Should -Throw '*symlink*'
     }
 }

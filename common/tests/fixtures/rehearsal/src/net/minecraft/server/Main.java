@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 
 /** 仅供 MMTL 自动化演练使用的 loopback 假服务器，不启动 Minecraft 或触及 EULA。 */
@@ -21,7 +22,14 @@ public final class Main {
         int requestedPort = args.length < 2 ? 0 : Integer.parseInt(args[1]);
         try (ServerSocket server = new ServerSocket(requestedPort, 8, InetAddress.getByName("127.0.0.1"))) {
             server.setSoTimeout(30000);
-            Files.write(runtime.resolve("server.port"), String.valueOf(server.getLocalPort()).getBytes(StandardCharsets.UTF_8));
+            Path portFile = runtime.resolve("server.port");
+            Path temporaryPortFile = runtime.resolve("server.port.tmp");
+            Files.write(temporaryPortFile, String.valueOf(server.getLocalPort()).getBytes(StandardCharsets.UTF_8));
+            try {
+                Files.move(temporaryPortFile, portFile, StandardCopyOption.ATOMIC_MOVE);
+            } catch (java.nio.file.AtomicMoveNotSupportedException ignored) {
+                Files.move(temporaryPortFile, portFile, StandardCopyOption.REPLACE_EXISTING);
+            }
             Thread.sleep(250L);
             log(runtime, "Done (0.1s)! For help, type \"help\"");
             System.out.flush();

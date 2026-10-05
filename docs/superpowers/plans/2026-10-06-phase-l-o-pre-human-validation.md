@@ -143,7 +143,7 @@
 
 - [x] 逐一运行 10 项 Project Discovery、Plan、Runtime Binding、LaunchCheck、默认 Windows `--validate`；每项目执行 MMTL real clean build，目标 10/10。
 - [x] Pester 全集 397 passed、0 failed、2 skipped；Windows 全集 PASS。WSL Help/Capabilities PASS；Plan/Binding 可运行；Doctor/LaunchCheck 与 Java-backed Rehearsal 记录 Linux JDK 缺失阻塞；已通过 `/bin/sleep` fixture 验证登记进程 Observer 与安全停止。
-- [ ] GitHub Actions required Windows、Ubuntu、macOS ARM64、macOS Intel 全绿；不在 CI 启动 Minecraft GUI、真实 server 或依赖在线服务。
+- [ ] GitHub Actions required Windows、Ubuntu、macOS ARM64、macOS Intel 全绿；首轮 CI 暴露 macOS/Linux 跨平台测试缺陷及 Windows 合成 server 端口标记竞态，已修复并需等待新 CI 验证；不在 CI 启动 Minecraft GUI、真实 server 或依赖在线服务。
 - [x] 任务前后只检查任务自有 process；不杀其他 Java/Gradle daemon；运行后核验无泄漏。
 
 ### Task 13：本地证据、PR、CI、合并与清理
@@ -151,8 +151,8 @@
 **Files:** 仓库提交仅包含源码、测试、公开文档和 workflow；本地 `HANDOVER/MMTL_Phase_L_O_Pre_Human_Validation_Completion_Report.md` 脱敏保存。
 
 - [x] 执行 public hygiene、secret/path/log 检查，确认 manual bundle、session/log、build output 未跟踪。
-- [ ] 验证 repo-local Git identity 为主账号 noreply；按阶段使用中文 commit message；不改写历史或 force push。
-- [ ] 推送唯一任务分支、创建 PR、等待 required CI；若独立 CodeOwner review 因唯一 CODEOWNER/作者限制失败，仅按附件许可记录并使用既有 always bypass，不改 ruleset。
+- [x] 验证 repo-local Git identity 为主账号 noreply；已使用中文 commit message；不改写历史或 force push。
+- [ ] 推送唯一任务分支、创建 PR、等待 required CI；PR #6 已建立，首轮 CI 未通过；修复已本地验证，等待提交、推送和新 required CI。若独立 CodeOwner review 因唯一 CODEOWNER/作者限制失败，仅按附件许可记录并使用既有 always bypass，不改 ruleset。
 - [ ] Merge 后同步并验证本地 main、origin/main、GitHub main 三方 SHA 相同；删除任务分支/worktree、prune。
 - [ ] 编写本地完整 HANDOVER 与附件规定的 35 项最终状态报告；证据不能含本机敏感路径或原始日志。
 

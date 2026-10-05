@@ -37,7 +37,8 @@ Describe '只观察 Session 已登记进程' {
     }
 
     It '读到受限退出状态文件时只记录安全退出元数据' {
-        $privateLogPath = Join-Path (Join-Path 'C:\Users' 'Alice') 'secret.log'
+        $separator = [string][char]92
+        $privateLogPath = 'C:' + $separator + 'Users' + $separator + 'Alice' + $separator + 'secret.log'
         [pscustomobject]@{PID=42;ExitCode=0;FinishedUtc='2026-10-06T00:00:00Z';Error=$privateLogPath;StopRequested=$false} | ConvertTo-Json | Set-Content (Join-Path $session 'process-42.exit.json')
         $lookup = { param($processId) $null }
         $result = Invoke-MmtlProcessObserver -SessionPath $session -TimeoutSeconds 0 -ProcessLookup $lookup -IdentityCheck $identityLookup -EventWriter $eventWriter

@@ -1,4 +1,10 @@
 Set-StrictMode -Version Latest
+Import-Module (Join-Path $PSScriptRoot '../Platform/Platform.psm1') -Force
+
+function Test-MmtlObserverPathLink {
+    param([Parameter(Mandatory)][string]$Path)
+    return [bool](Test-MmtlPathLink -Path $Path)
+}
 
 function Resolve-MmtlObserverSafePath {
     [CmdletBinding()]
@@ -6,7 +12,7 @@ function Resolve-MmtlObserverSafePath {
     $session = [IO.Path]::GetFullPath($SessionPath)
     if (-not (Test-Path -LiteralPath $session -PathType Container)) { throw 'Observer Session 目录不存在。' }
     $sessionItem = Get-Item -LiteralPath $session -Force
-    if (($sessionItem.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0 -or $sessionItem.LinkType) { throw 'Observer Session 不能是链接。' }
+    if (Test-MmtlObserverPathLink -Path $session) { throw 'Observer Session 不能是链接。' }
     $full = [IO.Path]::GetFullPath($Target)
     $prefix = $session.TrimEnd([IO.Path]::DirectorySeparatorChar,[IO.Path]::AltDirectorySeparatorChar) + [IO.Path]::DirectorySeparatorChar
     $comparison = if ([IO.Path]::DirectorySeparatorChar -eq '\') { [StringComparison]::OrdinalIgnoreCase } else { [StringComparison]::Ordinal }
@@ -16,7 +22,7 @@ function Resolve-MmtlObserverSafePath {
         $current = Join-Path $current $part
         if (Test-Path -LiteralPath $current) {
             $item = Get-Item -LiteralPath $current -Force
-            if (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0 -or $item.LinkType) { throw 'Observer 拒绝读取 junction 或 symlink。' }
+            if (Test-MmtlObserverPathLink -Path $current) { throw 'Observer 拒绝读取 junction 或 symlink。' }
         } elseif (-not $AllowMissing) { throw 'Observer 目标不存在。' }
     }
     return $full

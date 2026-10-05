@@ -33,7 +33,8 @@ Describe 'Runtime Event 契约' {
 
     It '只允许安全摘要字段并剔除凭据与本机路径' {
         $syntheticToken = 'ghp_' + ('x' * 32)
-        $syntheticPath = Join-Path (Join-Path 'C:\Users' 'Alice') 'latest.log'
+        $separator = [string][char]92
+        $syntheticPath = 'C:' + $separator + 'Users' + $separator + 'Alice' + $separator + 'latest.log'
         $event = New-MmtlRuntimeEvent -SessionId session_01 -Role Client -ProcessId 1 -ProcessIdentity p1 -SourceType Observer -EventCode AUTH_REQUIRED -Summary "token=$syntheticToken at $syntheticPath"
         $event.summary | Should -Not -Match 'ghp_|C:\\Users\\Alice'
         $event.PSObject.Properties.Name | Should -Not -Contain 'rawLog'

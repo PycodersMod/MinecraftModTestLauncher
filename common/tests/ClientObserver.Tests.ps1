@@ -10,6 +10,7 @@ BeforeAll {
 
 Describe 'Client Runtime Log Observer' {
     BeforeEach {
+        $javaPath = if ([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::Windows)) { 'C:\Java\bin\java.exe' } else { '/fixture-jdk/bin/java' }
         $script:session = Join-Path $TestDrive ('session_client_' + [guid]::NewGuid().ToString('N'))
         $script:runtime = Join-Path $session 'Client-Dev'
         New-Item -ItemType Directory -Path (Join-Path $runtime 'logs') -Force | Out-Null
@@ -17,8 +18,8 @@ Describe 'Client Runtime Log Observer' {
         $log = Join-Path $runtime 'logs/latest.log'
         '[Render thread/INFO]: Setting user: Dev' | Set-Content $log
         @([pscustomobject]@{PID=11;Role='Client';Username='Dev';StartIdentity='client-start';RuntimeDirectory=$runtime;StatePath=(Join-Path $session 'process-11.exit.json')}) | ConvertTo-Json | Set-Content (Join-Path $session 'pids.json')
-        [pscustomobject]@{schemaVersion=1;project=[pscustomobject]@{loader=[pscustomobject]@{id='Forge'};minecraftId='1.20.1'};runtimeJava=[pscustomobject]@{bindingMode='Direct';resolution=[pscustomobject]@{javaPath='C:\Java\bin\java.exe'}};buildJava=[pscustomobject]@{resolution=[pscustomobject]@{javaPath='C:\Java\bin\java.exe'}}} | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $session 'execution-plan.json')
-        $script:lookup = { param($processId) [pscustomobject]@{ProcessId=$processId;StartIdentity='client-start';Executable='C:\Java\bin\java.exe';CommandLine='java cpw.mods.bootstraplauncher.BootstrapLauncher'} }
+        [pscustomobject]@{schemaVersion=1;project=[pscustomobject]@{loader=[pscustomobject]@{id='Forge'};minecraftId='1.20.1'};runtimeJava=[pscustomobject]@{bindingMode='Direct';resolution=[pscustomobject]@{javaPath=$javaPath}};buildJava=[pscustomobject]@{resolution=[pscustomobject]@{javaPath=$javaPath}}} | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $session 'execution-plan.json')
+        $script:lookup = { param($processId) [pscustomobject]@{ProcessId=$processId;StartIdentity='client-start';Executable=$javaPath;CommandLine='java cpw.mods.bootstraplauncher.BootstrapLauncher'} }.GetNewClosure()
         $script:identity = { param($process,$entry) $process.StartIdentity -ceq $entry.StartIdentity }
     }
 

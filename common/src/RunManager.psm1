@@ -163,7 +163,7 @@ function Copy-MmtlRuntimeMods {
         $newName=$names.Add($name);$newHash=$hashes.Add($hash)
         if(-not $newName -or -not $newHash){throw "MOD_JAR_DUPLICATE: 拒绝重复名称或重复内容的 Mod JAR：$name"}
         if(Test-Path -LiteralPath $destination){throw "MOD_JAR_DUPLICATE: 当前 Runtime 已存在同名 Mod JAR：$name"}
-        $sources.Add([pscustomobject]@{source=$source;name=$name;destination=$destination;sha256=$hash;sizeBytes=[long](Get-Item -LiteralPath $source).Length})
+        $sources.Add([pscustomobject]@{source=$source;name=$name;destination=$destination;sha256=$hash;sizeBytes=[long]([IO.FileInfo]::new($source).Length)})
     }
     $created=[Collections.Generic.List[string]]::new();$temporaries=[Collections.Generic.List[string]]::new()
     $safeRole=($Role+'-'+$Username)-replace '[^A-Za-z0-9_-]','_'
@@ -176,9 +176,9 @@ function Copy-MmtlRuntimeMods {
         $records=[Collections.Generic.List[object]]::new()
         foreach($item in $sources){
             $temporary=Join-Path $mods ('.'+$item.name+'.'+[guid]::NewGuid().ToString('N')+'.tmp');$temporaries.Add($temporary)
-            Copy-Item -LiteralPath $item.source -Destination $temporary -ErrorAction Stop
+            [IO.File]::Copy($item.source,$temporary)
             $copiedHash=(Get-FileHash -LiteralPath $temporary -Algorithm SHA256 -ErrorAction Stop).Hash.ToLowerInvariant()
-            if($copiedHash -cne $item.sha256 -or [long](Get-Item -LiteralPath $temporary).Length -ne $item.sizeBytes){throw "MOD_JAR_COPY_INTEGRITY_MISMATCH: $($item.name)"}
+            if($copiedHash -cne $item.sha256 -or [long]([IO.FileInfo]::new($temporary).Length) -ne $item.sizeBytes){throw "MOD_JAR_COPY_INTEGRITY_MISMATCH: $($item.name)"}
             [IO.File]::Move($temporary,$item.destination);$null=$temporaries.Remove($temporary);$created.Add($item.destination)
             $records.Add([pscustomobject][ordered]@{filename=$item.name;sizeBytes=$item.sizeBytes;sha256=$copiedHash;role=$Role;username=$Username})
         }
