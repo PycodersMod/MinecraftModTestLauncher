@@ -21,7 +21,7 @@
 - 所有角色使用独立可写 gameDir；共享构建产物必须只读或复制隔离；复用 Session lock、进程身份和 safe stop。
 - CI 不下载/启动 Minecraft GUI；只运行 unit、fixture、rehearsal 与 Agent build。
 - 只清理本 Goal 创建且能以 Session 身份验证的进程/端口；保留用户现有 Java/Gradle/编辑器进程。
-- Git 分支 `codex/phase-p-v-developer-test-workbench`，commit 中文，身份 `ZYQ-2020` noreply；不 force push、不改写历史、不改 Ruleset。
+- Git 分支 `codex/phase-p-v-developer-test-workbench`，commit 中文，使用已配置的主账号 noreply 身份；不 force push、不改写历史、不改 Ruleset。
 - Public 文档/HANDOVER 不写本机绝对路径、邮箱、token、用户名或 hostname；原始 smoke evidence 保持 local-only。
 - 本机现有 Profile 无 EULA 明确接受项；Dedicated live 默认跳过。
 

@@ -1,7 +1,7 @@
 # SDD ledger — plan: docs/superpowers/plans/2026-10-06-phase-p-v-developer-workbench.md
 
 Baseline: 629419aedb62b7d575f5d4a94a8bdf47e634081f. Worktree: codex/phase-p-v-developer-test-workbench.
-Environment gates: local main/origin/GitHub main equal; repo and CLI identity ZYQ-2020; PowerShell 7.6.6; JDK 8/16/17/21/25 available; official Pester baseline PASS 400/0/2, exit 0. No repo AGENTS.md found.
+Environment gates: local main/origin/GitHub main equal; repo and CLI identity match the configured primary account; PowerShell 7.6.6; JDK 8/16/17/21/25 available; official Pester baseline PASS 400/0/2, exit 0. No repo AGENTS.md found.
 Pre-existing process baseline: two Java processes owned by VS Code (PID details local-only in HANDOVER/logs/phase-p-v/process-baseline.csv); no Minecraft or Gradle executable detected. Never stop these baseline processes.
 TaCZ prototype audit: historical tree path is `TaCZinTetra/forge/1.20.1`; gated with `taczintetra.dev_automation`; historical LAN path calls `setUsesAuthentication(false)` and publish command on fixed port 25565. MMTL implementation must use independent artifacts, Session token, loopback and PortManager; no TaCZ dependency. Initial Profile has no `acceptEula=true`, so Dedicated live test is preclassified `SKIPPED_EULA_NOT_PREAUTHORIZED`.
 Task 1: in_progress
