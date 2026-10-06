@@ -132,7 +132,8 @@ Describe '离线 Test Identity 与角色隔离目录' {
         $outside = Join-Path $TestDrive 'outside-identities'
         { Initialize-MmtlTestIdentityDirectories -SessionId 'session-a' -SessionPath $outside -Roles @($script:roles[0]) -AllowedRoot $script:sessionPath } | Should -Throw '*IDENTITY_PATH*'
         $linked = Join-Path $TestDrive 'linked-session'
-        try { New-Item -ItemType Junction -Path $linked -Target $script:sessionPath -ErrorAction Stop | Out-Null } catch { Set-ItResult -Skipped -Because '当前 Windows 权限不允许创建 junction'; return }
+        $linkType=if([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::Windows)){'Junction'}else{'SymbolicLink'}
+        try { New-Item -ItemType $linkType -Path $linked -Target $script:sessionPath -ErrorAction Stop | Out-Null } catch { Set-ItResult -Skipped -Because '当前运行环境不允许创建目录链接'; return }
         { Initialize-MmtlTestIdentityDirectories -SessionId 'session-a' -SessionPath $linked -Roles @($script:roles[0]) } | Should -Throw '*IDENTITY_PATH_REPARSE_POINT*'
     }
 }
