@@ -81,7 +81,7 @@ if($Arguments -contains '--scenario-action'){
     $actionParameters=@{SessionPath=$sessionPath;Action=$action;Seconds=$seconds;PermissionGranted=$grantPermission;AgentDispatcher={param($agentAction,$agentRole,$agentCommand,$agentSession,$agentPermission) Invoke-MmtlAgentAction -SessionPath $agentSession -Role $agentRole -Action $agentAction -Command $agentCommand -PermissionGranted:([bool]$agentPermission)};StopProcess={param($targetSession,$processId) Stop-MmtlTrackedProcess -SessionPath $targetSession -ProcessId $processId -Confirm:$false}}
     if($role){$actionParameters.Role=$role};if($command){$actionParameters.Command=$command}
     $actionResult=Invoke-MmtlScenarioAction @actionParameters
-    if($action -eq 'STOP_ALL'){$finalStatus=Update-MmtlSessionReport -SessionPath $sessionPath;$sessionV2=Test-MmtlSessionV2 -SessionPath $sessionPath;if($sessionV2.valid -and $sessionV2.state -eq 'Running' -and $finalStatus.Status -eq 'Stopped'){Set-MmtlSessionV2State -SessionPath $sessionPath -State Stopped|Out-Null};$actionResult|Add-Member -NotePropertyName sessionState -NotePropertyValue $finalStatus.Status -Force}
+    if($action -eq 'STOP_ALL'){$null=Import-MmtlSessionLogs -SessionPath $sessionPath;$finalStatus=Update-MmtlSessionReport -SessionPath $sessionPath;$sessionV2=Test-MmtlSessionV2 -SessionPath $sessionPath;if($sessionV2.valid -and $sessionV2.state -eq 'Running' -and $finalStatus.Status -eq 'Stopped'){Set-MmtlSessionV2State -SessionPath $sessionPath -State Stopped|Out-Null};$actionResult|Add-Member -NotePropertyName sessionState -NotePropertyValue $finalStatus.Status -Force}
     if($Arguments -contains '--json'){$actionResult|ConvertTo-Json -Depth 20 -Compress}else{$actionResult|Format-List}
     exit 0
 }
@@ -321,6 +321,7 @@ foreach($operation in @('--stop','--clean-session')){
         if($operation -eq '--clean-session'){Remove-MmtlSession -RuntimeRoot $runtimeRoot -SessionPath $sessionPath;Write-Host "已清理 Session $id";exit 0}
         $registry=Join-Path $sessionPath 'pids.json';if(-not(Test-Path $registry)){throw '找不到 Session 进程清单。'}
         foreach($entry in @(Get-Content $registry -Raw|ConvertFrom-Json)){Stop-MmtlTrackedProcess -SessionPath $sessionPath -ProcessId ([int]$entry.PID) -Confirm:$false|Out-Null}
+        $null=Import-MmtlSessionLogs -SessionPath $sessionPath
         $finalStatus=Update-MmtlSessionReport -SessionPath $sessionPath
         $sessionV2=Test-MmtlSessionV2 -SessionPath $sessionPath
         if($sessionV2.valid -and $sessionV2.state -eq 'Running'){$nextState=switch($finalStatus.Status){'Completed'{'Completed'}'Stopped'{'Stopped'}'Failed'{'Failed'}default{$null}};if($nextState){Set-MmtlSessionV2State -SessionPath $sessionPath -State $nextState|Out-Null}}
@@ -690,6 +691,7 @@ function Start-MmtlConfiguredRun {
                 Set-MmtlScenarioState -SessionPath $session -NextState Stopping -EventCode SCENARIO_SAFE_STOP_STARTED -Summary 'Scenario 到达配置的观察时长，开始停止当前 Session 进程。'|Out-Null
                 $registryPath=Join-Path $session 'pids.json';Assert-MmtlNoReparsePath -Path $registryPath|Out-Null
                 foreach($entry in @(Get-Content -LiteralPath $registryPath -Raw|ConvertFrom-Json|Sort-Object {switch([string]$_.Role){'Client'{0}'Host'{1}'Server'{2}default{3}}})){$null=Stop-MmtlTrackedProcess -SessionPath $session -ProcessId ([int]$entry.PID) -Confirm:$false}
+                $null=Import-MmtlSessionLogs -SessionPath $session
                 $finalStatus=Update-MmtlSessionReport -SessionPath $session
                 if($finalStatus.Status -in @('Stopped','Completed')){$nextSessionState=if($finalStatus.Status -eq 'Stopped'){'Stopped'}else{'Completed'};Set-MmtlSessionV2State -SessionPath $session -State $nextSessionState|Out-Null}
                 Set-MmtlScenarioState -SessionPath $session -NextState Completed -EventCode SCENARIO_COMPLETED -Summary "Scenario 已完成；分析状态 $($metadata.analysisStatus)。"|Out-Null

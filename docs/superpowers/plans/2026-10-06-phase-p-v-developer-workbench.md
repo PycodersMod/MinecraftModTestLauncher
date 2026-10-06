@@ -102,11 +102,11 @@
 
 ### Task 7：Structured Log Workspace 与 Timeline（Phase T）
 
-- [ ] 测试各 role 原始日志不可覆盖、结构化记录字段、跨角色/Event 合并、原始与 observed timestamps 并存、损坏/空/旋转日志行为。
-- [ ] 实现 raw/relevant/analysis Session 布局、UTF-8 append-safe 日志写入和 `timeline.jsonl`。
-- [ ] 以 Test Identity、source file、role、logger、level、message 关联 log lines；目录安全限制到当前 Session。
-- [ ] 实现 `--follow-session`（若生命周期可靠且不阻塞 session control），保持输出有界/可停止。
-- [ ] 中文 commit：`功能：增加按角色结构化日志与统一时间线`。
+- [x] 测试各 role 原始日志不可覆盖、结构化记录字段、跨角色/Event 合并、原始与 observed timestamps 并存、空/旋转日志与未完成尾行行为。
+- [x] 实现 raw/relevant/analysis Session 布局、UTF-8 append-safe 日志写入和 `timeline.jsonl`，并在受管停止路径收集日志。
+- [x] 以 Test Identity、source file、role、logger、level、message 关联 log lines；目录安全限制到当前 Session。
+- [x] 未实现 follow 模式：现有受管 Session 生命周期通过停止/收尾阶段增量采集，避免另起阻塞控制通道。
+- [x] 中文 commit：`功能：增加按角色结构化日志与统一时间线`。
 
 ### Task 8：Mod-aware Extraction 与 Rule-Based Analyzer（Phase T）
 
