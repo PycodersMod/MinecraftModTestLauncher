@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pycodersmod.github.io/MinecraftModTestLauncher/schemas/runtime-java-catalog.schema.json",
+  "title": "MMTL Runtime Java Requirement Evidence Catalog",
+  "type": "object",
+  "required": ["schemaVersion", "generatedAt", "universeHash", "targetVersionCount", "officialMetadataCount", "authoritativeCount", "fallbackCount", "unknownCount", "entries"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "universeHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "targetVersionCount": { "type": "integer", "minimum": 1 },
+    "officialMetadataCount": { "type": "integer", "minimum": 0 },
+    "authoritativeCount": { "type": "integer", "minimum": 0 },
+    "fallbackCount": { "type": "integer", "minimum": 0 },
+    "unknownCount": { "type": "integer", "minimum": 0 },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["minecraftId", "minecraftType", "requirement", "metadataSource", "observationStatus"],
+        "properties": {
+          "minecraftId": { "type": "string", "minLength": 1 },
+          "minecraftType": { "type": "string", "minLength": 1 },
+          "requirement": { "type": "object" },
+          "metadataSource": { "type": ["object", "null"] },
+          "observationStatus": { "enum": ["VERIFIED", "VERIFIED_NO_JAVA_VERSION", "NOT_IN_MOJANG_MANIFEST"] }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

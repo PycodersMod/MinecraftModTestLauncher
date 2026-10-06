@@ -45,6 +45,30 @@ function New-MmtlLedgerDimension {
     [pscustomobject][ordered]@{ status = $Status; evidenceRefs = @($EvidenceRefs) }
 }
 
+function Get-MmtlRuntimeJavaEvidenceRefs {
+    param([Parameter(Mandatory)]$Target)
+    if (-not $Target.PSObject.Properties['runtimeJavaRequirement']) { return @() }
+    $requirement = $Target.runtimeJavaRequirement
+    if (-not $requirement) { return @() }
+    $major = 0
+    if (-not [int]::TryParse([string]$requirement.major, [ref]$major) -or $major -le 0) { return @() }
+    $kind = [string]$requirement.requirementKind
+    if ($kind -notin @('AuthoritativeMetadata', 'CompatibilityFallback')) { return @() }
+    $provenance = $requirement.provenance
+    if (-not $provenance) { return @() }
+    $sourceUrl = [string]$provenance.url
+    $uri = $null
+    if (-not [Uri]::TryCreate($sourceUrl, [UriKind]::Absolute, [ref]$uri) -or $uri.Scheme -cne 'https' -or $uri.UserInfo.Length -gt 0) { return @() }
+    if ($kind -eq 'AuthoritativeMetadata') {
+        $hash = [string]$provenance.hash
+        if ($hash -notmatch '^(?:[a-f0-9]{40}|[a-f0-9]{64})$' -or [string]$requirement.metadataStatus -cne 'VERIFIED') { return @() }
+        $algorithm = if ($hash.Length -eq 40) { 'sha1' } else { 'sha256' }
+        return @("runtime-java-source-url:$sourceUrl", "runtime-java-$algorithm`:$hash")
+    }
+    if ([string]$requirement.source -cne 'MMTLCompatibilityFallback' -or [string]::IsNullOrWhiteSpace([string]$requirement.reason)) { return @() }
+    @("runtime-java-source-url:$sourceUrl", "runtime-java-fallback-reason:$([string]$requirement.reason)")
+}
+
 function Get-MmtlCompatibilityFamilyMap {
     param([Parameter(Mandatory)]$Universe, $FamilyManifest)
     $map = [Collections.Generic.Dictionary[string, string]]::new([StringComparer]::Ordinal)
@@ -99,6 +123,7 @@ function New-MmtlFullCompatibilityLedger {
             $status = switch ($name) {
                 'Catalogued' { 'Supported' }
                 'LoaderResolved' { if ($candidateResolved) { 'Supported' } else { 'Unknown' } }
+                'RuntimeJava' { if (@(Get-MmtlRuntimeJavaEvidenceRefs -Target $target).Count) { 'Supported' } else { 'PendingImplementation' } }
                 default { 'PendingImplementation' }
             }
             $evidenceRefs = @()
@@ -107,6 +132,7 @@ function New-MmtlFullCompatibilityLedger {
                 if (-not [string]::IsNullOrWhiteSpace([string]$target.sourceHash)) { $evidenceRefs += "source-sha256:$([string]$target.sourceHash)" }
                 if (-not [string]::IsNullOrWhiteSpace([string]$target.authoritativeSource)) { $evidenceRefs += "source-url:$([string]$target.authoritativeSource)" }
             }
+            if ($name -ceq 'RuntimeJava' -and $status -ceq 'Supported') { $evidenceRefs += @(Get-MmtlRuntimeJavaEvidenceRefs -Target $target) }
             $dimensions[$name] = New-MmtlLedgerDimension -Status $status -EvidenceRefs $evidenceRefs
         }
         $targets.Add([pscustomobject][ordered]@{

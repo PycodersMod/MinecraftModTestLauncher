@@ -40,6 +40,20 @@ Describe 'Full compatibility ledger' {
         $result.summary.unassignedFamilyCount | Should -Be 2
     }
 
+    It 'supports Runtime Java only when an exact positive requirement has URL and hash evidence' {
+        $universe = $script:universe | ConvertTo-Json -Depth 30 | ConvertFrom-Json
+        $universe.targets[0] | Add-Member -NotePropertyName runtimeJavaRequirement -NotePropertyValue ([pscustomobject]@{
+            major = 21; source = 'MojangVersionMetadata'; confidence = 'High'; requirementKind = 'AuthoritativeMetadata'; metadataStatus = 'VERIFIED'
+            provenance = [pscustomobject]@{ url = 'https://piston-meta.mojang.com/v1/packages/example.json'; hash = 'f' * 40 }
+        })
+
+        $ledger = New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z')
+
+        $ledger.targets[0].dimensions.RuntimeJava.status | Should -BeExactly 'Supported'
+        $ledger.targets[0].dimensions.RuntimeJava.evidenceRefs | Should -Contain ('runtime-java-sha1:' + ('f' * 40))
+        $ledger.targets[1].dimensions.RuntimeJava.status | Should -BeExactly 'PendingImplementation'
+    }
+
     It 'rejects omitted targets and external blockers without evidence' {
         $ledger = New-MmtlFullCompatibilityLedger -Universe $script:universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z')
         $ledger.targets = @($ledger.targets | Select-Object -First 1)
