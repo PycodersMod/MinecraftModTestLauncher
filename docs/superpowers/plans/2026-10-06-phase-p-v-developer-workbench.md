@@ -123,23 +123,23 @@
 - [x] IntegratedLAN Host 首先完成世界加入、离线身份、`127.0.0.1` publish 和端口监听，再启动不同离线用户名 Guest；Host/Guest 两侧 world-join 证据齐全，60 秒观察后安全停止（成功 Session `20261006T082611Z_1_20_1_61866353`）。一次 IPv6-only 绑定及一次 Guest 超时失败均保留 Session；修复绑定策略后完成成功复测。
 - [x] Dedicated 未启动：`SKIPPED_EULA_NOT_PREAUTHORIZED`；没有修改 EULA。
 - [x] live evidence 为本机 Runtime 下 summary/findings/timeline；Host/Guest 进程退出、端口释放；VS Code 两个基线 Java 进程未触碰。
-- [ ] 中文 commit：`测试：验证 Forge 单人及本机离线多人流程`。
+- [x] 中文 commit：`c871d10 完成 Forge 局域网自动化实机验证`。
 
 ### Task 10：跨 Loader live、十项目泛化及错误分类（Phase U）
 
-- [ ] 运行 Forge/Fabric/NeoForge 三代表目标 Single live smoke；Agent unsupported 必须准确显示，只有 provider 稳定时跑 Fabric/NeoForge LAN。
-- [ ] 对十项目通过同一 Import/Plan/Build/LaunchCheck/log metadata extraction；禁止 10 个 GUI 全量启动和任何项目名特判。
-- [ ] 对匿名项目 rename 并移除所有 Pycoders 名称、Mod ID、package 后重跑 Import/Agent selection/Analyzer。
-- [ ] 汇总 smoke 失败阶段与机器 evidence；不把外部下载卡住变无限等待。
-- [ ] 中文 commit：`测试：增加跨 Loader 泛化与真实启动回归`。
+- [x] 运行 Forge/Fabric/NeoForge 三代表目标 Single live smoke；Forge 1.20.1 通过，Fabric 1.21.6 启动并完成 Mod 初始化/资源加载，NeoForge 1.21.1 的 `runClient` 编译因项目运行期 JEI API 缺失失败；Fabric 与 NeoForge Agent 均准确显示 Unsupported；不在缺少 Agent 时伪称 LAN 通过。
+- [x] 十项目通过同一 Import/Plan/Build/LaunchCheck；十项目 `Get-MmtlProjectModMetadata` 与 Agent 选择提取通过；无 10 GUI 全量启动或项目名特判。
+- [x] 临时匿名 Forge 项目移除原始 Mod ID、项目名与 package，Import/Agent selection/Analyzer 通过；其 Launch Check 明确阻塞 `RUNTIME_JAVA_BINDING_UNKNOWN`。
+- [x] 汇总 smoke 失败阶段与 Runtime evidence；NeoForge 失败源于 Mod runClient 编译找不到 JEI API，不修改 Mod；完整构建日志和 Analyzer 证据留在本机 Session。
+- [x] 中文 commit：`测试：增加跨 Loader 泛化与真实启动回归`（待本任务提交）。
 
 ### Task 11：Public Alpha 初始化、文档、包与校验和（Phase V）
 
-- [ ] 测试 `--init` 空目录行为及重复执行安全；创建本地 Runtime/Registry/example profiles，不修改用户 Mod。
-- [ ] 提供 Single/IntegratedLAN/Dedicated examples；IntegratedLAN 明示离线身份和 loopback，Dedicated EULA 仍显式门禁。
-- [ ] 重写 README 定位；新增 project-import/test-identities/test-agent/scenarios/offline-multiplayer/log-analysis/public-alpha 文档与实际 Agent support matrix。
-- [ ] 建立 0.x alpha version metadata、可复现 distribution package、SHA-256 manifest、allowlist contents/unzip smoke；禁止 local config/registry/world/logs/JDK/Minecraft runtime/User Mod。
-- [ ] 不创建 GitHub Release 或正式 tag；新增 Alpha readiness checklist。
+- [x] `--init` 空目录、重复与损坏 Registry Pester 3/3；解压 Alpha 包的 CLI first-run/repeat smoke 通过；没有修改用户 Mod。
+- [x] 提供 Single/IntegratedLAN/Dedicated 示例；IntegratedLAN 说明离线身份与 loopback，Dedicated EULA 保持 false。
+- [x] 重写 README；新增项目导入、Test Identity、Agent/支持矩阵、Scenario、离线多人、日志分析与 Alpha 文档。
+- [x] `0.1.0-alpha.1` 包按 allowlist 构建；SHA-256 清单、Agent manifest/JAR 哈希、两次构建一致性与逐文件解压 smoke 通过；未包含本机配置、Registry、Session、世界、日志、JDK、Minecraft Runtime 或 Mod 项目。
+- [x] 未创建 GitHub Release/tag；新增 Alpha readiness checklist。
 - [ ] 中文 commit：`构建：建立 Public Alpha 可复现分发基础`。
 
 ### Task 12：V+ 稳定性扩展
