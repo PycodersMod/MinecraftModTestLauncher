@@ -1,0 +1,92 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:6.0.54'
+        classpath 'org.spongepowered:mixingradle:0.7.38'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'java'
+
+group = 'org.pycodersmod.mmtl'
+version = '0.1.0'
+archivesBaseName = 'mmtl-agent-forge-1.20.1'
+
+java { toolchain { languageVersion = JavaLanguageVersion.of(17) } }
+
+minecraft {
+    mappings channel: 'official', version: '1.20.1'
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'info'
+            mods { mmtl_agent { source sourceSets.main } }
+        }
+        server {
+            workingDirectory project.file('run-server')
+            property 'forge.logging.console.level', 'info'
+            mods { mmtl_agent { source sourceSets.main } }
+        }
+    }
+}
+
+repositories { mavenCentral() }
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.20.1-47.2.0'
+    testImplementation 'junit:junit:4.13.2'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+}
+
+mixin {
+    add sourceSets.main, 'mmtl-agent.refmap.json'
+    config 'mmtl-agent.mixins.json'
+}
+
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('META-INF/mods.toml') { expand version: project.version }
+}
+
+jar {
+    manifest.attributes(['Specification-Title':'mmtl_agent','Specification-Vendor':'PycodersMod','Specification-Version':'1','Implementation-Title':project.name,'Implementation-Version':project.version,'FMLModType':'MOD','MixinConfigs':'mmtl-agent.mixins.json'])
+}
+
+tasks.register('verifyMmtlAgentJar') {
+    dependsOn tasks.named('jar')
+    doLast {
+        File sourceJar = tasks.named('jar').get().archiveFile.get().asFile
+        java.util.zip.ZipFile archive = new java.util.zip.ZipFile(sourceJar)
+        try {
+            def manifestEntry = archive.getEntry('META-INF/MANIFEST.MF')
+            def configEntry = archive.getEntry('mmtl-agent.mixins.json')
+            def refmapEntry = archive.getEntry('mmtl-agent.refmap.json')
+            if (!manifestEntry || !configEntry || !refmapEntry) throw new GradleException('MMTL Agent JAR is missing the Mixin manifest/config/refmap')
+            def manifest = new java.util.jar.Manifest(archive.getInputStream(manifestEntry))
+            if (manifest.mainAttributes.getValue('MixinConfigs') != 'mmtl-agent.mixins.json') throw new GradleException('MMTL Agent JAR has an invalid MixinConfigs manifest entry')
+            def mixinConfig = new groovy.json.JsonSlurper().parse(archive.getInputStream(configEntry))
+            if (mixinConfig.required != true || !mixinConfig.client.contains('IntegratedServerLoopbackMixin') || !mixinConfig.client.contains('LanServerPingerMixin') || !mixinConfig.client.contains('IntegratedServerInvoker') || !mixinConfig.client.contains('CreateWorldScreenInvoker')) throw new GradleException('MMTL Agent JAR has an incomplete client Mixin configuration')
+        } finally { archive.close() }
+    }
+}
+
+tasks.register('stageMmtlAgent') {
+    dependsOn tasks.named('verifyMmtlAgentJar')
+    doLast {
+        File destinationDirectory = project.file('providers/forge-1.20.1')
+        destinationDirectory.mkdirs()
+        File sourceJar = tasks.named('jar').get().archiveFile.get().asFile
+        File destinationJar = new File(destinationDirectory, 'mmtl-agent-forge-1.20.1-0.1.0.jar')
+        destinationJar.bytes = sourceJar.bytes
+        String digest = java.security.MessageDigest.getInstance('SHA-256').digest(destinationJar.bytes).encodeHex().toString()
+        def manifest = [schemaVersion:1,providerId:'forge-1.20.1',loaderId:'Forge',minecraftVersions:['1.20.1'],agentVersion:project.version.toString(),artifact:'providers/forge-1.20.1/mmtl-agent-forge-1.20.1-0.1.0.jar',sha256:digest,minJavaMajor:17,roles:['Client','Host','Guest'],capabilities:['OfflineSessionHandshake','IntegratedServerEvents','GuestJoinObservation','OfflineIntegratedLanHost','LoopbackOnlyListener','LanDiscoverySuppressed','GuestLoopbackVerification','SignedSessionActionQueue','SessionScreenshot','ManagedClientCommand']]
+        new File(destinationDirectory, 'agent-manifest.json').text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(manifest)) + System.lineSeparator()
+    }
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }

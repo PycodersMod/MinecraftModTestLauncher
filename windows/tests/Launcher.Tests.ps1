@@ -1,6 +1,7 @@
 BeforeAll {
     $script:root=Join-Path (Split-Path -Parent (Split-Path -Parent $PSScriptRoot)) 'common'
     Get-ChildItem (Join-Path $script:root 'src') -Filter '*.psm1' -Recurse | ForEach-Object { Import-Module $_.FullName -Force }
+    Import-Module (Join-Path $script:root 'src/Config.psm1') -Force
     Import-Module (Join-Path $script:root 'src/ProjectDetector.psm1') -Force
     Import-Module (Join-Path $script:root 'src/GradleRunner.psm1') -Force
     function New-TestModProject {
@@ -322,8 +323,8 @@ Describe 'MMTL 安全与项目检测' {
         $properties.serverMemoryMb.minimum | Should -Be 1024
         $properties.guiScale.oneOf[0].enum | Should -Contain 4
         $example=Get-Content (Join-Path $script:root 'config/launcher.config.example.json') -Raw|ConvertFrom-Json
-        $example.profiles.'single-test'.acceptEula | Should -BeFalse
-        $example.profiles.'single-test'.guiScale | Should -Be 'Auto'
+        $example.profiles.'single-example'.acceptEula | Should -BeFalse
+        $example.profiles.'single-example'.guiScale | Should -Be 'Auto'
     }
     It '拒绝未登记的进程 PID' {
         $session=Join-Path $TestDrive 'pid-session'; New-Item -ItemType Directory -Path $session | Out-Null

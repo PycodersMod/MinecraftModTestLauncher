@@ -12,6 +12,14 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
+          java-version: '17'
+      - name: 构建并暂存 MMTL Agent
+        shell: pwsh
+        working-directory: common/agent
+        run: ./gradlew.bat --no-daemon test stageMmtlAgent
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
           java-version: '21'
       - name: 安装 Pester
         shell: pwsh
@@ -30,6 +38,14 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Build and stage MMTL Agent
+        shell: bash
+        working-directory: common/agent
+        run: ./gradlew --no-daemon test stageMmtlAgent
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -54,6 +70,14 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
+          java-version: '17'
+      - name: Build and stage MMTL Agent
+        shell: bash
+        working-directory: common/agent
+        run: ./gradlew --no-daemon test stageMmtlAgent
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
           java-version: '21'
       - name: 安装 Pester
         shell: pwsh
@@ -72,6 +96,14 @@ jobs:
     runs-on: macos-26-intel
     steps:
       - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Build and stage MMTL Agent
+        shell: bash
+        working-directory: common/agent
+        run: ./gradlew --no-daemon test stageMmtlAgent
       - uses: actions/setup-java@v5
         with:
           distribution: temurin

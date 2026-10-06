@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pycodersmod.github.io/mmtl/schemas/test-identity-v1.schema.json",
+  "title": "MMTL Offline Test Identity v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "identityId", "offlineUuid", "username", "role", "sessionId", "instanceId",
+    "gameDir", "logDirectory", "configDirectory", "optionsFile", "screenshotsDirectory",
+    "crashReportsDirectory", "savesDirectory", "processIdentity", "runtimeJavaMajor",
+    "runtimeJavaPath", "networkRole", "offline"
+  ],
+  "properties": {
+    "identityId": { "type": "string", "minLength": 1 },
+    "offlineUuid": { "type": ["string", "null"], "format": "uuid" },
+    "username": { "type": ["string", "null"], "pattern": "^[A-Za-z0-9_]{1,16}$" },
+    "role": { "enum": ["Client", "Host", "Guest", "Server"] },
+    "sessionId": { "type": "string", "pattern": "^[A-Za-z0-9_-]{1,80}$" },
+    "instanceId": { "type": "string", "minLength": 1 },
+    "gameDir": { "type": "string", "minLength": 1 },
+    "logDirectory": { "type": "string", "minLength": 1 },
+    "configDirectory": { "type": "string", "minLength": 1 },
+    "optionsFile": { "type": "string", "minLength": 1 },
+    "screenshotsDirectory": { "type": "string", "minLength": 1 },
+    "crashReportsDirectory": { "type": "string", "minLength": 1 },
+    "savesDirectory": { "type": ["string", "null"] },
+    "processIdentity": { "type": ["object", "null"] },
+    "runtimeJavaMajor": { "type": ["integer", "null"], "minimum": 1 },
+    "runtimeJavaPath": { "type": ["string", "null"] },
+    "networkRole": { "type": "string", "minLength": 1 },
+    "offline": { "const": true }
+  }
+}

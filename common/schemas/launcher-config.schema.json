@@ -27,6 +27,8 @@
         "linkedProjects": {"type": "array", "items": {"type": "string"}},
         "mode": {"enum": ["Single", "IntegratedLAN", "Dedicated"]},
         "players": {"type": "integer", "minimum": 1},
+        "durationSeconds": {"type": "integer", "minimum": 1, "maximum": 600, "default": 60},
+        "stopPolicy": {"const": "Always", "default": "Always"},
         "hostUsername": {"type": "string"},
         "clientPrefix": {"type": "string"},
         "hostCheats": {"type": "boolean"},

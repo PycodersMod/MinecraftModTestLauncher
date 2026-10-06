@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "package": "org.pycodersmod.mmtl.agent.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "mmtl-agent.refmap.json",
+  "client": [
+    "IntegratedServerLoopbackMixin",
+    "LanServerPingerMixin",
+    "IntegratedServerInvoker",
+    "CreateWorldScreenInvoker"
+  ]
+}
