@@ -15,6 +15,7 @@ Import-Module (Join-Path $commonRoot 'src/GradleRunner.psm1') -Force
 Import-Module (Join-Path $commonRoot 'src/Platform/Platform.psm1') -Force
 Import-Module (Join-Path $commonRoot 'src/Execution/ExecutionPlan.psm1') -Force -Global
 Import-Module (Join-Path $commonRoot 'src/Execution/ExecutionPlanner.psm1') -Force
+Import-Module (Join-Path $commonRoot 'src/Scenario/ScenarioOrchestrator.psm1') -Force
 Import-Module (Join-Path $commonRoot 'src/SessionLifecycle.psm1') -Force -Global
 Import-Module (Join-Path $commonRoot 'src/SessionRecovery.psm1') -Force -Global
 Import-Module (Join-Path $commonRoot 'src/SessionLock.psm1') -Force -Global
