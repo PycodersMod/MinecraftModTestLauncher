@@ -182,6 +182,7 @@ Describe 'Compatibility Universe exact target generation' {
         $universe.targets[0].loaderVersionCandidates | Should -Be @('candidate-0.1')
         $universe.targets[0].candidateSourceUrl | Should -Be 'https://example.invalid/loader/1.20.1'
         $universe.targets[0].candidateSourceHash | Should -Be $candidateHash
+        $universe.candidateCatalogHash | Should -Match '^[a-f0-9]{64}$'
     }
 
     It 'rejects an identifier used by both a Loader and a manual strategy' {

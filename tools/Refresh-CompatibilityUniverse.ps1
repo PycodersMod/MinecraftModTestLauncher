@@ -194,7 +194,11 @@ try {
                     'ModLoader' { @(Get-MmtlModLoaderArchiveCandidates -MinecraftId $id) }
                     'ModLoaderMP' { @(Get-MmtlModLoaderMPArchiveCandidates -MinecraftId $id) }
                 }
-                if ($candidates.Count) { $candidateMap[$id] = $candidates }
+                if ($candidates.Count) {
+                    $candidateMap[$id] = [pscustomobject][ordered]@{
+                        candidates = $candidates; sourceUrl = [string]$definition.sourceUrl; sourceHash = [string]$record.sha256
+                    }
+                }
             }
             $loaderSnapshots.Add((New-LoaderSourceSnapshot -LoaderId $loaderId -ProviderStatus 'Available' -SourceUrl ([string]$definition.sourceUrl) -SupportedIds $ids -SourceHash ([string]$record.sha256) -CandidatesByMinecraft ([pscustomobject]$candidateMap)))
         } catch {

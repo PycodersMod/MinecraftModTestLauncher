@@ -170,10 +170,18 @@ function New-MmtlCompatibilityUniverse {
         targets = @($sortedTargets | ForEach-Object { [ordered]@{ targetId = $_.targetId; availability = $_.availability } })
     }
     $canonicalSourceMaterial = ConvertTo-Json -InputObject $sourceMaterial -Depth 30 -Compress
+    $candidateMaterial = @($sortedTargets | ForEach-Object {
+        [ordered]@{
+            targetId = [string]$_.targetId; candidateStatus = [string]$_.candidateStatus
+            loaderVersionCandidates = @($_.loaderVersionCandidates); candidateSourceUrl = $_.candidateSourceUrl
+            candidateSourceHash = $_.candidateSourceHash
+        }
+    })
+    $candidateJson = ConvertTo-Json -InputObject $candidateMaterial -Depth 30 -Compress
     [pscustomobject][ordered]@{
         schemaVersion = 1; auditStatus = 'IN_PROGRESS'; generatedAt = $GeneratedAt.ToUniversalTime().ToString('o')
         catalogHash = Get-MmtlCompatibilitySha256 -Text $canonicalSourceMaterial
-        candidateCatalogHash = $null
+        candidateCatalogHash = Get-MmtlCompatibilitySha256 -Text $candidateJson
         minecraftReleaseCount = $releaseCount; loaderCount = $loaderIds.Count; strategyCount = $sortedManualStrategies.Count
         targets = $sortedTargets; manualStrategies = $sortedManualStrategies
         issues = @($issues | Sort-Object { [string]$_.loaderId }, { [string]$_.reason })

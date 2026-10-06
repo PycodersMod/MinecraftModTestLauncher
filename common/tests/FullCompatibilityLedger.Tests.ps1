@@ -87,7 +87,7 @@ Describe 'Full compatibility ledger' {
 
         $generated.targetCount | Should -Be 1631
         @($template.targets).Count | Should -Be 1631
-        $template.summary.unknownTargetCount | Should -BeGreaterThan 0
+        $template.summary.unknownTargetCount | Should -Be 0
         $template.summary.pendingImplementationDimensionCount | Should -BeGreaterThan 0
         (Test-Json -Json (Get-Content -LiteralPath $outputPath -Raw) -SchemaFile $schemaPath) | Should -BeTrue
     }

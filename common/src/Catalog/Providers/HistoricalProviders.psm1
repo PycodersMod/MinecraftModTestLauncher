@@ -195,7 +195,25 @@ function Read-MmtlHistoricalArchiveData {
 
 function ConvertTo-MmtlArchiveCandidate {
     param([Parameter(Mandatory)]$Record)
-    [pscustomobject][ordered]@{providerId=[string]$Record.providerId;loaderId=[string]$Record.loaderId;minecraftId=[string]$Record.minecraftId;sourceMinecraftId=[string]$Record.sourceMinecraftId;artifactFilename=[string]$Record.artifactFilename;archiveUrl=[string]$Record.archiveUrl;sha256=[string]$Record.sha256;hashAlgorithm='SHA256';integrity=Get-MmtlHistoricalIntegrityAssessment -Algorithm SHA256 -Hash ([string]$Record.sha256);author=[string]$Record.author;source=[string]$Record.source;sourceClass='VerifiedCommunityArchive';trustClass=[string]$Record.trust;transportSecurity='ArchivedSnapshot';maintenanceState='Archived';artifactType=[string]$Record.artifactType;retrievedAt=[string](Read-MmtlHistoricalArchiveData).retrievedAt;lastReviewed=[string](Read-MmtlHistoricalArchiveData).lastReviewed;downloadPermission='RequiresConfirmation';executePermission='Denied'}
+    $artifactTransport = if ($Record.PSObject.Properties['artifactTransport']) { [string]$Record.artifactTransport } else { 'Unknown' }
+    $downloadPermission = if ($artifactTransport -eq 'HTTPOnly') { 'Denied' } else { 'RequiresConfirmation' }
+    $integrity = Get-MmtlHistoricalIntegrityAssessment -Algorithm SHA256 -Hash ([string]$Record.sha256)
+    $integrity.downloadPermission = $downloadPermission
+    $integrity.executePermission = 'Denied'
+    [pscustomobject][ordered]@{
+        providerId=[string]$Record.providerId;loaderId=[string]$Record.loaderId;minecraftId=[string]$Record.minecraftId;sourceMinecraftId=[string]$Record.sourceMinecraftId
+        loaderVersion=[IO.Path]::GetFileNameWithoutExtension([string]$Record.artifactFilename);versionLabelSource='SOURCE_FILENAME'
+        artifactFilename=[string]$Record.artifactFilename;artifactUrl=if($Record.PSObject.Properties['artifactUrl']){[string]$Record.artifactUrl}else{$null}
+        artifactTransport=$artifactTransport;artifactFormat=if($Record.PSObject.Properties['artifactFormat']){[string]$Record.artifactFormat}else{$null}
+        archiveUrl=[string]$Record.archiveUrl;sha256=[string]$Record.sha256;hashAlgorithm='SHA256'
+        hashProvenance=if($Record.PSObject.Properties['hashProvenance']){[string]$Record.hashProvenance}else{'SourceDeclared'}
+        hashVerifiedLocally=if($Record.PSObject.Properties['hashVerifiedLocally']){[bool]$Record.hashVerifiedLocally}else{$false}
+        sourceSnapshotHash=if($Record.PSObject.Properties['sourceSnapshotHash']){[string]$Record.sourceSnapshotHash}else{$null}
+        integrity=$integrity;author=[string]$Record.author;source=[string]$Record.source
+        sourceClass='VerifiedCommunityArchive';trustClass=[string]$Record.trust;transportSecurity='ArchivedSnapshot';maintenanceState='Archived';artifactType=[string]$Record.artifactType
+        retrievedAt=[string](Read-MmtlHistoricalArchiveData).retrievedAt;lastReviewed=[string](Read-MmtlHistoricalArchiveData).lastReviewed
+        downloadPermission=$downloadPermission;executePermission='Denied'
+    }
 }
 
 function Get-MmtlModLoaderArchiveCandidates {

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "auditStatus": "IN_PROGRESS",
-  "generatedAt": "2026-10-07T00:00:00.0000000+00:00",
+  "generatedAt": "2026-10-06T21:26:14.3791569+00:00",
   "universeHash": "0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-  "candidateCatalogHash": "e2b512724e231d13a0fd921dd687827b7610042103a329b126de086540b74a27",
+  "candidateCatalogHash": "2f9db2262dc499e96b30ab5e7069c60e2c7b485347d98649a5991beec4396d98",
   "targets": [
     {
       "targetId": "Fabric@1.14",
@@ -61444,8 +61444,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -61508,10 +61512,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "f6481b958c11abcf9cee6609b4389b0448823365860dfa4f9e2e8df971b034bd"
+      "targetSpecHash": "5f873db104e6bb5aaddf9ee388b6f997ff3e8f52aaa726b9cb75b4b3c0dd6381"
     },
     {
       "targetId": "ModLoader@1.1",
@@ -61528,8 +61532,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -61592,10 +61600,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "1321d1e2465a2bb98c2303445cca43b63c9db6e618e72202d1d8719d7423f565"
+      "targetSpecHash": "c5822652acf928852895b682faab7e2c478047bc95dd547131eb2ac41abc1ca2"
     },
     {
       "targetId": "ModLoader@1.2.3",
@@ -61612,8 +61620,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -61676,10 +61688,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "18ce752c482feabfd7de50f30ed5b6de6bd52426b7aac149db58753c0361e399"
+      "targetSpecHash": "75fdba8d4489235f1b4e3bb3a8a20a44603920606a278cbf80194cf52d236a80"
     },
     {
       "targetId": "ModLoader@1.2.4",
@@ -61696,8 +61708,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -61760,10 +61776,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "3100da76955cca2ba4a8a07297467569524d3582576d92bf3c99d69dc0aa36bb"
+      "targetSpecHash": "bc13e4b18d7e0a7323b0731caa37a0cfc4822ebb447a43c2a83384c15dffd92c"
     },
     {
       "targetId": "ModLoader@1.2.5",
@@ -61851,7 +61867,7 @@
       "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "d60ab730f4b8b416a1af1abc872a43151a7020088a5f59c500d0da6a0856f8d5"
+      "targetSpecHash": "ce955d52dfceebd433a1f78c2b74f2cec4bc2b7712c83a5e58d92fa0cd8a7897"
     },
     {
       "targetId": "ModLoader@1.3.1",
@@ -61868,8 +61884,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -61932,10 +61952,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "b3a02ce0aafcaba49d3e1996d904b3b77b0ec27547d624abc35314632477b85c"
+      "targetSpecHash": "b2b262dd0f8e097a8350ee043928b13e43f6b0e69d613e583feed89beaf490b2"
     },
     {
       "targetId": "ModLoader@1.3.2",
@@ -61952,8 +61972,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -62016,10 +62040,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "d6eb81f11815b0681510089df173ebc3e70dfc271d5c63d6dc10327149546b0d"
+      "targetSpecHash": "4e63ce0202efa34071c885b952fcbb4a421504e16edf0018560e1504f807f276"
     },
     {
       "targetId": "ModLoader@1.4.2",
@@ -62036,8 +62060,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -62100,10 +62128,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "01f361a08a0161f042b6d1b5d61d08cffb1a253891b0636d3fbbfc6e5c5d266a"
+      "targetSpecHash": "c8d688900c1a9de83822302510a3b7ca4a899b3caf9af9022e631efb14300448"
     },
     {
       "targetId": "ModLoader@1.4.4",
@@ -62120,8 +62148,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -62184,10 +62216,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "ef2ac5057fcfe29ac1eadc044739db5fadb818dc09235495d61c31d2990b16b5"
+      "targetSpecHash": "c7df18fd7627dc4a7cd31e4f5be1a40b099a66b7e8be15a7b5573838217daf50"
     },
     {
       "targetId": "ModLoader@1.4.5",
@@ -62204,8 +62236,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -62268,10 +62304,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "8c9e06237dbfa3c4d08a17d2d4201a3522111c02911801bcd02c9bfd468db3bc"
+      "targetSpecHash": "26ec62012a4f6d8f2d93f09b5281744737bc49fef0948e868f58e79a9c793bb0"
     },
     {
       "targetId": "ModLoader@1.4.6",
@@ -62288,8 +62324,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -62352,10 +62392,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "72c3875138ed32a48f0921500aa3c7ac0889d37fc2bb2fec8bce2a05f3026469"
+      "targetSpecHash": "2da54529a47d7651fde9590bafa4f1e3581792a87fea157c3aa491e52280cac7"
     },
     {
       "targetId": "ModLoader@1.4.7",
@@ -62443,7 +62483,7 @@
       "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "9c2a50189622a9eff465f7044ba5e1ca4a6b03d08f2a45bb67f4dd35b15a9661"
+      "targetSpecHash": "1518d55b2e5057e517cbc2ce16aff00f7ce39e555df8874b506897f7504ba62b"
     },
     {
       "targetId": "ModLoader@1.5",
@@ -62460,8 +62500,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -62524,10 +62568,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "03b2b74f80193ea410d57b979e05b155fc37b1df7ac41087c86452e5b717e42a"
+      "targetSpecHash": "a2a38f4940bac52629760e7427fcad410851c5e0a107ac35788cb40374be2c0c"
     },
     {
       "targetId": "ModLoader@1.5.1",
@@ -62544,8 +62588,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -62608,10 +62656,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "f1ee91968683591150d19771219dbbbbe9bb789c3c7e4dc5f726635dd2040d6d"
+      "targetSpecHash": "85a8060720a0bc74412a52e0bdb00bc68f0d8c842fa10c052acec07873dffaa9"
     },
     {
       "targetId": "ModLoader@1.5.2",
@@ -62628,8 +62676,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -62692,10 +62744,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "1ff765ca49dde3f9542a4f5e784c94b4d9fb1ce9911de1179220715ee77297ef"
+      "targetSpecHash": "a400be2fe55c519199d2a642d9291e11bcc136b5a5d5a27b7018fe73a9a96555"
     },
     {
       "targetId": "ModLoader@1.6.1",
@@ -62712,8 +62764,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -62776,10 +62832,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "836ec94d1bc308fae3dd8e216d4f592281eaacf26c7a1eb73572dd79c21adbcd"
+      "targetSpecHash": "f37740890403532dd99f41ecc1ffb50d00724139c143f096d800003a1ba0c818"
     },
     {
       "targetId": "ModLoader@1.6.2",
@@ -62796,8 +62852,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -62860,10 +62920,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "4e13143355c8cf59da08bc8fa1f59a8432783748e400efc6efe24ef4f1615ecd"
+      "targetSpecHash": "2353f4b087f193afb6bba5f350546b430d97a948133249c158a0b5b2cdf60c1f"
     },
     {
       "targetId": "ModLoader@a1.1.2_01",
@@ -62880,8 +62940,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -62944,10 +63008,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "7b965dbee3b3a624275e2cc32ea3bd3a01faaa8dcc49ef4bc8afb9adabfc5131"
+      "targetSpecHash": "6944f5824eb71b9e5e0193b48d3b74f978675eb0461dd39e430e58d49db04c3d"
     },
     {
       "targetId": "ModLoader@a1.2.0_02",
@@ -62964,8 +63028,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -63028,10 +63096,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "ae2ab690002d2fe3d09d2d434b443515231437a57235af8c3a24cbcae7b3a153"
+      "targetSpecHash": "be1b48d7ee8c8c49919d23429bf3908fd9ee7d5349529d575e12884cea9e3125"
     },
     {
       "targetId": "ModLoader@a1.2.1_01",
@@ -63048,8 +63116,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -63112,10 +63184,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "bc31c2b0e92409c190e23e69173e8e4a6501121a5c8f1b13ea0ddaa7ee7114c8"
+      "targetSpecHash": "6ede55f856f6aa071b55e1a670b780e6c10e81e22218e194db568af70053ea48"
     },
     {
       "targetId": "ModLoader@a1.2.2",
@@ -63132,8 +63204,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -63196,10 +63272,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "f1248980ecbf7ca0aa391cfd8c46a33d7df7371f05dd67234a0036848808103f"
+      "targetSpecHash": "04cbe430161ada1ad73863b3d5721b3b17faae095a82a2ebb5cd683053046b1b"
     },
     {
       "targetId": "ModLoader@a1.2.3_04",
@@ -63216,8 +63292,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -63280,10 +63360,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "bdb570d3a7d36fbb30fb48ec34c8f2d867dec41f879e06fa77f37d0b057e4e83"
+      "targetSpecHash": "b088e9d3f209b254201f94184ea374b84b8d4117fef408d8e69f2784d503d4a9"
     },
     {
       "targetId": "ModLoader@a1.2.4_01",
@@ -63300,8 +63380,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -63364,10 +63448,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "661d70b678d6ba084755d130eb806b1852cf6aa2a5d681fff85fc88128f0a204"
+      "targetSpecHash": "a67e8de7974646891357f5e1f3ea7fd8f37154943f3cb2b4f9a02a8149c6e295"
     },
     {
       "targetId": "ModLoader@a1.2.5",
@@ -63384,8 +63468,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -63448,10 +63536,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "2b74bbb8c8c4b6a191307aafff9c5a9faa0a444d3c12545f2c2f57314ed70c19"
+      "targetSpecHash": "8790284746f912a292f812b4a252ee59b0ea752bf551c972afa9d7dcb2f0e003"
     },
     {
       "targetId": "ModLoader@a1.2.6",
@@ -63468,8 +63556,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -63532,10 +63624,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "473f8780ec4d477f5ef86891dd401bc75113619214c3b3347a29e692c95e7a9c"
+      "targetSpecHash": "c14995b9de4a248f3cb7a1551bdb3e651eb2a21740b0c368ff4c4c3ce190bd45"
     },
     {
       "targetId": "ModLoader@b1.0_01",
@@ -63552,8 +63644,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -63616,10 +63712,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "708e03b43c1a0f8399c3845a8dc00f4e76ba62ecb5d1fcdb5c1e50f544c0de66"
+      "targetSpecHash": "2db3eb686881505ef21be32fc797282354a7315133a5e7fe6313865f3bb00f38"
     },
     {
       "targetId": "ModLoader@b1.1_02",
@@ -63636,8 +63732,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -63700,10 +63800,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "fba333460c8011482fbc3a65ce4393ef61a1e7974928f5edeb94a7790ea58e88"
+      "targetSpecHash": "a148ca338e1b6d04130d6feeedff10f816b3c5ae51eee0b8cefa4a78cc36c716"
     },
     {
       "targetId": "ModLoader@b1.2",
@@ -63720,8 +63820,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -63784,10 +63888,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "b1fe5f0cdadcaa87282335b56c9cf48a21ad9b938e7bcc8f02e866677f0316a2"
+      "targetSpecHash": "a2694fdb50de65c6beabe16327f9fe4f4752a0a0acfc61dc62cba451914f37db"
     },
     {
       "targetId": "ModLoader@b1.2_01",
@@ -63804,8 +63908,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -63868,10 +63976,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "6b7c3e7b5e90ea44f4efc38f4712bf99abcba476353a8864ef49ceaad14a6d2f"
+      "targetSpecHash": "a8df746ae828b086d64dd922c7aac0c7deeeb23e8722ea5e8c2e54d52e18227e"
     },
     {
       "targetId": "ModLoader@b1.2_02",
@@ -63888,8 +63996,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -63952,10 +64064,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "bade137526fc925088eef2179cd5ae65e71024d5588280c5a468e15d3fe4c56c"
+      "targetSpecHash": "a5066271bf6b2de4fc67d6efbc854b169ff79a814b8fdfbdcca6beb8243866cd"
     },
     {
       "targetId": "ModLoader@b1.3",
@@ -63972,8 +64084,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -64036,10 +64152,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "2b7a934dc3083986cb1fc294bfce33bc540810c8e1e24955e2fabb6dbbf516ea"
+      "targetSpecHash": "5ada36cff6db272e170811711a136485c88852aebaad2ecd0db1cb98c44536fc"
     },
     {
       "targetId": "ModLoader@b1.3_01",
@@ -64056,8 +64172,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -64120,10 +64240,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "5ce5336369a7459f799f251afcdd4f046ae09f3f448c45e2d51ec8c449a27ef8"
+      "targetSpecHash": "ec6c01a5bda4eb64b7be673e4008c08b66b313237e31e0313fd3cc90a1834a52"
     },
     {
       "targetId": "ModLoader@b1.4",
@@ -64140,8 +64260,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -64204,10 +64328,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "247b84c876e1bfbb7490e926f21351ccb48ad10a850102de9274f97982aece4c"
+      "targetSpecHash": "2e026d04d723f76d5c6e26a623c43e9310a117674cf81c7cdf95f1668c0e046c"
     },
     {
       "targetId": "ModLoader@b1.4_01",
@@ -64224,8 +64348,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -64288,10 +64416,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "f6447bdd451359f326e2db34e587bbd716f76525664c09d19b4c52b0c9143455"
+      "targetSpecHash": "3c140bb79dbd1987b69b9c800ec230a0c3ce37df22edaa9b661397734def9150"
     },
     {
       "targetId": "ModLoader@b1.5_01",
@@ -64308,8 +64436,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -64372,10 +64504,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "312ca14cb57cd5c1f2254ddd41672c0e3a60a73cd28c8149e875986d904cc5f4"
+      "targetSpecHash": "062b264b3c2bd7b709bc60992aaaa520691de6d029ef0f3401ae79ec1942768f"
     },
     {
       "targetId": "ModLoader@b1.6.4",
@@ -64392,8 +64524,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -64456,10 +64592,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "7a2b46a82cee5c0b3f3d5f368d88d53cfb6c3839539bc9d665f0e67d0ac81fd3"
+      "targetSpecHash": "98a7c501e1c90f4da7a4a47a1739e6f526f4b86228c6ac632aa767ee92763bd0"
     },
     {
       "targetId": "ModLoader@b1.6.5",
@@ -64476,8 +64612,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -64540,10 +64680,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "6b45a3aeb64839f969139e98d8d13a0a8c09dafe34c0f27104e1e19ff7e65a5d"
+      "targetSpecHash": "5f77d87601e95bdc2969f85eec9d4ad6b4b5dbceb81cab176040276579c9d98e"
     },
     {
       "targetId": "ModLoader@b1.6.6",
@@ -64560,8 +64700,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -64624,10 +64768,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "fd967d943104ac910307739520489bb92804940420d0229120b1200bef0408f4"
+      "targetSpecHash": "ac5ccc7f9bfc1e29324ad38b7b0ec831b3580672633c618fdcd34c9a74071beb"
     },
     {
       "targetId": "ModLoader@b1.7.2",
@@ -64644,8 +64788,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -64708,10 +64856,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "269a27b94bc9aa052fb2d4878c56c39630557e3c46159b90c944c9ac9e4259d7"
+      "targetSpecHash": "9253e2199c3618a130fc39d8f25d80ad3703856e493dad70b54c03632ffe5b16"
     },
     {
       "targetId": "ModLoader@b1.7.3",
@@ -64728,8 +64876,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -64792,10 +64944,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "824b16e8d7a1a9316f5f017fac54193ad2257d3cbec35c28c063a16ad741e212"
+      "targetSpecHash": "2cc04e51e479b172a3ad85b8223c56139f698c8b6bb012fe54c580220665185e"
     },
     {
       "targetId": "ModLoader@b1.8.1",
@@ -64812,8 +64964,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -64876,10 +65032,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "a40568c219c9cd6291b142a51884e567865a639a31278bef83d5f1ebd2ceaed8"
+      "targetSpecHash": "f4f33bd6af8c1e5565bb61bb87b5348a8d4c59c9e758d4a53e490d8d7e6f0040"
     },
     {
       "targetId": "ModLoader@b1.9p5",
@@ -64896,8 +65052,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
+            "source-url:https://mcarchive.net/mods/modloader"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -64960,10 +65120,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062",
       "toolchainHash": null,
-      "targetSpecHash": "4850a56fa06b56e26e03104cf6f2568097cd6a75665d6c895c37208c11e66100"
+      "targetSpecHash": "70fd253e35b8bbbfde45b34a745f4e0046249a01bbb97162f42446088b50d722"
     },
     {
       "targetId": "ModLoaderMP@1.0.0",
@@ -64980,8 +65140,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
+            "source-url:https://mcarchive.net/mods/modloadermp"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -65044,10 +65208,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
       "toolchainHash": null,
-      "targetSpecHash": "31e3b51b9c32f68851d4fae1edd6a78aea8992348457054e920acc954ed122d2"
+      "targetSpecHash": "4827d425e1579f4615508dd18cc40bcf345a32883da20a5652ce9b2adc418261"
     },
     {
       "targetId": "ModLoaderMP@1.1",
@@ -65064,8 +65228,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
+            "source-url:https://mcarchive.net/mods/modloadermp"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -65128,10 +65296,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
       "toolchainHash": null,
-      "targetSpecHash": "887a10466a042d09b461aa04177ad1de1b25876c84882bc946b887282bdfff52"
+      "targetSpecHash": "98b0e31a05b2661a75e1482ed42468ca583d1a7b5a3e1c471572964556786a36"
     },
     {
       "targetId": "ModLoaderMP@1.2.3",
@@ -65148,8 +65316,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
+            "source-url:https://mcarchive.net/mods/modloadermp"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -65212,10 +65384,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
       "toolchainHash": null,
-      "targetSpecHash": "e621222999c5db0dfc05821cd351fc0487a79170784a1f21ae411b32bb63ab6a"
+      "targetSpecHash": "6cf9e5ea4dddc95aea791354b4d7b5a062252088551601b1745db056b4957182"
     },
     {
       "targetId": "ModLoaderMP@1.2.4",
@@ -65232,8 +65404,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
+            "source-url:https://mcarchive.net/mods/modloadermp"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -65296,10 +65472,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
       "toolchainHash": null,
-      "targetSpecHash": "7ee8d06b8dc1856b27c99dbdaf071d5c56048bfec9e7c06aabe65301c5a8625b"
+      "targetSpecHash": "dee4302a78215fcb06cb155fe7ec7fcc78be5f6bd1aadcffbb802e705605d6ff"
     },
     {
       "targetId": "ModLoaderMP@1.2.5",
@@ -65387,7 +65563,7 @@
       "status": "PendingImplementation",
       "sourceHash": "704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
       "toolchainHash": null,
-      "targetSpecHash": "cfe2bff5907bbb0a93343762f5280917400e557a4d9c00825dd9d02ed013fa6f"
+      "targetSpecHash": "4bc93fc91e0cd17e0ef0c0a32ae6e2778c05f20b7b08ce55db7551df58cce575"
     },
     {
       "targetId": "ModLoaderMP@1.3.1",
@@ -65404,8 +65580,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
+            "source-url:https://mcarchive.net/mods/modloadermp"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -65468,10 +65648,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
       "toolchainHash": null,
-      "targetSpecHash": "570d1b77cb79b6f77abcac4916e11f8bf9b9adfcb1b093fd131d8a87b82abac8"
+      "targetSpecHash": "d12326888cff47c3adb571f9081e7add976ef7e95cf98e89c0713fa8598de346"
     },
     {
       "targetId": "ModLoaderMP@1.3.2",
@@ -65559,7 +65739,7 @@
       "status": "PendingImplementation",
       "sourceHash": "704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
       "toolchainHash": null,
-      "targetSpecHash": "a4fc3d32967bc424c11509d54afa98734c01016fd14d1091873e9ebe0e911958"
+      "targetSpecHash": "fa8ec187ab315fb483b66d484d8cdff1d8d19bb282a479721cf4aeba57804625"
     },
     {
       "targetId": "ModLoaderMP@b1.1_02",
@@ -65576,8 +65756,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
+            "source-url:https://mcarchive.net/mods/modloadermp"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -65640,10 +65824,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
       "toolchainHash": null,
-      "targetSpecHash": "6b7bb63d660b5b408417114c841500fa10b80041e084dc1ae89b8266f1242bc4"
+      "targetSpecHash": "200264b3e3d4feff188c713662534ca6254b4b1777eb5a3b7d71b284af678059"
     },
     {
       "targetId": "ModLoaderMP@b1.2_02",
@@ -65660,8 +65844,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
+            "source-url:https://mcarchive.net/mods/modloadermp"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -65724,10 +65912,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
       "toolchainHash": null,
-      "targetSpecHash": "7b670df2fdcfe25d5886e163cb4bad864ae675f34a984019f49d61e86e195562"
+      "targetSpecHash": "22fec2f18ee797bd1d58de9b181fba12b6d001174111546c2e8904a478d67274"
     },
     {
       "targetId": "ModLoaderMP@b1.3",
@@ -65744,8 +65932,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
+            "source-url:https://mcarchive.net/mods/modloadermp"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -65808,10 +66000,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
       "toolchainHash": null,
-      "targetSpecHash": "cc5b9c339d9b0574be61f2ef3bb8fe047c2bf8a5f2d3a88e4289efc691c3b76b"
+      "targetSpecHash": "3013a00a6a91ac39282abcb87ce79e5ceec6f100a69db73b1532f2395a92ad23"
     },
     {
       "targetId": "ModLoaderMP@b1.3_01",
@@ -65828,8 +66020,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
+            "source-url:https://mcarchive.net/mods/modloadermp"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -65892,10 +66088,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
       "toolchainHash": null,
-      "targetSpecHash": "faaf308f6db83ac10a9e71fdca17ad5e24c874bd703c22e9573f9ef6aa46f125"
+      "targetSpecHash": "86a1aa44d5ef6085837f257719fb286e1d427694a7100fac5a534fce7362425f"
     },
     {
       "targetId": "ModLoaderMP@b1.4_01",
@@ -65912,8 +66108,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
+            "source-url:https://mcarchive.net/mods/modloadermp"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -65976,10 +66176,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
       "toolchainHash": null,
-      "targetSpecHash": "b5678a04ba6bcf15cb07937a6c800f98ed1023e56c5c459b1fa90ddb600e84b9"
+      "targetSpecHash": "874aafdcdbc784cf00604b21fdf390f3e707cadc435b3c10fe6d1d7a8037df11"
     },
     {
       "targetId": "ModLoaderMP@b1.5_01",
@@ -65996,8 +66196,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
+            "source-url:https://mcarchive.net/mods/modloadermp"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -66060,10 +66264,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
       "toolchainHash": null,
-      "targetSpecHash": "8a8cd499a4876a66da7b676f534821fb4e2667813c3ec650825a76f03107dcf7"
+      "targetSpecHash": "a5fe7eadf840a976a9194072ad19052f25f797a7d38a0df4db695a5101a11db1"
     },
     {
       "targetId": "ModLoaderMP@b1.6.4",
@@ -66080,8 +66284,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
+            "source-url:https://mcarchive.net/mods/modloadermp"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -66144,10 +66352,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
       "toolchainHash": null,
-      "targetSpecHash": "2298415b9082083c699e6eb33e3aba2f658bf79a351dcecfd958bd84787d62f4"
+      "targetSpecHash": "b3b8556bdfaabaf4149a4ad807f9ac1771c118faaf45e656006c8882475ea350"
     },
     {
       "targetId": "ModLoaderMP@b1.6.5",
@@ -66164,8 +66372,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
+            "source-url:https://mcarchive.net/mods/modloadermp"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -66228,10 +66440,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
       "toolchainHash": null,
-      "targetSpecHash": "73214493b6d78ee5a48d43b86e4de0ef8a5506c92303926aa95c41820e6bbe5d"
+      "targetSpecHash": "8e778abfbe42d7d4befe3e6ca813a122291dd6a36151e908048d96ce7c5ba306"
     },
     {
       "targetId": "ModLoaderMP@b1.6.6",
@@ -66248,8 +66460,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
+            "source-url:https://mcarchive.net/mods/modloadermp"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -66312,10 +66528,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
       "toolchainHash": null,
-      "targetSpecHash": "bcfc3945b330c519d85c72bbbe676cd8b5ea5e2372090e86b9e677d70adf19ec"
+      "targetSpecHash": "e292503a2db7a5d6f522bb85a34ec5e26033067d36c42c10eb534da1a82d1d06"
     },
     {
       "targetId": "ModLoaderMP@b1.7.2",
@@ -66332,8 +66548,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
+            "source-url:https://mcarchive.net/mods/modloadermp"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -66396,10 +66616,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
       "toolchainHash": null,
-      "targetSpecHash": "4d1de49e06b5e25655aa874bd1d9afed58b9a145825013f4a9b82b8265879860"
+      "targetSpecHash": "8f4fe0b949a198d55725289e69e845573f4c262df1e9d9a46160c396057fd17b"
     },
     {
       "targetId": "ModLoaderMP@b1.7.3",
@@ -66416,8 +66636,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
+            "source-url:https://mcarchive.net/mods/modloadermp"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -66480,10 +66704,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
       "toolchainHash": null,
-      "targetSpecHash": "d12930ea1e71c689e73e02c05ae36f86aa417484d90c3ac1037edfa1f59391b6"
+      "targetSpecHash": "05344c73453f9d7cbe68f3945ea0254c3fbaf9aae38144135f1326230f34c763"
     },
     {
       "targetId": "ModLoaderMP@b1.8.1",
@@ -66500,8 +66724,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
+            "source-url:https://mcarchive.net/mods/modloadermp"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -66564,10 +66792,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
       "toolchainHash": null,
-      "targetSpecHash": "b5a268130a10a7b0310ca45f5d6550a52ae7ce87634fd5c552b0e1ba4eff4b1c"
+      "targetSpecHash": "ee4a9d32236a66e69cddb025e90ecbb755e8aeda7682f2d7790a186c78ae73d2"
     },
     {
       "targetId": "ModLoaderMP@b1.9p5",
@@ -66584,8 +66812,12 @@
           ]
         },
         "LoaderResolved": {
-          "status": "Unknown",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
+            "source-url:https://mcarchive.net/mods/modloadermp"
+          ]
         },
         "ProjectDetection": {
           "status": "PendingImplementation",
@@ -66648,10 +66880,10 @@
           "evidenceRefs": []
         }
       },
-      "status": "Unknown",
+      "status": "PendingImplementation",
       "sourceHash": "704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b",
       "toolchainHash": null,
-      "targetSpecHash": "3e0b9818b5e1ecd3be219e40817a5d0cdcfaf5d5a58457bb596722acae1969da"
+      "targetSpecHash": "0ef1dec93b4bab0a338eefbe4c9cbc318ef081c08413faf23aaea1d170d25b59"
     },
     {
       "targetId": "NeoForge@1.20.1",
@@ -143304,7 +143536,7 @@
   ],
   "summary": {
     "targetCount": 1631,
-    "unknownTargetCount": 58,
+    "unknownTargetCount": 0,
     "pendingImplementationDimensionCount": 24465,
     "unassignedFamilyCount": 1631
   }
