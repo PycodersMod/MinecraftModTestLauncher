@@ -85,11 +85,11 @@
 
 ### Task 5：Forge IntegratedLAN Agent 与安全握手（Phase R）
 
-- [ ] 用 Forge Agent 测试覆盖 host role/session token、world joined、IntegratedServer detection、offline auth gate、LAN publish request/result/port event 与重放/错误 token 拒绝。
-- [ ] 实现仅受管 Host 可触发的 IntegratedServer offline-auth 与 publish；默认拒绝非 loopback、无效身份、Dedicated API 混用及不匹配 token。
-- [ ] Guest 只允许 Quick Play 到 `127.0.0.1:<PortManager port>`；Host ready/published/listening 前不得启动 Guest；有界重试及阶段 timeout。
-- [ ] Agent jar 独立记录，不进入用户 Mod jar；build/metadata/hash 测试通过。
-- [ ] 中文 commit：`功能：实现 Forge 本机离线 LAN 测试代理`。
+- [x] 用 Forge Agent 测试覆盖 host role/session token、world joined、IntegratedServer detection、offline auth gate、LAN publish request/result/port event 与重放/错误 token 拒绝。
+- [x] 实现仅受管 Host 可触发的 IntegratedServer offline-auth 与 publish；默认拒绝非 loopback、无效身份、Dedicated API 混用及不匹配 token。
+- [x] Guest 只允许 Quick Play 到 `127.0.0.1:<PortManager port>`；实现 Host readiness/published/listening 门禁及有界 timeout。Task 6 接入场景启动顺序后才构成 Guest launch sequencing；本任务未宣称端到端 LAN 实测。
+- [x] Agent jar 独立记录，不进入用户 Mod jar；build/metadata/hash 测试通过。
+- [x] 中文 commit：`功能：实现 Forge 本机离线 LAN 测试代理`。
 
 ### Task 6：Scenario Orchestrator 与 Action Controller（Phase S）
 

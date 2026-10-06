@@ -13,7 +13,9 @@ final class AgentEventSink {
     private final AgentHandshake.Context context;
     AgentEventSink(AgentHandshake.Context context) { this.context = context; }
 
-    synchronized void emit(String type, String summary) {
+    synchronized void emit(String type, String summary) { emit(type, summary, null); }
+
+    synchronized void emit(String type, String summary, Integer port) {
         if (context == null || !context.eventSink.startsWith(context.sessionRoot)) return;
         try {
             Path parent = context.eventSink.getParent();
@@ -21,8 +23,8 @@ final class AgentEventSink {
             String line = "{\"schemaVersion\":1,\"sessionId\":\"" + escape(context.sessionId)
                     + "\",\"role\":\"" + escape(context.role) + "\",\"eventId\":\"" + UUID.randomUUID()
                     + "\",\"eventType\":\"" + escape(type) + "\",\"timestampUtc\":\"" + Instant.now()
-                    + "\",\"sessionNonceHash\":\"" + context.nonceHash + "\",\"summary\":\"" + escape(summary)
-                    + "\"}\n";
+                    + "\",\"sessionNonceHash\":\"" + context.nonceHash + "\",\"summary\":\"" + escape(summary) + "\""
+                    + (port != null && port >= 1 && port <= 65535 ? ",\"port\":" + port : "") + "}\n";
             Files.writeString(context.eventSink, line, StandardCharsets.UTF_8,
                     StandardOpenOption.CREATE, StandardOpenOption.APPEND, LinkOption.NOFOLLOW_LINKS);
         } catch (IOException ignored) { /* Telemetry must never crash or block the game. */ }

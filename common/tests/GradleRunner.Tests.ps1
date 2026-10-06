@@ -17,3 +17,18 @@ Describe 'Platform Gradle Wrapper' {
         $command.Arguments | Should -Contain 'build'
     }
 }
+
+Describe 'IntegratedLAN client routing' {
+    It 'builds Quick Play args for the selected IPv4 loopback port only' {
+        $project=[pscustomobject]@{Root=$TestDrive;MinecraftVersion='1.20.1'}
+        $profile=[pscustomobject]@{gameArgs=@();jvmArgs=@();resolution='Auto';memoryMb=0;hostMemoryMb=0;clientMemoryMb=0}
+        $plan=New-MmtlGradleRunPlan -Project $project -Mode IntegratedLAN -RuntimeRoot $TestDrive -Role Client -Username Guest01 -Port 25565 -Profile $profile
+        $plan.GameArguments | Should -Contain '--quickPlayMultiplayer'
+        $plan.GameArguments | Should -Contain '127.0.0.1:25565'
+        { New-MmtlGradleRunPlan -Project $project -Mode IntegratedLAN -RuntimeRoot $TestDrive -Role Client -Username Guest01 -Port 0 -Profile $profile } | Should -Throw '*联机客户端必须提供有效服务端口*'
+        $profile.gameArgs=@('--quickPlayMultiplayer','example.invalid')
+        { New-MmtlGradleRunPlan -Project $project -Mode IntegratedLAN -RuntimeRoot $TestDrive -Role Client -Username Guest01 -Port 25565 -Profile $profile } | Should -Throw '*INTEGRATED_LAN_EXTERNAL_ENDPOINT_OVERRIDE_REJECTED*'
+        $profile.gameArgs=@('--server','example.invalid','--port','25565')
+        { New-MmtlGradleRunPlan -Project $project -Mode IntegratedLAN -RuntimeRoot $TestDrive -Role Client -Username Guest01 -Port 25565 -Profile $profile } | Should -Throw '*INTEGRATED_LAN_EXTERNAL_ENDPOINT_OVERRIDE_REJECTED*'
+    }
+}

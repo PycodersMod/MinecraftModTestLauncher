@@ -21,4 +21,4 @@ Use JDK 17 and the checked-in Gradle 8.5 wrapper:
 - Event sink failures are best-effort telemetry failures and never stop or crash Minecraft.
 - Provider manifests bind a Loader/Minecraft compatibility range, minimum Java major, role allowlist, capabilities, and artifact SHA-256.
 
-The initial Forge provider advertises `IntegratedServerEvents` and `GuestJoinObservation`. Dedicated Server support and LAN publish actions are separate capabilities and are not implied by this manifest.
+The Forge 1.20.1 provider can observe client/Host/Guest joins. Only an authenticated MMTL Host binding with a Session-selected port can switch the integrated server to offline authentication and publish it. A required client Mixin changes that managed listener bind to loopback and suppresses LAN multicast discovery; ordinary unbound Forge sessions retain vanilla behavior. Guest bindings can require an exact loopback endpoint. Dedicated Server role support is not advertised.

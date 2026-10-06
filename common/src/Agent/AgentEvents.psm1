@@ -1,14 +1,21 @@
 Set-StrictMode -Version Latest
 
 $script:RuntimeEventModule=Import-Module (Join-Path $PSScriptRoot '../Observation/RuntimeEvents.psm1') -PassThru
+$script:AgentProviderModule=Import-Module (Join-Path $PSScriptRoot 'AgentProvider.psm1') -PassThru
 $script:AgentEventMap=@{
-    CLIENT_INITIALIZED='CLIENT_INIT_DETECTED'
-    MAIN_MENU_READY='CLIENT_MAIN_MENU_DETECTED'
+    AGENT_STARTED='AGENT_STARTED'
+    CLIENT_READY='AGENT_CLIENT_READY'
     WORLD_JOINED='AGENT_WORLD_JOINED'
-    INTEGRATED_SERVER_DETECTED='INTEGRATED_SERVER_DETECTED'
+    INTEGRATED_SERVER_READY='INTEGRATED_SERVER_READY'
+    OFFLINE_AUTH_ENABLED='OFFLINE_AUTH_ENABLED'
     LAN_PUBLISH_REQUESTED='LAN_PUBLISH_REQUESTED'
     LAN_PUBLISHED='LAN_PORT_PUBLISHED'
+    LAN_PUBLISH_FAILED='LAN_PUBLISH_FAILED'
+    GUEST_CONNECTING='GUEST_CONNECTING'
     GUEST_CONNECTED='AGENT_GUEST_CONNECTED'
+    WORLD_JOIN_TIMEOUT='WORLD_JOIN_TIMEOUT'
+    LAN_PUBLISH_TIMEOUT='LAN_PUBLISH_TIMEOUT'
+    GUEST_JOIN_TIMEOUT='GUEST_JOIN_TIMEOUT'
     AGENT_ERROR='AGENT_ERROR'
 }
 
@@ -23,7 +30,60 @@ function ConvertFrom-MmtlAgentEventLine {
     if(-not $script:AgentEventMap.ContainsKey([string]$agentEvent.eventType)){throw 'AGENT_EVENT_TYPE_UNSUPPORTED'}
     foreach($property in $agentEvent.PSObject.Properties.Name){if($property -match '(?i)token|password|secret|credential|raw|path|account|username'){throw 'AGENT_EVENT_SENSITIVE_FIELD_REJECTED'}}
     $metadata=@{agentEventId=[string]$agentEvent.eventId;sourceCategory=if($agentEvent.eventType -eq 'AGENT_ERROR'){'MMTL_INFRASTRUCTURE'}else{'AGENT_OBSERVATION'}}
+    if($agentEvent.PSObject.Properties['port']){$metadata.port=[int]$agentEvent.port}
     return & $script:RuntimeEventModule {param($sid,$role,$pidValue,$identity,$code,$summary,$time,$meta) New-MmtlRuntimeEvent -SessionId $sid -Role $role -ProcessId $pidValue -ProcessIdentity $identity -SourceType Agent -EventCode $code -Summary $summary -TimestampUtc $time -Metadata $meta} $ExpectedSessionId $ExpectedRole $ProcessId $ProcessIdentity $script:AgentEventMap[[string]$agentEvent.eventType] ([string]$agentEvent.summary) ([string]$agentEvent.timestampUtc) $metadata
 }
 
-Export-ModuleMember -Function ConvertFrom-MmtlAgentEventLine
+function Test-MmtlLoopbackTcpPort {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][ValidateRange(1,65535)][int]$Port,[ValidateRange(50,5000)][int]$TimeoutMilliseconds=250)
+    $client=[Net.Sockets.TcpClient]::new([Net.Sockets.AddressFamily]::InterNetwork)
+    try{$task=$client.ConnectAsync([Net.IPAddress]::Loopback,$Port);try{return [bool]($task.Wait($TimeoutMilliseconds) -and $client.Connected)}catch{return $false}}
+    finally{$client.Dispose()}
+}
+
+function Assert-MmtlAgentEventPathSafe {
+    param([Parameter(Mandatory)][string]$Root,[Parameter(Mandatory)][string]$Path)
+    $full=[IO.Path]::GetFullPath($Path);$current=[IO.Path]::GetPathRoot($full)
+    foreach($part in ($full.Substring($current.Length) -split '[\\/]'|Where-Object{$_})){$current=Join-Path $current $part;if(Test-Path -LiteralPath $current){$item=Get-Item -LiteralPath $current -Force;if($item.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'AGENT_EVENT_PATH_REPARSE_POINT'}}}
+    if(-not(& $script:AgentProviderModule {param($r,$p) Test-MmtlAgentPathInsideRoot -Root $r -Target $p} $Root $full)){throw 'AGENT_EVENT_PATH_OUTSIDE_SESSION'}
+    return $full
+}
+
+function Wait-MmtlAgentIntegratedLanReady {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)][string]$SessionPath,
+        [Parameter(Mandatory)][string]$EventPath,
+        [Parameter(Mandatory)][ValidatePattern('^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$')][string]$SessionId,
+        [Parameter(Mandatory)][ValidatePattern('^[a-f0-9]{64}$')][string]$ExpectedNonceHash,
+        [Parameter(Mandatory)][ValidateRange(1,65535)][int]$Port,
+        [ValidateRange(1,600)][int]$TimeoutSeconds=60,
+        [ValidateRange(50,5000)][int]$PollMilliseconds=200,
+        [Parameter(Mandatory)][ValidateRange(1,[int]::MaxValue)][int]$ProcessId,
+        [ValidateNotNullOrEmpty()][string]$ProcessIdentity='unobserved-process',
+        [scriptblock]$PortProbe
+    )
+    $session=[IO.Path]::GetFullPath($SessionPath);$event=Assert-MmtlAgentEventPathSafe -Root $session -Path $EventPath
+    if(-not(Test-Path -LiteralPath $session -PathType Container) -or -not(Test-Path -LiteralPath $event -PathType Leaf)){throw 'AGENT_EVENT_WORKSPACE_MISSING'}
+    if(-not $PortProbe){$PortProbe={param($candidate) Test-MmtlLoopbackTcpPort -Port $candidate}}
+    $deadline=[DateTime]::UtcNow.AddSeconds($TimeoutSeconds)
+    do{
+        foreach($line in [IO.File]::ReadAllLines($event)){
+            if(-not $line){continue}
+            try{$observation=ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId $SessionId -ExpectedRole Host -ExpectedNonceHash $ExpectedNonceHash -ProcessId $ProcessId -ProcessIdentity $ProcessIdentity}catch{continue}
+            $agentRecord=$line|ConvertFrom-Json -ErrorAction SilentlyContinue
+            if([int]$agentRecord.port -ne $Port){continue}
+            if([string]$agentRecord.eventType -eq 'LAN_PUBLISH_FAILED'){throw 'AGENT_LAN_PUBLISH_FAILED'}
+            if([string]$agentRecord.eventType -eq 'LAN_PUBLISHED' -and (& $PortProbe $Port)){
+                try{$null=Get-Process -Id $ProcessId -ErrorAction Stop}catch{throw 'AGENT_HOST_PROCESS_EXITED'}
+                return [pscustomobject][ordered]@{ready=$true;sessionId=$SessionId;port=$Port;bindAddress='127.0.0.1';event=$observation;detectedAtUtc=[DateTimeOffset]::UtcNow.ToString('o')}
+            }
+        }
+        try{$null=Get-Process -Id $ProcessId -ErrorAction Stop}catch{throw 'AGENT_HOST_PROCESS_EXITED'}
+        Start-Sleep -Milliseconds $PollMilliseconds
+    }while([DateTime]::UtcNow -lt $deadline)
+    throw 'AGENT_LAN_READY_TIMEOUT'
+}
+
+Export-ModuleMember -Function ConvertFrom-MmtlAgentEventLine,Test-MmtlLoopbackTcpPort,Wait-MmtlAgentIntegratedLanReady

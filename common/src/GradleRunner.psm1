@@ -28,6 +28,10 @@ function New-MmtlGradleRunPlan {
     $safeName=if($Role -eq 'Server'){'Server'}else{$Username}
     $runtimeDirectory=[IO.Path]::GetFullPath((Join-Path $RuntimeRoot $safeName))
     $gameArgs=@($Profile.gameArgs|Where-Object{$null -ne $_}|ForEach-Object{[string]$_})
+    if($Mode -eq 'IntegratedLAN' -and $Role -eq 'Client'){
+        $externalTargetOptions=@('--server','--port','--quickPlayMultiplayer','--quickPlayRealms','--quickPlaySingleplayer','--quickPlayPath')
+        if(@($gameArgs|Where-Object{$_ -in $externalTargetOptions}).Count){throw 'INTEGRATED_LAN_EXTERNAL_ENDPOINT_OVERRIDE_REJECTED'}
+    }
     if($Role -ne 'Server' -and [string]$Profile.resolution -match '^(\d{3,5})x(\d{3,5})$'){$gameArgs+=@('--width',$Matches[1],'--height',$Matches[2])}
     if($networkClient){
         if([version]$Project.MinecraftVersion -ge [version]'1.20.0'){$gameArgs+=@('--quickPlayMultiplayer',('127.0.0.1:{0}' -f $Port))}

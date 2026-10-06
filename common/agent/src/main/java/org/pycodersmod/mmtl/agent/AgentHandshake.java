@@ -26,7 +26,15 @@ public final class AgentHandshake {
                 token,
                 System.getProperty("mmtl.agent.sessionNonceHash"),
                 System.getProperty("mmtl.agent.sessionRoot"),
-                System.getProperty("mmtl.agent.eventSink"));
+                System.getProperty("mmtl.agent.eventSink"),
+                parsePort(System.getProperty("mmtl.agent.integratedLanPort")),
+                parsePort(System.getProperty("mmtl.agent.expectedLoopbackPort")));
+    }
+
+    private static int parsePort(String value) {
+        if (value == null) return 0;
+        try { int port = Integer.parseInt(value); return port >= 1 && port <= 65535 ? port : -1; }
+        catch (NumberFormatException invalid) { return -1; }
     }
 
     private static String readSessionToken(String tokenFile, String sessionRoot) {
@@ -34,19 +42,46 @@ public final class AgentHandshake {
         try {
             Path root = Path.of(sessionRoot).toAbsolutePath().normalize();
             Path file = Path.of(tokenFile).toAbsolutePath().normalize();
-            if (!file.startsWith(root) || file.equals(root) || Files.isSymbolicLink(file)
+            if (!file.startsWith(root) || file.equals(root) || hasSymbolicLink(root, file)
                     || !Files.isRegularFile(file, java.nio.file.LinkOption.NOFOLLOW_LINKS)) return null;
             return Files.readString(file, StandardCharsets.UTF_8);
         } catch (Exception invalidFile) { return null; }
     }
 
+    private static boolean hasSymbolicLink(Path root, Path target) {
+        Path current = target;
+        while (current != null && current.startsWith(root)) {
+            if (Files.isSymbolicLink(current)) return true;
+            if (current.equals(root)) return false;
+            current = current.getParent();
+        }
+        return true;
+    }
+
     static Context fromProperties(String sessionId, String role, String allowedRoles,
                                   String token, String expectedNonceHash, String sessionRoot,
                                   String eventSink) {
+        return fromProperties(sessionId, role, allowedRoles, token, expectedNonceHash, sessionRoot, eventSink, 0);
+    }
+
+    static Context fromProperties(String sessionId, String role, String allowedRoles,
+                                  String token, String expectedNonceHash, String sessionRoot,
+                                  String eventSink, int integratedLanPort) {
+        return fromProperties(sessionId, role, allowedRoles, token, expectedNonceHash, sessionRoot, eventSink,
+                integratedLanPort, 0);
+    }
+
+    static Context fromProperties(String sessionId, String role, String allowedRoles,
+                                  String token, String expectedNonceHash, String sessionRoot,
+                                  String eventSink, int integratedLanPort, int expectedLoopbackPort) {
         if (sessionId == null || !SESSION.matcher(sessionId).matches() || role == null || !ROLES.contains(role)
                 || allowedRoles == null || token == null || !TOKEN.matcher(token).matches()
                 || expectedNonceHash == null || !NONCE_HASH.matcher(expectedNonceHash).matches()
-                || sessionRoot == null || eventSink == null) return null;
+                || sessionRoot == null || eventSink == null || integratedLanPort < 0 || integratedLanPort > 65535
+                || expectedLoopbackPort < 0 || expectedLoopbackPort > 65535
+                || (integratedLanPort != 0 && !"Host".equals(role))
+                || (expectedLoopbackPort != 0 && !"Guest".equals(role))
+                || ("Guest".equals(role) && expectedLoopbackPort == 0)) return null;
         Set<String> allowed = Arrays.stream(allowedRoles.split(","))
                 .map(String::trim).filter(ROLES::contains).collect(Collectors.toSet());
         if (!allowed.contains(role) || !constantTimeEquals(hash(token), expectedNonceHash)) return null;
@@ -54,7 +89,7 @@ public final class AgentHandshake {
             Path root = Path.of(sessionRoot).toAbsolutePath().normalize();
             Path sink = Path.of(eventSink).toAbsolutePath().normalize();
             if (!sink.startsWith(root) || sink.equals(root)) return null;
-            return new Context(sessionId, role, token, expectedNonceHash, root, sink);
+            return new Context(sessionId, role, token, expectedNonceHash, root, sink, integratedLanPort, expectedLoopbackPort);
         } catch (RuntimeException invalidPath) {
             return null;
         }
@@ -76,9 +111,10 @@ public final class AgentHandshake {
     static final class Context {
         final String sessionId, role, token, nonceHash;
         final Path sessionRoot, eventSink;
-        Context(String sessionId, String role, String token, String nonceHash, Path sessionRoot, Path eventSink) {
+        final int integratedLanPort, expectedLoopbackPort;
+        Context(String sessionId, String role, String token, String nonceHash, Path sessionRoot, Path eventSink, int integratedLanPort, int expectedLoopbackPort) {
             this.sessionId=sessionId; this.role=role; this.token=token; this.nonceHash=nonceHash;
-            this.sessionRoot=sessionRoot; this.eventSink=eventSink;
+            this.sessionRoot=sessionRoot; this.eventSink=eventSink; this.integratedLanPort=integratedLanPort; this.expectedLoopbackPort=expectedLoopbackPort;
         }
     }
 }

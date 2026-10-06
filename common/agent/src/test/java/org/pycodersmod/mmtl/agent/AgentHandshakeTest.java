@@ -23,4 +23,13 @@ public final class AgentHandshakeTest {
         assertNull(AgentHandshake.fromProperties("session_a","Host","Host",token,"0".repeat(64),root.toString(),root.resolve("event.jsonl").toString()));
         assertNull(AgentHandshake.fromProperties("session_a","Host","Host",token,valid,root.toString(),root.resolve("../outside.jsonl").toString()));
     }
+    @Test public void integratedLanPortIsHostOnlyAndRangeChecked() throws Exception {
+        String token="agent-test-token-0123456789abcdef";Path root=Path.of("/tmp/session_a");String valid=hash(token);
+        assertEquals(25565, AgentHandshake.fromProperties("session_a","Host","Host,Guest",token,valid,root.toString(),root.resolve("events/host.jsonl").toString(),25565).integratedLanPort);
+        assertNull(AgentHandshake.fromProperties("session_a","Guest","Host,Guest",token,valid,root.toString(),root.resolve("events/guest.jsonl").toString(),25565));
+        assertNull(AgentHandshake.fromProperties("session_a","Host","Host",token,valid,root.toString(),root.resolve("events/host.jsonl").toString(),65536));
+        assertEquals(25565, AgentHandshake.fromProperties("session_a","Guest","Host,Guest",token,valid,root.toString(),root.resolve("events/guest.jsonl").toString(),0,25565).expectedLoopbackPort);
+        assertNull(AgentHandshake.fromProperties("session_a","Client","Client,Guest",token,valid,root.toString(),root.resolve("events/client.jsonl").toString(),0,25565));
+        assertNull(AgentHandshake.fromProperties("session_a","Guest","Host,Guest",token,valid,root.toString(),root.resolve("events/guest.jsonl").toString()));
+    }
 }

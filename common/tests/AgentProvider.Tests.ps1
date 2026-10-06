@@ -70,17 +70,32 @@ Describe 'MMTL Agent Provider 与 Session 握手' {
         (Get-Content -LiteralPath (Join-Path $script:session 'agent/session-token.txt') -Raw) | Should -BeExactly $script:token
         $binding.PSObject.Properties.Name | Should -Not -Contain 'sessionToken'
         $binding.sessionNonceHash | Should -Be (([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($script:token)))).ToLowerInvariant())
+        $lanBinding = New-MmtlAgentLaunchBinding -Provider $provider -SessionPath $script:session -SessionId session_a -Role Host -SessionToken $script:token -IntegratedLanPort 25565
+        $lanBinding.jvmArgs | Should -Contain '-Dmmtl.agent.integratedLanPort=25565'
+        $lanBinding.integratedLanPort | Should -Be 25565
+        { New-MmtlAgentLaunchBinding -Provider $provider -SessionPath $script:session -SessionId session_a -Role Guest -SessionToken $script:token -IntegratedLanPort 25565 } | Should -Throw '*AGENT_LAN_PUBLISH_HOST_ONLY*'
+        { New-MmtlAgentLaunchBinding -Provider $provider -SessionPath $script:session -SessionId session_a -Role Guest -SessionToken $script:token } | Should -Throw '*AGENT_GUEST_LOOPBACK_PORT_REQUIRED*'
+        $guestBinding = New-MmtlAgentLaunchBinding -Provider $provider -SessionPath $script:session -SessionId session_a -Role Guest -SessionToken $script:token -ExpectedLoopbackPort 25565
+        $guestBinding.jvmArgs | Should -Contain '-Dmmtl.agent.expectedLoopbackPort=25565'
     }
 
     It '验证 Agent Event nonce/session/role 并映射到 Runtime Event，Agent 错误归为基础设施' {
         $nonceHash = ([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($script:token)))).ToLowerInvariant()
-        $line = [pscustomobject]@{schemaVersion=1;sessionId='session_a';role='Guest';eventId='evt-1';eventType='AGENT_ERROR';timestampUtc=[DateTimeOffset]::UtcNow.ToString('o');sessionNonceHash=$nonceHash;summary='agent hook failed'} | ConvertTo-Json -Compress
+        $line = [pscustomobject]@{schemaVersion=1;sessionId='session_a';role='Guest';eventId='evt-1';eventType='AGENT_ERROR';timestampUtc=[DateTimeOffset]::UtcNow.ToString('o');sessionNonceHash=$nonceHash;summary='agent hook failed';port=25565} | ConvertTo-Json -Compress
         Test-Json -Json $line -SchemaFile (Join-Path (Split-Path -Parent $PSScriptRoot) 'schemas/agent-event-v1.schema.json') | Should -BeTrue
         $event = ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId session_a -ExpectedRole Guest -ExpectedNonceHash $nonceHash -ProcessId 77 -ProcessIdentity 'start-77'
         $event.eventCode | Should -BeExactly 'AGENT_ERROR'
         $event.sourceType | Should -BeExactly 'Agent'
         $event.metadata.sourceCategory | Should -BeExactly 'MMTL_INFRASTRUCTURE'
+        $event.metadata.port | Should -Be 25565
         { ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId session_b -ExpectedRole Guest -ExpectedNonceHash $nonceHash -ProcessId 77 -ProcessIdentity 'start-77' } | Should -Throw '*AGENT_EVENT_SESSION_MISMATCH*'
+        $lineObject = $line | ConvertFrom-Json; $lineObject.eventType = 'LAN_PUBLISH_FAILED'; $line = $lineObject | ConvertTo-Json -Compress
+        Test-Json -Json $line -SchemaFile (Join-Path (Split-Path -Parent $PSScriptRoot) 'schemas/agent-event-v1.schema.json') | Should -BeTrue
+        $failedEvent=ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId session_a -ExpectedRole Guest -ExpectedNonceHash $nonceHash -ProcessId 77 -ProcessIdentity 'start-77'
+        $failedEvent.eventCode | Should -BeExactly 'LAN_PUBLISH_FAILED'
+        $failedEvent.metadata.port | Should -Be 25565
+        $expectedCodes=@{AGENT_STARTED='AGENT_STARTED';CLIENT_READY='AGENT_CLIENT_READY';WORLD_JOINED='AGENT_WORLD_JOINED';INTEGRATED_SERVER_READY='INTEGRATED_SERVER_READY';OFFLINE_AUTH_ENABLED='OFFLINE_AUTH_ENABLED';GUEST_CONNECTING='GUEST_CONNECTING';WORLD_JOIN_TIMEOUT='WORLD_JOIN_TIMEOUT';LAN_PUBLISH_TIMEOUT='LAN_PUBLISH_TIMEOUT';GUEST_JOIN_TIMEOUT='GUEST_JOIN_TIMEOUT'}
+        foreach($eventType in $expectedCodes.Keys){$lineObject.eventType=$eventType;$line=$lineObject|ConvertTo-Json -Compress;(ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId session_a -ExpectedRole Guest -ExpectedNonceHash $nonceHash -ProcessId 77 -ProcessIdentity 'start-77').eventCode | Should -BeExactly $expectedCodes[$eventType]}
         $line | Should -Not -Match [regex]::Escape($script:token)
     }
 }

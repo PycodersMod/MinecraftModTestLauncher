@@ -46,9 +46,12 @@ function Get-MmtlAgentProviderStatus {
 
 function New-MmtlAgentLaunchBinding {
     [CmdletBinding()]
-    param([Parameter(Mandatory)]$Provider,[Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][ValidatePattern('^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$')][string]$SessionId,[Parameter(Mandatory)][ValidateSet('Client','Host','Guest','Server')][string]$Role,[Parameter(Mandatory)][ValidatePattern('^[A-Za-z0-9._-]{32,128}$')][string]$SessionToken)
+    param([Parameter(Mandatory)]$Provider,[Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][ValidatePattern('^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$')][string]$SessionId,[Parameter(Mandatory)][ValidateSet('Client','Host','Guest','Server')][string]$Role,[Parameter(Mandatory)][ValidatePattern('^[A-Za-z0-9._-]{32,128}$')][string]$SessionToken,[ValidateRange(0,65535)][int]$IntegratedLanPort=0,[ValidateRange(0,65535)][int]$ExpectedLoopbackPort=0)
     if($Provider.status -cne 'Supported'){throw 'AGENT_PROVIDER_UNSUPPORTED'}
     if(@($Provider.roles) -notcontains $Role){throw 'AGENT_ROLE_UNSUPPORTED'}
+    if($IntegratedLanPort -gt 0 -and $Role -cne 'Host'){throw 'AGENT_LAN_PUBLISH_HOST_ONLY'}
+    if($ExpectedLoopbackPort -gt 0 -and $Role -cne 'Guest'){throw 'AGENT_LOOPBACK_EXPECTATION_GUEST_ONLY'}
+    if($Role -ceq 'Guest' -and $ExpectedLoopbackPort -eq 0){throw 'AGENT_GUEST_LOOPBACK_PORT_REQUIRED'}
     $session=[IO.Path]::GetFullPath($SessionPath)
     if(-not(Test-Path -LiteralPath $session -PathType Container)){throw 'AGENT_SESSION_PATH_INVALID'}
     Assert-MmtlAgentNoReparsePath -Path $session
@@ -81,7 +84,9 @@ function New-MmtlAgentLaunchBinding {
     $nonceHash=([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($SessionToken)))).ToLowerInvariant()
     $allowedRoles=(@($Provider.roles|ForEach-Object{[string]$_}) -join ',')
     $args=@("-Dmmtl.agent.sessionId=$SessionId","-Dmmtl.agent.role=$Role","-Dmmtl.agent.allowedRoles=$allowedRoles","-Dmmtl.agent.sessionTokenFile=$tokenFile","-Dmmtl.agent.sessionNonceHash=$nonceHash","-Dmmtl.agent.sessionRoot=$session","-Dmmtl.agent.eventSink=$eventSink")
-    return [pscustomobject][ordered]@{providerId=[string]$Provider.providerId;artifactPath=$artifactPath;artifactSha256=[string]$Provider.sha256;eventSink=$eventSink;sessionId=$SessionId;role=$Role;sessionNonceHash=$nonceHash;jvmArgs=$args;capabilities=@($Provider.capabilities)}
+    if($IntegratedLanPort -gt 0){$args+="-Dmmtl.agent.integratedLanPort=$IntegratedLanPort"}
+    if($ExpectedLoopbackPort -gt 0){$args+="-Dmmtl.agent.expectedLoopbackPort=$ExpectedLoopbackPort"}
+    return [pscustomobject][ordered]@{providerId=[string]$Provider.providerId;artifactPath=$artifactPath;artifactSha256=[string]$Provider.sha256;eventSink=$eventSink;sessionId=$SessionId;role=$Role;sessionNonceHash=$nonceHash;integratedLanPort=$IntegratedLanPort;expectedLoopbackPort=$ExpectedLoopbackPort;jvmArgs=$args;capabilities=@($Provider.capabilities)}
 }
 
 Export-ModuleMember -Function Test-MmtlAgentPathInsideRoot,Get-MmtlAgentProviderStatus,New-MmtlAgentLaunchBinding
