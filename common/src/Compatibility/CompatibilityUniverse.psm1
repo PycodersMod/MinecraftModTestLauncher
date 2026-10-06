@@ -66,10 +66,9 @@ function New-MmtlCompatibilityUniverse {
                     loaderId = $loaderId; status = 'Unknown'; reason = 'MINECRAFT_ID_NOT_RESOLVED_IN_MOJANG_CATALOG'
                     sourceUrl = [string]$snapshot.sourceUrl; evidence = $minecraftId
                 })
-                continue
             }
 
-            $minecraft = $minecraftById[$minecraftId]
+            $minecraft = if ($minecraftById.ContainsKey($minecraftId)) { $minecraftById[$minecraftId] } else { $null }
             $candidates = @()
             if ($snapshot.PSObject.Properties['loaderCandidatesByMinecraft'] -and $snapshot.loaderCandidatesByMinecraft) {
                 $property = $snapshot.loaderCandidatesByMinecraft.PSObject.Properties[$minecraftId]
@@ -77,9 +76,10 @@ function New-MmtlCompatibilityUniverse {
             }
             $targets.Add([pscustomobject][ordered]@{
                 targetId = "$loaderId@$minecraftId"; minecraftId = $minecraftId
-                minecraftType = [string]$minecraft.type
-                minecraftReleaseTime = if ($minecraft.PSObject.Properties['releaseTime']) { [string]$minecraft.releaseTime } else { $null }
+                minecraftType = if ($minecraft) { [string]$minecraft.type } else { 'Unknown' }
+                minecraftReleaseTime = if ($minecraft -and $minecraft.PSObject.Properties['releaseTime'] -and $minecraft.releaseTime) { [string]$minecraft.releaseTime } else { $null }
                 loaderId = $loaderId; loaderVersionCandidates = $candidates
+                sourceHash = if ($snapshot.PSObject.Properties['sourceHash'] -and -not [string]::IsNullOrWhiteSpace([string]$snapshot.sourceHash)) { [string]$snapshot.sourceHash } else { $null }
                 authoritativeSource = [string]$snapshot.sourceUrl
                 sourceClass = [string]$snapshot.sourceClass; trustClass = [string]$snapshot.trustClass
                 transportSecurity = [string]$snapshot.transportSecurity; maintenanceState = [string]$snapshot.maintenanceState
@@ -108,7 +108,7 @@ function New-MmtlCompatibilityUniverse {
     }
     $canonicalSourceMaterial = ConvertTo-Json -InputObject $sourceMaterial -Depth 30 -Compress
     [pscustomobject][ordered]@{
-        schemaVersion = 1; generatedAt = $GeneratedAt.ToUniversalTime().ToString('o')
+        schemaVersion = 1; auditStatus = 'IN_PROGRESS'; generatedAt = $GeneratedAt.ToUniversalTime().ToString('o')
         catalogHash = Get-MmtlCompatibilitySha256 -Text $canonicalSourceMaterial
         minecraftReleaseCount = $releaseCount; loaderCount = $loaderIds.Count
         targets = $sortedTargets; issues = @($issues | Sort-Object { [string]$_.loaderId }, { [string]$_.reason })

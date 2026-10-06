@@ -3,9 +3,10 @@
   "$id": "https://pycodersmod.github.io/MinecraftModTestLauncher/schemas/compatibility-universe.schema.json",
   "title": "MMTL Frozen Compatibility Universe",
   "type": "object",
-  "required": ["schemaVersion", "generatedAt", "catalogHash", "minecraftReleaseCount", "loaderCount", "targets", "issues"],
+  "required": ["schemaVersion", "auditStatus", "generatedAt", "catalogHash", "minecraftReleaseCount", "loaderCount", "targets", "issues"],
   "properties": {
     "schemaVersion": {"const": 1},
+    "auditStatus": {"enum": ["IN_PROGRESS", "FROZEN"]},
     "generatedAt": {"type": "string", "format": "date-time"},
     "catalogHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
     "minecraftReleaseCount": {"type": "integer", "minimum": 0},
@@ -16,7 +17,7 @@
   "$defs": {
     "target": {
       "type": "object",
-      "required": ["targetId", "minecraftId", "minecraftType", "minecraftReleaseTime", "loaderId", "loaderVersionCandidates", "authoritativeSource", "sourceClass", "trustClass", "transportSecurity", "maintenanceState", "availability", "buildToolchainCandidates", "runtimeJavaRequirement", "buildJavaRequirement", "agentRequirement", "status"],
+      "required": ["targetId", "minecraftId", "minecraftType", "minecraftReleaseTime", "loaderId", "loaderVersionCandidates", "sourceHash", "authoritativeSource", "sourceClass", "trustClass", "transportSecurity", "maintenanceState", "availability", "buildToolchainCandidates", "runtimeJavaRequirement", "buildJavaRequirement", "agentRequirement", "status"],
       "properties": {
         "targetId": {"type": "string", "minLength": 1},
         "minecraftId": {"type": "string", "minLength": 1},
@@ -24,6 +25,7 @@
         "minecraftReleaseTime": {"type": ["string", "null"]},
         "loaderId": {"type": "string", "minLength": 1},
         "loaderVersionCandidates": {"type": "array"},
+        "sourceHash": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
         "authoritativeSource": {"type": "string", "format": "uri"},
         "sourceClass": {"type": "string", "minLength": 1},
         "trustClass": {"type": "string", "minLength": 1},

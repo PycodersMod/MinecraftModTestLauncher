@@ -15,7 +15,8 @@ Describe 'Compatibility Universe exact target generation' {
         $snapshots = @([pscustomobject]@{
             loaderId = 'ExampleLoader'; providerStatus = 'Available'; sourceUrl = 'https://example.invalid/game'
             sourceClass = 'ActiveOfficial'; trustClass = 'TrustedOfficial'; transportSecurity = 'HTTPS'; maintenanceState = 'Active'
-            supportedVersions = @([pscustomobject]@{ version = '1.20.1'; stable = $true })
+            sourceHash = 'f' * 64; supportedVersions = @([pscustomobject]@{ version = '1.20.1'; stable = $true })
+            loaderCandidatesByMinecraft = [pscustomobject]@{ '1.20.1' = @('fabric-loader-0.1') }
         })
 
         $universe = New-MmtlCompatibilityUniverse -Catalog $catalog -LoaderSnapshots $snapshots -GeneratedAt ([DateTimeOffset]'2026-10-07T00:00:00Z')
@@ -24,6 +25,9 @@ Describe 'Compatibility Universe exact target generation' {
         $universe.targets[0].targetId | Should -Be 'ExampleLoader@1.20.1'
         $universe.targets[0].minecraftType | Should -Be 'release'
         $universe.targets[0].status | Should -Be 'Unknown'
+        $universe.targets[0].sourceHash | Should -Be ('f' * 64)
+        $universe.targets[0].loaderVersionCandidates | Should -Contain 'fabric-loader-0.1'
+        $universe.auditStatus | Should -Be 'IN_PROGRESS'
         $universe.catalogHash | Should -Match '^[a-f0-9]{64}$'
     }
 
@@ -88,5 +92,21 @@ Describe 'Compatibility Universe exact target generation' {
         $second = New-MmtlCompatibilityUniverse -Catalog $catalog -LoaderSnapshots @($two) -GeneratedAt ([DateTimeOffset]'2026-10-07T00:00:00Z')
 
         $first.catalogHash | Should -Not -Be $second.catalogHash
+    }
+
+    It 'retains loader-listed historical IDs missing from Mojang manifest as unknown exact targets' {
+        $catalog = [pscustomobject]@{ manifestHash = 'a' * 64; entries = @([pscustomobject]@{ id = '1.0'; type = 'release'; releaseTime = '2011-11-18T00:00:00Z' }) }
+        $snapshot = [pscustomobject]@{
+            loaderId = 'OldLoader'; providerStatus = 'Available'; sourceUrl = 'https://example.invalid/versions'
+            sourceClass = 'HistoricalOfficial'; trustClass = 'TrustedOfficial'; transportSecurity = 'HTTPS'; maintenanceState = 'Archived'
+            supportedVersions = @('b1.2_02')
+        }
+
+        $universe = New-MmtlCompatibilityUniverse -Catalog $catalog -LoaderSnapshots @($snapshot) -GeneratedAt ([DateTimeOffset]'2026-10-07T00:00:00Z')
+
+        $universe.targets.Count | Should -Be 1
+        $universe.targets[0].minecraftId | Should -Be 'b1.2_02'
+        $universe.targets[0].minecraftType | Should -Be 'Unknown'
+        $universe.issues[0].reason | Should -Be 'MINECRAFT_ID_NOT_RESOLVED_IN_MOJANG_CATALOG'
     }
 }
