@@ -18,11 +18,13 @@
   "$defs": {
     "target": {
       "type": "object",
-      "required": ["targetId", "minecraftId", "minecraftType", "minecraftReleaseTime", "loaderId", "loaderVersionCandidates", "candidateStatus", "candidateSourceUrl", "candidateSourceHash", "sourceHash", "authoritativeSource", "sourceClass", "trustClass", "transportSecurity", "maintenanceState", "availability", "buildToolchainCandidates", "runtimeJavaRequirement", "buildJavaRequirement", "agentRequirement", "status"],
+      "required": ["targetId", "minecraftId", "minecraftType", "minecraftTypeSource", "minecraftTypeRule", "minecraftReleaseTime", "loaderId", "loaderVersionCandidates", "candidateStatus", "candidateSourceUrl", "candidateSourceHash", "sourceHash", "authoritativeSource", "sourceClass", "trustClass", "transportSecurity", "maintenanceState", "availability", "buildToolchainCandidates", "runtimeJavaRequirement", "buildJavaRequirement", "agentRequirement", "status"],
       "properties": {
         "targetId": {"type": "string", "minLength": 1},
         "minecraftId": {"type": "string", "minLength": 1},
-        "minecraftType": {"type": "string", "minLength": 1},
+        "minecraftType": {"enum": ["release", "snapshot", "pre", "rc", "old_beta", "old_alpha", "experimental_snapshot", "combat_test", "special", "Unknown"]},
+        "minecraftTypeSource": {"enum": ["MojangManifest", "MinecraftIdSyntax", "Unknown"]},
+        "minecraftTypeRule": {"type": "string", "minLength": 1},
         "minecraftReleaseTime": {"type": ["string", "null"]},
         "loaderId": {"type": "string", "minLength": 1},
         "loaderVersionCandidates": {"type": "array"},

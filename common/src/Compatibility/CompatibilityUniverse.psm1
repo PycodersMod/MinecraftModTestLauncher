@@ -13,6 +13,33 @@ function Get-MmtlUniverseMinecraftVersions {
     throw 'COMPATIBILITY_CATALOG_INVALID: 缺少 versionEntries 或 entries。'
 }
 
+function Get-MmtlMinecraftVersionClassification {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][string]$MinecraftId)
+
+    $id = $MinecraftId
+    $rule = 'UNCLASSIFIED_ID'
+    $type = 'Unknown'
+    if ($id.EndsWith('_unobfuscated', [StringComparison]::OrdinalIgnoreCase)) {
+        $base = Get-MmtlMinecraftVersionClassification -MinecraftId $id.Substring(0, $id.Length - '_unobfuscated'.Length)
+        if ($base.type -cne 'Unknown') {
+            return [pscustomobject][ordered]@{ type = [string]$base.type; source = 'MinecraftIdSyntax'; rule = "UNOBFUSCATED_VARIANT:$([string]$base.rule)" }
+        }
+    }
+
+    if ($id -match '(?i)(?:_original|_potato)$|^2point0[_-]') { $type = 'special'; $rule = 'APRIL_FOOLS_ORIGINAL_ID' }
+    elseif ($id -match '(?i)_combat(?:-|$)') { $type = 'combat_test'; $rule = 'COMBAT_TEST_ID' }
+    elseif ($id -match '(?i)experimental|deep_dark') { $type = 'experimental_snapshot'; $rule = 'EXPERIMENTAL_SNAPSHOT_ID' }
+    elseif ($id -match '^\d{2}w\d{2}[a-z](?:-\d+)?$') { $type = 'snapshot'; $rule = 'WEEKLY_SNAPSHOT_ID' }
+    elseif ($id -match '(?i)^(?:\d+(?:\.\d+)+)-(?:pre(?:-release)?)[-_ ]?\d+') { $type = 'pre'; $rule = 'NUMBERED_PRE_RELEASE_ID' }
+    elseif ($id -match '(?i)^(?:\d+(?:\.\d+)+)-rc[-_ ]?\d+') { $type = 'rc'; $rule = 'NUMBERED_RELEASE_CANDIDATE_ID' }
+    elseif ($id -match '^\d+(?:\.\d+){1,2}$') { $type = 'release'; $rule = 'NUMERIC_RELEASE_ID' }
+    elseif ($id -match '^[bB]\d') { $type = 'old_beta'; $rule = 'BETA_ID_PREFIX' }
+    elseif ($id -match '^[aA]\d|^[cC]\d|(?i)^infdev|^rd-') { $type = 'old_alpha'; $rule = 'LEGACY_PRE_RELEASE_ID_PREFIX' }
+
+    [pscustomobject][ordered]@{ type = $type; source = if ($type -eq 'Unknown') { 'Unknown' } else { 'MinecraftIdSyntax' }; rule = $rule }
+}
+
 function New-MmtlCompatibilityUniverse {
     [CmdletBinding()]
     param(
@@ -62,10 +89,15 @@ function New-MmtlCompatibilityUniverse {
                 throw "COMPATIBILITY_SNAPSHOT_INVALID: $loaderId 的 Minecraft ID 为空或重复：'$minecraftId'。"
             }
             if (-not $minecraftById.ContainsKey($minecraftId)) {
-                $issues.Add([pscustomobject][ordered]@{
-                    loaderId = $loaderId; status = 'Unknown'; reason = 'MINECRAFT_ID_NOT_RESOLVED_IN_MOJANG_CATALOG'
-                    sourceUrl = [string]$snapshot.sourceUrl; evidence = $minecraftId
-                })
+                $classification = Get-MmtlMinecraftVersionClassification -MinecraftId $minecraftId
+                if ($classification.type -ceq 'Unknown') {
+                    $issues.Add([pscustomobject][ordered]@{
+                        loaderId = $loaderId; status = 'Unknown'; reason = 'MINECRAFT_ID_NOT_RESOLVED_IN_MOJANG_CATALOG'
+                        sourceUrl = [string]$snapshot.sourceUrl; evidence = $minecraftId
+                    })
+                }
+            } else {
+                $classification = [pscustomobject][ordered]@{ type = [string]$minecraftById[$minecraftId].type; source = 'MojangManifest'; rule = 'MOJANG_MANIFEST_TYPE' }
             }
 
             $minecraft = if ($minecraftById.ContainsKey($minecraftId)) { $minecraftById[$minecraftId] } else { $null }
@@ -76,7 +108,9 @@ function New-MmtlCompatibilityUniverse {
             }
             $targets.Add([pscustomobject][ordered]@{
                 targetId = "$loaderId@$minecraftId"; minecraftId = $minecraftId
-                minecraftType = if ($minecraft) { [string]$minecraft.type } else { 'Unknown' }
+                minecraftType = [string]$classification.type
+                minecraftTypeSource = [string]$classification.source
+                minecraftTypeRule = [string]$classification.rule
                 minecraftReleaseTime = if ($minecraft -and $minecraft.PSObject.Properties['releaseTime'] -and $minecraft.releaseTime) { [string]$minecraft.releaseTime } else { $null }
                 loaderId = $loaderId; loaderVersionCandidates = $candidates
                 candidateStatus = if ($candidates.Count) { 'Resolved' } else { 'Pending' }
@@ -118,4 +152,4 @@ function New-MmtlCompatibilityUniverse {
     }
 }
 
-Export-ModuleMember -Function New-MmtlCompatibilityUniverse
+Export-ModuleMember -Function New-MmtlCompatibilityUniverse, Get-MmtlMinecraftVersionClassification

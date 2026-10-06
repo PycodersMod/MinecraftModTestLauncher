@@ -99,14 +99,40 @@ Describe 'Compatibility Universe exact target generation' {
         $snapshot = [pscustomobject]@{
             loaderId = 'OldLoader'; providerStatus = 'Available'; sourceUrl = 'https://example.invalid/versions'
             sourceClass = 'HistoricalOfficial'; trustClass = 'TrustedOfficial'; transportSecurity = 'HTTPS'; maintenanceState = 'Archived'
-            supportedVersions = @('b1.2_02')
+            supportedVersions = @('unrecognized-branch-label')
         }
 
         $universe = New-MmtlCompatibilityUniverse -Catalog $catalog -LoaderSnapshots @($snapshot) -GeneratedAt ([DateTimeOffset]'2026-10-07T00:00:00Z')
 
         $universe.targets.Count | Should -Be 1
-        $universe.targets[0].minecraftId | Should -Be 'b1.2_02'
+        $universe.targets[0].minecraftId | Should -Be 'unrecognized-branch-label'
         $universe.targets[0].minecraftType | Should -Be 'Unknown'
+        $universe.targets[0].minecraftTypeSource | Should -Be 'Unknown'
         $universe.issues[0].reason | Should -Be 'MINECRAFT_ID_NOT_RESOLVED_IN_MOJANG_CATALOG'
+    }
+
+    It 'classifies exact loader-listed legacy, snapshot, prerelease and special IDs without inventing Mojang entries' {
+        $ids = @('13w11a','b1.7_01','a1.2.2','1.18_experimental-snapshot-1','1.21.11-pre1_unobfuscated','24w14potato_original','unrecognized-branch-label')
+        $catalog = [pscustomobject]@{ manifestHash = 'f' * 64; entries = @() }
+        $snapshot = [pscustomobject]@{
+            loaderId = 'ListedLoader'; providerStatus = 'Available'; sourceUrl = 'https://example.invalid/versions'
+            sourceClass = 'ActiveOfficial'; trustClass = 'TrustedOfficial'; transportSecurity = 'HTTPS'; maintenanceState = 'Active'
+            sourceHash = 'e' * 64; supportedVersions = $ids
+        }
+        $universe = New-MmtlCompatibilityUniverse -Catalog $catalog -LoaderSnapshots @($snapshot) -GeneratedAt ([DateTimeOffset]'2026-10-07T00:00:00Z')
+        $types = @{}; foreach ($target in $universe.targets) { $types[$target.minecraftId] = $target.minecraftType }
+
+        $types['13w11a'] | Should -Be 'snapshot'
+        $types['b1.7_01'] | Should -Be 'old_beta'
+        $types['a1.2.2'] | Should -Be 'old_alpha'
+        $types['1.18_experimental-snapshot-1'] | Should -Be 'experimental_snapshot'
+        $types['1.21.11-pre1_unobfuscated'] | Should -Be 'pre'
+        $types['24w14potato_original'] | Should -Be 'special'
+        $types['unrecognized-branch-label'] | Should -Be 'Unknown'
+        ($universe.targets | Where-Object minecraftId -eq '13w11a').minecraftTypeSource | Should -Be 'MinecraftIdSyntax'
+        ($universe.targets | Where-Object minecraftId -eq '13w11a').minecraftTypeRule | Should -Be 'WEEKLY_SNAPSHOT_ID'
+        ($universe.targets | Where-Object minecraftId -eq 'unrecognized-branch-label').minecraftTypeSource | Should -Be 'Unknown'
+        @($universe.issues).Count | Should -Be 1
+        $universe.issues[0].evidence | Should -Be 'unrecognized-branch-label'
     }
 }
