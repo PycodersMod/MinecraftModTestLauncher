@@ -25,6 +25,7 @@ if ($ProxyUri) {
 
 Import-Module (Join-Path $RepositoryRoot 'common/src/Catalog/JavaRuntimeResolver.psm1') -Force
 Import-Module (Join-Path $RepositoryRoot 'common/src/Catalog/MojangMetadataBatchPlanner.psm1') -Force
+Import-Module (Join-Path $RepositoryRoot 'common/src/Compatibility/EvidenceTimestamp.psm1') -Force
 
 function Write-MmtlRuntimeJavaJson {
     param([Parameter(Mandatory)][string]$Path, [Parameter(Mandatory)]$Value, [int]$Depth = 40)
@@ -112,7 +113,7 @@ foreach ($entry in $targetEntries) {
         $snapshotPath = Join-Path $snapshotRoot ([string]$indexed.relativePath)
         if (Test-Path -LiteralPath $snapshotPath -PathType Leaf) {
             $bytes = [IO.File]::ReadAllBytes($snapshotPath)
-            $loaded = Save-MmtlMojangVersionSnapshot -Bytes $bytes -VersionEntry $entry -RetrievedAt ([string]$indexed.retrievedAt)
+            $loaded = Save-MmtlMojangVersionSnapshot -Bytes $bytes -VersionEntry $entry -RetrievedAt (ConvertTo-MmtlIsoTimestamp -Value $indexed.retrievedAt)
             if ($loaded.localSha256 -cne [string]$indexed.sha256) { throw "MOJANG_VERSION_INDEX_HASH_MISMATCH:$id" }
             $downloaded.Add($id, $loaded)
             continue
@@ -203,7 +204,7 @@ foreach ($id in $targetIds) {
         if ([string]$metadata.id -cne $id) { throw "MOJANG_VERSION_SOURCE_ID_INVALID:$id" }
         $versionMeta = [pscustomobject]@{
             metadata = $metadata; metadataStatus = 'VERIFIED'
-            provenance = [pscustomobject]@{ sourceType = 'official'; url = [string]$entry.url; hash = $sha1; snapshotSha256 = $sha256; fetchedAt = [string]$source.retrievedAt }
+            provenance = [pscustomobject]@{ sourceType = 'official'; url = [string]$entry.url; hash = $sha1; snapshotSha256 = $sha256; fetchedAt = (ConvertTo-MmtlIsoTimestamp -Value $source.retrievedAt) }
         }
         $observationStatus = if ($metadata.PSObject.Properties['javaVersion'] -and $metadata.javaVersion) { 'VERIFIED' } else { 'VERIFIED_NO_JAVA_VERSION' }
         $requirement = Resolve-MmtlMinecraftRuntimeJavaRequirement -MinecraftId $id -CatalogEntry ([pscustomobject]@{ id = $id; metadataStatus = 'VERIFIED' }) -VersionMetadata $versionMeta
@@ -212,7 +213,7 @@ foreach ($id in $targetIds) {
             $fallbackCount++
             $requirement.provenance | Add-Member -NotePropertyName registrySha256 -NotePropertyValue $fallbackHash -Force
         } else { $unknownCount++ }
-        $metadataSource = [pscustomobject]@{ url = [string]$entry.url; manifestSha1 = [string]$entry.sha1; sourceSha1 = $sha1; snapshotSha256 = $sha256; retrievedAt = [string]$source.retrievedAt }
+        $metadataSource = [pscustomobject]@{ url = [string]$entry.url; manifestSha1 = [string]$entry.sha1; sourceSha1 = $sha1; snapshotSha256 = $sha256; retrievedAt = (ConvertTo-MmtlIsoTimestamp -Value $source.retrievedAt) }
     } else {
         $requirement = Resolve-MmtlMinecraftRuntimeJavaRequirement -MinecraftId $id -CatalogEntry ([pscustomobject]@{ id = $id; metadataStatus = 'NOT_IN_MOJANG_MANIFEST' })
         $observationStatus = 'NOT_IN_MOJANG_MANIFEST'
