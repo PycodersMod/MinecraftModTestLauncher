@@ -77,11 +77,11 @@
 
 ### Task 4：Agent manifest、token 与 provider contract（Phase R）
 
-- [ ] 测试 Agent manifest 支持/不支持、artifact SHA-256、兼容版本、Session nonce、role allowlist、event sink containment 与默认 inert。
-- [ ] 实现 OS-independent Agent Provider contract：loader/version → Supported/Unsupported、artifact/hash/version/capabilities/reason；加载只允许 Session-contained artifact 与 event file。
-- [ ] 定义 Agent 事件并映射至既有 Runtime Event contract；Agent 错误来源标为 `MMTL_INFRASTRUCTURE`。
-- [ ] 构建 independent Forge 1.20.1 Agent；用 compile/unit test 固定 Forge event/API 接口，普通 `runClient` 无 MMTL 参数时无动作。
-- [ ] 中文 commit：`功能：建立 MMTL 测试代理与能力契约`。
+- [x] 测试 Agent manifest 支持/不支持、artifact SHA-256、兼容版本、Session nonce、role allowlist、event sink containment 与默认 inert。
+- [x] 实现 OS-independent Agent Provider contract：loader/version → Supported/Unsupported、artifact/hash/version/capabilities/reason；加载只允许 Session-contained artifact 与 event file。
+- [x] 定义 Agent 事件并映射至既有 Runtime Event contract；Agent 错误来源标为 `MMTL_INFRASTRUCTURE`。
+- [x] 构建 independent Forge 1.20.1 Agent；用 compile/unit test 固定 Forge event/API 接口，普通 `runClient` 无 MMTL 参数时无动作。
+- [x] 中文 commit：`功能：建立 MMTL 测试代理与能力契约`。
 
 ### Task 5：Forge IntegratedLAN Agent 与安全握手（Phase R）
 

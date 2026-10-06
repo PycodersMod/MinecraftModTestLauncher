@@ -1,0 +1,63 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        mavenCentral()
+    }
+    dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:6.0.54' }
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'java'
+
+group = 'org.pycodersmod.mmtl'
+version = '0.1.0'
+archivesBaseName = 'mmtl-agent-forge-1.20.1'
+
+java { toolchain { languageVersion = JavaLanguageVersion.of(17) } }
+
+minecraft {
+    mappings channel: 'official', version: '1.20.1'
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'info'
+            mods { mmtl_agent { source sourceSets.main } }
+        }
+        server {
+            workingDirectory project.file('run-server')
+            property 'forge.logging.console.level', 'info'
+            mods { mmtl_agent { source sourceSets.main } }
+        }
+    }
+}
+
+repositories { mavenCentral() }
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.20.1-47.2.0'
+    testImplementation 'junit:junit:4.13.2'
+}
+
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('META-INF/mods.toml') { expand version: project.version }
+}
+
+jar {
+    manifest.attributes(['Specification-Title':'mmtl_agent','Specification-Vendor':'PycodersMod','Specification-Version':'1','Implementation-Title':project.name,'Implementation-Version':project.version,'FMLModType':'MOD'])
+}
+
+tasks.register('stageMmtlAgent') {
+    dependsOn tasks.named('jar')
+    doLast {
+        File destinationDirectory = project.file('providers/forge-1.20.1')
+        destinationDirectory.mkdirs()
+        File sourceJar = tasks.named('jar').get().archiveFile.get().asFile
+        File destinationJar = new File(destinationDirectory, 'mmtl-agent-forge-1.20.1-0.1.0.jar')
+        destinationJar.bytes = sourceJar.bytes
+        String digest = java.security.MessageDigest.getInstance('SHA-256').digest(destinationJar.bytes).encodeHex().toString()
+        def manifest = [schemaVersion:1,providerId:'forge-1.20.1',loaderId:'Forge',minecraftVersions:['1.20.1'],agentVersion:project.version.toString(),artifact:'providers/forge-1.20.1/mmtl-agent-forge-1.20.1-0.1.0.jar',sha256:digest,minJavaMajor:17,roles:['Client','Host','Guest'],capabilities:['OfflineSessionHandshake','IntegratedServerEvents','GuestJoinObservation']]
+        new File(destinationDirectory, 'agent-manifest.json').text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(manifest)) + System.lineSeparator()
+    }
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }

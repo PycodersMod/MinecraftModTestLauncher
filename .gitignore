@@ -19,3 +19,6 @@ testResults.xml
 /build/
 /run/
 /%LOCALAPPDATA%/
+/common/agent/.gradle/
+/common/agent/build/
+/common/agent/providers/forge-1.20.1/

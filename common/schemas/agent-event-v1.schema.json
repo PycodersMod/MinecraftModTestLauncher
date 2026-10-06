@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pycodersmod.github.io/mmtl/schemas/agent-event-v1.schema.json",
+  "title": "MMTL Agent Event v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "sessionId", "role", "eventId", "eventType", "timestampUtc", "sessionNonceHash", "summary"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "sessionId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" },
+    "role": { "enum": ["Client", "Host", "Guest", "Server"] },
+    "eventId": { "type": "string", "pattern": "^[A-Za-z0-9._-]{1,80}$" },
+    "eventType": { "enum": ["CLIENT_INITIALIZED", "MAIN_MENU_READY", "WORLD_JOINED", "INTEGRATED_SERVER_DETECTED", "LAN_PUBLISH_REQUESTED", "LAN_PUBLISHED", "GUEST_CONNECTED", "AGENT_ERROR"] },
+    "timestampUtc": { "type": "string", "format": "date-time" },
+    "sessionNonceHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "summary": { "type": "string", "maxLength": 240 }
+  }
+}

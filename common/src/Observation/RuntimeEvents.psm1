@@ -7,7 +7,8 @@ $script:MmtlRuntimeEventCodes = @(
     'SERVER_READY','SERVER_LISTENING','SERVER_STOPPING','SERVER_STOPPED',
     'SERVER_CRASH','LAN_PORT_PUBLISHED','CRASH_DETECTED','FATAL_ERROR',
     'AUTH_REQUIRED','INVALID_SESSION','AUTH_FAILURE','TIMED_OUT',
-    'JAVA_RUNTIME_OBSERVED','HUMAN_OBSERVATION_CONFIRMED','REHEARSAL_STARTED',
+    'JAVA_RUNTIME_OBSERVED','HUMAN_OBSERVATION_CONFIRMED','AGENT_WORLD_JOINED','INTEGRATED_SERVER_DETECTED',
+    'LAN_PUBLISH_REQUESTED','AGENT_GUEST_CONNECTED','AGENT_ERROR','REHEARSAL_STARTED',
     'REHEARSAL_COMPLETED','REHEARSAL_FAILED','REHEARSAL_GUEST_CONNECTED','REHEARSAL_PORT_RETRY','BUILD_FAILED','PROCESS_START_FAILED'
 )
 
@@ -32,7 +33,7 @@ function New-MmtlRuntimeEvent {
         [Parameter(Mandatory)][ValidateSet('Client','Host','Guest','Server','Build','Launcher','Process')][string]$Role,
         [Parameter(Mandatory)][ValidateRange(0,[int]::MaxValue)][int]$ProcessId,
         [Parameter(Mandatory)][ValidateNotNullOrEmpty()][string]$ProcessIdentity,
-        [Parameter(Mandatory)][ValidateSet('Process','Stdout','Stderr','RuntimeLog','CrashReport','Observer','Rehearsal','Human')][string]$SourceType,
+        [Parameter(Mandatory)][ValidateSet('Process','Stdout','Stderr','RuntimeLog','CrashReport','Observer','Agent','Rehearsal','Human')][string]$SourceType,
         [Parameter(Mandatory)][string]$EventCode,
         [string]$Summary = '',
         [string]$TimestampUtc = [DateTimeOffset]::UtcNow.ToString('o'),
@@ -71,7 +72,7 @@ function Test-MmtlRuntimeEvent {
     foreach ($name in $required) { if ($null -eq $Event.PSObject.Properties[$name]) { return $false } }
     if ([int]$Event.schemaVersion -ne 1 -or [string]$Event.eventCode -cnotin $script:MmtlRuntimeEventCodes) { return $false }
     if ([string]$Event.sessionId -notmatch '^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$') { return $false }
-    if ([string]$Event.sourceType -notin @('Process','Stdout','Stderr','RuntimeLog','CrashReport','Observer','Rehearsal','Human')) { return $false }
+    if ([string]$Event.sourceType -notin @('Process','Stdout','Stderr','RuntimeLog','CrashReport','Observer','Agent','Rehearsal','Human')) { return $false }
     return $true
 }
 
