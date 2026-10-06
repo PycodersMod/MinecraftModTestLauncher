@@ -79,6 +79,8 @@ function New-MmtlCompatibilityUniverse {
                 minecraftType = if ($minecraft) { [string]$minecraft.type } else { 'Unknown' }
                 minecraftReleaseTime = if ($minecraft -and $minecraft.PSObject.Properties['releaseTime'] -and $minecraft.releaseTime) { [string]$minecraft.releaseTime } else { $null }
                 loaderId = $loaderId; loaderVersionCandidates = $candidates
+                candidateStatus = if ($candidates.Count) { 'Resolved' } else { 'Pending' }
+                candidateSourceUrl = $null; candidateSourceHash = $null
                 sourceHash = if ($snapshot.PSObject.Properties['sourceHash'] -and -not [string]::IsNullOrWhiteSpace([string]$snapshot.sourceHash)) { [string]$snapshot.sourceHash } else { $null }
                 authoritativeSource = [string]$snapshot.sourceUrl
                 sourceClass = [string]$snapshot.sourceClass; trustClass = [string]$snapshot.trustClass
@@ -110,6 +112,7 @@ function New-MmtlCompatibilityUniverse {
     [pscustomobject][ordered]@{
         schemaVersion = 1; auditStatus = 'IN_PROGRESS'; generatedAt = $GeneratedAt.ToUniversalTime().ToString('o')
         catalogHash = Get-MmtlCompatibilitySha256 -Text $canonicalSourceMaterial
+        candidateCatalogHash = $null
         minecraftReleaseCount = $releaseCount; loaderCount = $loaderIds.Count
         targets = $sortedTargets; issues = @($issues | Sort-Object { [string]$_.loaderId }, { [string]$_.reason })
     }

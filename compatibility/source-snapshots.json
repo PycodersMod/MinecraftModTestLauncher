@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "auditStatus": "IN_PROGRESS",
-  "generatedAt": "2026-10-06T17:33:15.2063281+00:00",
+  "generatedAt": "2026-10-07T02:02:33.1456071+08:00",
   "sourceCount": 17,
   "sources": [
     {
@@ -10,7 +10,7 @@
       "sourceClass": "ActiveOfficial",
       "trustClass": "TrustedOfficial",
       "transportSecurity": "HTTPS",
-      "retrievedAt": "2026-10-06T17:33:18.0000000+00:00",
+      "retrievedAt": "2026-10-07T02:02:37+08:00",
       "relativePath": "Fabric/dd131c866467fce1ef6fb28594d35c04273290e6920cf72f3718da43eb19fb8c.bin",
       "byteLength": 30295,
       "sha256": "dd131c866467fce1ef6fb28594d35c04273290e6920cf72f3718da43eb19fb8c"
@@ -21,7 +21,7 @@
       "sourceClass": "ActiveOfficial",
       "trustClass": "TrustedOfficial",
       "transportSecurity": "HTTPS",
-      "retrievedAt": "2026-10-06T17:33:17.0000000+00:00",
+      "retrievedAt": "2026-10-07T02:02:34+08:00",
       "relativePath": "Forge/9d3a9dd674c0dd264d82b1f39a204581eaee32d75e3b315f9767d9e07ade01d0.bin",
       "byteLength": 4111,
       "sha256": "9d3a9dd674c0dd264d82b1f39a204581eaee32d75e3b315f9767d9e07ade01d0"
@@ -32,7 +32,7 @@
       "sourceClass": "ActiveOfficial",
       "trustClass": "TrustedOfficial",
       "transportSecurity": "HTTPS",
-      "retrievedAt": "2026-10-06T17:33:17.0000000+00:00",
+      "retrievedAt": "2026-10-07T02:02:35+08:00",
       "relativePath": "Forge/b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64.bin",
       "byteLength": 211875,
       "sha256": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64"
@@ -43,7 +43,7 @@
       "sourceClass": "ActiveOfficial",
       "trustClass": "TrustedOfficial",
       "transportSecurity": "HTTPS",
-      "retrievedAt": "2026-10-06T17:33:21.0000000+00:00",
+      "retrievedAt": "2026-10-07T02:02:41+08:00",
       "relativePath": "LegacyFabric/c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475.bin",
       "byteLength": 4113,
       "sha256": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475"
@@ -54,7 +54,7 @@
       "sourceClass": "ActiveOfficial",
       "trustClass": "TrustedOfficial",
       "transportSecurity": "HTTPS",
-      "retrievedAt": "2026-10-06T17:33:22.0000000+00:00",
+      "retrievedAt": "2026-10-07T02:02:43+08:00",
       "relativePath": "LegacyFabric/c365941f4821967ac8c600d9c654ddc3cc762111af9d8e2cf68b64b650fbee3f.bin",
       "byteLength": 8144,
       "sha256": "c365941f4821967ac8c600d9c654ddc3cc762111af9d8e2cf68b64b650fbee3f"
@@ -65,7 +65,7 @@
       "sourceClass": "ActiveOfficial",
       "trustClass": "TrustedOfficial",
       "transportSecurity": "HTTPS",
-      "retrievedAt": "2026-10-06T17:33:22.0000000+00:00",
+      "retrievedAt": "2026-10-07T02:02:42+08:00",
       "relativePath": "LegacyFabric/b87bd6b38bc4548fb6675cbe0a4c86af1be178a1207be92c9d4af4353fb3bc85.bin",
       "byteLength": 10578,
       "sha256": "b87bd6b38bc4548fb6675cbe0a4c86af1be178a1207be92c9d4af4353fb3bc85"
@@ -76,7 +76,7 @@
       "sourceClass": "ActiveOfficial",
       "trustClass": "TrustedOfficial",
       "transportSecurity": "HTTPS",
-      "retrievedAt": "2026-10-06T17:33:23.0000000+00:00",
+      "retrievedAt": "2026-10-07T02:02:44+08:00",
       "relativePath": "LegacyFabric/523c5aaef9e44cf96e6a7e5d39bc0b391a12647b545382d61b739d7a828f4f9f.bin",
       "byteLength": 206694,
       "sha256": "523c5aaef9e44cf96e6a7e5d39bc0b391a12647b545382d61b739d7a828f4f9f"
@@ -87,7 +87,7 @@
       "sourceClass": "HistoricalOfficial",
       "trustClass": "TrustedOfficial",
       "transportSecurity": "HTTPS",
-      "retrievedAt": "2026-10-06T17:33:28.0000000+00:00",
+      "retrievedAt": "2026-10-07T02:02:48+08:00",
       "relativePath": "LiteLoader/778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489.bin",
       "byteLength": 49129,
       "sha256": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489"
@@ -98,10 +98,10 @@
       "sourceClass": "VerifiedCommunityArchive",
       "trustClass": "VerifiedHistorical",
       "transportSecurity": "HTTPS",
-      "retrievedAt": "2026-10-06T17:33:15.2063281+00:00",
-      "relativePath": "ModLoader/d204966ff2abba5fd0ad0516daf4739185d3589a89e7a510e095ff397e30a1d4.bin",
+      "retrievedAt": "2026-10-07T02:02:33.1456071+08:00",
+      "relativePath": "ModLoader/0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062.bin",
       "byteLength": 56914,
-      "sha256": "d204966ff2abba5fd0ad0516daf4739185d3589a89e7a510e095ff397e30a1d4"
+      "sha256": "0b7fbeb7d52e227007fb7ebe8ca24eb7e23e10a071e310de084b4c9610a46062"
     },
     {
       "providerId": "ModLoaderMP",
@@ -109,10 +109,10 @@
       "sourceClass": "VerifiedCommunityArchive",
       "trustClass": "VerifiedHistorical",
       "transportSecurity": "HTTPS",
-      "retrievedAt": "2026-10-06T17:33:15.2063281+00:00",
-      "relativePath": "ModLoaderMP/73ec40448808fb394475f8221a2043466732c76655b9f997dc3a08ba9d419c5e.bin",
+      "retrievedAt": "2026-10-07T02:02:33.1456071+08:00",
+      "relativePath": "ModLoaderMP/704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b.bin",
       "byteLength": 83980,
-      "sha256": "73ec40448808fb394475f8221a2043466732c76655b9f997dc3a08ba9d419c5e"
+      "sha256": "704405848fb9eb8a0301beae470fd85361e2f8c72019b0728b1aa3005001a52b"
     },
     {
       "providerId": "Mojang",
@@ -120,7 +120,7 @@
       "sourceClass": "ActiveOfficial",
       "trustClass": "TrustedOfficial",
       "transportSecurity": "HTTPS",
-      "retrievedAt": "2026-10-06T17:33:15.2063281+00:00",
+      "retrievedAt": "2026-10-07T02:02:33.1456071+08:00",
       "relativePath": "Mojang/845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04.bin",
       "byteLength": 277504,
       "sha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04"
@@ -131,7 +131,7 @@
       "sourceClass": "ActiveOfficial",
       "trustClass": "TrustedOfficial",
       "transportSecurity": "HTTPS",
-      "retrievedAt": "2026-10-06T17:33:20.0000000+00:00",
+      "retrievedAt": "2026-10-07T02:02:39+08:00",
       "relativePath": "NeoForge/9039f3cca9da349eaf9253f377aa3c5a20eb2e2f0146565371c0c2693817b100.bin",
       "byteLength": 2830,
       "sha256": "9039f3cca9da349eaf9253f377aa3c5a20eb2e2f0146565371c0c2693817b100"
@@ -142,7 +142,7 @@
       "sourceClass": "ActiveOfficial",
       "trustClass": "TrustedOfficial",
       "transportSecurity": "HTTPS",
-      "retrievedAt": "2026-10-06T17:33:19.0000000+00:00",
+      "retrievedAt": "2026-10-07T02:02:38+08:00",
       "relativePath": "NeoForge/eed4709479f5fc636585089d9324ad98fbb626120f5a0e31d12a5b6d3e73445a.bin",
       "byteLength": 66179,
       "sha256": "eed4709479f5fc636585089d9324ad98fbb626120f5a0e31d12a5b6d3e73445a"
@@ -153,7 +153,7 @@
       "sourceClass": "ActiveOfficial",
       "trustClass": "TrustedOfficial",
       "transportSecurity": "HTTPS",
-      "retrievedAt": "2026-10-06T17:33:24.0000000+00:00",
+      "retrievedAt": "2026-10-07T02:02:46+08:00",
       "relativePath": "Ornithe/25762c84286820c71e795d4566a223588911767bb1e0f2b7eb3d51e69ceb855d.bin",
       "byteLength": 29277,
       "sha256": "25762c84286820c71e795d4566a223588911767bb1e0f2b7eb3d51e69ceb855d"
@@ -164,7 +164,7 @@
       "sourceClass": "ActiveOfficial",
       "trustClass": "TrustedOfficial",
       "transportSecurity": "HTTPS",
-      "retrievedAt": "2026-10-06T17:33:25.0000000+00:00",
+      "retrievedAt": "2026-10-07T02:02:47+08:00",
       "relativePath": "Ornithe/78e8bfa05b9d5fbaac2423f4a2f6ae62ab88f98f5ac6dfcd90ecde868873bd35.bin",
       "byteLength": 292,
       "sha256": "78e8bfa05b9d5fbaac2423f4a2f6ae62ab88f98f5ac6dfcd90ecde868873bd35"
@@ -175,7 +175,7 @@
       "sourceClass": "ActiveOfficial",
       "trustClass": "TrustedOfficial",
       "transportSecurity": "HTTPS",
-      "retrievedAt": "2026-10-06T17:33:21.0000000+00:00",
+      "retrievedAt": "2026-10-07T02:02:40+08:00",
       "relativePath": "Quilt/331ffb767656d9aa26e448ce239f20ee0381da4aa21fea3da7358a468c80c88a.bin",
       "byteLength": 24814,
       "sha256": "331ffb767656d9aa26e448ce239f20ee0381da4aa21fea3da7358a468c80c88a"
@@ -186,10 +186,10 @@
       "sourceClass": "HistoricalOfficial",
       "trustClass": "TrustedOfficial",
       "transportSecurity": "HTTPS",
-      "retrievedAt": "2026-10-06T17:33:15.2063281+00:00",
-      "relativePath": "Rift/e1df72413bf168265e81eea9e258c8ea04f76cf42ba961c69dc6395d932377b0.bin",
-      "byteLength": 254319,
-      "sha256": "e1df72413bf168265e81eea9e258c8ea04f76cf42ba961c69dc6395d932377b0"
+      "retrievedAt": "2026-10-07T02:02:33.1456071+08:00",
+      "relativePath": "Rift/b6f4f736adce2234149d450eaafb87cc5cf3c20c6e60ea22f9d99d22f1ff202b.bin",
+      "byteLength": 254394,
+      "sha256": "b6f4f736adce2234149d450eaafb87cc5cf3c20c6e60ea22f9d99d22f1ff202b"
     }
   ]
 }

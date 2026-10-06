@@ -3,12 +3,13 @@
   "$id": "https://pycodersmod.github.io/MinecraftModTestLauncher/schemas/compatibility-universe.schema.json",
   "title": "MMTL Frozen Compatibility Universe",
   "type": "object",
-  "required": ["schemaVersion", "auditStatus", "generatedAt", "catalogHash", "minecraftReleaseCount", "loaderCount", "targets", "issues"],
+    "required": ["schemaVersion", "auditStatus", "generatedAt", "catalogHash", "candidateCatalogHash", "minecraftReleaseCount", "loaderCount", "targets", "issues"],
   "properties": {
     "schemaVersion": {"const": 1},
     "auditStatus": {"enum": ["IN_PROGRESS", "FROZEN"]},
     "generatedAt": {"type": "string", "format": "date-time"},
     "catalogHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "candidateCatalogHash": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
     "minecraftReleaseCount": {"type": "integer", "minimum": 0},
     "loaderCount": {"type": "integer", "minimum": 0},
     "targets": {"type": "array", "items": {"$ref": "#/$defs/target"}},
@@ -17,7 +18,7 @@
   "$defs": {
     "target": {
       "type": "object",
-      "required": ["targetId", "minecraftId", "minecraftType", "minecraftReleaseTime", "loaderId", "loaderVersionCandidates", "sourceHash", "authoritativeSource", "sourceClass", "trustClass", "transportSecurity", "maintenanceState", "availability", "buildToolchainCandidates", "runtimeJavaRequirement", "buildJavaRequirement", "agentRequirement", "status"],
+      "required": ["targetId", "minecraftId", "minecraftType", "minecraftReleaseTime", "loaderId", "loaderVersionCandidates", "candidateStatus", "candidateSourceUrl", "candidateSourceHash", "sourceHash", "authoritativeSource", "sourceClass", "trustClass", "transportSecurity", "maintenanceState", "availability", "buildToolchainCandidates", "runtimeJavaRequirement", "buildJavaRequirement", "agentRequirement", "status"],
       "properties": {
         "targetId": {"type": "string", "minLength": 1},
         "minecraftId": {"type": "string", "minLength": 1},
@@ -25,6 +26,9 @@
         "minecraftReleaseTime": {"type": ["string", "null"]},
         "loaderId": {"type": "string", "minLength": 1},
         "loaderVersionCandidates": {"type": "array"},
+        "candidateStatus": {"enum": ["Pending", "Resolved", "NoCandidatesReturned", "Stale", "Unknown"]},
+        "candidateSourceUrl": {"type": ["string", "null"], "format": "uri"},
+        "candidateSourceHash": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
         "sourceHash": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
         "authoritativeSource": {"type": "string", "format": "uri"},
         "sourceClass": {"type": "string", "minLength": 1},

@@ -23,3 +23,8 @@ testResults.xml
 /common/agent/.gradle/
 /common/agent/build/
 /common/agent/providers/forge-1.20.1/
+
+# 精确候选查询的本机恢复记录与原始 HTTP 响应；仓库提交候选 ID 和 SHA-256 摘要
+/compatibility/candidate-results/
+/compatibility/candidate-evidence.local.json
+/compatibility/snapshots/*Candidates/
