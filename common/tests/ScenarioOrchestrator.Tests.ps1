@@ -13,6 +13,7 @@ BeforeAll {
         Register-MmtlMacOSPlatform -RepositoryRoot $platformRoot
     }
     $module=Join-Path $repoRoot 'src/Scenario/ScenarioOrchestrator.psm1'
+    $script:platformLauncher=if($env:MMTL_PLATFORM_ENTRYPOINT){$env:MMTL_PLATFORM_ENTRYPOINT}else{Join-Path $platformRoot 'windows/launcher.ps1'}
     Import-Module $module -Force
 }
 
@@ -91,7 +92,7 @@ Describe 'Scenario plan CLI' {
         $config.profiles.'single-example'=$profile
         $config.defaultProfile='single-example'
         $configPath=Join-Path $TestDrive 'scenario-cli.json';$config|ConvertTo-Json -Depth 20|Set-Content -LiteralPath $configPath -Encoding utf8
-        $output=& (Get-Command pwsh).Source -NoProfile -File (Join-Path $repoRoot 'windows/launcher.ps1') --config-file $configPath --scenario-plan --json 2>$null
+        $output=& (Get-Command pwsh).Source -NoProfile -File $script:platformLauncher --config-file $configPath --scenario-plan --json 2>$null
         $LASTEXITCODE | Should -Be 0
         $result=($output -join "`n")|ConvertFrom-Json
         $result.status | Should -Be 'PlanOnly'
@@ -108,7 +109,7 @@ Describe 'Scenario plan CLI' {
         $config=Get-Content -LiteralPath (Join-Path $repoRoot 'common/config/launcher.config.example.json') -Raw|ConvertFrom-Json
         $config|Add-Member -NotePropertyName runtimeRoot -NotePropertyValue $runtime -Force
         $configPath=Join-Path $TestDrive 'scenario-status-cli.json';$config|ConvertTo-Json -Depth 20|Set-Content -LiteralPath $configPath -Encoding utf8
-        $output=& (Get-Command pwsh).Source -NoProfile -File (Join-Path $repoRoot 'windows/launcher.ps1') --config-file $configPath --scenario-status $id --json 2>$null
+        $output=& (Get-Command pwsh).Source -NoProfile -File $script:platformLauncher --config-file $configPath --scenario-status $id --json 2>$null
         $LASTEXITCODE | Should -Be 0
         $result=($output -join "`n")|ConvertFrom-Json
         $result.sessionId | Should -Be $id
@@ -129,7 +130,7 @@ Describe 'Scenario plan CLI' {
         $config=Get-Content -LiteralPath (Join-Path $repoRoot 'common/config/launcher.config.example.json') -Raw|ConvertFrom-Json
         $config|Add-Member -NotePropertyName runtimeRoot -NotePropertyValue $runtime -Force
         $configPath=Join-Path $TestDrive 'scenario-action-cli.json';$config|ConvertTo-Json -Depth 20|Set-Content -LiteralPath $configPath -Encoding utf8
-        $output=& (Get-Command pwsh).Source -NoProfile -File (Join-Path $repoRoot 'windows/launcher.ps1') --config-file $configPath --scenario-action $id WAIT --seconds 1 --json
+        $output=& (Get-Command pwsh).Source -NoProfile -File $script:platformLauncher --config-file $configPath --scenario-action $id WAIT --seconds 1 --json
         $LASTEXITCODE | Should -Be 0
         $result=($output -join "`n")|ConvertFrom-Json
         $result.action | Should -Be 'WAIT'

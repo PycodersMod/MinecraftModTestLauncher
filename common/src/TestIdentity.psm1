@@ -9,7 +9,10 @@ function Assert-MmtlIdentityNoReparsePath {
         $current = Join-Path $current $part
         if (Test-Path -LiteralPath $current) {
             $item = Get-Item -LiteralPath $current -Force
-            if ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) { throw "IDENTITY_PATH_REPARSE_POINT:$current" }
+            $linkTarget = $item.PSObject.Properties['LinkTarget']
+            $isLink = [bool](($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -or $item.LinkType -or ($linkTarget -and $linkTarget.Value))
+            if (-not $isLink) { try { $isLink = $null -ne $item.ResolveLinkTarget($false) } catch {} }
+            if ($isLink) { throw "IDENTITY_PATH_REPARSE_POINT:$current" }
         }
     }
     return $true
