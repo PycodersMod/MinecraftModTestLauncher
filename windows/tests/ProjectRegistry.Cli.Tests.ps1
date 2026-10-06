@@ -55,4 +55,23 @@ Describe '通用项目 Registry CLI' {
         Test-Path -LiteralPath (Join-Path $script:fixture 'build.gradle') | Should -BeTrue
         (Get-FileHash -LiteralPath (Join-Path $script:fixture 'build.gradle') -Algorithm SHA256).Hash | Should -BeExactly $script:buildHash
     }
+
+    It 'Registry recovery CLI 要求显式备份确认并保留损坏原件' {
+        New-Item -ItemType Directory -Path $script:runtime -Force | Out-Null
+        $registryPath = Join-Path $script:runtime 'project-registry.json'
+        [IO.File]::WriteAllText($registryPath, '{ damaged registry }', [Text.UTF8Encoding]::new($false))
+        $sourceHash = (Get-FileHash -LiteralPath $registryPath -Algorithm SHA256).Hash
+
+        $blocked = & $script:pwsh -NoProfile -File $script:launcher --config-file $script:config --recover-project-registry --json 2>&1 | Out-String
+        $LASTEXITCODE | Should -Be 2
+        ($blocked | ConvertFrom-Json -ErrorAction Stop).error.code | Should -BeExactly 'PROJECT_REGISTRY_RECOVERY_CONFIRMATION_REQUIRED'
+        (Get-FileHash -LiteralPath $registryPath -Algorithm SHA256).Hash | Should -BeExactly $sourceHash
+
+        $recovered = & $script:pwsh -NoProfile -File $script:launcher --config-file $script:config --recover-project-registry --confirm-backup --json 2>&1 | Out-String
+        $LASTEXITCODE | Should -Be 0
+        $result = $recovered | ConvertFrom-Json -ErrorAction Stop
+        $result.status | Should -BeExactly 'Recovered'
+        (Get-FileHash -LiteralPath $result.backupPath -Algorithm SHA256).Hash | Should -BeExactly $sourceHash
+        (Get-Content -LiteralPath $registryPath -Raw | ConvertFrom-Json).projects | Should -BeNullOrEmpty
+    }
 }

@@ -29,3 +29,5 @@ allowlist 排除 Git 元数据、本机配置、Registry、运行目录、世界
 请根据 [Test Agent 与实际支持矩阵](test-agent.md) 区分项目检测、Build、Launch、Agent 和 IntegratedLAN 证据。未经验证的 Loader 版本不得标为 Supported。CI 与 WSL 结果也不能替代 Linux GUI 客户端实机验证。
 
 本地 Alpha 候选的门禁状态见 [Alpha readiness checklist](alpha-readiness-checklist.md)。
+
+机器可读的版本、平台能力、Agent Provider 与已知边界见 [`common/config/public-capabilities.json`](../common/config/public-capabilities.json)。分发构建会核对该声明与 `VERSION` 及实际 Agent Provider manifest。

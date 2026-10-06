@@ -5,6 +5,9 @@ $ErrorActionPreference='Stop'
 $repoRoot=[IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
 $version=(Get-Content -LiteralPath (Join-Path $repoRoot 'VERSION') -Raw).Trim()
 if($version -notmatch '^0\.\d+\.\d+-alpha\.\d+$'){throw 'ALPHA_VERSION_INVALID'}
+$capabilitiesPath=Join-Path $repoRoot 'common/config/public-capabilities.json'
+$capabilities=Get-Content -LiteralPath $capabilitiesPath -Raw|ConvertFrom-Json -ErrorAction Stop
+if([string]$capabilities.version -cne $version -or [string]$capabilities.releaseChannel -cne 'PublicAlpha'){throw 'ALPHA_CAPABILITY_VERSION_MISMATCH'}
 $allowlistPath=Join-Path $PSScriptRoot 'public-alpha-allowlist.json'
 $allowlist=Get-Content -LiteralPath $allowlistPath -Raw|ConvertFrom-Json -ErrorAction Stop
 if([int]$allowlist.schemaVersion -ne 1 -or -not @($allowlist.paths).Count){throw 'ALPHA_ALLOWLIST_INVALID'}
@@ -55,7 +58,10 @@ try{
         $artifact=Join-Path $stageRoot $artifactRelative
         if(-not(Test-Path -LiteralPath $artifact -PathType Leaf)){throw "ALPHA_AGENT_ARTIFACT_MISSING: $($manifest.providerId)"}
         if((Get-FileHash -LiteralPath $artifact -Algorithm SHA256).Hash -ine [string]$manifest.sha256 -or (Get-FileHash -LiteralPath $artifactSource -Algorithm SHA256).Hash -ine [string]$manifest.sha256){throw "ALPHA_AGENT_HASH_MISMATCH: $($manifest.providerId)"}
+        $declaration=@($capabilities.agentProviders|Where-Object{[string]$_.providerId -ceq [string]$manifest.providerId -and [string]$_.status -ceq 'Supported' -and [string]$_.loader -ceq [string]$manifest.loaderId -and [string]$_.minecraft -in @($manifest.minecraftVersions)})
+        if($declaration.Count -ne 1){throw "ALPHA_AGENT_CAPABILITY_MISMATCH: $($manifest.providerId)"}
     }
+    foreach($declaration in @($capabilities.agentProviders|Where-Object status -ceq 'Supported')){if(@($providerManifests|Where-Object{[string](Get-Content -LiteralPath $_.FullName -Raw|ConvertFrom-Json).providerId -ceq [string]$declaration.providerId}).Count -ne 1){throw "ALPHA_AGENT_CAPABILITY_UNBACKED: $($declaration.providerId)"}}
     $manifestLines=[Collections.Generic.List[string]]::new()
     foreach($relative in $included.Keys){$hash=(Get-FileHash -LiteralPath $included[$relative] -Algorithm SHA256).Hash.ToLowerInvariant();$manifestLines.Add("$hash  $relative")}
     [IO.File]::WriteAllText((Join-Path $stageRoot 'MANIFEST.sha256'),($manifestLines -join "`n")+"`n",[Text.UTF8Encoding]::new($false))

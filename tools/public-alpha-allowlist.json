@@ -25,6 +25,7 @@
     "examples",
     "common/src",
     "common/config/launcher.config.example.json",
+    "common/config/public-capabilities.json",
     "common/agent/README.md",
     "common/agent/providers",
     "windows/launcher.ps1",

@@ -97,6 +97,38 @@ function Get-MmtlProjectRegistry {
     return Read-MmtlProjectRegistryDocument -Path $path
 }
 
+function Repair-MmtlProjectRegistry {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][string]$RuntimeRoot,[switch]$ConfirmBackup)
+    if(-not $ConfirmBackup.IsPresent){throw 'PROJECT_REGISTRY_RECOVERY_CONFIRMATION_REQUIRED'}
+    $root=Initialize-MmtlProjectRegistryRoot -RuntimeRoot $RuntimeRoot
+    Assert-MmtlNoReparsePath -Path $root|Out-Null
+    $path=Get-MmtlProjectRegistryPath -RuntimeRoot $root
+    if(-not(Test-Path -LiteralPath $path)){throw 'PROJECT_REGISTRY_NOT_FOUND'}
+    Assert-MmtlNoReparsePath -Path $path|Out-Null
+    $item=Get-Item -LiteralPath $path -Force -ErrorAction Stop
+    if($item.PSIsContainer -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint)){throw 'PROJECT_REGISTRY_PATH_INVALID'}
+    $lock=New-MmtlSessionLock -LockPath (Join-Path $root '.project-registry.lock') -AllowedRoot $root
+    try{
+        try{$null=Read-MmtlProjectRegistryDocument -Path $path;throw 'PROJECT_REGISTRY_NOT_CORRUPT'}
+        catch{if([string]$_.Exception.Message -cne 'PROJECT_REGISTRY_CORRUPT'){throw}}
+        $stamp=[DateTimeOffset]::UtcNow.ToString('yyyyMMddTHHmmssfffZ',[Globalization.CultureInfo]::InvariantCulture)
+        $backup=Join-Path $root ("project-registry.corrupt-$stamp-"+[guid]::NewGuid().ToString('N')+'.json')
+        Assert-MmtlNoReparsePath -Path $backup|Out-Null
+        [IO.File]::Move($path,$backup)
+        try{
+            Write-MmtlAtomicTextFile -Path $path -Content "{`"schemaVersion`":1,`"projects`":[]}`n"
+            $recovered=Read-MmtlProjectRegistryDocument -Path $path
+            if(@($recovered.projects).Count -ne 0){throw 'PROJECT_REGISTRY_RECOVERY_VERIFY_FAILED'}
+            return [pscustomobject][ordered]@{status='Recovered';registryPath=$path;backupPath=$backup;projectCount=0}
+        }catch{
+            if(Test-Path -LiteralPath $path -PathType Leaf){[IO.File]::Delete($path)}
+            if((Test-Path -LiteralPath $backup -PathType Leaf) -and -not(Test-Path -LiteralPath $path)){[IO.File]::Move($backup,$path)}
+            throw
+        }
+    }finally{Remove-MmtlSessionLock -Lock $lock}
+}
+
 function Remove-MmtlProjectRegistryEntry {
     [CmdletBinding()]
     param([Parameter(Mandatory)][string]$RuntimeRoot,[Parameter(Mandatory)][guid]$ProjectId)
@@ -266,4 +298,4 @@ function Import-MmtlProject {
     }
 }
 
-Export-ModuleMember -Function Get-MmtlProjectRegistry,Remove-MmtlProjectRegistryEntry,Import-MmtlProject,Get-MmtlProjectModMetadata
+Export-ModuleMember -Function Get-MmtlProjectRegistry,Remove-MmtlProjectRegistryEntry,Repair-MmtlProjectRegistry,Import-MmtlProject,Get-MmtlProjectModMetadata

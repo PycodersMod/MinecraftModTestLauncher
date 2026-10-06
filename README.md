@@ -19,7 +19,7 @@ MMTL 是面向 Minecraft Java Edition Mod 开发者的**测试启动器与场景
 | Linux x64 | Native | 当前不声明 | CLI、Build、Session 管理；不等同于 Linux Desktop GUI 实机验证 |
 | macOS x64 / ARM64 | Native | 当前不声明 | CLI、Build、Session 管理；窗口管理尚不支持 |
 
-“项目可识别”“可构建”“Launch Ready”“Agent 支持”和“实机验证通过”是不同状态，不能互相推断。当前 Agent 版本矩阵见 [Test Agent 与版本支持](docs/test-agent.md)。
+“项目可识别”“可构建”“Launch Ready”“Agent 支持”和“实机验证通过”是不同状态，不能互相推断。当前 Agent 版本矩阵见 [Test Agent 与版本支持](docs/test-agent.md)，机器可读的 Public Alpha 能力声明见 [public-capabilities.json](common/config/public-capabilities.json)。
 
 ## 首次运行
 
@@ -69,6 +69,18 @@ MMTL 是面向 Minecraft Java Edition Mod 开发者的**测试启动器与场景
 - IntegratedLAN 自动化仅适用于 MMTL 管理的 Session、离线测试身份与 loopback listener。
 - `Launch Ready` 或无日志异常不代表 Mod 的所有功能正确；结论必须按实际运行证据解释。
 - WSL 与托管 CI 的结果不能替代 Linux 桌面客户端实机验证。
+
+## 覆盖审计 CLI
+
+仓库维护者可用以下只读命令查看版本与功能覆盖：
+
+| 命令 | 用途 |
+|---|---|
+| `--coverage-report [--json]` | 显示正式版覆盖摘要；`--json` 输出完整报告。 |
+| `--coverage-gaps` | 显示尚未解决的不变量与提供器缺口。 |
+| `--coverage-version <id>` | 显示指定 Minecraft 正式版本的覆盖情况。 |
+
+离线运行可分别使用 `--catalog-offline`（仅影响 Mojang 版本目录）和 `--loader-offline`（仅影响加载器元数据）；它们不会改变 Gradle 离线模式。
 
 ## 许可与版本
 

@@ -140,12 +140,18 @@
 - [x] 重写 README；新增项目导入、Test Identity、Agent/支持矩阵、Scenario、离线多人、日志分析与 Alpha 文档。
 - [x] `0.1.0-alpha.1` 包按显式文件 allowlist 构建（不包含内部计划文档）；SHA-256 清单、Agent manifest/JAR 哈希、两次构建一致性与逐文件解压 smoke 通过；未包含本机配置、Registry、Session、世界、日志、JDK、Minecraft Runtime 或 Mod 项目。
 - [x] 未创建 GitHub Release/tag；新增 Alpha readiness checklist。
-- [ ] 中文 commit：`构建：建立 Public Alpha 可复现分发基础`。
+- [x] 中文 commit：`ccbdbcb 构建：建立 Public Alpha 可复现分发基础`。
 
 ### Task 12：V+ 稳定性扩展
 
-- [ ] 按附件优先级实现：scenario rerun/restart、报告差异、JUnit/Gradle 报告导入、public capabilities manifest、Registry 损坏恢复/并发、20 次 rehearsal、10 次并发端口、Agent artifact cache integrity、20 次短 scenario stress、陌生用户 first-run 空目录 smoke。
-- [ ] 每个 extension 独立 TDD；只实现通过全部主流程后仍有时间且保持安全的条目。
+- [x] Public Alpha machine-readable capabilities manifest 与包版本/hash Gate；README、Alpha 说明和 allowlist 同步。
+- [x] Registry 损坏恢复：必须显式 `--confirm-backup`，原始字节先备份、拒绝覆盖有效 Registry、写入后校验；CLI/Pester 覆盖拒绝与成功路径。
+- [x] 20 次短 Single rehearsal：Session ID 唯一、每个 Session 安全停止且终态均为 Stopped（仅合成 Java）。
+- [x] 并发 loopback 端口：现有 PortManager 压测覆盖 8 个 worker × 4 个端口，验证唯一分配、完整释放与重绑定。
+- [x] Agent artifact SHA-256 完整性和分发 ZIP 逐文件校验已有 gate；最新 alpha.1 本地包 127 文件，SHA-256 `6132b731540a48bc98491e4beb0fa1bc752340cf6faf06eeb79eb74b561977d9`，解压 smoke PASS。
+- [ ] 第二/第三 Loader LAN 未实施：Fabric 与 NeoForge Agent provider 当前明确 Unsupported；不绕过 provider gate。Host + 2 Guests、`--restart-role`、`--rerun-scenario`、`--follow-session`、JUnit 导入、Git snapshot 与报告 diff、Registry 专项并发、陌生空目录完整 import/build/analyze 尚未实施。
+- [x] Alpha readiness checklist 已在 Task 11 生成；Dedicated EULA 与 Linux/macOS GUI 限制保持清晰。
+- [x] 全仓 PowerShell parse、Public Repository Hygiene（282 文件）、Pester 465 passed / 0 failed / 2 skipped；Targeted 20 次压力、Registry、Capabilities 与 CLI 测试均通过。
 
 ### Task 13：全局回归、隐私、CI、PR、合并与交付
 

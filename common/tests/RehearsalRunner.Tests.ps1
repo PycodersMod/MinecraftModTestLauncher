@@ -14,6 +14,8 @@ BeforeAll {
     }
     Import-Module (Join-Path $script:repoRoot 'src/ProcessManager.psm1') -Force
     Import-Module (Join-Path $script:repoRoot 'src/SessionLifecycle.psm1') -Force
+    Import-Module (Join-Path $script:repoRoot 'src/SessionManager.psm1') -Force
+    Import-Module (Join-Path $script:repoRoot 'src/RuntimeManager.psm1') -Force
     Import-Module (Join-Path $script:repoRoot 'src/Execution/ExecutionPlan.psm1') -Force
     Import-Module (Join-Path $script:repoRoot 'src/Rehearsal/RehearsalRunner.psm1') -Force
     $script:canTrackProcesses = [Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::Windows) -or [Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::Linux)
@@ -275,5 +277,24 @@ Describe '演练进程登记' {
         $result.rehearsal | Should -BeTrue
         $result.validationEligible | Should -BeFalse
         (Test-Path -LiteralPath (Join-Path $result.sessionPath 'Host-Dev/eula.txt')) | Should -BeFalse
+    }
+
+    It '连续二十次短 Single rehearsal 均安全停止且 Session 身份互不重复' -Skip:([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::OSX)) {
+        $javaCommand=Get-Command java -ErrorAction Stop;$javaFile=[IO.FileInfo]::new($javaCommand.Source);$link=$javaFile.ResolveLinkTarget($true);$javaPath=if($link){$link.FullName}else{$javaFile.FullName}
+        $major=[int][regex]::Match((& $javaPath -version 2>&1|Out-String),'(?:version\s+"|openjdk\s+)(?<major>\d+)').Groups['major'].Value
+        $runtime=Join-Path $TestDrive 'twenty-short-rehearsals';New-Item -ItemType Directory -Path $runtime -Force|Out-Null
+        $plan=New-RehearsalExecutionPlan -JavaPath $javaPath -Major $major -RuntimeRoot $runtime
+        $results=[Collections.Generic.List[object]]::new()
+        for($iteration=1;$iteration -le 20;$iteration++){
+            $results.Add((Invoke-MmtlSingleLaunchRehearsal -ExecutionPlan $plan -RuntimeRoot $runtime -RepositoryRoot $script:platformRoot -TimeoutSeconds 1))
+        }
+        $results.Count | Should -Be 20
+        @($results|Where-Object{$_.finalSessionState -ne 'Stopped' -or -not $_.rehearsal -or $_.validationEligible}).Count | Should -Be 0
+        @($results.sessionId|Sort-Object -Unique).Count | Should -Be 20
+        foreach($result in $results){
+            $session=Join-Path (Join-Path $runtime 'sessions') $result.sessionId
+            (Test-MmtlSessionV2 -SessionPath $session).state | Should -Be 'Stopped'
+            (Update-MmtlSessionReport -SessionPath $session).Status | Should -Be 'Stopped'
+        }
     }
 }

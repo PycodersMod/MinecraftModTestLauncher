@@ -1,5 +1,18 @@
 BeforeAll {
-    $module=Join-Path (Split-Path -Parent $PSScriptRoot) 'src/Scenario/ScenarioOrchestrator.psm1'
+    $repoRoot=Split-Path -Parent $PSScriptRoot
+    $platformRoot=Split-Path -Parent $repoRoot
+    Import-Module (Join-Path $repoRoot 'src/Platform/Platform.psm1') -Force
+    if([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::Windows)){
+        Import-Module (Join-Path $platformRoot 'windows/src/WindowsPlatformProvider.psm1') -Force
+        Register-MmtlWindowsPlatform -RepositoryRoot $platformRoot
+    }elseif([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::Linux)){
+        Import-Module (Join-Path $platformRoot 'linux/src/LinuxPlatformProvider.psm1') -Force
+        Register-MmtlLinuxPlatform -RepositoryRoot $platformRoot
+    }else{
+        Import-Module (Join-Path $platformRoot 'macos/src/MacOSPlatformProvider.psm1') -Force
+        Register-MmtlMacOSPlatform -RepositoryRoot $platformRoot
+    }
+    $module=Join-Path $repoRoot 'src/Scenario/ScenarioOrchestrator.psm1'
     Import-Module $module -Force
 }
 
@@ -74,8 +87,9 @@ Describe 'Scenario plan CLI' {
     It '在陌生空项目字段下仍输出纯净 JSON 且不触发项目导入或启动' {
         $repoRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
         $config=Get-Content -LiteralPath (Join-Path $repoRoot 'common/config/launcher.config.example.json') -Raw|ConvertFrom-Json
-        $profile=$config.profiles.'single-test';$profile.mode='IntegratedLAN';$profile.players=3;$profile.project=''
-        $config.profiles.'single-test'=$profile
+        $profile=$config.profiles.'single-example';$profile.mode='IntegratedLAN';$profile.players=3;$profile.project=''
+        $config.profiles.'single-example'=$profile
+        $config.defaultProfile='single-example'
         $configPath=Join-Path $TestDrive 'scenario-cli.json';$config|ConvertTo-Json -Depth 20|Set-Content -LiteralPath $configPath -Encoding utf8
         $output=& (Get-Command pwsh).Source -NoProfile -File (Join-Path $repoRoot 'windows/launcher.ps1') --config-file $configPath --scenario-plan --json 2>$null
         $LASTEXITCODE | Should -Be 0

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "product": "MinecraftModTestLauncher",
+  "version": "0.1.0-alpha.1",
+  "releaseChannel": "PublicAlpha",
+  "platformCapabilities": [
+    { "os": "Windows", "arch": ["x64"], "cli": "Native", "build": "Native", "minecraftGui": "Native", "windowManagement": "Native" },
+    { "os": "Linux", "arch": ["x64"], "cli": "Native", "build": "Native", "minecraftGui": "NotDeclared", "windowManagement": "Unsupported" },
+    { "os": "MacOS", "arch": ["x64", "arm64"], "cli": "Native", "build": "Native", "minecraftGui": "NotDeclared", "windowManagement": "Unsupported" }
+  ],
+  "agentProviders": [
+    { "loader": "Forge", "minecraft": "1.20.1", "providerId": "forge-1.20.1", "status": "Supported", "roles": ["Client", "Host", "Guest"] },
+    { "loader": "Fabric", "minecraft": "1.21.6", "providerId": null, "status": "Unsupported", "reason": "AGENT_PROVIDER_NOT_FOUND" },
+    { "loader": "NeoForge", "minecraft": "1.21.1", "providerId": null, "status": "Unsupported", "reason": "AGENT_PROVIDER_NOT_FOUND" }
+  ],
+  "separateEvidenceDimensions": ["ProjectDetection", "Build", "Launch", "Agent", "IntegratedLAN"],
+  "limitations": [
+    "Dedicated Server Agent role is not advertised.",
+    "Linux desktop Minecraft GUI support is not declared by WSL or CI evidence.",
+    "Launch readiness does not claim that all Mod functionality is correct."
+  ]
+}
