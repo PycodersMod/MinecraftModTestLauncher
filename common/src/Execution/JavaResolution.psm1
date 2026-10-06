@@ -73,15 +73,18 @@ function Resolve-MmtlJavaCandidate {
     $base = [ordered]@{ status='Unresolved'; javaPath=$null; home=$null; actualMajor=$null; exactVersion=$null; vendor=$null; os=[string]$Platform.os; arch=$null; reasonCode=$reasonCode; source=[string]$source }
 
     $minimum = 0
+    $maximum = [int]::MaxValue
     $target = 0
     $preferred = 0
     if ($purpose -eq 'BuildJava') {
         $minimumValue = Get-MmtlJavaRequirementProperty -Requirement $Requirement -Name 'minimumMajor'
+        $maximumValue = Get-MmtlJavaRequirementProperty -Requirement $Requirement -Name 'maximumMajor'
         $preferredValue = Get-MmtlJavaRequirementProperty -Requirement $Requirement -Name 'preferredMajor'
         $exactValue = Get-MmtlJavaRequirementProperty -Requirement $Requirement -Name 'exactMajor'
         $kind = [string](Get-MmtlJavaRequirementProperty -Requirement $Requirement -Name 'requirementKind')
         $majorValue = Get-MmtlJavaRequirementProperty -Requirement $Requirement -Name 'major'
         if ($minimumValue) { $minimum = [int]$minimumValue }
+        if ($maximumValue) { $maximum = [int]$maximumValue }
         elseif ($kind -eq 'Minimum' -and $majorValue) { $minimum = [int]$majorValue }
         if ($preferredValue) { $preferred = [int]$preferredValue }
         if ($exactValue) { $target = [int]$exactValue }
@@ -108,6 +111,7 @@ function Resolve-MmtlJavaCandidate {
         $candidateMajors = @($candidateMajors | Sort-Object @{ Expression = { if ($_ -eq $target) { 0 } elseif ($minimum -gt 0 -and $_ -ge $minimum) { 1 } else { 2 } } }, @{ Expression = { $_ } })
     }
     if ($minimum -gt 0) { $candidateMajors = @($candidateMajors | Where-Object { $_ -ge $minimum }) }
+    if ($purpose -eq 'BuildJava' -and $maximum -lt [int]::MaxValue) { $candidateMajors = @($candidateMajors | Where-Object { $_ -le $maximum }) }
 
     $sawArchitectureMismatch = $false
     $sawMetadataProblem = $false
@@ -126,6 +130,7 @@ function Resolve-MmtlJavaCandidate {
         if ($release.ContainsKey('OS_NAME') -and -not (Test-MmtlJavaReleaseOperatingSystem -ReleaseName ([string]$release['OS_NAME']) -OperatingSystem ([string]$Platform.os))) { continue }
         if ($purpose -eq 'RuntimeJava' -and $kind -ne 'Minimum' -and $actualMajor -ne $target) { continue }
         if ($minimum -gt 0 -and $actualMajor -lt $minimum) { continue }
+        if ($purpose -eq 'BuildJava' -and $actualMajor -gt $maximum) { continue }
         if ($purpose -eq 'RuntimeJava' -and $kind -eq 'Minimum' -and $actualMajor -lt $minimum) { continue }
 
         $base.status = 'Resolved'

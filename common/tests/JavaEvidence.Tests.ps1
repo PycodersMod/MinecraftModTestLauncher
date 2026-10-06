@@ -25,6 +25,14 @@ Describe 'Build Java requirement and observed build evidence' {
         $requirement.major | Should -Be 17
     }
 
+    It 'records the documented Gradle 4.9 daemon JVM support interval separately from compiler target' {
+        $project=Join-Path $TestDrive 'gradle-four-nine';New-Item -ItemType Directory -Path (Join-Path $project 'gradle/wrapper') -Force|Out-Null
+        'distributionUrl=https\\://services.gradle.org/distributions/gradle-4.9-all.zip'|Set-Content (Join-Path $project 'gradle/wrapper/gradle-wrapper.properties')
+        $requirement=Get-MmtlGradleWrapperRuntimeJavaRequirement -ProjectRoot $project
+        $requirement.minimumMajor | Should -Be 7
+        $requirement.maximumMajor | Should -Be 10
+    }
+
     It 'labels a Minecraft compatibility fallback as a low-confidence preference' {
         $requirement=Get-MmtlBuildJavaCompatibilityFallback -MinecraftId '1.12.2'
         $requirement.requirementKind | Should -BeExactly 'Preferred'
@@ -45,6 +53,17 @@ Describe 'Build Java requirement and observed build evidence' {
         $detected.BuildJavaRequirement.preferredMajor | Should -Be 21
         $detected.BuildJavaRequirement.compilerTargetMajor | Should -Be 8
         $detected.CompilerTargetJavaMajor | Should -Be 8
+    }
+
+    It 'bounds Rift Gradle 4.9 Build Java to the documented JVM range without treating target 8 as the daemon version' {
+        $project=Join-Path $TestDrive 'rift-build-java-range';New-Item -ItemType Directory -Path (Join-Path $project 'gradle/wrapper') -Force|Out-Null
+        "buildscript { dependencies { classpath 'org.dimdev:ForgeGradle:2.3-SNAPSHOT' } }`napply plugin: 'net.minecraftforge.gradle.tweaker-client'`nsourceCompatibility = 1.8`nminecraft { version = '1.13' }"|Set-Content (Join-Path $project 'build.gradle')
+        'distributionUrl=https\\://services.gradle.org/distributions/gradle-4.9-all.zip'|Set-Content (Join-Path $project 'gradle/wrapper/gradle-wrapper.properties')
+        $detected=Get-MmtlProject -Path $project
+        $detected.BuildJavaRequirement.minimumMajor | Should -Be 8
+        $detected.BuildJavaRequirement.maximumMajor | Should -Be 10
+        $detected.CompilerTargetJavaMajor | Should -Be 8
+        $detected.RuntimeJavaRequirement.major | Should -BeNullOrEmpty
     }
 
     It 'keeps the minimum JVM, actually used JDK, compiler target, and fixture provenance distinct' {
@@ -71,6 +90,13 @@ Describe 'Build Java requirement and observed build evidence' {
         $incompatible=@{}+$script:buildEvidenceArgs
         $incompatible.ObservedBuildJava=[pscustomobject]@{major=16;exactVersion='16.0.2';vendor='Oracle';os='Windows';arch='x64'}
         { New-MmtlBuildEvidence @incompatible } | Should -Throw '*实测构建 JVM 低于要求的最低版本*'
+    }
+
+    It 'does not mark a build passed when the observed JVM exceeds the declared Gradle maximum' {
+        $incompatible=@{}+$script:buildEvidenceArgs
+        $incompatible.BuildJavaRequirement=[pscustomobject]@{purpose='BuildJava';major=8;minimumMajor=8;maximumMajor=10;requirementKind='Minimum';source='GradleWrapperRuntimeCompatibility';confidence='High'}
+        $incompatible.ObservedBuildJava=[pscustomobject]@{major=17;exactVersion='17.0.1';vendor='Oracle';os='Windows';arch='x64'}
+        { New-MmtlBuildEvidence @incompatible } | Should -Throw '*实测构建 JVM 高于要求的最高版本*'
     }
 
     It 'rejects build evidence whose observed Java platform differs from the build platform' {
