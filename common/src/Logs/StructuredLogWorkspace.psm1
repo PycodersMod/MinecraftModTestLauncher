@@ -38,7 +38,7 @@ function ConvertTo-MmtlLogSafeIdentity {
 
 function Add-MmtlStructuredLogLine {
     [CmdletBinding()]
-    param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][ValidateSet('Host','Guest','Client','Server','Build','Launcher')][string]$Role,[Parameter(Mandatory)][string]$Identity,[Parameter(Mandatory)][string]$SourceFile,[Parameter(Mandatory)][AllowEmptyString()][string]$Line,[string]$ObservedAtUtc=[DateTimeOffset]::UtcNow.ToString('o'))
+    param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][ValidateSet('Host','Guest','Client','Server','Agent','Build','Launcher','Runtime','Scenario')][string]$Role,[Parameter(Mandatory)][string]$Identity,[Parameter(Mandatory)][string]$SourceFile,[Parameter(Mandatory)][AllowEmptyString()][string]$Line,[string]$ObservedAtUtc=[DateTimeOffset]::UtcNow.ToString('o'))
     $session=[IO.Path]::GetFullPath($SessionPath);$null=Initialize-MmtlStructuredLogWorkspace -SessionPath $session
     $source=Resolve-MmtlLogPath -SessionPath $session -Path $SourceFile -AllowMissing
     $relative=[IO.Path]::GetRelativePath($session,$source).Replace('\','/')

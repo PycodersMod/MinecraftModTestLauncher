@@ -176,9 +176,11 @@ function Get-MmtlProjectModMetadata {
         } catch { $metadataErrors.Add("$mixinConfig`:INVALID_MIXIN_JSON") }
     }
     $artifactRoot = Join-Path ([string]$Project.ProjectRoot) 'build/libs'
+    $artifactNames = [Collections.Generic.List[string]]::new()
     if (Test-Path -LiteralPath $artifactRoot -PathType Container) {
         Add-Type -AssemblyName System.IO.Compression.FileSystem
         foreach ($artifact in @(Get-ChildItem -LiteralPath $artifactRoot -Filter '*.jar' -File -ErrorAction SilentlyContinue)) {
+            if($artifact.BaseName -notmatch '(?i)-(sources|javadoc)$' -and -not $artifactNames.Contains($artifact.Name)){$artifactNames.Add($artifact.Name)}
             try {
                 $archive = [IO.Compression.ZipFile]::OpenRead($artifact.FullName)
                 try {
@@ -201,6 +203,7 @@ function Get-MmtlProjectModMetadata {
         modNames = @($modNames | Select-Object -Unique)
         entrypointClasses = @($entrypoints | Select-Object -Unique)
         mixinConfigs = @($mixinConfigs | Select-Object -Unique)
+        artifactNames = @($artifactNames | Select-Object -Unique)
         packageCandidates = @($packageCandidates | Sort-Object @{Expression={switch($_.source){'Entrypoint'{0}'SourceScan'{1}'Mixin'{2}'Artifact'{3}default{4}}}},packageName -Unique)
         metadataErrors = @($metadataErrors | Select-Object -Unique)
         primaryModId = $primary
@@ -235,6 +238,7 @@ function Import-MmtlProject {
             modNames = @($metadata.modNames)
             entrypointClasses = @($metadata.entrypointClasses)
             mixinConfigs = @($metadata.mixinConfigs)
+            artifactNames = @($metadata.artifactNames)
             packageCandidates = @($metadata.packageCandidates)
             metadataErrors = @($metadata.metadataErrors)
             primaryModId = $metadata.primaryModId
@@ -262,4 +266,4 @@ function Import-MmtlProject {
     }
 }
 
-Export-ModuleMember -Function Get-MmtlProjectRegistry,Remove-MmtlProjectRegistryEntry,Import-MmtlProject
+Export-ModuleMember -Function Get-MmtlProjectRegistry,Remove-MmtlProjectRegistryEntry,Import-MmtlProject,Get-MmtlProjectModMetadata

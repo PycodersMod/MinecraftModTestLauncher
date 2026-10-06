@@ -110,11 +110,11 @@
 
 ### Task 8：Mod-aware Extraction 与 Rule-Based Analyzer（Phase T）
 
-- [ ] 匿名 synthetic log 测试覆盖全部附件规则、Caused-by 完整异常块、20–40 行上下文、mixin/network/resource/dependency 分类。
-- [ ] 测试 Direct/Indirect/Unknown；依赖栈没有当前 Mod frame 时不能归 Direct；Agent 栈单列 `MMTL_INFRASTRUCTURE`。
-- [ ] 实现保留 raw log 的相关日志提取、finding Evidence/Observed/Likely category/Possible next check/Confidence 与 Analyzer Provider contract。
-- [ ] 实现 `--analyze-session`、`--session-report [--json]`，stdout JSON 纯净；报告中文、不过度断言根因、不把“无异常”当功能正确。
-- [ ] 中文 commit：`功能：实现 Mod 相关日志提取与规则式分析`。
+- [x] 匿名 synthetic log 测试覆盖附件规则矩阵、Caused-by 合并异常块、上下文保留、mixin/network/resource/dependency 分类。
+- [x] 测试 Direct/Indirect/Unknown；依赖栈没有当前 Mod frame 时不能归 Direct；Agent 栈单列 `MMTL_INFRASTRUCTURE`。
+- [x] 实现保留 raw log 的相关日志提取、finding Evidence/Observed/Likely category/Possible next check/Confidence 与 RuleBasedAnalyzer Provider contract。
+- [x] 实现 `--analyze-session`、`--session-report [--json]`，stdout JSON 纯净；报告中文、不过度断言根因、不把“无异常”当功能正确，并在受管 Scenario 到时停止后自动生成。
+- [x] 中文 commit：`功能：实现 Mod 相关日志提取与规则式分析`。
 
 ### Task 9：Forge Windows live Single 与 IntegratedLAN smoke（Phase U）
 
