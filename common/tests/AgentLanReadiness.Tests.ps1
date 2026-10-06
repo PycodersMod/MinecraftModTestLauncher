@@ -16,6 +16,8 @@ Describe 'MMTL Forge IntegratedLAN readiness gate' {
     }
 
     It '只有当前 Session Host nonce 的成功发布事件且 loopback 端口正在监听时才就绪' {
+        $started=[pscustomobject]@{schemaVersion=1;sessionId=$script:sessionId;role='Host';eventId='event-started';eventType='AGENT_STARTED';timestampUtc=[DateTimeOffset]::UtcNow.ToString('o');sessionNonceHash=$script:nonceHash;summary='agent started'}
+        [IO.File]::AppendAllText($script:eventPath,(($started|ConvertTo-Json -Compress)+"`n"),[Text.UTF8Encoding]::new($false))
         $record=[pscustomobject]@{schemaVersion=1;sessionId=$script:sessionId;role='Host';eventId='event-1';eventType='LAN_PUBLISHED';timestampUtc=[DateTimeOffset]::UtcNow.ToString('o');sessionNonceHash=$script:nonceHash;summary='listener ready';port=$script:port}
         [IO.File]::AppendAllText($script:eventPath,(($record|ConvertTo-Json -Compress)+"`n"),[Text.UTF8Encoding]::new($false))
         $result=Wait-MmtlAgentIntegratedLanReady -SessionPath $script:session -EventPath $script:eventPath -SessionId $script:sessionId -ExpectedNonceHash $script:nonceHash -Port $script:port -ProcessId $PID -PortProbe {param($candidate) $candidate -eq 25565}
@@ -53,6 +55,8 @@ Describe 'MMTL Forge Guest join readiness gate' {
     }
 
     It 'only accepts a matching Guest loopback world-join event and live process' {
+        $connecting=[pscustomobject]@{schemaVersion=1;sessionId=$script:sessionId;role='Guest';eventId='guest-started';eventType='GUEST_CONNECTING';timestampUtc=[DateTimeOffset]::UtcNow.ToString('o');sessionNonceHash=$script:nonceHash;summary='guest connecting'}
+        [IO.File]::AppendAllText($script:eventPath,(($connecting|ConvertTo-Json -Compress)+"`n"),[Text.UTF8Encoding]::new($false))
         $record=[pscustomobject]@{schemaVersion=1;sessionId=$script:sessionId;role='Guest';eventId='guest-1';eventType='GUEST_CONNECTED';timestampUtc=[DateTimeOffset]::UtcNow.ToString('o');sessionNonceHash=$script:nonceHash;summary='joined loopback host';port=$script:port}
         [IO.File]::AppendAllText($script:eventPath,(($record|ConvertTo-Json -Compress)+"`n"),[Text.UTF8Encoding]::new($false))
         $result=Wait-MmtlAgentGuestJoined -SessionPath $script:session -EventPath $script:eventPath -SessionId $script:sessionId -ExpectedNonceHash $script:nonceHash -Port $script:port -ProcessId $PID

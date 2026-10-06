@@ -585,6 +585,7 @@ function Start-MmtlConfiguredRun {
     }
     $name=[IO.Path]::GetFileName($Primary.Root)-replace '[^A-Za-z0-9_-]','_'
     $metadata=[pscustomobject]@{project=$Primary.Root;linkedProjects=@($linked.Root);linkedArtifacts=@();minecraft=$Primary.MinecraftVersion;loader=$Primary.Loader;loaderVersion=$Primary.LoaderVersion;javaMajor=$Primary.JavaMajor;runtimeJavaMajor=[int]$ExecutionPlan.runtimeJava.requirement.major;runtimeJavaPath=$java;mode=$Profile.mode;players=$players;hostUsername=$hostName;clientPrefix=$prefix;hostCheats=[bool]$Profile.hostCheats;clientPermissionLevel=[int]$Profile.clientPermissionLevel;gameMode=$Profile.gameMode;difficulty=$Profile.difficulty;worldName=$Profile.worldName;seed=$Profile.seed;newWorld=[bool]$Profile.newWorld;resetWorld=[bool]$Profile.resetWorld;worldResetCount=0;resolution=$Profile.resolution;guiScale=$Profile.guiScale;windowLayout=$Profile.windowLayout;windowLayoutStatus='Pending';memoryMb=$Profile.memoryMb;hostMemoryMb=$Profile.hostMemoryMb;clientMemoryMb=$Profile.clientMemoryMb;serverMemoryMb=$Profile.serverMemoryMb;memoryBudget=$memoryBudget;memoryOverageConfirmed=$memoryOverageConfirmed;port=$requestedPort;builds=@();processes=@();createdBy='MinecraftModTestLauncher'}
+    $metadata=Initialize-MmtlScenarioSessionMetadata -Metadata $metadata
     $session=New-MmtlSession -RuntimeRoot $RuntimeRoot -Name $name -Metadata $metadata
     Initialize-MmtlSessionV2 -SessionPath $session -ExecutionPlan $ExecutionPlan|Out-Null
     $sessionId=Split-Path $session -Leaf
@@ -659,7 +660,8 @@ function Start-MmtlConfiguredRun {
         }elseif($Profile.mode -eq 'IntegratedLAN'){
             if($NonInteractive){Set-MmtlScenarioState -SessionPath $session -NextState HostStarting -EventCode ROLE_START_REQUESTED -Role Host -Summary '启动受管 IntegratedLAN Host。'|Out-Null;$hostBinding=New-MmtlAgentLaunchBinding -Provider $agentProvider -SessionPath $session -SessionId $sessionId -Role Host -SessionToken $sessionToken -IntegratedLanPort $scenarioLanPort -AutoCreateWorld:([bool]$Profile.newWorld) -WorldName $(if($Profile.worldName){[string]$Profile.worldName}else{'MMTL-Test'}) -WorldGameMode $(if($Profile.gameMode){[string]$Profile.gameMode}else{'survival'}) -WorldDifficulty $(if($Profile.difficulty){[string]$Profile.difficulty}else{'normal'}) -WorldSeed ([string]$Profile.seed) -WorldAllowCommands:([bool]$Profile.hostCheats);$hostAgentArgs=@($hostBinding.jvmArgs)}else{$hostBinding=$null;$hostAgentArgs=@()}
             $hostPlan=New-MmtlGradleRunPlan -Project $Primary -Mode IntegratedLAN -RuntimeRoot $session -Role Host -Username $hostName -Profile $Profile -AgentJvmArguments $hostAgentArgs
-            $hostProcess=Start-MmtlGradleInstance -Project $Primary -Plan $hostPlan -JavaPath $java -SessionPath $session -ModJars @($extraJars) -ExpectedModHashes $projectPipeline.expectedModHashes
+            $hostModJars=Get-MmtlAgentRuntimeModJars -ModJars @($extraJars) -Binding $hostBinding
+            $hostProcess=Start-MmtlGradleInstance -Project $Primary -Plan $hostPlan -JavaPath $java -SessionPath $session -ModJars $hostModJars -ExpectedModHashes $projectPipeline.expectedModHashes
             $metadata.processes+=@([pscustomobject]@{PID=$hostProcess.ProcessId;role='Host';username=$hostName;log=$hostProcess.LogPath})
             if($NonInteractive){
                 Write-Host "IntegratedLAN Host 已启动；等待 Agent world join、loopback publish 与端口 $scenarioLanPort 就绪。"
@@ -678,7 +680,8 @@ function Start-MmtlConfiguredRun {
                 $username=$prefix+$i
                 if($NonInteractive){$guestBinding=New-MmtlAgentLaunchBinding -Provider $agentProvider -SessionPath $session -SessionId $sessionId -Role Guest -SessionToken $sessionToken -ExpectedLoopbackPort $port;$guestAgentArgs=@($guestBinding.jvmArgs)}else{$guestBinding=$null;$guestAgentArgs=@()}
                 $plan=New-MmtlGradleRunPlan -Project $Primary -Mode IntegratedLAN -RuntimeRoot $session -Role Client -Username $username -Port $port -Profile $Profile -AgentJvmArguments $guestAgentArgs
-                $started=Start-MmtlGradleInstance -Project $Primary -Plan $plan -JavaPath $java -SessionPath $session -ModJars @($extraJars) -ExpectedModHashes $projectPipeline.expectedModHashes
+                $guestModJars=Get-MmtlAgentRuntimeModJars -ModJars @($extraJars) -Binding $guestBinding
+                $started=Start-MmtlGradleInstance -Project $Primary -Plan $plan -JavaPath $java -SessionPath $session -ModJars $guestModJars -ExpectedModHashes $projectPipeline.expectedModHashes
                 $metadata.processes+=@([pscustomobject]@{PID=$started.ProcessId;role='Client';username=$username;log=$started.LogPath})
                 Write-Host "LAN 客户端 $username 已启动；日志：$($started.LogPath)"
                 if($NonInteractive){$null=Wait-MmtlAgentGuestJoined -SessionPath $session -EventPath $guestBinding.eventSink -SessionId $sessionId -ExpectedNonceHash $guestBinding.sessionNonceHash -Port $port -ProcessId $started.ProcessId -TimeoutSeconds 180}
@@ -689,7 +692,8 @@ function Start-MmtlConfiguredRun {
             $clientAgentArgs=@();$clientBinding=$null
             if($NonInteractive -and $agentProvider -and $agentProvider.status -ceq 'Supported'){$clientBinding=New-MmtlAgentLaunchBinding -Provider $agentProvider -SessionPath $session -SessionId $sessionId -Role Client -SessionToken $sessionToken;$clientAgentArgs=@($clientBinding.jvmArgs)}
             $plan=New-MmtlGradleRunPlan -Project $Primary -Mode Single -RuntimeRoot $session -Role Client -Username $hostName -Profile $Profile -AgentJvmArguments $clientAgentArgs
-            $started=Start-MmtlGradleInstance -Project $Primary -Plan $plan -JavaPath $java -SessionPath $session -ModJars @($extraJars) -ExpectedModHashes $projectPipeline.expectedModHashes
+            $clientModJars=Get-MmtlAgentRuntimeModJars -ModJars @($extraJars) -Binding $clientBinding
+            $started=Start-MmtlGradleInstance -Project $Primary -Plan $plan -JavaPath $java -SessionPath $session -ModJars $clientModJars -ExpectedModHashes $projectPipeline.expectedModHashes
             $metadata.processes+=@([pscustomobject]@{PID=$started.ProcessId;role='Client';username=$hostName;log=$started.LogPath})
             Write-Host "Single 客户端已启动；日志：$($started.LogPath)"
             if($clientBinding){$null=Wait-MmtlAgentClientReady -SessionPath $session -EventPath $clientBinding.eventSink -SessionId $sessionId -ExpectedNonceHash $clientBinding.sessionNonceHash -ProcessId $started.ProcessId -TimeoutSeconds 300}

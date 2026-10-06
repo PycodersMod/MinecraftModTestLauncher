@@ -80,6 +80,7 @@ function Wait-MmtlAgentIntegratedLanReady {
             if(-not $line){continue}
             try{$observation=ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId $SessionId -ExpectedRole Host -ExpectedNonceHash $ExpectedNonceHash -ProcessId $ProcessId -ProcessIdentity $ProcessIdentity}catch{continue}
             $agentRecord=$line|ConvertFrom-Json -ErrorAction SilentlyContinue
+            if(-not $agentRecord -or -not $agentRecord.PSObject.Properties['port']){continue}
             if([int]$agentRecord.port -ne $Port){continue}
             if([string]$agentRecord.eventType -eq 'LAN_PUBLISH_FAILED'){throw 'AGENT_LAN_PUBLISH_FAILED'}
             if([string]$agentRecord.eventType -eq 'LAN_PUBLISHED' -and (& $PortProbe $Port)){
@@ -114,7 +115,7 @@ function Wait-MmtlAgentGuestJoined {
             if(-not $line){continue}
             try{$observation=ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId $SessionId -ExpectedRole Guest -ExpectedNonceHash $ExpectedNonceHash -ProcessId $ProcessId -ProcessIdentity $ProcessIdentity}catch{continue}
             $record=$line|ConvertFrom-Json -ErrorAction SilentlyContinue
-            if([string]$record.eventType -ne 'GUEST_CONNECTED' -or [int]$record.port -ne $Port){continue}
+            if(-not $record -or [string]$record.eventType -ne 'GUEST_CONNECTED' -or -not $record.PSObject.Properties['port'] -or [int]$record.port -ne $Port){continue}
             try{$null=Get-Process -Id $ProcessId -ErrorAction Stop}catch{throw 'AGENT_GUEST_PROCESS_EXITED'}
             return [pscustomobject][ordered]@{ready=$true;sessionId=$SessionId;role='Guest';port=$Port;endpoint='127.0.0.1';event=$observation;detectedAtUtc=[DateTimeOffset]::UtcNow.ToString('o')}
         }

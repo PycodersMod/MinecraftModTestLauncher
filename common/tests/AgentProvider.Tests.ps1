@@ -63,6 +63,8 @@ Describe 'MMTL Agent Provider 与 Session 握手' {
         $binding = New-MmtlAgentLaunchBinding -Provider $provider -SessionPath $script:session -SessionId session_a -Role Host -SessionToken $script:token
 
         Test-MmtlAgentPathInsideRoot -Root $script:session -Target $binding.artifactPath | Should -BeTrue
+        (Get-MmtlAgentRuntimeModJars -ModJars @() -Binding $binding) | Should -Be @($binding.artifactPath)
+        (Get-MmtlAgentRuntimeModJars -ModJars @($script:artifact) -Binding $binding) | Should -Be @($script:artifact,$binding.artifactPath)
         Test-MmtlAgentPathInsideRoot -Root $script:session -Target $binding.eventSink | Should -BeTrue
         (Get-FileHash -LiteralPath $binding.artifactPath -Algorithm SHA256).Hash.ToLowerInvariant() | Should -BeExactly $script:sha
         $binding.jvmArgs -join ' ' | Should -Match 'mmtl\.agent\.sessionTokenFile='

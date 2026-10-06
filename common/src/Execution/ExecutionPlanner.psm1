@@ -186,7 +186,7 @@ function New-MmtlExecutionPlan {
     if ($launchCapability -in @('Unsupported','BuildOnly')) { $diagnostics.Add((New-MmtlPlannerDiagnostic 'PLATFORM_LAUNCH_UNSUPPORTED' 'Launch' '当前平台提供 CLI/Build 能力，但未声明 Minecraft Launch 支持。')) }
 
     if ($mode -eq 'Dedicated' -and (Get-MmtlPlannerProperty $Profile 'acceptEula' $false) -ne $true) { $diagnostics.Add((New-MmtlPlannerDiagnostic 'EULA_NOT_PREAUTHORIZED' 'Launch' 'Dedicated Server 需要用户在配置中明确预先接受 EULA；Plan 不会修改配置或 EULA 文件。')) }
-    if ($mode -eq 'IntegratedLAN') { $diagnostics.Add((New-MmtlPlannerDiagnostic 'AUTH_REQUIRED' 'Launch' 'IntegratedLAN 客户端需要合法的 Minecraft 身份认证；本阶段不处理认证。')) }
+    # MMTL-managed IntegratedLAN uses Session-local offline Test Identities; real account auth is never a launch prerequisite.
 
     if ($PhysicalMemoryMb -le 0) { $physicalProperty=Get-MmtlPlannerProperty $Platform 'physicalMemoryMb'; if ($physicalProperty) { $PhysicalMemoryMb=[long]$physicalProperty } }
     $memory=Get-MmtlPlannerMemory -Profile $Profile -Mode $mode -Roles $roles -PhysicalMemoryMb $PhysicalMemoryMb

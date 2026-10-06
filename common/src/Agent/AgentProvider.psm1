@@ -93,4 +93,19 @@ function New-MmtlAgentLaunchBinding {
     return [pscustomobject][ordered]@{providerId=[string]$Provider.providerId;artifactPath=$artifactPath;artifactSha256=[string]$Provider.sha256;eventSink=$eventSink;sessionId=$SessionId;role=$Role;sessionNonceHash=$nonceHash;integratedLanPort=$IntegratedLanPort;expectedLoopbackPort=$ExpectedLoopbackPort;jvmArgs=$args;capabilities=@($Provider.capabilities)}
 }
 
-Export-ModuleMember -Function Test-MmtlAgentPathInsideRoot,Get-MmtlAgentProviderStatus,New-MmtlAgentLaunchBinding
+function Get-MmtlAgentRuntimeModJars {
+    [CmdletBinding()]
+    param([string[]]$ModJars=@(),$Binding)
+    $result=[Collections.Generic.List[string]]::new()
+    foreach($jar in $ModJars){if($jar){$result.Add([string]$jar)}}
+    if($null -ne $Binding){
+        $artifact=[string]$Binding.artifactPath
+        if(-not $artifact -or -not(Test-Path -LiteralPath $artifact -PathType Leaf) -or [IO.Path]::GetExtension($artifact) -ine '.jar'){throw 'AGENT_RUNTIME_ARTIFACT_INVALID'}
+        $actual=(Get-FileHash -LiteralPath $artifact -Algorithm SHA256 -ErrorAction Stop).Hash.ToLowerInvariant()
+        if($actual -cne ([string]$Binding.artifactSha256).ToLowerInvariant()){throw 'AGENT_ARTIFACT_HASH_MISMATCH'}
+        $result.Add($artifact)
+    }
+    return ,@($result.ToArray())
+}
+
+Export-ModuleMember -Function Test-MmtlAgentPathInsideRoot,Get-MmtlAgentProviderStatus,New-MmtlAgentLaunchBinding,Get-MmtlAgentRuntimeModJars

@@ -5,8 +5,8 @@ import net.minecraft.world.level.GameType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-@Mixin(IntegratedServer.class)
+@Mixin(value = IntegratedServer.class, remap = false)
 public interface IntegratedServerInvoker {
-    @Invoker("publishServer")
+    @Invoker(value = "publishServer", remap = false)
     boolean mmtl$publishServer(GameType gameType, boolean allowCommands, int port);
 }

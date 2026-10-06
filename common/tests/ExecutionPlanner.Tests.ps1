@@ -125,14 +125,14 @@ Describe '统一 Execution Planner' {
         $plan.session.intendedMode | Should -BeExactly 'Dedicated'
     }
 
-    It 'IntegratedLAN 没有合法认证来源时显示 AUTH_REQUIRED 而不抛出异常' {
+    It 'IntegratedLAN 使用 Session 管理的离线测试身份，不要求正版账号认证' {
         $input=New-TestPlannerInputs
         $input.profile.mode='IntegratedLAN';$input.profile.players=2
 
         $plan=New-MmtlExecutionPlan @input
 
         $plan.capabilityGates.buildReady | Should -BeTrue
-        $plan.blockingReasons.code | Should -Contain 'AUTH_REQUIRED'
+        $plan.blockingReasons.code | Should -Not -Contain 'AUTH_REQUIRED'
     }
 
     It 'Plan 生成不创建 Session/Runtime 文件或目录' {
@@ -230,7 +230,7 @@ Describe '统一 Execution Planner' {
         $plan.runtime.roles[0].launchReady | Should -BeFalse
     }
 
-    It 'IntegratedLAN 分别暴露 Host 就绪和需要认证的 Guest 阻塞' {
+    It 'IntegratedLAN Host 与 Guest 都可使用 Session 管理的离线身份启动' {
         $input=New-TestPlannerInputs
         $input.profile.mode='IntegratedLAN';$input.profile.players=2
         $input.project.RuntimeJavaRequirement=[pscustomobject]@{purpose='RuntimeJava';major=17;requirementKind='Exact';source='MojangVersionMetadata';confidence='High'}
@@ -239,10 +239,10 @@ Describe '统一 Execution Planner' {
         $plan=New-MmtlExecutionPlan @input
 
         $plan.runtime.roles[0].launchReady | Should -BeTrue
-        $plan.runtime.roles[1].launchReady | Should -BeFalse
-        $plan.runtime.roles[1].blockingReasons | Should -Contain 'AUTH_REQUIRED'
-        $plan.capabilityGates.launchReady | Should -BeFalse
-        $plan.launchBlockingReasons.code | Should -Contain 'AUTH_REQUIRED'
+        $plan.runtime.roles[1].launchReady | Should -BeTrue
+        $plan.runtime.roles[1].blockingReasons | Should -Not -Contain 'AUTH_REQUIRED'
+        $plan.capabilityGates.launchReady | Should -BeTrue
+        $plan.launchBlockingReasons.code | Should -Not -Contain 'AUTH_REQUIRED'
     }
 
     It 'Linux WSL 保留 BuildReady 并按注入 Launch capability 阻止 launch' {

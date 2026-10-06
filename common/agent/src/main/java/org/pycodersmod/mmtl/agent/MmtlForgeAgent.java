@@ -26,7 +26,7 @@ public final class MmtlForgeAgent {
         MinecraftForge.EVENT_BUS.register(this);
         if ("Guest".equals(context.role) || "Client".equals(context.role)
                 || ("Host".equals(context.role) && context.integratedLanPort > 0)) {
-            DistExecutor.safeRunWhenOn(Dist.CLIENT,
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
                     () -> () -> MinecraftForge.EVENT_BUS.register(new MmtlForgeClientEvents(context, events)));
         }
         events.emit("AGENT_STARTED", "Forge Agent handshake accepted for role " + context.role);
@@ -47,6 +47,12 @@ public final class MmtlForgeAgent {
         AgentHandshake.Context current = contextForLanPolicy;
         return managedPublishInProgress && current != null && LanPublishPolicy.isAuthorizedHostPort(true,
                 current.role, port) && current.integratedLanPort == port;
+    }
+
+    public static java.net.InetAddress selectBindAddress(int port, java.net.InetAddress requestedAddress) {
+        AgentHandshake.Context current = contextForLanPolicy;
+        return LanPublishPolicy.selectBindAddress(shouldBindLoopback(port),
+                current == null ? "None" : current.role, port, requestedAddress);
     }
 
     public static void setManagedPublishInProgress(boolean value) { managedPublishInProgress = value; }

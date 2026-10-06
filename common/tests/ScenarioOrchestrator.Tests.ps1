@@ -4,6 +4,20 @@ BeforeAll {
 }
 
 Describe 'MMTL 通用 Scenario plan 与 Action contract' {
+    It '为场景生命周期预留可写的分析与终态元数据字段' {
+        $metadata=[pscustomobject]@{mode='Single'}
+        $initialized=Initialize-MmtlScenarioSessionMetadata -Metadata $metadata
+        $initialized.analysisStatus | Should -BeNullOrEmpty
+        $initialized.analysisFindingCount | Should -BeNullOrEmpty
+        $initialized.analysisErrorCode | Should -BeNullOrEmpty
+        $initialized.scenarioState | Should -BeNullOrEmpty
+        $initialized.sessionState | Should -BeNullOrEmpty
+        $initialized.analysisStatus='Complete'
+        $initialized.scenarioState='Completed'
+        $initialized.analysisStatus | Should -Be 'Complete'
+        $initialized.scenarioState | Should -Be 'Completed'
+    }
+
     It '按 players 总数生成 loopback IntegratedLAN Host 和 Guest 顺序' {
         $plan=New-MmtlScenarioPlan -Mode IntegratedLAN -Players 3
         $plan.roles.role | Should -Be @('Host','Guest','Guest')

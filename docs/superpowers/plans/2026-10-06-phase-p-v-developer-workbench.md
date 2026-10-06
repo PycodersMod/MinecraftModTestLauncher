@@ -118,11 +118,11 @@
 
 ### Task 9：Forge Windows live Single 与 IntegratedLAN smoke（Phase U）
 
-- [ ] 确认候选项目无 TaCZ automation dependency；必要时 Forge smoke 使用其他简单 Forge fixture。检查 world template；没有可安全复制世界则用 Agent 最小创建或记录 `WORLD_TEMPLATE_REQUIRED`。
-- [ ] 运行单 Loader Single 真机 smoke：init/Agent handshake、限定观察时长、分析证据、Session safe stop。
-- [ ] 在 Forge IntegratedLAN 中先启动 Host，确认 world/auth/publish/loopback listener 后才启动 Guest；验证不同 offline usernames、两端 join evidence、运行存活与 safe stop。
-- [ ] Dedicated 仅当所选本机 config 的 `acceptEula=true`；否则记录 `SKIPPED_EULA_NOT_PREAUTHORIZED`，不得写 EULA。
-- [ ] 每个 live session 产出 local-only summary/findings/timeline；验证所有 Session 进程身份退出、端口释放；不触碰基线 VS Code Java/Gradle identities。
+- [x] 确认候选项目无 TaCZ automation dependency；使用独立 CustomShapezAPI Forge 1.20.1 fixture，并由 Agent 在 Session 内创建临时世界。
+- [x] Forge Single 已通过 Agent handshake、限定观察、Analyzer 产物和安全停止（Session `20261006T075740Z_1_20_1_a35ac24e`）。
+- [x] IntegratedLAN Host 首先完成世界加入、离线身份、`127.0.0.1` publish 和端口监听，再启动不同离线用户名 Guest；Host/Guest 两侧 world-join 证据齐全，60 秒观察后安全停止（成功 Session `20261006T082611Z_1_20_1_61866353`）。一次 IPv6-only 绑定及一次 Guest 超时失败均保留 Session；修复绑定策略后完成成功复测。
+- [x] Dedicated 未启动：`SKIPPED_EULA_NOT_PREAUTHORIZED`；没有修改 EULA。
+- [x] live evidence 为本机 Runtime 下 summary/findings/timeline；Host/Guest 进程退出、端口释放；VS Code 两个基线 Java 进程未触碰。
 - [ ] 中文 commit：`测试：验证 Forge 单人及本机离线多人流程`。
 
 ### Task 10：跨 Loader live、十项目泛化及错误分类（Phase U）

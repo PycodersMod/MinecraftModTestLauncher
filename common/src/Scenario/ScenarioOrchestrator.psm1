@@ -55,6 +55,16 @@ function New-MmtlScenarioPlan {
     [pscustomobject][ordered]@{schemaVersion=1;mode=$Mode;players=$Players;maximumConcurrentInstances=$MaximumConcurrentInstances;readyTimeoutSeconds=$ReadyTimeoutSeconds;joinTimeoutSeconds=$JoinTimeoutSeconds;durationSeconds=$DurationSeconds;stopPolicy='Always';roles=@($roles);steps=@($steps);autoCreateWorld=[bool]$AutoCreateWorld.IsPresent;nonInteractive=$true;loopbackOnly=($Mode -eq 'IntegratedLAN');requiresAcceptedEula=($Mode -eq 'Dedicated')}
 }
 
+function Initialize-MmtlScenarioSessionMetadata {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)]$Metadata)
+    $defaults=[ordered]@{analysisStatus=$null;analysisFindingCount=$null;analysisErrorCode=$null;scenarioState=$null;sessionState=$null}
+    foreach($entry in $defaults.GetEnumerator()){
+        if($null -eq $Metadata.PSObject.Properties[$entry.Key]){$Metadata|Add-Member -NotePropertyName $entry.Key -NotePropertyValue $entry.Value}
+    }
+    return $Metadata
+}
+
 function Assert-MmtlScenarioAction {
     [CmdletBinding()]
     param([Parameter(Mandatory)][ValidateSet('WAIT','SEND_COMMAND','SCREENSHOT','STOP_ROLE','STOP_ALL')][string]$Action,[string]$Role,[string]$Command,[int]$Seconds=0,[switch]$TargetManaged,[switch]$PermissionGranted)
@@ -185,4 +195,4 @@ function Invoke-MmtlScenarioAction {
     }catch{Add-MmtlScenarioEvent -SessionPath $session -EventCode ACTION_FAILED -Role $(if($Role){$Role}else{'Launcher'}) -Summary "$Action failed"|Out-Null;throw}
 }
 
-Export-ModuleMember -Function New-MmtlScenarioPlan,Assert-MmtlScenarioAction,Test-MmtlScenarioTransition,Initialize-MmtlScenarioState,Set-MmtlScenarioState,Get-MmtlScenarioStatus,Add-MmtlScenarioEvent,Invoke-MmtlScenarioAction
+Export-ModuleMember -Function New-MmtlScenarioPlan,Initialize-MmtlScenarioSessionMetadata,Assert-MmtlScenarioAction,Test-MmtlScenarioTransition,Initialize-MmtlScenarioState,Set-MmtlScenarioState,Get-MmtlScenarioStatus,Add-MmtlScenarioEvent,Invoke-MmtlScenarioAction

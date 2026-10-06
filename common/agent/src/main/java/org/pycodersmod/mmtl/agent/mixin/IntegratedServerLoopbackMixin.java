@@ -9,17 +9,17 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import java.net.InetAddress;
 
-@Mixin(IntegratedServer.class)
+@Mixin(value = IntegratedServer.class, remap = false)
 abstract class IntegratedServerLoopbackMixin {
     @ModifyArg(
             method = "publishServer(Lnet/minecraft/world/level/GameType;ZI)Z",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerConnectionListener;startTcpServerListener(Ljava/net/InetAddress;I)V"),
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerConnectionListener;startTcpServerListener(Ljava/net/InetAddress;I)V", remap = false),
             index = 0,
-            require = 1
+            require = 1,
+            remap = false
     )
     private InetAddress mmtl$bindManagedLanToLoopback(InetAddress requestedAddress, int port) {
-        return MmtlForgeAgent.shouldBindLoopback(port)
-                ? InetAddress.getLoopbackAddress() : requestedAddress;
+        return MmtlForgeAgent.selectBindAddress(port, requestedAddress);
     }
 
 }
