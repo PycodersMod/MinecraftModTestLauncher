@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pycodersmod.github.io/MinecraftModTestLauncher/schemas/compatibility-universe.schema.json",
+  "title": "MMTL Frozen Compatibility Universe",
+  "type": "object",
+  "required": ["schemaVersion", "generatedAt", "catalogHash", "minecraftReleaseCount", "loaderCount", "targets", "issues"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "generatedAt": {"type": "string", "format": "date-time"},
+    "catalogHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "minecraftReleaseCount": {"type": "integer", "minimum": 0},
+    "loaderCount": {"type": "integer", "minimum": 0},
+    "targets": {"type": "array", "items": {"$ref": "#/$defs/target"}},
+    "issues": {"type": "array", "items": {"$ref": "#/$defs/issue"}}
+  },
+  "$defs": {
+    "target": {
+      "type": "object",
+      "required": ["targetId", "minecraftId", "minecraftType", "minecraftReleaseTime", "loaderId", "loaderVersionCandidates", "authoritativeSource", "sourceClass", "trustClass", "transportSecurity", "maintenanceState", "availability", "buildToolchainCandidates", "runtimeJavaRequirement", "buildJavaRequirement", "agentRequirement", "status"],
+      "properties": {
+        "targetId": {"type": "string", "minLength": 1},
+        "minecraftId": {"type": "string", "minLength": 1},
+        "minecraftType": {"type": "string", "minLength": 1},
+        "minecraftReleaseTime": {"type": ["string", "null"]},
+        "loaderId": {"type": "string", "minLength": 1},
+        "loaderVersionCandidates": {"type": "array"},
+        "authoritativeSource": {"type": "string", "format": "uri"},
+        "sourceClass": {"type": "string", "minLength": 1},
+        "trustClass": {"type": "string", "minLength": 1},
+        "transportSecurity": {"type": "string", "minLength": 1},
+        "maintenanceState": {"type": "string", "minLength": 1},
+        "availability": {"const": "Available"},
+        "buildToolchainCandidates": {"type": "array"},
+        "runtimeJavaRequirement": {"type": "object"},
+        "buildJavaRequirement": {"type": "object"},
+        "agentRequirement": {"type": "object"},
+        "status": {"enum": ["Supported", "PartiallySupported", "NotApplicable", "ExternallyBlocked", "Unsupported", "Unknown", "PendingImplementation"]}
+      },
+      "additionalProperties": false
+    },
+    "issue": {
+      "type": "object",
+      "required": ["loaderId", "status", "reason", "sourceUrl", "evidence"],
+      "properties": {
+        "loaderId": {"type": "string"},
+        "status": {"const": "Unknown"},
+        "reason": {"type": "string"},
+        "sourceUrl": {"type": "string"},
+        "evidence": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

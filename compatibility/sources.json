@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "auditStatus": "IN_PROGRESS",
+  "generatedAt": null,
+  "minecraftCatalog": {
+    "providerId": "Mojang",
+    "sourceUrl": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+    "sourceClass": "ActiveOfficial",
+    "trustClass": "TrustedOfficial",
+    "transportSecurity": "HTTPS",
+    "requiredTypes": ["release"],
+    "additionalTypesOnlyWhenListedByLoader": ["snapshot", "pre", "rc", "old_beta", "old_alpha"]
+  },
+  "loaders": [
+    {"loaderId":"Fabric","providerId":"Fabric","status":"PendingSnapshot","sourceUrl":"https://meta.fabricmc.net/v2/versions/game","sourceClass":"ActiveOfficial","trustClass":"TrustedOfficial","transportSecurity":"HTTPS"},
+    {"loaderId":"Forge","providerId":"Forge","status":"PendingSnapshot","sourceUrl":"https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml","additionalSourceUrl":"https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json","sourceClass":"ActiveOfficial","trustClass":"TrustedOfficial","transportSecurity":"HTTPS"},
+    {"loaderId":"NeoForge","providerId":"NeoForge","status":"PendingSnapshot","sourceUrl":"https://maven.neoforged.net/releases/net/neoforged/neoforge/maven-metadata.xml","additionalSourceUrl":"https://maven.neoforged.net/releases/net/neoforged/forge/maven-metadata.xml","sourceClass":"ActiveOfficial","trustClass":"TrustedOfficial","transportSecurity":"HTTPS"},
+    {"loaderId":"Quilt","providerId":"Quilt","status":"PendingSnapshot","sourceUrl":"https://meta.quiltmc.org/v3/versions/game","sourceClass":"ActiveOfficial","trustClass":"TrustedOfficial","transportSecurity":"HTTPS"},
+    {"loaderId":"LegacyFabric","providerId":"LegacyFabric","status":"PendingSnapshot","sourceUrl":"https://meta.legacyfabric.net/v2/versions/game","sourceClass":"ActiveOfficial","trustClass":"TrustedOfficial","transportSecurity":"HTTPS"},
+    {"loaderId":"OrnitheLoader","providerId":"Ornithe","status":"PendingSnapshot","sourceUrl":"https://meta.ornithemc.net/v2/versions/game","sourceClass":"ActiveOfficial","trustClass":"TrustedOfficial","transportSecurity":"HTTPS"},
+    {"loaderId":"LiteLoader","providerId":"LiteLoader","status":"PendingSnapshot","sourceUrl":"https://dl.liteloader.com/versions/versions.json","sourceClass":"HistoricalOfficial","trustClass":"TrustedOfficial","transportSecurity":"HTTPS"},
+    {"loaderId":"Rift","providerId":"Rift","status":"PendingSourceReview","sourceUrl":"https://github.com/DimensionalDevelopment/Rift","sourceClass":"HistoricalOfficial","trustClass":"TrustedOfficial","transportSecurity":"HTTPS"},
+    {"loaderId":"ModLoader","providerId":"ModLoader","status":"PendingArchiveVerification","sourceUrl":"https://mcarchive.net/mods/modloader","sourceClass":"VerifiedCommunityArchive","trustClass":"VerifiedHistorical","transportSecurity":"HTTPS"},
+    {"loaderId":"ModLoaderMP","providerId":"ModLoaderMP","status":"PendingArchiveVerification","sourceUrl":"https://mcarchive.net/mods/modloadermp","sourceClass":"VerifiedCommunityArchive","trustClass":"VerifiedHistorical","transportSecurity":"HTTPS"},
+    {"loaderId":"JarMod","providerId":"JarMod","status":"TaxonomyReviewRequired","sourceUrl":"","sourceClass":"UnknownHistorical","trustClass":"Unknown","transportSecurity":"Unknown"}
+  ]
+}
