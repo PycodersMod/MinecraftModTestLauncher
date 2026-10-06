@@ -1,0 +1,266 @@
+{
+  "schemaVersion": 1,
+  "loaderId": "LiteLoader",
+  "sourceUrl": "https://dl.liteloader.com/versions/versions.json",
+  "sourceClass": "HistoricalOfficial",
+  "trustClass": "TrustedOfficial",
+  "universeGeneratedAt": "10/07/2026 02:02:33",
+  "universeCatalogHash": "ab6bf9f641c92fb2520484ea8e87647831e16558311255ce787c827b08a3546d",
+  "targetCount": 16,
+  "resultCount": 16,
+  "results": [
+    {
+      "targetId": "LiteLoader@1.10",
+      "minecraftId": "1.10",
+      "candidateStatus": "Resolved",
+      "candidateCount": 1,
+      "loaderVersions": [
+        "1.10-SNAPSHOT"
+      ],
+      "sourceUrl": "https://dl.liteloader.com/versions/versions.json",
+      "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+      "sourceClass": "HistoricalOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "error": ""
+    },
+    {
+      "targetId": "LiteLoader@1.10.2",
+      "minecraftId": "1.10.2",
+      "candidateStatus": "Resolved",
+      "candidateCount": 2,
+      "loaderVersions": [
+        "1.10.2",
+        "1.10.2-SNAPSHOT"
+      ],
+      "sourceUrl": "https://dl.liteloader.com/versions/versions.json",
+      "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+      "sourceClass": "HistoricalOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "error": ""
+    },
+    {
+      "targetId": "LiteLoader@1.11",
+      "minecraftId": "1.11",
+      "candidateStatus": "Resolved",
+      "candidateCount": 1,
+      "loaderVersions": [
+        "1.11-SNAPSHOT"
+      ],
+      "sourceUrl": "https://dl.liteloader.com/versions/versions.json",
+      "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+      "sourceClass": "HistoricalOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "error": ""
+    },
+    {
+      "targetId": "LiteLoader@1.11.2",
+      "minecraftId": "1.11.2",
+      "candidateStatus": "Resolved",
+      "candidateCount": 1,
+      "loaderVersions": [
+        "1.11.2-SNAPSHOT"
+      ],
+      "sourceUrl": "https://dl.liteloader.com/versions/versions.json",
+      "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+      "sourceClass": "HistoricalOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "error": ""
+    },
+    {
+      "targetId": "LiteLoader@1.12",
+      "minecraftId": "1.12",
+      "candidateStatus": "Resolved",
+      "candidateCount": 1,
+      "loaderVersions": [
+        "1.12-SNAPSHOT"
+      ],
+      "sourceUrl": "https://dl.liteloader.com/versions/versions.json",
+      "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+      "sourceClass": "HistoricalOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "error": ""
+    },
+    {
+      "targetId": "LiteLoader@1.12.1",
+      "minecraftId": "1.12.1",
+      "candidateStatus": "Resolved",
+      "candidateCount": 1,
+      "loaderVersions": [
+        "1.12.1-SNAPSHOT"
+      ],
+      "sourceUrl": "https://dl.liteloader.com/versions/versions.json",
+      "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+      "sourceClass": "HistoricalOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "error": ""
+    },
+    {
+      "targetId": "LiteLoader@1.12.2",
+      "minecraftId": "1.12.2",
+      "candidateStatus": "Resolved",
+      "candidateCount": 1,
+      "loaderVersions": [
+        "1.12.2-SNAPSHOT"
+      ],
+      "sourceUrl": "https://dl.liteloader.com/versions/versions.json",
+      "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+      "sourceClass": "HistoricalOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "error": ""
+    },
+    {
+      "targetId": "LiteLoader@1.5.2",
+      "minecraftId": "1.5.2",
+      "candidateStatus": "Resolved",
+      "candidateCount": 1,
+      "loaderVersions": [
+        "1.5.2_01"
+      ],
+      "sourceUrl": "https://dl.liteloader.com/versions/versions.json",
+      "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+      "sourceClass": "HistoricalOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "error": ""
+    },
+    {
+      "targetId": "LiteLoader@1.6.2",
+      "minecraftId": "1.6.2",
+      "candidateStatus": "Resolved",
+      "candidateCount": 4,
+      "loaderVersions": [
+        "1.6.2_04",
+        "1.6.2_01",
+        "1.6.2_02",
+        "1.6.2_03"
+      ],
+      "sourceUrl": "https://dl.liteloader.com/versions/versions.json",
+      "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+      "sourceClass": "HistoricalOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "error": ""
+    },
+    {
+      "targetId": "LiteLoader@1.6.4",
+      "minecraftId": "1.6.4",
+      "candidateStatus": "Resolved",
+      "candidateCount": 2,
+      "loaderVersions": [
+        "1.6.4_01",
+        "1.6.4_00"
+      ],
+      "sourceUrl": "https://dl.liteloader.com/versions/versions.json",
+      "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+      "sourceClass": "HistoricalOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "error": ""
+    },
+    {
+      "targetId": "LiteLoader@1.7.10",
+      "minecraftId": "1.7.10",
+      "candidateStatus": "Resolved",
+      "candidateCount": 5,
+      "loaderVersions": [
+        "1.7.10_04",
+        "1.7.10_00",
+        "1.7.10_01",
+        "1.7.10_02",
+        "1.7.10_03"
+      ],
+      "sourceUrl": "https://dl.liteloader.com/versions/versions.json",
+      "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+      "sourceClass": "HistoricalOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "error": ""
+    },
+    {
+      "targetId": "LiteLoader@1.7.2",
+      "minecraftId": "1.7.2",
+      "candidateStatus": "Resolved",
+      "candidateCount": 4,
+      "loaderVersions": [
+        "1.7.2_05",
+        "1.7.2_02",
+        "1.7.2_03",
+        "1.7.2_04"
+      ],
+      "sourceUrl": "https://dl.liteloader.com/versions/versions.json",
+      "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+      "sourceClass": "HistoricalOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "error": ""
+    },
+    {
+      "targetId": "LiteLoader@1.8",
+      "minecraftId": "1.8",
+      "candidateStatus": "Resolved",
+      "candidateCount": 1,
+      "loaderVersions": [
+        "1.8"
+      ],
+      "sourceUrl": "https://dl.liteloader.com/versions/versions.json",
+      "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+      "sourceClass": "HistoricalOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "error": ""
+    },
+    {
+      "targetId": "LiteLoader@1.8.9",
+      "minecraftId": "1.8.9",
+      "candidateStatus": "Resolved",
+      "candidateCount": 1,
+      "loaderVersions": [
+        "1.8.9-SNAPSHOT"
+      ],
+      "sourceUrl": "https://dl.liteloader.com/versions/versions.json",
+      "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+      "sourceClass": "HistoricalOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "error": ""
+    },
+    {
+      "targetId": "LiteLoader@1.9",
+      "minecraftId": "1.9",
+      "candidateStatus": "Resolved",
+      "candidateCount": 1,
+      "loaderVersions": [
+        "1.9-SNAPSHOT"
+      ],
+      "sourceUrl": "https://dl.liteloader.com/versions/versions.json",
+      "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+      "sourceClass": "HistoricalOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "error": ""
+    },
+    {
+      "targetId": "LiteLoader@1.9.4",
+      "minecraftId": "1.9.4",
+      "candidateStatus": "Resolved",
+      "candidateCount": 2,
+      "loaderVersions": [
+        "1.9.4",
+        "1.9.4-SNAPSHOT"
+      ],
+      "sourceUrl": "https://dl.liteloader.com/versions/versions.json",
+      "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+      "sourceClass": "HistoricalOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "error": ""
+    }
+  ]
+}

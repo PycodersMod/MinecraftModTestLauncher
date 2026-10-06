@@ -37,4 +37,14 @@ Describe 'Compatibility candidate catalog' {
         { New-MmtlCompatibilityCandidateResult -LoaderId Fabric -MinecraftId '1.20.1' -ProviderResult ([pscustomobject]@{ providerStatus = 'Available'; sourceUrl = 'http://example.invalid'; localHash = 'a' * 64; candidates = @() }) } | Should -Throw
         { New-MmtlCompatibilityCandidateResult -LoaderId Fabric -MinecraftId '1.20.1' -ProviderResult ([pscustomobject]@{ providerStatus = 'Available'; sourceUrl = 'https://example.invalid'; localHash = 'bad'; candidates = @() }) } | Should -Throw
     }
+
+    It 'keeps historical archive candidate identifiers exact' {
+        $result = New-MmtlCompatibilityCandidateResult -LoaderId LiteLoader -MinecraftId '1.12.2' -ProviderResult ([pscustomobject]@{
+            providerStatus = 'Available'; sourceUrl = 'https://dl.liteloader.com/versions/versions.json'; localHash = 'c' * 64
+            candidates = @([pscustomobject]@{ loaderVersion = '1.12.2-SNAPSHOT-###'; version = 'ignored-normalized-value' })
+        })
+
+        $result.candidateStatus | Should -Be 'Resolved'
+        $result.loaderVersions | Should -Be @('1.12.2-SNAPSHOT-###')
+    }
 }

@@ -15,7 +15,7 @@ function Get-MmtlCandidateProperty {
 function New-MmtlCompatibilityCandidateResult {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory)][ValidateSet('Fabric', 'Quilt', 'LegacyFabric', 'OrnitheLoader')][string]$LoaderId,
+        [Parameter(Mandatory)][ValidateSet('Fabric', 'Quilt', 'LegacyFabric', 'OrnitheLoader', 'LiteLoader')][string]$LoaderId,
         [Parameter(Mandatory)][ValidateNotNullOrEmpty()][string]$MinecraftId,
         [Parameter(Mandatory)]$ProviderResult
     )

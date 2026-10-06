@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory)][ValidateSet('Fabric', 'Quilt', 'LegacyFabric', 'OrnitheLoader')][string]$LoaderId,
+    [Parameter(Mandatory)][ValidateSet('Fabric', 'Quilt', 'LegacyFabric', 'OrnitheLoader', 'LiteLoader')][string]$LoaderId,
     [string]$RepositoryRoot = (Split-Path -Parent $PSScriptRoot),
     [string]$ProxyUri
 )
@@ -81,6 +81,26 @@ $httpGet = {
     } finally { $request.Dispose(); $client.Dispose(); $handler.Dispose() }
 }.GetNewClosure()
 
+$liteLoaderSnapshot = $null
+$liteLoaderSource = $null
+if ($LoaderId -eq 'LiteLoader') {
+    $baseIndex = Get-Content -LiteralPath $sourceIndexPath -Raw | ConvertFrom-Json -ErrorAction Stop
+    $liteLoaderSource = $baseIndex.sources | Where-Object { [string]$_.providerId -ceq 'LiteLoader' -and [string]$_.sourceUrl -ceq [string]$sourceDefinition.sourceUrl } | Select-Object -First 1
+    if (-not $liteLoaderSource) { throw 'LITELOADER_MANIFEST_SNAPSHOT_MISSING' }
+    $manifestPath = Join-Path $snapshotRoot ([string]$liteLoaderSource.relativePath)
+    $manifestBytes = [IO.File]::ReadAllBytes($manifestPath)
+    $manifestHash = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($manifestBytes)).ToLowerInvariant()
+    if ($manifestHash -cne [string]$liteLoaderSource.sha256 -or $manifestBytes.Length -ne [int]$liteLoaderSource.byteLength) { throw 'LITELOADER_MANIFEST_SNAPSHOT_INVALID' }
+    $offlineGet = {
+        param([string]$Uri, [hashtable]$Headers, [int]$TimeoutSeconds)
+        if ($Uri -cne [string]$liteLoaderSource.sourceUrl) { throw 'LITELOADER_UNEXPECTED_SOURCE_URL' }
+        [pscustomobject]@{ StatusCode = 200; Headers = @{}; Bytes = [byte[]]$manifestBytes; ResponseUri = $Uri }
+    }.GetNewClosure()
+    $liteLoaderSnapshot = Get-MmtlLiteLoaderProviderSnapshot -RuntimeRoot $runtimeRoot -ForceRefresh -HttpGet $offlineGet
+    if ($liteLoaderSnapshot.providerStatus -ne 'Available') { throw "LITELOADER_MANIFEST_PARSE_FAILED: $($liteLoaderSnapshot.error)" }
+    $liteSnapshotRecord = Save-MmtlCompatibilitySourceSnapshot -ProviderId 'LiteLoaderCandidates' -SourceUrl ([string]$liteLoaderSource.sourceUrl) -Bytes $manifestBytes -OutputDirectory $snapshotRoot -RetrievedAt ([DateTimeOffset]::Parse([string]$liteLoaderSource.retrievedAt)) -SourceClass ([string]$sourceDefinition.sourceClass) -TrustClass ([string]$sourceDefinition.trustClass)
+}
+
 try {
     $total = $targets.Count
     $consecutiveUnknown = 0
@@ -110,6 +130,13 @@ try {
                 'Quilt' { Get-MmtlQuiltCandidateSet -MinecraftId $minecraftId -RuntimeRoot $runtimeRoot -ForceRefresh -HttpGet $httpGet }
                 'LegacyFabric' { Get-MmtlLegacyFabricCandidateQuery -MinecraftId $minecraftId -RuntimeRoot $runtimeRoot -ForceRefresh -HttpGet $httpGet }
                 'OrnitheLoader' { Get-MmtlOrnitheCandidateQuery -MinecraftId $minecraftId -RuntimeRoot $runtimeRoot -ForceRefresh -HttpGet $httpGet }
+                'LiteLoader' {
+                    [pscustomobject]@{
+                        providerStatus = 'Available'; cacheStatus = 'VerifiedLocalSnapshot';
+                        sourceUrl = [string]$liteLoaderSource.sourceUrl; localHash = [string]$liteLoaderSource.sha256;
+                        candidates = @(Get-MmtlLiteLoaderCandidates -MinecraftId $minecraftId -Snapshot $liteLoaderSnapshot); error = $null
+                    }
+                }
             }
             $requested = @($responseCapture.Values | Select-Object -Last 1)[0]
             $responseHash = $null
