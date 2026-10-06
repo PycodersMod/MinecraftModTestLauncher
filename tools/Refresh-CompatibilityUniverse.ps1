@@ -90,6 +90,7 @@ function New-LoaderSourceSnapshot {
     if ([string]::IsNullOrWhiteSpace($SourceUrl) -and $definition) { $SourceUrl = [string]$definition.sourceUrl }
     [pscustomobject][ordered]@{
         loaderId = $LoaderId; providerStatus = $ProviderStatus; sourceUrl = $SourceUrl
+        coverageModel = if ($definition -and $definition.PSObject.Properties['coverageModel']) { [string]$definition.coverageModel } else { 'ExactAvailability' }
         sourceClass = if ($definition) { [string]$definition.sourceClass } else { 'Unknown' }
         trustClass = if ($definition) { [string]$definition.trustClass } else { 'Unknown' }
         transportSecurity = if ($definition) { [string]$definition.transportSecurity } else { 'Unknown' }
@@ -202,7 +203,7 @@ try {
         }
     }
     $jarDefinition = Get-SourceDefinition -LoaderId 'JarMod'
-    $loaderSnapshots.Add((New-LoaderSourceSnapshot -LoaderId 'JarMod' -ProviderStatus 'Unavailable' -SourceUrl ([string]$jarDefinition.sourceUrl) -SupportedIds @() -ErrorText 'TAXONOMY_IS_COMPATIBILITY_METHOD_WITHOUT_GLOBAL_AVAILABILITY_SOURCE'))
+    $loaderSnapshots.Add((New-LoaderSourceSnapshot -LoaderId 'JarMod' -ProviderStatus 'ManualOnly' -SourceUrl ([string]$jarDefinition.sourceUrl) -SupportedIds @() -ErrorText 'USER_SUPPLIED_LOCAL_ARTIFACT_REQUIRED'))
 
     $evidence = [Collections.Generic.List[object]]::new()
     $mojangEvidence = Save-MmtlCompatibilitySourceSnapshot -ProviderId 'Mojang' -SourceUrl ([string]$sourceManifest.minecraftCatalog.sourceUrl) -Bytes $rawManifestBytes -OutputDirectory $SnapshotDirectory -RetrievedAt $generatedAt -SourceClass ([string]$sourceManifest.minecraftCatalog.sourceClass) -TrustClass ([string]$sourceManifest.minecraftCatalog.trustClass)
@@ -241,7 +242,7 @@ try {
     [pscustomobject][ordered]@{
         auditStatus = $universe.auditStatus; generatedAt = $universe.generatedAt; catalogHash = $universe.catalogHash
         minecraftVersionCount = $versionEntries.Count; minecraftReleaseCount = $universe.minecraftReleaseCount
-        loaderCount = $universe.loaderCount; targetPairCount = $universe.targets.Count; unknownSourceIssues = $universe.issues.Count
+        loaderCount = $universe.loaderCount; strategyCount = $universe.strategyCount; targetPairCount = $universe.targets.Count; unknownSourceIssues = $universe.issues.Count
         perLoader = @($loaderSnapshots | ForEach-Object { [pscustomobject]@{ loaderId = $_.loaderId; providerStatus = $_.providerStatus; targetCount = @($_.supportedVersions).Count; sourceUrl = $_.sourceUrl } })
         sourceSnapshotCount = $evidence.Count; previewPath = 'compatibility/universe-preview.json'
     } | ConvertTo-Json -Depth 12

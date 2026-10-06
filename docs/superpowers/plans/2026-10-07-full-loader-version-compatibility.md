@@ -13,6 +13,7 @@
 ## Global Constraints
 
 - Availability 必须来自每个 Loader 的权威来源；不可用组合是 `NotApplicable`，不能构造 Loader × 所有 Minecraft 版本的笛卡尔积。
+- `JarMod` 在 MMTL taxonomy 中属于 Compatibility method，不提供全局 Loader availability；Universe 必须将它显式记录为 `ManualArtifact` strategy，不生成伪造 target pair。JarMod 的 patch/session-copy capability 仍需单独实现和验证。
 - Universe 记录 `generatedAt` 与 catalog/source hash 并冻结；后续上游新增项只作为 drift/new-unverified 记录。
 - 精确 Target 至少区分 Catalogued、LoaderResolved、ProjectDetection、BuildPlan、BuildJava、RuntimeJava、RuntimeBinding、BuildVerified、LaunchPlan、LaunchCheck、AgentBuild、AgentInjection、Single、IntegratedLAN、Dedicated、LogObservation、EvidenceLevel。
 - Compatibility Family 必须有 API、Loader、toolchain、Java、mapping 或 run task 边界证据；未知新版本不得自动继承旧 family。
@@ -45,7 +46,7 @@
 - Source provider 输出 `providerId`, `sourceUrl`, `sourceClass`, `trustClass`, `transportSecurity`, `maintenanceState`, `retrievedAt`, `contentHash`, `records`。
 - Universe builder 输入 Mojang catalog 与 Loader snapshots，输出按 `targetId` 稳定排序的 schema v1 document。
 
-- [ ] 列出并审核 Mojang、Forge、Fabric、NeoForge、Quilt、LegacyFabric、Ornithe、LiteLoader、Rift、ModLoader、ModLoaderMP、JarMod 的权威来源；保存可核对 URL、抓取时间与 SHA-256。
+- [ ] 列出并审核 Mojang、Forge、Fabric、NeoForge、Quilt、LegacyFabric、Ornithe、LiteLoader、Rift、ModLoader、ModLoaderMP 的 availability 来源；保存可核对 URL、抓取时间与 SHA-256。审计 JarMod taxonomy 边界并维护独立 ManualArtifact evidence。
 - [ ] 将 Mojang 所有 `release` 与 Loader 官方明确列出的 snapshot/pre/RC ID 按字面值收录。
 - [ ] 对每条 Loader/game availability 建立精确 record；来源未能判定时显式保留 `Unknown` 和错误证据，不推测支持范围。
 - [ ] 生成 `targetId`, `minecraftId`, `minecraftType`, `minecraftReleaseTime`, `loaderId`, `loaderVersionCandidates`, 来源信任字段、toolchain/Java/Agent 初始要求和 status。
@@ -147,7 +148,7 @@
 - Create: 历史 family specs、独立 patch strategy、Session-copy manager
 - Test: 每 Loader historical metadata/fixture/safety suites
 
-- [ ] 对 LegacyFabric、Ornithe、LiteLoader、Rift、ModLoader、ModLoaderMP、JarMod 逐项收集官方 exact availability 与 build/run model。
+- [ ] 对 LegacyFabric、Ornithe、LiteLoader、Rift、ModLoader、ModLoaderMP 逐项收集 exact availability 与 build/run model；JarMod 不作为普通 Loader availability source，须记录 ManualArtifact strategy 及 patch/session-copy 能力证据。
 - [ ] 对 LegacyFabric 与 Ornithe 按 Looming/Ploceus/mappings 等真实边界建立 families。
 - [ ] 调查 LiteLoader/Rift 历史 Gradle/Maven；对 ModLoader 系列按时代检测 jar/mod-folder/patch 机制；JarMod 必须隔离输入 artifact 与输出副本。
 - [ ] 自动执行仅限 HTTPS、可信来源、可审计构建；否则以 source hash 与尝试记录为依据形成真实 `ExternallyBlocked`，不得填空成 `Unsupported`。

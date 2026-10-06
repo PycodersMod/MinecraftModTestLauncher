@@ -57,16 +57,32 @@ function New-MmtlCompatibilityUniverse {
         $minecraftById.Add($id, $version)
     }
 
+    $snapshotIds = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
     $loaderIds = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
     $targets = [Collections.Generic.List[object]]::new()
     $issues = [Collections.Generic.List[object]]::new()
+    $manualStrategies = [Collections.Generic.List[object]]::new()
     $releaseCount = @($minecraftById.Values | Where-Object { [string]$_.type -ceq 'release' }).Count
 
     foreach ($snapshot in @($LoaderSnapshots | Sort-Object { [string]$_.loaderId })) {
         $loaderId = [string]$snapshot.loaderId
-        if ([string]::IsNullOrWhiteSpace($loaderId) -or -not $loaderIds.Add($loaderId)) {
-            throw "COMPATIBILITY_SNAPSHOT_INVALID: Loader ID 为空或重复：'$loaderId'。"
+        $coverageModel = if ($snapshot.PSObject.Properties['coverageModel'] -and $snapshot.coverageModel) { [string]$snapshot.coverageModel } else { 'ExactAvailability' }
+        if ($coverageModel -notin @('ExactAvailability', 'ManualArtifact')) { throw "COMPATIBILITY_COVERAGE_MODEL_INVALID: $loaderId/$coverageModel" }
+        if ([string]::IsNullOrWhiteSpace($loaderId) -or -not $snapshotIds.Add($loaderId)) { throw "COMPATIBILITY_SNAPSHOT_INVALID: Loader/strategy ID 为空或重复：'$loaderId'。" }
+        if ($coverageModel -eq 'ManualArtifact') {
+            if ([string]$snapshot.providerStatus -cne 'ManualOnly' -or @($snapshot.supportedVersions).Count -gt 0) {
+                throw "COMPATIBILITY_MANUAL_STRATEGY_INVALID: $loaderId must be ManualOnly and must not declare upstream version targets."
+            }
+            $manualStrategies.Add([pscustomobject][ordered]@{
+                strategyId = $loaderId; status = 'ManualOnly'; reason = 'LOCAL_ARTIFACT_REQUIRED'
+                sourceUrl = if ($snapshot.PSObject.Properties['sourceUrl'] -and -not [string]::IsNullOrWhiteSpace([string]$snapshot.sourceUrl)) { [string]$snapshot.sourceUrl } else { $null }
+                sourceClass = [string]$snapshot.sourceClass; trustClass = [string]$snapshot.trustClass
+                transportSecurity = [string]$snapshot.transportSecurity; maintenanceState = [string]$snapshot.maintenanceState
+                evidence = if ($snapshot.PSObject.Properties['error']) { [string]$snapshot.error } else { 'Manual compatibility strategy; no global upstream availability index.' }
+            })
+            continue
         }
+        [void]$loaderIds.Add($loaderId)
         $status = [string]$snapshot.providerStatus
         if ($status -notin @('Available', 'Stale', 'OfflineCache', 'Degraded')) {
             $issues.Add([pscustomobject][ordered]@{
@@ -102,9 +118,18 @@ function New-MmtlCompatibilityUniverse {
 
             $minecraft = if ($minecraftById.ContainsKey($minecraftId)) { $minecraftById[$minecraftId] } else { $null }
             $candidates = @()
+            $candidateSourceUrl = $null
+            $candidateSourceHash = $null
             if ($snapshot.PSObject.Properties['loaderCandidatesByMinecraft'] -and $snapshot.loaderCandidatesByMinecraft) {
                 $property = $snapshot.loaderCandidatesByMinecraft.PSObject.Properties[$minecraftId]
-                if ($property) { $candidates = @($property.Value) }
+                if ($property) {
+                    $candidateRecord = $property.Value
+                    if ($candidateRecord -and $candidateRecord.PSObject.Properties['candidates']) {
+                        $candidates = @($candidateRecord.candidates)
+                        $candidateSourceUrl = if ($candidateRecord.PSObject.Properties['sourceUrl']) { [string]$candidateRecord.sourceUrl } else { $null }
+                        $candidateSourceHash = if ($candidateRecord.PSObject.Properties['sourceHash']) { [string]$candidateRecord.sourceHash } else { $null }
+                    } else { $candidates = @($candidateRecord) }
+                }
             }
             $targets.Add([pscustomobject][ordered]@{
                 targetId = "$loaderId@$minecraftId"; minecraftId = $minecraftId
@@ -114,7 +139,7 @@ function New-MmtlCompatibilityUniverse {
                 minecraftReleaseTime = if ($minecraft -and $minecraft.PSObject.Properties['releaseTime'] -and $minecraft.releaseTime) { [string]$minecraft.releaseTime } else { $null }
                 loaderId = $loaderId; loaderVersionCandidates = $candidates
                 candidateStatus = if ($candidates.Count) { 'Resolved' } else { 'Pending' }
-                candidateSourceUrl = $null; candidateSourceHash = $null
+                candidateSourceUrl = $candidateSourceUrl; candidateSourceHash = $candidateSourceHash
                 sourceHash = if ($snapshot.PSObject.Properties['sourceHash'] -and -not [string]::IsNullOrWhiteSpace([string]$snapshot.sourceHash)) { [string]$snapshot.sourceHash } else { $null }
                 authoritativeSource = [string]$snapshot.sourceUrl
                 sourceClass = [string]$snapshot.sourceClass; trustClass = [string]$snapshot.trustClass
@@ -129,9 +154,10 @@ function New-MmtlCompatibilityUniverse {
     }
 
     $sortedTargets = @($targets | Sort-Object { [string]$_.targetId })
+    $sortedManualStrategies = @($manualStrategies | Sort-Object { [string]$_.strategyId })
     $sourceMaterial = [ordered]@{
         manifestHash = if ($Catalog.PSObject.Properties['manifestHash']) { [string]$Catalog.manifestHash } else { $null }
-        sources = @($LoaderSnapshots | Sort-Object { [string]$_.loaderId } | ForEach-Object {
+        sources = @($LoaderSnapshots | Where-Object { -not $_.PSObject.Properties['coverageModel'] -or [string]$_.coverageModel -cne 'ManualArtifact' } | Sort-Object { [string]$_.loaderId } | ForEach-Object {
             [ordered]@{
                 loaderId = [string]$_.loaderId; sourceUrl = [string]$_.sourceUrl
                 sourceHash = if ($_.PSObject.Properties['sourceHash']) { [string]$_.sourceHash } else { $null }
@@ -140,6 +166,7 @@ function New-MmtlCompatibilityUniverse {
                 loaderCandidatesByMinecraft = if ($_.PSObject.Properties['loaderCandidatesByMinecraft']) { $_.loaderCandidatesByMinecraft } else { $null }
             }
         })
+        manualStrategies = $sortedManualStrategies
         targets = @($sortedTargets | ForEach-Object { [ordered]@{ targetId = $_.targetId; availability = $_.availability } })
     }
     $canonicalSourceMaterial = ConvertTo-Json -InputObject $sourceMaterial -Depth 30 -Compress
@@ -147,8 +174,9 @@ function New-MmtlCompatibilityUniverse {
         schemaVersion = 1; auditStatus = 'IN_PROGRESS'; generatedAt = $GeneratedAt.ToUniversalTime().ToString('o')
         catalogHash = Get-MmtlCompatibilitySha256 -Text $canonicalSourceMaterial
         candidateCatalogHash = $null
-        minecraftReleaseCount = $releaseCount; loaderCount = $loaderIds.Count
-        targets = $sortedTargets; issues = @($issues | Sort-Object { [string]$_.loaderId }, { [string]$_.reason })
+        minecraftReleaseCount = $releaseCount; loaderCount = $loaderIds.Count; strategyCount = $sortedManualStrategies.Count
+        targets = $sortedTargets; manualStrategies = $sortedManualStrategies
+        issues = @($issues | Sort-Object { [string]$_.loaderId }, { [string]$_.reason })
     }
 }
 

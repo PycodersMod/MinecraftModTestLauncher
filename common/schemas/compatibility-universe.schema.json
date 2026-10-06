@@ -3,7 +3,7 @@
   "$id": "https://pycodersmod.github.io/MinecraftModTestLauncher/schemas/compatibility-universe.schema.json",
   "title": "MMTL Frozen Compatibility Universe",
   "type": "object",
-    "required": ["schemaVersion", "auditStatus", "generatedAt", "catalogHash", "candidateCatalogHash", "minecraftReleaseCount", "loaderCount", "targets", "issues"],
+    "required": ["schemaVersion", "auditStatus", "generatedAt", "catalogHash", "candidateCatalogHash", "minecraftReleaseCount", "loaderCount", "strategyCount", "targets", "manualStrategies", "issues"],
   "properties": {
     "schemaVersion": {"const": 1},
     "auditStatus": {"enum": ["IN_PROGRESS", "FROZEN"]},
@@ -12,10 +12,28 @@
     "candidateCatalogHash": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
     "minecraftReleaseCount": {"type": "integer", "minimum": 0},
     "loaderCount": {"type": "integer", "minimum": 0},
+    "strategyCount": {"type": "integer", "minimum": 0},
     "targets": {"type": "array", "items": {"$ref": "#/$defs/target"}},
+    "manualStrategies": {"type": "array", "items": {"$ref": "#/$defs/manualStrategy"}},
     "issues": {"type": "array", "items": {"$ref": "#/$defs/issue"}}
   },
   "$defs": {
+    "manualStrategy": {
+      "type": "object",
+      "required": ["strategyId", "status", "reason", "sourceUrl", "sourceClass", "trustClass", "transportSecurity", "maintenanceState", "evidence"],
+      "properties": {
+        "strategyId": {"type": "string", "minLength": 1},
+        "status": {"const": "ManualOnly"},
+        "reason": {"const": "LOCAL_ARTIFACT_REQUIRED"},
+        "sourceUrl": {"type": ["string", "null"], "format": "uri"},
+        "sourceClass": {"type": "string", "minLength": 1},
+        "trustClass": {"type": "string", "minLength": 1},
+        "transportSecurity": {"type": "string", "minLength": 1},
+        "maintenanceState": {"type": "string", "minLength": 1},
+        "evidence": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
     "target": {
       "type": "object",
       "required": ["targetId", "minecraftId", "minecraftType", "minecraftTypeSource", "minecraftTypeRule", "minecraftReleaseTime", "loaderId", "loaderVersionCandidates", "candidateStatus", "candidateSourceUrl", "candidateSourceHash", "sourceHash", "authoritativeSource", "sourceClass", "trustClass", "transportSecurity", "maintenanceState", "availability", "buildToolchainCandidates", "runtimeJavaRequirement", "buildJavaRequirement", "agentRequirement", "status"],

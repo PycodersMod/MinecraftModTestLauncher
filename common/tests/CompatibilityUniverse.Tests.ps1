@@ -135,4 +135,68 @@ Describe 'Compatibility Universe exact target generation' {
         @($universe.issues).Count | Should -Be 1
         $universe.issues[0].evidence | Should -Be 'unrecognized-branch-label'
     }
+
+    It 'keeps a manual compatibility strategy outside exact Loader availability targets' {
+        $catalog = [pscustomobject]@{ manifestHash = '9' * 64; entries = @() }
+        $loader = [pscustomobject]@{
+            loaderId = 'ExampleLoader'; providerStatus = 'Available'; sourceUrl = 'https://example.invalid/versions'
+            sourceClass = 'ActiveOfficial'; trustClass = 'TrustedOfficial'; transportSecurity = 'HTTPS'; maintenanceState = 'Active'
+            supportedVersions = @('1.20.1')
+        }
+        $manualStrategy = [pscustomobject]@{
+            loaderId = 'JarMod'; coverageModel = 'ManualArtifact'; providerStatus = 'ManualOnly'; sourceUrl = ''
+            sourceClass = 'ManualArtifact'; trustClass = 'UnverifiedHistorical'; transportSecurity = 'LocalManual'; maintenanceState = 'Unknown'
+            supportedVersions = @(); error = 'Requires user-supplied local artifact.'
+        }
+
+        $universe = New-MmtlCompatibilityUniverse -Catalog $catalog -LoaderSnapshots @($loader, $manualStrategy) -GeneratedAt ([DateTimeOffset]'2026-10-07T00:00:00Z')
+
+        $universe.loaderCount | Should -Be 1
+        $universe.targets.Count | Should -Be 1
+        $universe.targets[0].targetId | Should -Be 'ExampleLoader@1.20.1'
+        @($universe.issues).Count | Should -Be 0
+        $universe.manualStrategies.Count | Should -Be 1
+        $universe.manualStrategies[0].strategyId | Should -Be 'JarMod'
+        $universe.manualStrategies[0].status | Should -Be 'ManualOnly'
+        $universe.manualStrategies[0].reason | Should -Be 'LOCAL_ARTIFACT_REQUIRED'
+        $universe.strategyCount | Should -Be 1
+
+        $schemaPath = Join-Path (Split-Path -Parent $PSScriptRoot) 'schemas/compatibility-universe.schema.json'
+        (Test-Json -Json ($universe | ConvertTo-Json -Depth 30 -Compress) -SchemaFile $schemaPath) | Should -BeTrue
+    }
+
+    It 'preserves per-target candidate source URL and content hash metadata' {
+        $catalog = [pscustomobject]@{ manifestHash = '8' * 64; entries = @() }
+        $candidateHash = 'a' * 64
+        $snapshot = [pscustomobject]@{
+            loaderId = 'CandidateLoader'; providerStatus = 'Available'; sourceUrl = 'https://example.invalid/game'
+            sourceClass = 'ActiveOfficial'; trustClass = 'TrustedOfficial'; transportSecurity = 'HTTPS'; maintenanceState = 'Active'
+            supportedVersions = @('1.20.1')
+            loaderCandidatesByMinecraft = [pscustomobject]@{
+                '1.20.1' = [pscustomobject]@{ candidates = @('candidate-0.1'); sourceUrl = 'https://example.invalid/loader/1.20.1'; sourceHash = $candidateHash }
+            }
+        }
+
+        $universe = New-MmtlCompatibilityUniverse -Catalog $catalog -LoaderSnapshots @($snapshot) -GeneratedAt ([DateTimeOffset]'2026-10-07T00:00:00Z')
+
+        $universe.targets[0].loaderVersionCandidates | Should -Be @('candidate-0.1')
+        $universe.targets[0].candidateSourceUrl | Should -Be 'https://example.invalid/loader/1.20.1'
+        $universe.targets[0].candidateSourceHash | Should -Be $candidateHash
+    }
+
+    It 'rejects an identifier used by both a Loader and a manual strategy' {
+        $catalog = [pscustomobject]@{ manifestHash = '7' * 64; entries = @() }
+        $manualStrategy = [pscustomobject]@{
+            loaderId = 'DuplicateId'; coverageModel = 'ManualArtifact'; providerStatus = 'ManualOnly'; sourceUrl = ''
+            sourceClass = 'ManualArtifact'; trustClass = 'UnverifiedHistorical'; transportSecurity = 'LocalManual'; maintenanceState = 'Unknown'
+            supportedVersions = @(); error = 'Local artifact required.'
+        }
+        $loader = [pscustomobject]@{
+            loaderId = 'DuplicateId'; coverageModel = 'ExactAvailability'; providerStatus = 'Available'; sourceUrl = 'https://example.invalid/versions'
+            sourceClass = 'ActiveOfficial'; trustClass = 'TrustedOfficial'; transportSecurity = 'HTTPS'; maintenanceState = 'Active'
+            supportedVersions = @('1.20.1')
+        }
+
+        { New-MmtlCompatibilityUniverse -Catalog $catalog -LoaderSnapshots @($manualStrategy, $loader) -GeneratedAt ([DateTimeOffset]'2026-10-07T00:00:00Z') } | Should -Throw
+    }
 }

@@ -22,6 +22,6 @@
     {"loaderId":"Rift","providerId":"Rift","status":"PendingSourceReview","sourceUrl":"https://github.com/DimensionalDevelopment/Rift","sourceClass":"HistoricalOfficial","trustClass":"TrustedOfficial","transportSecurity":"HTTPS"},
     {"loaderId":"ModLoader","providerId":"ModLoader","status":"PendingArchiveVerification","sourceUrl":"https://mcarchive.net/mods/modloader","sourceClass":"VerifiedCommunityArchive","trustClass":"VerifiedHistorical","transportSecurity":"HTTPS"},
     {"loaderId":"ModLoaderMP","providerId":"ModLoaderMP","status":"PendingArchiveVerification","sourceUrl":"https://mcarchive.net/mods/modloadermp","sourceClass":"VerifiedCommunityArchive","trustClass":"VerifiedHistorical","transportSecurity":"HTTPS"},
-    {"loaderId":"JarMod","providerId":"JarMod","status":"TaxonomyReviewRequired","sourceUrl":"","sourceClass":"UnknownHistorical","trustClass":"Unknown","transportSecurity":"Unknown"}
+    {"loaderId":"JarMod","providerId":"JarMod","coverageModel":"ManualArtifact","status":"ManualOnly","sourceUrl":"https://github.com/MultiMC/Launcher/wiki/Jar-Modding","sourceClass":"VerifiedCommunitySource","trustClass":"VerifiedCommunity","transportSecurity":"HTTPS","note":"MMTL compatibility method, not an upstream Loader availability catalog; requires a user-supplied local artifact."}
   ]
 }
