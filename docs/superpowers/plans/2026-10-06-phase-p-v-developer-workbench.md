@@ -69,11 +69,11 @@
 
 ### Task 3：Test Identity 与角色隔离（Phase Q）
 
-- [ ] 先写 v1/v2 config 兼容、稳定合法 Host/Guest 命名、唯一性、offline UUID、敏感字段拒绝与目录隔离测试。
-- [ ] 实现向后兼容的 Test Identity profile model；身份记录包含 identity/role/session/instance、工作目录、log 目录、process identity/runtime java/network role/offline；不含认证 token。
-- [ ] 为每个角色创建独立 gameDir/logs/config/options/screenshots/crash-reports；Host saves 独立；共享 artifact 只读/复制并校验。
-- [ ] 覆盖 containment、reparse、跨 Session 冲突和 v2→新配置读取；不写回原配置。
-- [ ] 中文 commit：`功能：建立离线测试身份与实例目录隔离`。
+- [x] 先写 v1/v2 config 兼容、稳定合法 Host/Guest 命名、唯一性、offline UUID、敏感字段拒绝与目录隔离测试。
+- [x] 实现向后兼容的 Test Identity profile model；身份记录包含 identity/role/session/instance、工作目录、log 目录、process identity/runtime java/network role/offline；不含认证 token。
+- [x] 为每个角色创建独立 gameDir/logs/config/options/screenshots/crash-reports；Host saves 独立；共享 artifact 只读/复制并校验。
+- [x] 覆盖 containment、reparse、跨 Session 冲突和 v2→新配置读取；不写回原配置。
+- [x] 中文 commit：`功能：建立离线测试身份与实例目录隔离`。
 
 ### Task 4：Agent manifest、token 与 provider contract（Phase R）
 
