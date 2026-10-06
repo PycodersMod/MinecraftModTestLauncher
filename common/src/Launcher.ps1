@@ -42,7 +42,7 @@ $configFileIndex=[Array]::IndexOf($Arguments,'--config-file')
 if($configFileIndex -ge 0){if($configFileIndex+1 -ge $Arguments.Count){throw '--config-file 缺少路径。'};$configPath=[IO.Path]::GetFullPath([string]$Arguments[$configFileIndex+1])}
 $portable=($Arguments -contains '--portable') -and -not ($configPath -and (Test-Path $configPath) -and (Read-MmtlConfig -Path $configPath).runtimeRoot)
 if($Arguments -contains '--help' -or $Arguments -contains '-h'){
-    Write-Host 'Minecraft 模组测试启动器';Write-Host '用法：launcher.cmd / launcher.sh [--plan|--launch-check|--runtime-binding|--doctor|--capabilities|--explain-java|--validate|--dry-run|--build|--launch|--launch-rehearsal|--human-validation-plan] [--profile NAME]';Write-Host '执行计划：--plan [--json] [--plan-output <path>]；启动预检：--launch-check [--json]；Runtime Binding：--runtime-binding [--probe] [--json]';Write-Host '环境诊断：--doctor [--offline] [--json]；平台能力：--capabilities [--json]；Java 解析：--explain-java [--json]';Write-Host '人工验证准备：--human-validation-plan [--json]；只生成本地计划与 HANDOVER/manual-validation 包，不启动 Minecraft。';Write-Host '工作区发现：--discover-projects <workspace-or-repository> [--json]';Write-Host '版本目录：--list-minecraft-versions | --minecraft-info <id|CurrentStable> | --refresh-catalog';Write-Host '加载器：--list-loaders <mc> [--include-historical] | --loader-info <mc> <loader> | --provider-status <loader>';Write-Host '覆盖审计：';foreach($option in Get-MmtlCoverageCliOptionDefinitions){Write-Host "  $($option.usage) — $($option.description)"};Write-Host '深度验证：--validation-plan --scope P0|CurrentStable | --validation-matrix <target-definitions.json> [--validation-output <path>] | --validation-summary [--validation-version <mc>] [--validation-loader <id>]';Write-Host '历史生态提供器仅使用 HTTPS 元数据与缓存；不会自动执行仅提供 HTTP 的制品。';Write-Host '离线选项：--catalog-offline 仅影响 Mojang 版本目录；--loader-offline 仅影响加载器元数据；均不改变 Gradle 离线模式。';Write-Host '会话：--list-sessions [--json] | --recover-sessions [--dry-run] [--json] | --session-info ID [--json] | --session-validate ID | --stop ID | --clean-session ID';Write-Host '运行时观察：--observe-session ID [--timeout-seconds N] [--json] | --session-events ID [--json]；只观察当前 Session 登记数据，不启动 Minecraft。';Write-Host '安全演练：--launch-rehearsal [--json]；按 Plan 模式执行 Single、Dedicated 或 IntegratedLAN 合成 harness，不启动真实 Minecraft。';Write-Host '运行目录：--portable';Write-Host '不传参数时进入交互模式；--config-file 仅供临时配置调用。';exit 0
+    Write-Host 'Minecraft Mod 开发者测试启动器';Write-Host '用法：launcher.cmd / launcher.sh [--import-project <path>|--list-projects|--project-info <id>|--remove-project <id>|--plan|--launch-check|--runtime-binding|--doctor|--capabilities|--explain-java|--validate|--dry-run|--build|--launch|--launch-rehearsal|--human-validation-plan] [--profile NAME]';Write-Host '项目：--import-project <path> [--json]（只读探测并登记）| --list-projects [--json] | --project-info <id> [--json] | --remove-project <id> [--json]';Write-Host '执行计划：--plan [--json] [--plan-output <path>]；启动预检：--launch-check [--json]；Runtime Binding：--runtime-binding [--probe] [--json]';Write-Host '环境诊断：--doctor [--offline] [--json]；平台能力：--capabilities [--json]；Java 解析：--explain-java [--json]';Write-Host '人工验证准备：--human-validation-plan [--json]；只生成本地计划与 HANDOVER/manual-validation 包，不启动 Minecraft。';Write-Host '工作区发现：--discover-projects <workspace-or-repository> [--json]';Write-Host '版本目录：--list-minecraft-versions | --minecraft-info <id|CurrentStable> | --refresh-catalog';Write-Host '加载器：--list-loaders <mc> [--include-historical] | --loader-info <mc> <loader> | --provider-status <loader>';Write-Host '覆盖审计：';foreach($option in Get-MmtlCoverageCliOptionDefinitions){Write-Host "  $($option.usage) — $($option.description)"};Write-Host '深度验证：--validation-plan --scope P0|CurrentStable | --validation-matrix <target-definitions.json> [--validation-output <path>] | --validation-summary [--validation-version <mc>] [--validation-loader <id>]';Write-Host '历史生态提供器仅使用 HTTPS 元数据与缓存；不会自动执行仅提供 HTTP 的制品。';Write-Host '离线选项：--catalog-offline 仅影响 Mojang 版本目录；--loader-offline 仅影响加载器元数据；均不改变 Gradle 离线模式。';Write-Host '会话：--list-sessions [--json] | --recover-sessions [--dry-run] [--json] | --session-info ID [--json] | --session-validate ID | --stop ID | --clean-session ID';Write-Host '运行时观察：--observe-session ID [--timeout-seconds N] [--json] | --session-events ID [--json]；只观察当前 Session 登记数据，不启动 Minecraft。';Write-Host '安全演练：--launch-rehearsal [--json]；按 Plan 模式执行 Single、Dedicated 或 IntegratedLAN 合成 harness，不启动真实 Minecraft。';Write-Host '运行目录：--portable';Write-Host '不传参数时进入交互模式；--config-file 仅供临时配置调用。';exit 0
 }
 $capabilitiesIndex=[Array]::IndexOf($Arguments,'--capabilities')
 if($capabilitiesIndex -ge 0){
@@ -50,12 +50,56 @@ if($capabilitiesIndex -ge 0){
     if($Arguments -contains '--json'){$capabilities|ConvertTo-Json -Depth 20}else{Write-Host "平台：$($capabilities.os) / $($capabilities.arch)";foreach($name in @('Build','Launch','WindowManagement','ProcessManagement','FabricRuntimeLink','RuntimeBinding','JavaDiscovery','Doctor','SessionManagement')){Write-Host "${name}：$($capabilities.$name)"}}
     exit 0
 }
-$readOnlyPlanMode=($Arguments -contains '--plan' -or $Arguments -contains '--explain-java' -or $Arguments -contains '--launch-check' -or $Arguments -contains '--runtime-binding' -or $Arguments -contains '--doctor' -or $Arguments -contains '--human-validation-plan')
+$projectRegistryOperations=@('--import-project','--list-projects','--project-info','--remove-project')
+$projectRegistryMode=@($Arguments|Where-Object{$_ -in $projectRegistryOperations}).Count -gt 0
+$readOnlyPlanMode=($Arguments -contains '--plan' -or $Arguments -contains '--explain-java' -or $Arguments -contains '--launch-check' -or $Arguments -contains '--runtime-binding' -or $Arguments -contains '--doctor' -or $Arguments -contains '--human-validation-plan' -or $projectRegistryMode)
 $config=if(Test-Path $configPath){try{Read-MmtlConfig -Path $configPath -AllowInvalidProfiles:$readOnlyPlanMode}catch{if($Arguments -contains '--doctor'){$null}else{throw}}}else{$null}
 $runtimeConfigured=if($config -and $config.runtimeRoot){[string]$config.runtimeRoot}else{''}
 $runtimeRoot=Resolve-MmtlRuntimeRoot -Path $runtimeConfigured -Portable:$portable -LauncherRoot $here
 $observationResult=Invoke-MmtlObservationCommand -Arguments $Arguments -RuntimeRoot $runtimeRoot
 if($null -ne $observationResult){if($Arguments -contains '--json'){$observationResult|ConvertTo-Json -Depth 30 -Compress}else{$observationResult|ConvertTo-Json -Depth 30};exit 0}
+if($projectRegistryMode){
+    $operations=@($Arguments|Where-Object{$_ -in $projectRegistryOperations})
+    if($operations.Count -ne 1){[Console]::Error.WriteLine('每次只能指定一个项目 Registry 命令。');exit 2}
+    $operation=[string]$operations[0];$index=[Array]::IndexOf($Arguments,$operation);$result=$null
+    try{
+        switch($operation){
+            '--import-project' {
+                if($index+1 -ge $Arguments.Count){throw 'PROJECT_PATH_REQUIRED'}
+                $result=Import-MmtlProject -Path ([string]$Arguments[$index+1]) -RuntimeRoot $runtimeRoot
+            }
+            '--list-projects' { $registry=Get-MmtlProjectRegistry -RuntimeRoot $runtimeRoot;$result=[pscustomobject][ordered]@{schemaVersion=1;projects=@($registry.projects)} }
+            '--project-info' {
+                if($index+1 -ge $Arguments.Count){throw 'PROJECT_ID_REQUIRED'}
+                $id=[guid]::Empty;if(-not[guid]::TryParse([string]$Arguments[$index+1],[ref]$id)){throw 'PROJECT_ID_INVALID'}
+                $registry=Get-MmtlProjectRegistry -RuntimeRoot $runtimeRoot;$result=$registry.projects|Where-Object{[string]$_.projectId -ceq $id.ToString('D')}|Select-Object -First 1
+                if(-not $result){throw 'PROJECT_NOT_FOUND'}
+            }
+            '--remove-project' {
+                if($index+1 -ge $Arguments.Count){throw 'PROJECT_ID_REQUIRED'}
+                $id=[guid]::Empty;if(-not[guid]::TryParse([string]$Arguments[$index+1],[ref]$id)){throw 'PROJECT_ID_INVALID'}
+                $removed=Remove-MmtlProjectRegistryEntry -RuntimeRoot $runtimeRoot -ProjectId $id
+                if(-not $removed){throw 'PROJECT_NOT_FOUND'}
+                $result=[pscustomobject][ordered]@{schemaVersion=1;removed=$true;projectId=$id.ToString('D')}
+            }
+        }
+        if($Arguments -contains '--json'){$result|ConvertTo-Json -Depth 40 -Compress}else{
+            switch($operation){
+                '--import-project' { Write-Host "项目已登记：$($result.projectId)；Gradle targets=$($result.targetCount)" }
+                '--list-projects' { Write-Host "本地项目数：$(@($result.projects).Count)";@($result.projects)|Select-Object projectId,targetCount,importedAtUtc|Format-Table -AutoSize }
+                '--project-info' { $result|Format-List }
+                '--remove-project' { Write-Host "已从本地 Registry 移除项目登记：$($result.projectId)" }
+            }
+        }
+        exit 0
+    }catch{
+        $code=[string]$_.Exception.Message
+        if($Arguments -contains '--json'){
+            [pscustomobject][ordered]@{schemaVersion=1;status='Failed';error=[pscustomobject][ordered]@{code=$code;message=if($code -eq 'PROJECT_REGISTRY_CORRUPT'){'本地项目 Registry 已损坏，未覆盖原文件。'}else{$code}}}|ConvertTo-Json -Depth 10 -Compress
+        }else{[Console]::Error.WriteLine($code)}
+        exit 2
+    }
+}
 $catalogRuntimeRoot=$runtimeRoot
 if($platform.OS -in @('Linux','MacOS') -and $runtimeConfigured -match '^%LOCALAPPDATA%([\\/]|$)'){
     $catalogRuntimeRoot=$platform.DefaultRuntimeRoot
@@ -253,7 +297,7 @@ foreach($operation in @('--stop','--clean-session')){
         Write-Host "Session $id 状态：$($finalStatus.Status)`n报告：$($finalStatus.ReportPath)";exit 0
     }
 }
-if (-not (Test-Path $configPath) -and $Arguments -notcontains '--human-validation-plan') {
+if (-not (Test-Path $configPath) -and $Arguments -notcontains '--human-validation-plan' -and -not $projectRegistryMode) {
     Write-Host 'Minecraft 模组测试启动器 - 临时向导'
     $examplePath=Join-Path $commonRoot 'config/launcher.config.example.json'
     $example=Read-MmtlConfig -Path $examplePath
@@ -276,7 +320,7 @@ if($Arguments.Count -eq 0){
 $profileNameIndex=[Array]::IndexOf($Arguments,'--profile')
 $profileName=if($profileNameIndex -ge 0 -and $profileNameIndex+1 -lt $Arguments.Count){[string]$Arguments[$profileNameIndex+1]}else{$null}
 $profile=$null;$project=$null
-if($config -and $Arguments -notcontains '--human-validation-plan'){$profile=Get-MmtlProfile -Config $config -Name $profileName;if(-not $readOnlyPlanMode){Assert-MmtlProfile -Profile $profile | Out-Null};$project=Get-MmtlProject -Path $profile.project}
+if($config -and $Arguments -notcontains '--human-validation-plan' -and -not $projectRegistryMode){$profile=Get-MmtlProfile -Config $config -Name $profileName;if(-not $readOnlyPlanMode){Assert-MmtlProfile -Profile $profile | Out-Null};$project=Get-MmtlProject -Path $profile.project}
 function New-MmtlCliExecutionPlan {
     param([Parameter(Mandatory)]$Primary,[Parameter(Mandatory)]$Profile,[Parameter(Mandatory)]$Config,[Parameter(Mandatory)][string]$RuntimeRoot,[string]$Name,[switch]$RequireBuild,[switch]$Clean)
     $catalogEntry=$null;$versionMetadata=$null;$metadataWarning=$null
