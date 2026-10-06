@@ -19,7 +19,7 @@ function ConvertTo-MmtlArgumentPayload {
 }
 function New-MmtlGradleRunPlan {
     [CmdletBinding()]
-    param([Parameter(Mandatory)]$Project,[Parameter(Mandatory)][ValidateSet('Single','IntegratedLAN','Dedicated')][string]$Mode,[Parameter(Mandatory)][string]$RuntimeRoot,[Parameter(Mandatory)][ValidateSet('Host','Client','Server')][string]$Role,[string]$Username,[int]$Port=0,[Parameter(Mandatory)]$Profile)
+    param([Parameter(Mandatory)]$Project,[Parameter(Mandatory)][ValidateSet('Single','IntegratedLAN','Dedicated')][string]$Mode,[Parameter(Mandatory)][string]$RuntimeRoot,[Parameter(Mandatory)][ValidateSet('Host','Client','Server')][string]$Role,[string]$Username,[int]$Port=0,[Parameter(Mandatory)]$Profile,[string[]]$AgentJvmArguments=@())
     if($Role -ne 'Server' -and $Username -notmatch '^[A-Za-z0-9_]{1,16}$'){throw '测试玩家名必须为 1 到 16 位 ASCII 字母、数字或下划线。'}
     if($Role -eq 'Server' -and $Mode -ne 'Dedicated'){throw '只有 Dedicated 模式支持 Server 角色。'}
     if($Role -eq 'Host' -and $Mode -ne 'IntegratedLAN'){throw 'Host 角色只能用于 IntegratedLAN 模式。'}
@@ -37,7 +37,8 @@ function New-MmtlGradleRunPlan {
         if([version]$Project.MinecraftVersion -ge [version]'1.20.0'){$gameArgs+=@('--quickPlayMultiplayer',('127.0.0.1:{0}' -f $Port))}
         else{$gameArgs+=@('--server','127.0.0.1','--port',[string]$Port)}
     }
-    $jvmArgs=@($Profile.jvmArgs|Where-Object{$null -ne $_}|ForEach-Object{[string]$_})
+    foreach($agentArgument in $AgentJvmArguments){if($agentArgument -notmatch '^-Dmmtl\.agent\.[A-Za-z0-9_.-]+=' -or $agentArgument -match '(?i)^-Dmmtl\.agent\.(sessionToken|token)='){throw 'AGENT_JVM_ARGUMENT_INVALID'}}
+    $jvmArgs=@($Profile.jvmArgs|Where-Object{$null -ne $_}|ForEach-Object{[string]$_})+@($AgentJvmArguments)
     $memoryProperty=if($Role -eq 'Server'){'serverMemoryMb'}elseif($Mode -eq 'Single' -or $Role -eq 'Host'){'hostMemoryMb'}else{'clientMemoryMb'}
     $instanceMemory=if($Profile.$memoryProperty){[int]$Profile.$memoryProperty}elseif($Profile.memoryMb){[int]$Profile.memoryMb}else{0}
     if($instanceMemory -gt 0){$jvmArgs+=('-Xmx{0}M' -f $instanceMemory)}

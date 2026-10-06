@@ -20,6 +20,7 @@ function Write-MmtlPidRegistry {
     if(-not $Lock){$Lock=New-MmtlSessionLock -LockPath (Join-Path $session '.session.lock') -AllowedRoot $session;$ownsLock=$true}
     try{
         if([IO.Path]::GetFullPath([string]$Lock.lockPath) -cne [IO.Path]::GetFullPath((Join-Path $session '.session.lock')) -or $Lock.released){throw 'SESSION_LOCK_OWNER_MISMATCH'}
+        Assert-MmtlNoReparsePath -Path $Path|Out-Null
         Write-MmtlAtomicTextFile -Path $Path -Content ((@($Entries)|ConvertTo-Json -Depth 12)+"`n")
     }finally{if($ownsLock){Remove-MmtlSessionLock -Lock $Lock}}
 }
@@ -38,7 +39,7 @@ function Start-MmtlTrackedProcess {
     if(-not(Test-MmtlInsideRoot -Root $session -Target $LogPath)){throw '日志路径必须位于当前 Session。'}
     if($RuntimeDirectory -and -not(Test-MmtlInsideRoot -Root $session -Target $RuntimeDirectory)){throw '进程 RuntimeDirectory 必须位于当前 Session。'}
     Assert-MmtlNoReparsePath -Path $session|Out-Null
-    $registry=Join-Path $session 'pids.json';if(-not(Test-Path -LiteralPath $registry)){throw 'Session 缺少 pids.json。'}
+    $registry=Join-Path $session 'pids.json';if(-not(Test-Path -LiteralPath $registry)){throw 'Session 缺少 pids.json。'};Assert-MmtlNoReparsePath -Path $registry|Out-Null
     $lock=New-MmtlSessionLock -LockPath (Join-Path $session '.session.lock') -AllowedRoot $session;$proc=$null;$trackedIdentity=$null
     try{
         $manifestPath=Join-Path $session 'session.v2.json'
@@ -60,7 +61,7 @@ function Complete-MmtlTrackedProcess {
     [CmdletBinding()]
     param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][Diagnostics.Process]$Process,[Parameter(Mandatory)][string]$StartIdentity,[switch]$StopRequested)
     $session=[IO.Path]::GetFullPath($SessionPath);Assert-MmtlNoReparsePath -Path $session|Out-Null
-    $processId=[int]$Process.Id;$registry=Join-Path $session 'pids.json';$expectedState=Join-Path $session "process-$processId.exit.json"
+    $processId=[int]$Process.Id;$registry=Join-Path $session 'pids.json';$expectedState=Join-Path $session "process-$processId.exit.json";Assert-MmtlNoReparsePath -Path $registry|Out-Null
     if(-not(Test-MmtlInsideRoot -Root $session -Target $expectedState)){throw '进程退出状态路径越出 Session。'}
     Assert-MmtlNoReparsePath -Path $expectedState|Out-Null
     $lock=New-MmtlSessionLock -LockPath (Join-Path $session '.session.lock') -AllowedRoot $session
@@ -81,7 +82,7 @@ function Stop-MmtlTrackedProcess {
     $session=[IO.Path]::GetFullPath($SessionPath);Assert-MmtlNoReparsePath -Path $session|Out-Null
     $lock=New-MmtlSessionLock -LockPath (Join-Path $session '.session.lock') -AllowedRoot $session
     try{
-        $registry=Join-Path $session 'pids.json';if(-not(Test-Path -LiteralPath $registry)){throw 'Session 未登记进程。'}
+        $registry=Join-Path $session 'pids.json';if(-not(Test-Path -LiteralPath $registry)){throw 'Session 未登记进程。'};Assert-MmtlNoReparsePath -Path $registry|Out-Null
         $items=@(Get-Content -LiteralPath $registry -Raw|ConvertFrom-Json);$entry=$items|Where-Object{[int]$_.PID -eq $ProcessId}|Select-Object -First 1
         if(-not $entry){throw '拒绝停止未登记进程。'}
         if($entry.StatePath -and -not(Test-MmtlInsideRoot -Root $session -Target ([string]$entry.StatePath))){throw '进程退出状态路径越出 Session，拒绝停止。'}

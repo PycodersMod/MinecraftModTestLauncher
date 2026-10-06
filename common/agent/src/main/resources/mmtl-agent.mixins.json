@@ -7,6 +7,7 @@
   "client": [
     "IntegratedServerLoopbackMixin",
     "LanServerPingerMixin",
-    "IntegratedServerInvoker"
+    "IntegratedServerInvoker",
+    "CreateWorldScreenInvoker"
   ]
 }

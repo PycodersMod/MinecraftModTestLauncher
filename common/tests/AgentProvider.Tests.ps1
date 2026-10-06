@@ -77,6 +77,12 @@ Describe 'MMTL Agent Provider 与 Session 握手' {
         { New-MmtlAgentLaunchBinding -Provider $provider -SessionPath $script:session -SessionId session_a -Role Guest -SessionToken $script:token } | Should -Throw '*AGENT_GUEST_LOOPBACK_PORT_REQUIRED*'
         $guestBinding = New-MmtlAgentLaunchBinding -Provider $provider -SessionPath $script:session -SessionId session_a -Role Guest -SessionToken $script:token -ExpectedLoopbackPort 25565
         $guestBinding.jvmArgs | Should -Contain '-Dmmtl.agent.expectedLoopbackPort=25565'
+        $worldBinding=New-MmtlAgentLaunchBinding -Provider $provider -SessionPath $script:session -SessionId session_a -Role Host -SessionToken $script:token -AutoCreateWorld -WorldName 'MMTL-Test' -WorldGameMode creative -WorldDifficulty peaceful -WorldSeed 42 -WorldAllowCommands
+        $worldBinding.jvmArgs | Should -Contain '-Dmmtl.agent.autoCreateWorld=true'
+        $worldBinding.jvmArgs | Should -Contain '-Dmmtl.agent.worldGameMode=creative'
+        $worldBinding.jvmArgs | Should -Contain '-Dmmtl.agent.worldAllowCommands=true'
+        {New-MmtlAgentLaunchBinding -Provider $provider -SessionPath $script:session -SessionId session_a -Role Guest -SessionToken $script:token -ExpectedLoopbackPort 25565 -AutoCreateWorld} | Should -Throw '*AGENT_WORLD_CREATE_HOST_ONLY*'
+        {New-MmtlAgentLaunchBinding -Provider $provider -SessionPath $script:session -SessionId session_a -Role Host -SessionToken $script:token -AutoCreateWorld -WorldName '../outside'} | Should -Throw '*AGENT_WORLD_NAME_INVALID*'
     }
 
     It '验证 Agent Event nonce/session/role 并映射到 Runtime Event，Agent 错误归为基础设施' {
@@ -94,7 +100,7 @@ Describe 'MMTL Agent Provider 与 Session 握手' {
         $failedEvent=ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId session_a -ExpectedRole Guest -ExpectedNonceHash $nonceHash -ProcessId 77 -ProcessIdentity 'start-77'
         $failedEvent.eventCode | Should -BeExactly 'LAN_PUBLISH_FAILED'
         $failedEvent.metadata.port | Should -Be 25565
-        $expectedCodes=@{AGENT_STARTED='AGENT_STARTED';CLIENT_READY='AGENT_CLIENT_READY';WORLD_JOINED='AGENT_WORLD_JOINED';INTEGRATED_SERVER_READY='INTEGRATED_SERVER_READY';OFFLINE_AUTH_ENABLED='OFFLINE_AUTH_ENABLED';GUEST_CONNECTING='GUEST_CONNECTING';WORLD_JOIN_TIMEOUT='WORLD_JOIN_TIMEOUT';LAN_PUBLISH_TIMEOUT='LAN_PUBLISH_TIMEOUT';GUEST_JOIN_TIMEOUT='GUEST_JOIN_TIMEOUT'}
+        $expectedCodes=@{AGENT_STARTED='AGENT_STARTED';CLIENT_READY='AGENT_CLIENT_READY';WORLD_JOINED='AGENT_WORLD_JOINED';WORLD_CREATE_REQUESTED='WORLD_CREATE_REQUESTED';WORLD_CREATE_SUBMITTED='WORLD_CREATE_SUBMITTED';INTEGRATED_SERVER_READY='INTEGRATED_SERVER_READY';OFFLINE_AUTH_ENABLED='OFFLINE_AUTH_ENABLED';GUEST_CONNECTING='GUEST_CONNECTING';WORLD_JOIN_TIMEOUT='WORLD_JOIN_TIMEOUT';LAN_PUBLISH_TIMEOUT='LAN_PUBLISH_TIMEOUT';GUEST_JOIN_TIMEOUT='GUEST_JOIN_TIMEOUT'}
         foreach($eventType in $expectedCodes.Keys){$lineObject.eventType=$eventType;$line=$lineObject|ConvertTo-Json -Compress;(ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId session_a -ExpectedRole Guest -ExpectedNonceHash $nonceHash -ProcessId 77 -ProcessIdentity 'start-77').eventCode | Should -BeExactly $expectedCodes[$eventType]}
         $line | Should -Not -Match [regex]::Escape($script:token)
     }

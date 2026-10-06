@@ -13,9 +13,17 @@ final class AgentEventSink {
     private final AgentHandshake.Context context;
     AgentEventSink(AgentHandshake.Context context) { this.context = context; }
 
-    synchronized void emit(String type, String summary) { emit(type, summary, null); }
+    synchronized void emit(String type, String summary) { emitInternal(type, summary, null, null); }
+
+    synchronized void emit(String type, String summary, String actionId) {
+        emitInternal(type, summary, null, actionId);
+    }
 
     synchronized void emit(String type, String summary, Integer port) {
+        emitInternal(type, summary, port, null);
+    }
+
+    private void emitInternal(String type, String summary, Integer port, String actionId) {
         if (context == null || !context.eventSink.startsWith(context.sessionRoot)) return;
         try {
             Path parent = context.eventSink.getParent();
@@ -24,7 +32,8 @@ final class AgentEventSink {
                     + "\",\"role\":\"" + escape(context.role) + "\",\"eventId\":\"" + UUID.randomUUID()
                     + "\",\"eventType\":\"" + escape(type) + "\",\"timestampUtc\":\"" + Instant.now()
                     + "\",\"sessionNonceHash\":\"" + context.nonceHash + "\",\"summary\":\"" + escape(summary) + "\""
-                    + (port != null && port >= 1 && port <= 65535 ? ",\"port\":" + port : "") + "}\n";
+                    + (port != null && port >= 1 && port <= 65535 ? ",\"port\":" + port : "")
+                    + (actionId != null && actionId.matches("[a-f0-9]{32}") ? ",\"actionId\":\"" + actionId + "\"" : "") + "}\n";
             Files.writeString(context.eventSink, line, StandardCharsets.UTF_8,
                     StandardOpenOption.CREATE, StandardOpenOption.APPEND, LinkOption.NOFOLLOW_LINKS);
         } catch (IOException ignored) { /* Telemetry must never crash or block the game. */ }

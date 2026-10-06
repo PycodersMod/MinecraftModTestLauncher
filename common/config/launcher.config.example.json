@@ -17,6 +17,8 @@
       "linkedProjects": [],
       "mode": "Single",
       "players": 1,
+    "durationSeconds": 60,
+    "stopPolicy": "Always",
       "hostUsername": "Dev",
       "clientPrefix": "Dev_",
       "hostCheats": true,

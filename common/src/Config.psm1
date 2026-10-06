@@ -56,6 +56,8 @@ function Assert-MmtlProfile {
     if (-not $Profile.project) { throw 'Profile 缺少 project。' }
     if ($Profile.mode -notin @('Single','IntegratedLAN','Dedicated')) { throw "不支持的运行模式：$($Profile.mode)" }
     if ([int]$Profile.players -lt 1) { throw 'players 必须大于 0。' }
+    if($null -ne $Profile.PSObject.Properties['durationSeconds'] -and ([int]$Profile.durationSeconds -lt 1 -or [int]$Profile.durationSeconds -gt 600)){throw 'durationSeconds 必须为 1 至 600 秒。'}
+    if($null -ne $Profile.PSObject.Properties['stopPolicy'] -and [string]$Profile.stopPolicy -cne 'Always'){throw '当前 Scenario 版本只支持 stopPolicy=Always。'}
     if($null -ne $Profile.PSObject.Properties['guiScale']){$guiScale=0;if([string]$Profile.guiScale -ine 'Auto' -and (-not[int]::TryParse([string]$Profile.guiScale,[ref]$guiScale) -or $guiScale -lt 0 -or $guiScale -gt 4)){throw 'guiScale 必须为 Auto 或 0 至 4。'}}
     return $true
 }

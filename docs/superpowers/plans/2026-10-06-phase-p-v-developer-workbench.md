@@ -93,12 +93,12 @@
 
 ### Task 6：Scenario Orchestrator 与 Action Controller（Phase S）
 
-- [ ] 先写 Single/IntegratedLAN/Dedicated scenario plan、players 总数语义、并发上限、action sequencing、超时、部分失败、安全回收测试。
-- [ ] 实现 `--scenario-plan`（read-only）、`--run-scenario`（显式执行）、`--scenario-status`、`--scenario-action`；显式 non-interactive，无 Read-Host 卡住。
-- [ ] 将 Build→Session→Host/Server→ready→Guest→observe→analyze→safe stop 接入既有 Execution Plan/Session/Process/Port 管理。
-- [ ] Action contract 支持 WAIT、受权限校验的 SEND_COMMAND、SCREENSHOT、STOP_ROLE、STOP_ALL；不做脆弱坐标输入。
-- [ ] 模拟 launcher/Agent crash、有限超时、多进程 recovery；禁止广域 kill。
-- [ ] 中文 commit：`功能：实现多实例场景编排与安全动作控制`。
+- [x] 先写 Single/IntegratedLAN/Dedicated scenario plan、players 总数语义、并发上限、action sequencing、超时、部分失败、安全回收测试。
+- [x] 实现 `--scenario-plan`（read-only）、`--run-scenario`（显式执行）、`--scenario-status`、`--scenario-action`；显式 non-interactive，无 Read-Host 卡住。
+- [x] 将 Build→Session→Host/Server→ready→Guest→observe→analyze→safe stop 接入既有 Execution Plan/Session/Process/Port 管理。
+- [x] Action contract 支持 WAIT、受权限校验的 SEND_COMMAND、SCREENSHOT、STOP_ROLE、STOP_ALL；不做脆弱坐标输入。
+- [x] 模拟 launcher/Agent crash、有限超时、多进程 recovery；禁止广域 kill。
+- [x] 中文 commit：`功能：实现多实例场景编排与安全动作控制`。
 
 ### Task 7：Structured Log Workspace 与 Timeline（Phase T）
 

@@ -70,7 +70,7 @@ tasks.register('verifyMmtlAgentJar') {
             def manifest = new java.util.jar.Manifest(archive.getInputStream(manifestEntry))
             if (manifest.mainAttributes.getValue('MixinConfigs') != 'mmtl-agent.mixins.json') throw new GradleException('MMTL Agent JAR has an invalid MixinConfigs manifest entry')
             def mixinConfig = new groovy.json.JsonSlurper().parse(archive.getInputStream(configEntry))
-            if (mixinConfig.required != true || !mixinConfig.client.contains('IntegratedServerLoopbackMixin') || !mixinConfig.client.contains('LanServerPingerMixin') || !mixinConfig.client.contains('IntegratedServerInvoker')) throw new GradleException('MMTL Agent JAR has an incomplete client Mixin configuration')
+            if (mixinConfig.required != true || !mixinConfig.client.contains('IntegratedServerLoopbackMixin') || !mixinConfig.client.contains('LanServerPingerMixin') || !mixinConfig.client.contains('IntegratedServerInvoker') || !mixinConfig.client.contains('CreateWorldScreenInvoker')) throw new GradleException('MMTL Agent JAR has an incomplete client Mixin configuration')
         } finally { archive.close() }
     }
 }
@@ -84,7 +84,7 @@ tasks.register('stageMmtlAgent') {
         File destinationJar = new File(destinationDirectory, 'mmtl-agent-forge-1.20.1-0.1.0.jar')
         destinationJar.bytes = sourceJar.bytes
         String digest = java.security.MessageDigest.getInstance('SHA-256').digest(destinationJar.bytes).encodeHex().toString()
-        def manifest = [schemaVersion:1,providerId:'forge-1.20.1',loaderId:'Forge',minecraftVersions:['1.20.1'],agentVersion:project.version.toString(),artifact:'providers/forge-1.20.1/mmtl-agent-forge-1.20.1-0.1.0.jar',sha256:digest,minJavaMajor:17,roles:['Client','Host','Guest'],capabilities:['OfflineSessionHandshake','IntegratedServerEvents','GuestJoinObservation','OfflineIntegratedLanHost','LoopbackOnlyListener','LanDiscoverySuppressed','GuestLoopbackVerification']]
+        def manifest = [schemaVersion:1,providerId:'forge-1.20.1',loaderId:'Forge',minecraftVersions:['1.20.1'],agentVersion:project.version.toString(),artifact:'providers/forge-1.20.1/mmtl-agent-forge-1.20.1-0.1.0.jar',sha256:digest,minJavaMajor:17,roles:['Client','Host','Guest'],capabilities:['OfflineSessionHandshake','IntegratedServerEvents','GuestJoinObservation','OfflineIntegratedLanHost','LoopbackOnlyListener','LanDiscoverySuppressed','GuestLoopbackVerification','SignedSessionActionQueue','SessionScreenshot','ManagedClientCommand']]
         new File(destinationDirectory, 'agent-manifest.json').text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(manifest)) + System.lineSeparator()
     }
 }

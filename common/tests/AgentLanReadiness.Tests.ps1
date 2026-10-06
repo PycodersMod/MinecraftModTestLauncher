@@ -42,3 +42,27 @@ Describe 'MMTL Forge IntegratedLAN readiness gate' {
         Test-MmtlLoopbackTcpPort -Port $port | Should -BeFalse
     }
 }
+
+Describe 'MMTL Forge Guest join readiness gate' {
+    BeforeEach {
+        $script:session=Join-Path $TestDrive ('guest-session-'+[guid]::NewGuid().ToString('N'))
+        $script:eventPath=Join-Path $script:session 'agent-events/guest.jsonl'
+        New-Item -ItemType Directory -Path (Split-Path -Parent $script:eventPath) -Force|Out-Null
+        [IO.File]::WriteAllText($script:eventPath,'',[Text.UTF8Encoding]::new($false))
+        $script:sessionId='session_guest';$script:nonceHash='c'*64;$script:port=25565
+    }
+
+    It 'only accepts a matching Guest loopback world-join event and live process' {
+        $record=[pscustomobject]@{schemaVersion=1;sessionId=$script:sessionId;role='Guest';eventId='guest-1';eventType='GUEST_CONNECTED';timestampUtc=[DateTimeOffset]::UtcNow.ToString('o');sessionNonceHash=$script:nonceHash;summary='joined loopback host';port=$script:port}
+        [IO.File]::AppendAllText($script:eventPath,(($record|ConvertTo-Json -Compress)+"`n"),[Text.UTF8Encoding]::new($false))
+        $result=Wait-MmtlAgentGuestJoined -SessionPath $script:session -EventPath $script:eventPath -SessionId $script:sessionId -ExpectedNonceHash $script:nonceHash -Port $script:port -ProcessId $PID
+        $result.ready | Should -BeTrue
+        $result.role | Should -Be 'Guest'
+    }
+
+    It 'rejects wrong port and times out without granting readiness' {
+        $record=[pscustomobject]@{schemaVersion=1;sessionId=$script:sessionId;role='Guest';eventId='guest-2';eventType='GUEST_CONNECTED';timestampUtc=[DateTimeOffset]::UtcNow.ToString('o');sessionNonceHash=$script:nonceHash;summary='wrong port';port=25566}
+        [IO.File]::AppendAllText($script:eventPath,(($record|ConvertTo-Json -Compress)+"`n"),[Text.UTF8Encoding]::new($false))
+        {Wait-MmtlAgentGuestJoined -SessionPath $script:session -EventPath $script:eventPath -SessionId $script:sessionId -ExpectedNonceHash $script:nonceHash -Port $script:port -ProcessId $PID -TimeoutSeconds 1 -PollMilliseconds 100} | Should -Throw '*AGENT_GUEST_JOIN_TIMEOUT*'
+    }
+}

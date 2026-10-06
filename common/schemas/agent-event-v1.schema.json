@@ -10,10 +10,11 @@
     "sessionId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" },
     "role": { "enum": ["Client", "Host", "Guest", "Server"] },
     "eventId": { "type": "string", "pattern": "^[A-Za-z0-9._-]{1,80}$" },
-    "eventType": { "enum": ["AGENT_STARTED", "CLIENT_READY", "WORLD_JOINED", "INTEGRATED_SERVER_READY", "OFFLINE_AUTH_ENABLED", "LAN_PUBLISH_REQUESTED", "LAN_PUBLISHED", "LAN_PUBLISH_FAILED", "GUEST_CONNECTING", "GUEST_CONNECTED", "WORLD_JOIN_TIMEOUT", "LAN_PUBLISH_TIMEOUT", "GUEST_JOIN_TIMEOUT", "AGENT_ERROR"] },
+    "eventType": { "enum": ["AGENT_STARTED", "CLIENT_READY", "WORLD_JOINED", "WORLD_CREATE_REQUESTED", "WORLD_CREATE_SUBMITTED", "INTEGRATED_SERVER_READY", "OFFLINE_AUTH_ENABLED", "LAN_PUBLISH_REQUESTED", "LAN_PUBLISHED", "LAN_PUBLISH_FAILED", "GUEST_CONNECTING", "GUEST_CONNECTED", "WORLD_JOIN_TIMEOUT", "LAN_PUBLISH_TIMEOUT", "GUEST_JOIN_TIMEOUT", "ACTION_RECEIVED", "ACTION_COMPLETED", "ACTION_FAILED", "AGENT_ERROR"] },
     "timestampUtc": { "type": "string", "format": "date-time" },
     "sessionNonceHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
     "summary": { "type": "string", "maxLength": 240 },
-    "port": { "type": "integer", "minimum": 1, "maximum": 65535 }
+    "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+    "actionId": { "type": "string", "pattern": "^[a-f0-9]{32}$" }
   }
 }
