@@ -41,6 +41,7 @@ $configPath=Join-Path $here 'launcher.config.json'
 $configFileIndex=[Array]::IndexOf($Arguments,'--config-file')
 if($configFileIndex -ge 0){if($configFileIndex+1 -ge $Arguments.Count){throw '--config-file 缺少路径。'};$configPath=[IO.Path]::GetFullPath([string]$Arguments[$configFileIndex+1])}
 $portable=($Arguments -contains '--portable') -and -not ($configPath -and (Test-Path $configPath) -and (Read-MmtlConfig -Path $configPath).runtimeRoot)
+if(($Arguments -contains '--help' -or $Arguments -contains '-h')){Write-Host '首次运行：--init [--config-file <path>] [--portable] [--json]；创建本地配置、Runtime、空 Registry 与三种示例 Profile，不修改 Mod。'}
 if($Arguments -contains '--help' -or $Arguments -contains '-h'){
     Write-Host 'Minecraft Mod 开发者测试启动器';Write-Host '用法：launcher.cmd / launcher.sh [--import-project <path>|--list-projects|--project-info <id>|--remove-project <id>|--plan|--scenario-plan|--launch-check|--runtime-binding|--doctor|--capabilities|--explain-java|--validate|--dry-run|--build|--launch|--launch-rehearsal|--human-validation-plan] [--profile NAME]';Write-Host '项目：--import-project <path> [--primary-mod-id ID] [--json]（只读探测并登记）| --list-projects [--json] | --project-info <id> [--json] | --remove-project <id> [--json]';Write-Host '执行计划：--plan [--json] [--plan-output <path>]；场景只读计划：--scenario-plan [--json]；启动预检：--launch-check [--json]；Runtime Binding：--runtime-binding [--probe] [--json]';Write-Host '环境诊断：--doctor [--offline] [--json]；平台能力：--capabilities [--json]；Java 解析：--explain-java [--json]';Write-Host '人工验证准备：--human-validation-plan [--json]；只生成本地计划与 HANDOVER/manual-validation 包，不启动 Minecraft。';Write-Host '工作区发现：--discover-projects <workspace-or-repository> [--json]';Write-Host '版本目录：--list-minecraft-versions | --minecraft-info <id|CurrentStable> | --refresh-catalog';Write-Host '加载器：--list-loaders <mc> [--include-historical] | --loader-info <mc> <loader> | --provider-status <loader>';Write-Host '覆盖审计：';foreach($option in Get-MmtlCoverageCliOptionDefinitions){Write-Host "  $($option.usage) — $($option.description)"};Write-Host '深度验证：--validation-plan --scope P0|CurrentStable | --validation-matrix <target-definitions.json> [--validation-output <path>] | --validation-summary [--validation-version <mc>] [--validation-loader <id>]';Write-Host '历史生态提供器仅使用 HTTPS 元数据与缓存；不会自动执行仅提供 HTTP 的制品。';Write-Host '离线选项：--catalog-offline 仅影响 Mojang 版本目录；--loader-offline 仅影响加载器元数据；均不改变 Gradle 离线模式。';Write-Host '会话：--list-sessions [--json] | --recover-sessions [--dry-run] [--json] | --session-info ID [--json] | --session-validate ID | --stop ID | --clean-session ID';Write-Host '日志分析：--analyze-session ID [--json] | --session-report ID [--json]；规则分析会保留 raw 日志，不把无异常信号解释为 Mod 功能通过。';Write-Host '运行时观察：--observe-session ID [--timeout-seconds N] [--json] | --session-events ID [--json]；只观察当前 Session 登记数据，不启动 Minecraft。';Write-Host '场景：--scenario-plan [--json] 只读生成顺序；--run-scenario 执行非交互场景；--scenario-status ID 查询；--scenario-action ID WAIT|SEND_COMMAND|SCREENSHOT|STOP_ROLE|STOP_ALL；SEND_COMMAND 需显式 --grant-command-permission，SCREENSHOT 需受管 Agent。';Write-Host '安全演练：--launch-rehearsal [--json]；按 Plan 模式执行 Single、Dedicated 或 IntegratedLAN 合成 harness，不启动真实 Minecraft。';Write-Host '运行目录：--portable';Write-Host '不传参数时进入交互模式；--config-file 仅供临时配置调用。';exit 0
 }
@@ -52,10 +53,26 @@ if($capabilitiesIndex -ge 0){
 }
 $projectRegistryOperations=@('--import-project','--list-projects','--project-info','--remove-project')
 $projectRegistryMode=@($Arguments|Where-Object{$_ -in $projectRegistryOperations}).Count -gt 0
-$readOnlyPlanMode=($Arguments -contains '--plan' -or $Arguments -contains '--scenario-plan' -or $Arguments -contains '--scenario-status' -or $Arguments -contains '--scenario-action' -or $Arguments -contains '--explain-java' -or $Arguments -contains '--launch-check' -or $Arguments -contains '--runtime-binding' -or $Arguments -contains '--doctor' -or $Arguments -contains '--human-validation-plan' -or $Arguments -contains '--analyze-session' -or $Arguments -contains '--session-report' -or $projectRegistryMode)
+$readOnlyPlanMode=($Arguments -contains '--init' -or $Arguments -contains '--plan' -or $Arguments -contains '--scenario-plan' -or $Arguments -contains '--scenario-status' -or $Arguments -contains '--scenario-action' -or $Arguments -contains '--explain-java' -or $Arguments -contains '--launch-check' -or $Arguments -contains '--runtime-binding' -or $Arguments -contains '--doctor' -or $Arguments -contains '--human-validation-plan' -or $Arguments -contains '--analyze-session' -or $Arguments -contains '--session-report' -or $projectRegistryMode)
 $config=if(Test-Path $configPath){try{Read-MmtlConfig -Path $configPath -AllowInvalidProfiles:$readOnlyPlanMode}catch{if($Arguments -contains '--doctor'){$null}else{throw}}}else{$null}
 $runtimeConfigured=if($config -and $config.runtimeRoot){[string]$config.runtimeRoot}else{''}
 $runtimeRoot=Resolve-MmtlRuntimeRoot -Path $runtimeConfigured -Portable:$portable -LauncherRoot $here
+if($Arguments -contains '--init'){
+    $allowedInitArguments=@('--init','--config-file','--portable','--json')
+    for($initIndex=0;$initIndex -lt $Arguments.Count;$initIndex++){
+        $initArgument=[string]$Arguments[$initIndex]
+        if($initArgument -eq '--config-file'){
+            if($initIndex+1 -ge $Arguments.Count){throw '--config-file 缺少路径。'}
+            $initIndex++
+            continue
+        }
+        if($initArgument -notin $allowedInitArguments){throw "INIT_ARGUMENT_CONFLICT: --init 不接受运行参数 $initArgument。"}
+    }
+    $result=Initialize-MmtlFirstRun -ConfigPath $configPath -RuntimeRoot $runtimeRoot
+    if($Arguments -contains '--json'){$result|ConvertTo-Json -Depth 10 -Compress}
+    else{Write-Host "初始化状态：$($result.status)";Write-Host "配置：$($result.configPath)";Write-Host "Runtime：$($result.runtimeRoot)";Write-Host "Registry：$($result.registryPath)";Write-Host '默认示例：integrated-lan-example（离线 Test Identities；仅本机 loopback）。Dedicated 示例保持 acceptEula=false。'}
+    exit 0
+}
 foreach($analysisOption in @('--analyze-session','--session-report')){
     $analysisIndex=[Array]::IndexOf($Arguments,$analysisOption)
     if($analysisIndex -ge 0){

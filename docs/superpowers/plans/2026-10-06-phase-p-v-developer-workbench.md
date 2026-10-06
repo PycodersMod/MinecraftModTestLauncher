@@ -131,14 +131,14 @@
 - [x] 十项目通过同一 Import/Plan/Build/LaunchCheck；十项目 `Get-MmtlProjectModMetadata` 与 Agent 选择提取通过；无 10 GUI 全量启动或项目名特判。
 - [x] 临时匿名 Forge 项目移除原始 Mod ID、项目名与 package，Import/Agent selection/Analyzer 通过；其 Launch Check 明确阻塞 `RUNTIME_JAVA_BINDING_UNKNOWN`。
 - [x] 汇总 smoke 失败阶段与 Runtime evidence；NeoForge 失败源于 Mod runClient 编译找不到 JEI API，不修改 Mod；完整构建日志和 Analyzer 证据留在本机 Session。
-- [x] 中文 commit：`测试：增加跨 Loader 泛化与真实启动回归`（待本任务提交）。
+- [x] 中文 commit：`6c2a531 测试：增加跨 Loader 泛化与真实启动回归`。
 
 ### Task 11：Public Alpha 初始化、文档、包与校验和（Phase V）
 
 - [x] `--init` 空目录、重复与损坏 Registry Pester 3/3；解压 Alpha 包的 CLI first-run/repeat smoke 通过；没有修改用户 Mod。
 - [x] 提供 Single/IntegratedLAN/Dedicated 示例；IntegratedLAN 说明离线身份与 loopback，Dedicated EULA 保持 false。
 - [x] 重写 README；新增项目导入、Test Identity、Agent/支持矩阵、Scenario、离线多人、日志分析与 Alpha 文档。
-- [x] `0.1.0-alpha.1` 包按 allowlist 构建；SHA-256 清单、Agent manifest/JAR 哈希、两次构建一致性与逐文件解压 smoke 通过；未包含本机配置、Registry、Session、世界、日志、JDK、Minecraft Runtime 或 Mod 项目。
+- [x] `0.1.0-alpha.1` 包按显式文件 allowlist 构建（不包含内部计划文档）；SHA-256 清单、Agent manifest/JAR 哈希、两次构建一致性与逐文件解压 smoke 通过；未包含本机配置、Registry、Session、世界、日志、JDK、Minecraft Runtime 或 Mod 项目。
 - [x] 未创建 GitHub Release/tag；新增 Alpha readiness checklist。
 - [ ] 中文 commit：`构建：建立 Public Alpha 可复现分发基础`。
 

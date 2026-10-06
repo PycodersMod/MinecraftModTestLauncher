@@ -12,6 +12,7 @@ testResults.xml
 
 # 本机配置、运行数据与根目录生成产物
 /HANDOVER/
+/artifacts/
 /local-config/
 /runtime/
 /cache/

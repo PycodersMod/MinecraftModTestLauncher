@@ -1,0 +1,19 @@
+{
+  "project": "<导入后填写 Mod 项目根目录>",
+  "linkedProjects": [],
+  "mode": "IntegratedLAN",
+  "players": 2,
+  "hostUsername": "MMTL_Host",
+  "clientPrefix": "MMTL_G",
+  "port": "Auto",
+  "autoBuild": true,
+  "cleanBuild": false,
+  "acceptEula": false,
+  "memoryMb": 4096,
+  "hostMemoryMb": 4096,
+  "clientMemoryMb": 4096,
+  "resolution": "1280x720",
+  "windowLayout": "None",
+  "durationSeconds": 60,
+  "stopPolicy": "Always"
+}
