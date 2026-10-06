@@ -18,19 +18,20 @@ Describe '通用项目 Registry CLI' {
             defaultProfile = 'unused'
             runtimeRoot = $script:runtime
             javaHomes = @{ '21' = 'unused' }
-            profiles = @{ unused = @{ project = 'does-not-exist'; mode = 'InvalidLegacyValue' } }
+            profiles = @{ unused = @{ project = 'does-not-exist'; mode = 'InvalidLegacyValue'; primaryModId = 'anonymous_mod' } }
         }
         $configObject | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $script:config
         $script:buildHash = (Get-FileHash -LiteralPath (Join-Path $script:fixture 'build.gradle') -Algorithm SHA256).Hash
     }
 
     It '在无有效活动 Profile 时仍可导入并输出纯 JSON' {
-        $output = & $script:pwsh -NoProfile -File $script:launcher --config-file $script:config --import-project $script:fixture --json 2>&1 | Out-String
+        $output = & $script:pwsh -NoProfile -File $script:launcher --config-file $script:config --profile unused --import-project $script:fixture --json 2>&1 | Out-String
 
         $LASTEXITCODE | Should -Be 0
         $result = $output | ConvertFrom-Json -ErrorAction Stop
         $result.status | Should -BeExactly 'Imported'
         $result.targets[0].modIds | Should -Contain 'anonymous_mod'
+        $result.targets[0].primaryModStatus | Should -BeExactly 'ResolvedByProfile'
         $output | Should -Not -Match 'WARNING:|项目：|Build Java'
         (Get-FileHash -LiteralPath (Join-Path $script:fixture 'build.gradle') -Algorithm SHA256).Hash | Should -BeExactly $script:buildHash
     }

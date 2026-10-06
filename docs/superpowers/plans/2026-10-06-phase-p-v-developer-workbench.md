@@ -61,11 +61,11 @@
 
 ### Task 2：Mod 元数据与多候选语义（Phase P）
 
-- [ ] 测试 Forge `mods.toml`、NeoForge 两类 metadata、Fabric/Quilt JSON、多 ID/entrypoint/mixin/package 发现及 malformed metadata。
-- [ ] 实现 primary ID 唯一选择与 `AMBIGUOUS_PRIMARY_MOD`；packageCandidates 按 entrypoint、source scan、mixin、artifact 顺序保留来源/置信度。
-- [ ] 增加 Profile `primaryModId` 的显式消歧；覆盖匿名 rename/no-Pycoders fixtures。
-- [ ] 运行 importer 全套测试及十项目 Discovery/Import/Plan smoke。
-- [ ] 中文 commit：`测试：覆盖匿名 Loader 项目导入与元数据识别`。
+- [x] 测试 Forge `mods.toml`、NeoForge 两类 metadata、Fabric/Quilt JSON、多 ID/entrypoint/mixin/package 发现及 malformed metadata。
+- [x] 实现 primary ID 唯一选择与 `AMBIGUOUS_PRIMARY_MOD`；packageCandidates 按 entrypoint、source scan、mixin、artifact 顺序保留来源/置信度。
+- [x] 增加 Profile `primaryModId` 的显式消歧；覆盖匿名 rename/no-Pycoders fixtures。
+- [x] 运行 importer 全套测试及十项目 Discovery/Import/Plan smoke。
+- [x] 中文 commit：`测试：覆盖匿名 Loader 项目导入与元数据识别`。
 
 ### Task 3：Test Identity 与角色隔离（Phase Q）
 

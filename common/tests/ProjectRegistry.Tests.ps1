@@ -45,6 +45,64 @@ Describe '通用 Mod 项目导入与本地注册表' {
         Test-Path -LiteralPath $emptyRuntime | Should -BeFalse
     }
 
+    It '匿名 Fabric 元数据发现多个 Mod、入口点、Mixin 和 package 来源并标记歧义' {
+        $resources = Join-Path $script:target 'src/main/resources'
+        Set-Content -LiteralPath (Join-Path $resources 'fabric.mod.json') -Value (@{
+            schemaVersion = 1; id = 'sample_alpha'; name = 'Alpha';
+            entrypoints = @{ main = @('org.example.alpha.Main'); client = @('org.example.client.ClientEntrypoint') };
+            mixins = @('sample.mixins.json')
+        } | ConvertTo-Json -Depth 10)
+        Set-Content -LiteralPath (Join-Path $resources 'quilt.mod.json') -Value '{"quilt_loader":{"id":"sample_beta","metadata":{"name":"Beta"}}}'
+        $source = Join-Path $script:target 'src/main/java/org/example/alpha'
+        New-Item -ItemType Directory -Path $source -Force | Out-Null
+        Set-Content -LiteralPath (Join-Path $source 'Main.java') -Value 'package org.example.alpha; public class Main {}'
+        Set-Content -LiteralPath (Join-Path $resources 'sample.mixins.json') -Value '{"package":"org.example.mixin","mixins":["FeatureMixin"]}'
+
+        $result = Import-MmtlProject -Path $script:workspace -RuntimeRoot $script:runtime -PrimaryModId 'sample_beta'
+        $target = $result.targets[0]
+
+        $target.modIds | Should -Contain 'sample_alpha'
+        $target.modIds | Should -Contain 'sample_beta'
+        $target.primaryModId | Should -BeExactly 'sample_beta'
+        $target.primaryModStatus | Should -BeExactly 'ResolvedByProfile'
+        @($target.packageCandidates | ForEach-Object packageName) | Should -Contain 'org.example.alpha'
+        @($target.packageCandidates | ForEach-Object packageName) | Should -Contain 'org.example.mixin'
+        @($target.packageCandidates | ForEach-Object source | Select-Object -Unique) | Should -Contain 'Entrypoint'
+        @($target.packageCandidates | ForEach-Object source | Select-Object -Unique) | Should -Contain 'SourceScan'
+        @($target.packageCandidates | ForEach-Object source | Select-Object -Unique) | Should -Contain 'Mixin'
+    }
+
+    It '识别 NeoForge metadata 中的多个 mods 条目' {
+        Remove-Item -LiteralPath (Join-Path $script:target 'src/main/resources/fabric.mod.json') -Force
+        Set-Content -LiteralPath (Join-Path $script:target 'build.gradle') -Value "plugins { id 'net.neoforged.moddev' version '2.0.80' }"
+        $meta = Join-Path $script:target 'src/main/resources/META-INF'
+        New-Item -ItemType Directory -Path $meta -Force | Out-Null
+        @'
+modLoader="javafml"
+[[mods]]
+modId="neo_primary"
+displayName="Neo Primary"
+[[mods]]
+modId="neo_addon"
+displayName="Neo Addon"
+'@ | Set-Content -LiteralPath (Join-Path $meta 'neoforge.mods.toml')
+
+        $target = (Import-MmtlProject -Path $script:workspace -RuntimeRoot $script:runtime).targets[0]
+
+        $target.loaderId | Should -BeExactly 'NeoForge'
+        $target.modIds | Should -Contain 'neo_primary'
+        $target.modIds | Should -Contain 'neo_addon'
+        $target.primaryModStatus | Should -BeExactly 'AMBIGUOUS_PRIMARY_MOD'
+    }
+
+    It '保留 malformed metadata 诊断并拒绝无效的显式 primaryModId' {
+        Set-Content -LiteralPath (Join-Path $script:target 'src/main/resources/fabric.mod.json') -Value '{not-json'
+        $result = Import-MmtlProject -Path $script:workspace -RuntimeRoot $script:runtime
+
+        $result.targets[0].metadataErrors | Should -Contain 'fabric.mod.json:INVALID_JSON'
+        { Import-MmtlProject -Path $script:workspace -RuntimeRoot $script:runtime -PrimaryModId 'not_present' } | Should -Throw 'PRIMARY_MOD_ID_NOT_FOUND'
+    }
+
     It '扫描 repository 内的 nested Gradle targets' {
         $nested = Join-Path $script:workspace 'modules/nested'
         New-Item -ItemType Directory -Path (Join-Path $nested 'src/main/resources/META-INF') -Force | Out-Null

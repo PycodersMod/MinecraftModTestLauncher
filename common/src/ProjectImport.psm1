@@ -104,53 +104,113 @@ function Remove-MmtlProjectRegistryEntry {
 }
 
 function Get-MmtlProjectModMetadata {
-    param([Parameter(Mandatory)]$Project)
+    param([Parameter(Mandatory)]$Project,[string]$PrimaryModId)
     $resources = Join-Path ([string]$Project.ProjectRoot) 'src/main/resources'
     $modIds = [Collections.Generic.List[string]]::new()
     $modNames = [Collections.Generic.List[string]]::new()
     $entrypoints = [Collections.Generic.List[string]]::new()
+    $mixinConfigs = [Collections.Generic.List[string]]::new()
+    $metadataErrors = [Collections.Generic.List[string]]::new()
+    $packageCandidates = [Collections.Generic.List[object]]::new()
+    $seenPackages = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    $addPackage = {
+        param([string]$ClassName,[string]$Source,[string]$EvidencePath,[string]$Confidence)
+        if ($ClassName -notmatch '^[A-Za-z_$][\w$]*(\.[A-Za-z_$][\w$]*)+$') { return }
+        $packageName = $ClassName.Substring(0,$ClassName.LastIndexOf('.'))
+        $key = "$Source`n$packageName"
+        if ($seenPackages.Add($key)) { $packageCandidates.Add([pscustomobject][ordered]@{packageName=$packageName;source=$Source;evidencePath=$EvidencePath;confidence=$Confidence}) }
+    }
     if (Test-Path -LiteralPath $resources -PathType Container) {
         foreach ($file in @(Get-ChildItem -LiteralPath $resources -Recurse -File -ErrorAction SilentlyContinue)) {
             if ($file.Name -in @('fabric.mod.json','quilt.mod.json')) {
                 try {
                     $metadata = Get-Content -LiteralPath $file.FullName -Raw | ConvertFrom-Json -ErrorAction Stop
-                    if ($metadata.id -and -not $modIds.Contains([string]$metadata.id)) { $modIds.Add([string]$metadata.id) }
-                    if ($metadata.name) { $modNames.Add([string]$metadata.name) }
+                    $metadataId = $null
+                    if ($metadata.PSObject.Properties['id'] -and $metadata.id) { $metadataId = [string]$metadata.id }
+                    elseif ($metadata.PSObject.Properties['quilt_loader'] -and $metadata.quilt_loader.PSObject.Properties['id']) { $metadataId = [string]$metadata.quilt_loader.id }
+                    if ($metadataId -and -not $modIds.Contains($metadataId)) { $modIds.Add($metadataId) }
+                    if ($metadata.PSObject.Properties['name'] -and $metadata.name) { $modNames.Add([string]$metadata.name) }
+                    elseif ($metadata.PSObject.Properties['quilt_loader'] -and $metadata.quilt_loader.metadata -and $metadata.quilt_loader.metadata.name) { $modNames.Add([string]$metadata.quilt_loader.metadata.name) }
                     foreach ($property in @('entrypoints','languageAdapters')) {
-                        $section = $metadata.$property
+                        $section = if ($metadata.PSObject.Properties[$property]) { $metadata.$property } else { $null }
+                        if ($null -eq $section -and $metadata.PSObject.Properties['quilt_loader'] -and $metadata.quilt_loader.PSObject.Properties[$property]) { $section = $metadata.quilt_loader.$property }
                         if ($null -eq $section) { continue }
                         foreach ($value in @($section.PSObject.Properties | ForEach-Object { $_.Value })) {
                             foreach ($item in @($value)) {
-                                if ($item -is [string] -and $item.Contains('.')) { $entrypoints.Add($item) }
-                                elseif ($item.PSObject.Properties['value'] -and [string]$item.value -match '^[A-Za-z_$][\w$]*(\.[A-Za-z_$][\w$]*)+$') { $entrypoints.Add([string]$item.value) }
+                                if ($item -is [string] -and $item.Contains('.')) { $entrypoints.Add($item); & $addPackage $item 'Entrypoint' $file.FullName 'High' }
+                                elseif ($item -is [psobject] -and $item.PSObject.Properties['value'] -and [string]$item.value -match '^[A-Za-z_$][\w$]*(\.[A-Za-z_$][\w$]*)+$') { $entrypoints.Add([string]$item.value); & $addPackage ([string]$item.value) 'Entrypoint' $file.FullName 'High' }
                             }
                         }
                     }
-                } catch { }
+                    if ($metadata.PSObject.Properties['mixins']) { foreach ($mixin in @($metadata.mixins)) { if ($mixin -is [string]) { $mixinConfigs.Add($mixin) } elseif ($mixin.config) { $mixinConfigs.Add([string]$mixin.config) } } }
+                    if ($metadata.PSObject.Properties['quilt_loader'] -and $metadata.quilt_loader.PSObject.Properties['mixins']) { foreach ($mixin in @($metadata.quilt_loader.mixins)) { if ($mixin -is [string]) { $mixinConfigs.Add($mixin) } elseif ($mixin.config) { $mixinConfigs.Add([string]$mixin.config) } } }
+                } catch { $metadataErrors.Add("$($file.Name):INVALID_JSON") }
             } elseif ($file.Name -in @('mods.toml','neoforge.mods.toml')) {
                 $text = Get-Content -LiteralPath $file.FullName -Raw
-                foreach ($section in [regex]::Matches($text,'(?ms)^\s*\[\[mods\]\]\s*(.*?)(?=^\s*\[\[|\z)')) {
+                $sections = [regex]::Matches($text,'(?ms)^\s*\[\[mods\]\]\s*(.*?)(?=^\s*\[\[|\z)')
+                if (-not $sections.Count) { $metadataErrors.Add("$($file.Name):INVALID_TOML") }
+                foreach ($section in $sections) {
                     $idMatch = [regex]::Match($section.Groups[1].Value,'(?m)^\s*modId\s*=\s*["'']([^"'']+)["'']')
                     if ($idMatch.Success -and -not $modIds.Contains($idMatch.Groups[1].Value)) { $modIds.Add($idMatch.Groups[1].Value) }
+                    elseif (-not $idMatch.Success) { $metadataErrors.Add("$($file.Name):MOD_ID_MISSING") }
                     $nameMatch = [regex]::Match($section.Groups[1].Value,'(?m)^\s*displayName\s*=\s*["'']([^"'']+)["'']')
                     if ($nameMatch.Success) { $modNames.Add($nameMatch.Groups[1].Value) }
                 }
             }
         }
     }
+    $sourceRoot = Join-Path ([string]$Project.ProjectRoot) 'src/main'
+    if (Test-Path -LiteralPath $sourceRoot -PathType Container) {
+        foreach ($sourceFile in @(Get-ChildItem -LiteralPath $sourceRoot -Recurse -File -Include '*.java','*.kt' -ErrorAction SilentlyContinue)) {
+            $sourceText = Get-Content -LiteralPath $sourceFile.FullName -Raw -ErrorAction SilentlyContinue
+            $packageMatch = [regex]::Match($sourceText,'(?m)^\s*package\s+([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)+)\s*;?')
+            if ($packageMatch.Success) { & $addPackage ($packageMatch.Groups[1].Value + '.PackageMarker') 'SourceScan' $sourceFile.FullName 'Medium' }
+        }
+    }
+    foreach ($mixinConfig in @($mixinConfigs | Select-Object -Unique)) {
+        $mixinPath = Join-Path $resources ($mixinConfig -replace '/', [IO.Path]::DirectorySeparatorChar)
+        if (-not (Test-Path -LiteralPath $mixinPath -PathType Leaf)) { continue }
+        try {
+            $mixin = Get-Content -LiteralPath $mixinPath -Raw | ConvertFrom-Json -ErrorAction Stop
+            if ($mixin.package) { & $addPackage ([string]$mixin.package + '.MixinMarker') 'Mixin' $mixinPath 'High' }
+        } catch { $metadataErrors.Add("$mixinConfig`:INVALID_MIXIN_JSON") }
+    }
+    $artifactRoot = Join-Path ([string]$Project.ProjectRoot) 'build/libs'
+    if (Test-Path -LiteralPath $artifactRoot -PathType Container) {
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        foreach ($artifact in @(Get-ChildItem -LiteralPath $artifactRoot -Filter '*.jar' -File -ErrorAction SilentlyContinue)) {
+            try {
+                $archive = [IO.Compression.ZipFile]::OpenRead($artifact.FullName)
+                try {
+                    foreach ($entry in $archive.Entries) {
+                        if ($entry.FullName -match '^(?<package>(?:[A-Za-z_$][\w$]*/)+)[^/]+\.class$' -and $entry.FullName -notmatch '^META-INF/') {
+                            & $addPackage ($Matches.package.TrimEnd('/').Replace('/','.')) 'Artifact' $artifact.Name 'Low'
+                        }
+                    }
+                } finally { $archive.Dispose() }
+            } catch { $metadataErrors.Add("$($artifact.Name):INVALID_ARTIFACT") }
+        }
+    }
     if ($Project.ModId -and -not $modIds.Contains([string]$Project.ModId)) { $modIds.Add([string]$Project.ModId) }
+    $primaryStatus = if ($modIds.Count -gt 1) { 'AMBIGUOUS_PRIMARY_MOD' } elseif ($modIds.Count -eq 1) { 'Resolved' } else { 'Unknown' }
+    $primary = if ($PrimaryModId) { $PrimaryModId } elseif ($modIds.Count -eq 1) { [string]$modIds[0] } else { $null }
+    if ($PrimaryModId -and -not $modIds.Contains($PrimaryModId)) { throw 'PRIMARY_MOD_ID_NOT_FOUND' }
+    if ($PrimaryModId) { $primaryStatus = 'ResolvedByProfile' }
     return [pscustomobject][ordered]@{
         modIds = @($modIds | Select-Object -Unique)
         modNames = @($modNames | Select-Object -Unique)
         entrypointClasses = @($entrypoints | Select-Object -Unique)
-        primaryModId = if ($modIds.Count -eq 1) { [string]$modIds[0] } else { $null }
-        primaryModStatus = if ($modIds.Count -gt 1) { 'AMBIGUOUS_PRIMARY_MOD' } elseif ($modIds.Count -eq 1) { 'Resolved' } else { 'Unknown' }
+        mixinConfigs = @($mixinConfigs | Select-Object -Unique)
+        packageCandidates = @($packageCandidates | Sort-Object @{Expression={switch($_.source){'Entrypoint'{0}'SourceScan'{1}'Mixin'{2}'Artifact'{3}default{4}}}},packageName -Unique)
+        metadataErrors = @($metadataErrors | Select-Object -Unique)
+        primaryModId = $primary
+        primaryModStatus = $primaryStatus
     }
 }
 
 function Import-MmtlProject {
     [CmdletBinding()]
-    param([Parameter(Mandatory)][string]$Path,[Parameter(Mandatory)][string]$RuntimeRoot)
+    param([Parameter(Mandatory)][string]$Path,[Parameter(Mandatory)][string]$RuntimeRoot,[string]$PrimaryModId)
     $importRoot = (Resolve-Path -LiteralPath $Path -ErrorAction Stop).Path
     if (-not (Test-Path -LiteralPath $importRoot -PathType Container)) { throw 'PROJECT_ROOT_INVALID' }
     $discovered = @(Find-MmtlGradleProjects -Path $importRoot)
@@ -158,6 +218,10 @@ function Import-MmtlProject {
     $targets = [Collections.Generic.List[object]]::new()
     foreach ($project in $discovered) {
         $metadata = Get-MmtlProjectModMetadata -Project $project
+        if ($PrimaryModId -and $metadata.modIds -contains $PrimaryModId) {
+            $metadata.primaryModId = $PrimaryModId
+            $metadata.primaryModStatus = 'ResolvedByProfile'
+        }
         $targets.Add([pscustomobject][ordered]@{
             projectRoot = [IO.Path]::GetFullPath([string]$project.ProjectRoot)
             repositoryRoot = [IO.Path]::GetFullPath([string]$project.RepositoryRoot)
@@ -170,10 +234,14 @@ function Import-MmtlProject {
             modIds = @($metadata.modIds)
             modNames = @($metadata.modNames)
             entrypointClasses = @($metadata.entrypointClasses)
+            mixinConfigs = @($metadata.mixinConfigs)
+            packageCandidates = @($metadata.packageCandidates)
+            metadataErrors = @($metadata.metadataErrors)
             primaryModId = $metadata.primaryModId
             primaryModStatus = $metadata.primaryModStatus
         })
     }
+    if ($PrimaryModId -and -not @($targets | Where-Object { $_.modIds -contains $PrimaryModId }).Count) { throw 'PRIMARY_MOD_ID_NOT_FOUND' }
     $entry = [pscustomobject][ordered]@{
         projectId = $null
         importRoot = [IO.Path]::GetFullPath($importRoot)
