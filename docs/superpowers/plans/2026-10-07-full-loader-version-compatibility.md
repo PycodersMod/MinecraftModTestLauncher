@@ -65,11 +65,11 @@
 - Ledger target 以 Universe `targetId` 为主键，具有独立能力维度、`familyId`、各阶段 evidence ref、`sourceHash`, `toolchainHash`, `targetSpecHash`, `status`。
 - Family entry 至少为 `familyId`, `loaderId`, exact `minecraftIds` 或经证据验证的区间、toolchain、build/runtime Java、detection/build/launch strategy、agent bridge 和 evidence。
 
-- [ ] 定义 schema 枚举 `Supported`, `PartiallySupported`, `NotApplicable`, `ExternallyBlocked`, `Unsupported`, `Unknown` 及内部 `PendingImplementation`。
-- [ ] 对每个 Available Target 生成 Ledger entry；对非适用组合记录来源 availability，但不计为 Target。
-- [ ] 加入动态一致性规则：Available 项缺行、重复 target、未知状态、无法映射 family 或能力不完整均失败。
+- [x] 定义 schema 枚举 `Supported`, `PartiallySupported`, `NotApplicable`, `ExternallyBlocked`, `Unsupported`, `Unknown` 及内部 `PendingImplementation`。
+- [x] 对每个 Available Target 生成 Ledger entry；对非适用组合记录来源 availability，但不计为 Target。
+- [x] 加入动态一致性规则：Available 项缺行、重复 target、未知状态、无法映射 family 或能力不完整均失败。
 - [ ] 加入 family first/last/change point 与 future-version 不继承验证。
-- [ ] 保持 ContractV2、旧 Execution Plan、Session 读取兼容。
+- [x] 保持 ContractV2、旧 Execution Plan、Session 读取兼容。
 
 ### Task 3：Loader Adapter Contract 与 Java/Toolchain 双轨解析
 

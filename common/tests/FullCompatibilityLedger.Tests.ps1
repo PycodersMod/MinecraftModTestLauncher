@@ -1,0 +1,133 @@
+BeforeAll {
+    $modulePath = Join-Path (Split-Path -Parent $PSScriptRoot) 'src/Compatibility/FullCompatibilityLedger.psm1'
+    Import-Module $modulePath -Force
+}
+
+Describe 'Full compatibility ledger' {
+    BeforeAll {
+        $script:universe = [pscustomobject]@{
+            schemaVersion = 1; auditStatus = 'IN_PROGRESS'; generatedAt = '2026-10-07T00:00:00Z'
+            catalogHash = 'a' * 64; candidateCatalogHash = 'b' * 64; minecraftReleaseCount = 1; loaderCount = 2
+            targets = @(
+                [pscustomobject]@{ targetId = 'Fabric@1.20.1'; loaderId = 'Fabric'; minecraftId = '1.20.1'; minecraftType = 'release'; loaderVersionCandidates = @('0.16.9'); candidateStatus = 'Resolved'; candidateSourceUrl = 'https://meta.fabricmc.net/v2/versions/loader/1.20.1'; candidateSourceHash = 'c' * 64; sourceHash = 'd' * 64; authoritativeSource = 'https://meta.fabricmc.net/v2/versions/game'; sourceClass = 'ActiveOfficial'; trustClass = 'TrustedOfficial'; transportSecurity = 'HTTPS'; availability = 'Available' }
+                [pscustomobject]@{ targetId = 'Legacy@old-beta-1.7.3'; loaderId = 'Legacy'; minecraftId = 'old-beta-1.7.3'; minecraftType = 'Unknown'; loaderVersionCandidates = @(); candidateStatus = 'Unknown'; candidateSourceUrl = $null; candidateSourceHash = $null; sourceHash = 'e' * 64; authoritativeSource = 'https://archive.example.invalid/versions'; sourceClass = 'VerifiedCommunityArchive'; trustClass = 'VerifiedHistorical'; transportSecurity = 'HTTPS'; availability = 'Available' }
+            )
+            issues = @()
+        }
+    }
+
+    It 'creates exactly one row per exact available target without a Cartesian product' {
+        $ledger = New-MmtlFullCompatibilityLedger -Universe $script:universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z')
+
+        @($ledger.targets).Count | Should -Be 2
+        @($ledger.targets | ForEach-Object targetId) | Should -Be @('Fabric@1.20.1', 'Legacy@old-beta-1.7.3')
+        $ledger.targets[0].dimensions.Catalogued.status | Should -Be 'Supported'
+        $ledger.targets[0].dimensions.LoaderResolved.status | Should -Be 'Supported'
+        $ledger.targets[0].dimensions.BuildVerified.status | Should -Be 'PendingImplementation'
+        $ledger.targets[1].dimensions.Catalogued.status | Should -Be 'Supported'
+        $ledger.targets[1].dimensions.LoaderResolved.status | Should -Be 'Unknown'
+        $ledger.targets[1].status | Should -Be 'Unknown'
+    }
+
+    It 'validates exact target correspondence and reports unknown and pending work' {
+        $ledger = New-MmtlFullCompatibilityLedger -Universe $script:universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z')
+        $result = Test-MmtlFullCompatibilityLedger -Ledger $ledger -Universe $script:universe
+
+        $result.isValid | Should -BeTrue
+        $result.summary.targetCount | Should -Be 2
+        $result.summary.unknownTargetCount | Should -Be 1
+        $result.summary.pendingImplementationDimensionCount | Should -BeGreaterThan 0
+        $result.summary.unassignedFamilyCount | Should -Be 2
+    }
+
+    It 'rejects omitted targets and external blockers without evidence' {
+        $ledger = New-MmtlFullCompatibilityLedger -Universe $script:universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z')
+        $ledger.targets = @($ledger.targets | Select-Object -First 1)
+        $omitted = Test-MmtlFullCompatibilityLedger -Ledger $ledger -Universe $script:universe
+        $omitted.isValid | Should -BeFalse
+        $omitted.errors | Should -Contain 'LEDGER_TARGET_SET_MISMATCH'
+
+        $ledger = New-MmtlFullCompatibilityLedger -Universe $script:universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z')
+        $ledger.targets[0].dimensions.AgentBuild.status = 'ExternallyBlocked'
+        $blocked = Test-MmtlFullCompatibilityLedger -Ledger $ledger -Universe $script:universe
+        $blocked.isValid | Should -BeFalse
+        $blocked.errors | Should -Contain 'EXTERNAL_BLOCKER_EVIDENCE_MISSING:Fabric@1.20.1:AgentBuild'
+    }
+
+    It 'rejects duplicate targets and hashes each exact target specification deterministically' {
+        $first = New-MmtlFullCompatibilityLedger -Universe $script:universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z')
+        $second = New-MmtlFullCompatibilityLedger -Universe $script:universe -GeneratedAt ([DateTimeOffset]'2026-10-08T12:00:00Z')
+
+        $first.targets[0].targetSpecHash | Should -Match '^[a-f0-9]{64}$'
+        $first.targets[0].targetSpecHash | Should -Be $second.targets[0].targetSpecHash
+        $first.targets[0].sourceHash | Should -Be ('d' * 64)
+
+        $first.targets = @($first.targets) + @($first.targets[0])
+        $duplicate = Test-MmtlFullCompatibilityLedger -Ledger $first -Universe $script:universe
+        $duplicate.isValid | Should -BeFalse
+        $duplicate.errors | Should -Contain 'LEDGER_DUPLICATE_TARGET:Fabric@1.20.1'
+    }
+
+    It 'emits a schema-valid ledger with all independent dimensions and no guessed family' {
+        $ledger = New-MmtlFullCompatibilityLedger -Universe $script:universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z')
+        $schemaPath = Join-Path (Split-Path -Parent $PSScriptRoot) 'schemas/full-compatibility-ledger.schema.json'
+        $names = @('Catalogued','LoaderResolved','ProjectDetection','BuildPlan','BuildJava','RuntimeJava','RuntimeBinding','BuildVerified','LaunchPlan','LaunchCheck','AgentBuild','AgentInjection','SingleCapability','IntegratedLANCapability','DedicatedCapability','LogObservation','EvidenceLevel')
+
+        @($ledger.targets[0].dimensions.PSObject.Properties.Name) | Should -Be $names
+        $ledger.targets[0].familyId | Should -BeNullOrEmpty
+        (Test-Json -Json ($ledger | ConvertTo-Json -Depth 40 -Compress) -SchemaFile $schemaPath) | Should -BeTrue
+    }
+
+    It 'generates the exact public universe template through the repository command' {
+        $repoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $outputPath = Join-Path $TestDrive 'ledger-template.json'
+        $generated = & (Join-Path $repoRoot 'tools/Generate-FullCompatibilityLedger.ps1') -OutputPath $outputPath -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z')
+        $template = Get-Content -LiteralPath $outputPath -Raw | ConvertFrom-Json
+        $schemaPath = Join-Path $repoRoot 'common/schemas/full-compatibility-ledger.schema.json'
+
+        $generated.targetCount | Should -Be 1631
+        @($template.targets).Count | Should -Be 1631
+        $template.summary.unknownTargetCount | Should -BeGreaterThan 0
+        $template.summary.pendingImplementationDimensionCount | Should -BeGreaterThan 0
+        (Test-Json -Json (Get-Content -LiteralPath $outputPath -Raw) -SchemaFile $schemaPath) | Should -BeTrue
+    }
+
+    It 'assigns only exact evidenced family members and does not infer future target coverage' {
+        $familyManifest = [pscustomobject]@{
+            schemaVersion = 1; auditStatus = 'IN_PROGRESS'; universeHash = 'a' * 64
+            unassignedTargetPolicy = 'Exact targets only.'
+            families = @([pscustomobject]@{
+                familyId = 'fabric-1.20.1'; loaderId = 'Fabric'; minecraftIds = @('1.20.1')
+                toolchain = 'Loom'; buildJava = '17'; runtimeJava = '17'
+                projectDetectionStrategy = 'fabric.mod.json'; launchStrategy = 'Loom runClient'
+                agentBridge = 'not implemented'; evidence = @('source-snapshots/example.json')
+            })
+        }
+        $familySchema = Join-Path (Split-Path -Parent $PSScriptRoot) 'schemas/compatibility-families.schema.json'
+        (Test-Json -Json ($familyManifest | ConvertTo-Json -Depth 20 -Compress) -SchemaFile $familySchema) | Should -BeTrue
+        $ledger = New-MmtlFullCompatibilityLedger -Universe $script:universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $familyManifest
+        $validation = Test-MmtlFullCompatibilityLedger -Ledger $ledger -Universe $script:universe -FamilyManifest $familyManifest
+
+        $ledger.targets[0].familyId | Should -Be 'fabric-1.20.1'
+        $ledger.targets[1].familyId | Should -BeNullOrEmpty
+        $validation.isValid | Should -BeTrue
+        $validation.summary.unassignedFamilyCount | Should -Be 1
+        {
+            $futureFamily = $familyManifest | ConvertTo-Json -Depth 20 | ConvertFrom-Json
+            $futureFamily.families[0].minecraftIds = @('1.20.2')
+            New-MmtlFullCompatibilityLedger -Universe $script:universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $futureFamily
+        } | Should -Throw '*FAMILY_TARGET_NOT_IN_UNIVERSE*'
+    }
+
+    It 'requires evidence for supported capability claims and exact family membership at final gate' {
+        $ledger = New-MmtlFullCompatibilityLedger -Universe $script:universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z')
+        $ledger.targets[0].dimensions.AgentBuild.status = 'Supported'
+        $ledger.summary.pendingImplementationDimensionCount--
+        $withoutEvidence = Test-MmtlFullCompatibilityLedger -Ledger $ledger -Universe $script:universe
+
+        $withoutEvidence.isValid | Should -BeFalse
+        $withoutEvidence.errors | Should -Contain 'LEDGER_CAPABILITY_EVIDENCE_MISSING:Fabric@1.20.1:AgentBuild'
+        $final = Test-MmtlFullCompatibilityLedger -Ledger $ledger -Universe $script:universe -RequireFamilies
+        $final.errors | Should -Contain 'LEDGER_FAMILY_UNASSIGNED:Fabric@1.20.1'
+    }
+}
