@@ -69061,7 +69061,7 @@
       "targetId": "LegacyFabric@1.10.2",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.10.2",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -69080,8 +69080,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -69148,14 +69157,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "385b2e5b1b9752703eec17ff89684140d9cba8abf79a548e7c6eabe1c7603dfe"
     },
     {
       "targetId": "LegacyFabric@1.11.2",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.11.2",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -69174,8 +69183,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -69242,14 +69260,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "81c66f1f26bd3008d5cd7fc9aee2fd0e3bc05bcfa0d82c353bc1ee3393527a1b"
     },
     {
       "targetId": "LegacyFabric@1.12.2",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.12.2",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -69268,8 +69286,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -69336,14 +69363,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "7907c4367b71771663adb39a990bff78d9e052289a801a2ff03632757d6b6ca7"
     },
     {
       "targetId": "LegacyFabric@1.13.2",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.13.2",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -69362,8 +69389,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -69430,14 +69466,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "8b31e7724535e5c64fae63200d4008b3cfb5484ec74211c3e7072fec0116b895"
     },
     {
       "targetId": "LegacyFabric@1.3",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.3",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -69456,8 +69492,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -69524,14 +69569,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "2ea007ce49f2c6d7ba15f392f6011f3929183a51fe52e7400ae0b0298e601c22"
     },
     {
       "targetId": "LegacyFabric@1.3.1",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.3.1",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -69550,8 +69595,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -69618,14 +69672,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "ec01978ad5189bb48fd30114c507504e65f0fa91f9e83970e41e58ea2decef2c"
     },
     {
       "targetId": "LegacyFabric@1.3.2",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.3.2",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -69644,8 +69698,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -69712,14 +69775,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "87264f368b62e86fef6f1c492b6c03b74429435d45fd9f40c26154f4df9da1ea"
     },
     {
       "targetId": "LegacyFabric@1.4",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.4",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -69738,8 +69801,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -69806,14 +69878,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "3b4be2da949e66b06a98d7ecbb807c8e8d1586b048cb2a83fa7fa9058f894fe1"
     },
     {
       "targetId": "LegacyFabric@1.4.1",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.4.1",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -69832,8 +69904,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -69900,14 +69981,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "cb3bd403a84a5e013dd1609238a7fa3b2f5cbe7d437ca290860944a13c196a46"
     },
     {
       "targetId": "LegacyFabric@1.4.2",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.4.2",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -69926,8 +70007,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -69994,14 +70084,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "72b5326adbbb53692a912937dadd574523405c777c033e34b0f691f3b8d00a18"
     },
     {
       "targetId": "LegacyFabric@1.4.3",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.4.3",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -70020,8 +70110,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -70088,14 +70187,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "0a832c85772a4be12e5d8304c7bdf3c73335571215ac92c7111ef167792a0605"
     },
     {
       "targetId": "LegacyFabric@1.4.4",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.4.4",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -70114,8 +70213,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -70182,14 +70290,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "9394a856589191267dca458da4cb43bc308f36db115888a5efe36bff0b0f2863"
     },
     {
       "targetId": "LegacyFabric@1.4.5",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.4.5",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -70208,8 +70316,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -70276,14 +70393,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "8dda793065f160391b49c9ee327818e074aa1377ea04c891070060f71e631b30"
     },
     {
       "targetId": "LegacyFabric@1.4.6",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.4.6",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -70302,8 +70419,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -70370,14 +70496,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "16515d43a88005982cf5b773171bea2ccb233f891f662eb9a0e41db5ad56ebbc"
     },
     {
       "targetId": "LegacyFabric@1.4.7",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.4.7",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -70396,8 +70522,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -70464,14 +70599,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "7725f50771eeab63aab0ea961173d40af7092872ca5cb2e41feca0b05e3ca3d4"
     },
     {
       "targetId": "LegacyFabric@1.5",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.5",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -70490,8 +70625,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -70558,14 +70702,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "12a54edd73d59c7d3ae46e74b689dfaf3c6bc35964b888151767034c809a63d6"
     },
     {
       "targetId": "LegacyFabric@1.5.1",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.5.1",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -70584,8 +70728,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -70652,14 +70805,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "28af242ae5b860a1874f90786c9bbebdc272747e639e281687707c0f71be3566"
     },
     {
       "targetId": "LegacyFabric@1.5.2",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.5.2",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -70678,8 +70831,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -70746,14 +70908,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "adcfc42b619b384f8456c7a8970d21816e4819a05762dacee53d911b8b5d2103"
     },
     {
       "targetId": "LegacyFabric@1.6",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.6",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -70772,8 +70934,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -70834,14 +71005,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "ce29670052a5a94772522fe30a4c6ca96e9768fd56afd62bcec6efaa930a3d52"
     },
     {
       "targetId": "LegacyFabric@1.6.1",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.6.1",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -70860,8 +71031,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -70922,14 +71102,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "8abe992fed8a0923ca67794b0c78f0fc266a6628dca2763f6a0632bce8bf30da"
     },
     {
       "targetId": "LegacyFabric@1.6.2",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.6.2",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -70948,8 +71128,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -71010,14 +71199,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "9e81c809497c5db15fcadd87bacd5820bea1905259f01b7a7edef3656abd69f6"
     },
     {
       "targetId": "LegacyFabric@1.6.3",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.6.3",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -71036,8 +71225,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -71098,14 +71296,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "f9c9db80a89f153a103e09d933986c9a1cec9b24eff808ecb4722a17c43a9349"
     },
     {
       "targetId": "LegacyFabric@1.6.4",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.6.4",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -71124,8 +71322,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -71186,14 +71393,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "d56cd0b585bf0e4b7a3171cd238a42a1130dad8aa7aaaeb606d93f2249009ee3"
     },
     {
       "targetId": "LegacyFabric@1.7",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.7",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -71212,8 +71419,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -71280,14 +71496,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "3f8a01038565446ef377cc6d73a18f4b0d509510c1177536ae77d343d1d037d4"
     },
     {
       "targetId": "LegacyFabric@1.7.1",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.7.1",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -71306,8 +71522,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -71374,14 +71599,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "126ad1e4748a940f16c1ba6d416c43799e8d1447deb893aae2df4908992533c8"
     },
     {
       "targetId": "LegacyFabric@1.7.10",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.7.10",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -71400,8 +71625,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -71468,14 +71702,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "51bf78aeb58a79d14138eff9086d39fa1d1edf242d2b607530c96c37fd723ff8"
     },
     {
       "targetId": "LegacyFabric@1.7.10-pre1",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.7.10-pre1",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -71494,8 +71728,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -71562,14 +71805,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "c157acdf316e2a64f7ab79f100c50bb9196d0e59569f6db73344d107115eb6c4"
     },
     {
       "targetId": "LegacyFabric@1.7.10-pre2",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.7.10-pre2",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -71588,8 +71831,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -71656,14 +71908,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "dd00d39156044964dba3be75646a548b05bc32849921ec2e770c68b9b1fedb98"
     },
     {
       "targetId": "LegacyFabric@1.7.10-pre3",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.7.10-pre3",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -71682,8 +71934,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -71750,14 +72011,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "0e93490e14a950cae563be38de2cd0c71caf4c93a8481c17f0f2c5f26f6b1e79"
     },
     {
       "targetId": "LegacyFabric@1.7.10-pre4",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.7.10-pre4",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -71776,8 +72037,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -71844,14 +72114,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "947e364eb772b54819d3484498210cca62ab4cddcbfc41653f0c866f7d0ceb47"
     },
     {
       "targetId": "LegacyFabric@1.7.2",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.7.2",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -71870,8 +72140,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -71938,14 +72217,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "c1b98428150f7087088fec8753637c34e0cda3f74a4b1b4d268de32a5c9f710f"
     },
     {
       "targetId": "LegacyFabric@1.7.3",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.7.3",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -71964,8 +72243,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -72032,14 +72320,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "d65ad5b3f0d29f2b475ee7fafe90bd9b0c32087607ece8e14a5d75f861dda420"
     },
     {
       "targetId": "LegacyFabric@1.7.4",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.7.4",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -72058,8 +72346,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -72126,14 +72423,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "463c41b5e81517be780d54bca3a9dad97979350b89417d77d9285a6542347186"
     },
     {
       "targetId": "LegacyFabric@1.7.5",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.7.5",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -72152,8 +72449,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -72220,14 +72526,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "02b1973846ef6e3762d1599130101613574bc184b8258b036bbf11af593fe504"
     },
     {
       "targetId": "LegacyFabric@1.7.6",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.7.6",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -72246,8 +72552,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -72314,14 +72629,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "1dd41bc7f217229743752769e83c4f75a73a89123ac6edfddb3f4856a11702cc"
     },
     {
       "targetId": "LegacyFabric@1.7.6-pre1",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.7.6-pre1",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -72340,8 +72655,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -72408,14 +72732,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "6538f0ff0a145f7798b840aaca0e1a21f9b1312054b7f0e2960ef36b5c317174"
     },
     {
       "targetId": "LegacyFabric@1.7.6-pre2",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.7.6-pre2",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -72434,8 +72758,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -72502,14 +72835,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "7460bf617d534552667338d17ade3be61cb91db623cf1ef6c5a897e538da108a"
     },
     {
       "targetId": "LegacyFabric@1.7.7",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.7.7",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -72528,8 +72861,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -72596,14 +72938,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "ea603b78698800f335fe6a858e8093d9870702af05714679d39622fe7865c018"
     },
     {
       "targetId": "LegacyFabric@1.7.8",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.7.8",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -72622,8 +72964,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -72690,14 +73041,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "b3c7fcccd044d7ef20f2ff29f640a8af8164c37faf9e7dac782e50aa4ddbe48a"
     },
     {
       "targetId": "LegacyFabric@1.7.9",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.7.9",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -72716,8 +73067,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -72784,14 +73144,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "4d50394566609df8942f11c5ad5735906c0bb6f652b199efceccf2821c1f1d7b"
     },
     {
       "targetId": "LegacyFabric@1.8",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -72810,8 +73170,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -72878,14 +73247,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "681e10fcd479651b578cf571ddd474adb9d26bb389dcd47b812f510785b195ab"
     },
     {
       "targetId": "LegacyFabric@1.8.1",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8.1",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -72904,8 +73273,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -72972,14 +73350,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "3ad6973e49f0d74bf6223a299439ead262ecc1e4a3c193f640060e2da4ea3587"
     },
     {
       "targetId": "LegacyFabric@1.8.1-pre1",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8.1-pre1",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -72998,8 +73376,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -73066,14 +73453,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "e13bace79344d343b636ff1fe46f5fd2ad9b1b9042e10e8c708ea7550ce5fefd"
     },
     {
       "targetId": "LegacyFabric@1.8.1-pre2",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8.1-pre2",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -73092,8 +73479,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -73160,14 +73556,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "b035f40b39d6e80f2a89e54b0e5a5acca027e7910b0c37ffe94a9bda5139b3d0"
     },
     {
       "targetId": "LegacyFabric@1.8.1-pre3",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8.1-pre3",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -73186,8 +73582,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -73254,14 +73659,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "b6570c5c1982fbc4fe48f5b35103497e1447e98a815c8adc1245964cdda1501d"
     },
     {
       "targetId": "LegacyFabric@1.8.1-pre4",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8.1-pre4",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -73280,8 +73685,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -73348,14 +73762,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "ee4d135258aaf98acb971daed684acb89feb805fe4526782956b1c05e97a3f37"
     },
     {
       "targetId": "LegacyFabric@1.8.1-pre5",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8.1-pre5",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -73374,8 +73788,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -73442,14 +73865,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "8467e76ced28dc3f3887e4126f18f208a1827b091119a121492d0bb169f64a47"
     },
     {
       "targetId": "LegacyFabric@1.8.2",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8.2",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -73468,8 +73891,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -73536,14 +73968,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "588eb4c3068af8cdb12f547efdcc298bdcd338054883ec65acaaa5bd009a97f5"
     },
     {
       "targetId": "LegacyFabric@1.8.2-pre1",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8.2-pre1",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -73562,8 +73994,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -73630,14 +74071,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "3ca2b1b19cfe99fd05b607c1dbdc8ded5c0a02d82bfd26abe4c204587ef85cba"
     },
     {
       "targetId": "LegacyFabric@1.8.2-pre2",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8.2-pre2",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -73656,8 +74097,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -73724,14 +74174,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "3b93bb7a46edc04009b9cb6404df2b87d9c4f765523803e4cd49c77f64fcc304"
     },
     {
       "targetId": "LegacyFabric@1.8.2-pre3",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8.2-pre3",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -73750,8 +74200,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -73818,14 +74277,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "800756698a62e769584427b03fdde3377873848b0e951b2cd59ab78d67e23fcd"
     },
     {
       "targetId": "LegacyFabric@1.8.2-pre4",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8.2-pre4",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -73844,8 +74303,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -73912,14 +74380,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "af309eedbdb4699516a8f6a52cfac03239579e0a3c32210f0cd217f0203a2828"
     },
     {
       "targetId": "LegacyFabric@1.8.2-pre5",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8.2-pre5",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -73938,8 +74406,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -74006,14 +74483,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "fc80abcdeae755acf5cf79c477dd21893976a565bdb0636ee47e201748d4baf9"
     },
     {
       "targetId": "LegacyFabric@1.8.2-pre6",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8.2-pre6",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -74032,8 +74509,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -74100,14 +74586,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "5d8282476e0b814a0e8978a2cacc8b0eb2d6f39479a1a1a8aa78fcce7fa1dbce"
     },
     {
       "targetId": "LegacyFabric@1.8.2-pre7",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8.2-pre7",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -74126,8 +74612,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -74194,14 +74689,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "ab23c77c998bdfe0b7c7e2622e01e914d1b948af4d9b1180612f034dec7a0605"
     },
     {
       "targetId": "LegacyFabric@1.8.3",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8.3",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -74220,8 +74715,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -74288,14 +74792,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "978dc82f356994b136606b878f4bcfd98441ee13fa2343d01a8692106b4c7376"
     },
     {
       "targetId": "LegacyFabric@1.8.4",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8.4",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -74314,8 +74818,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -74382,14 +74895,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "77303b61057eca105f8298acd8632bc14cc42a8de499b0439c418c6cab3d68e3"
     },
     {
       "targetId": "LegacyFabric@1.8.5",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8.5",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -74408,8 +74921,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -74476,14 +74998,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "ff129bee38f8db66af933c6759757af24e37c91483286e38650c32954fc6dbd3"
     },
     {
       "targetId": "LegacyFabric@1.8.6",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8.6",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -74502,8 +75024,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -74570,14 +75101,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "c4e39ae7a0c0655bf526ae4f047090b3df216c9d5723f22851b054673e5a23f6"
     },
     {
       "targetId": "LegacyFabric@1.8.7",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8.7",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -74596,8 +75127,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -74664,14 +75204,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "342540359e8e2cc6ec442e39682152b1d54da582800fa9107b50225607f2add9"
     },
     {
       "targetId": "LegacyFabric@1.8.8",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8.8",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -74690,8 +75230,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -74758,14 +75307,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "43dff266ac15fdf8cd3774e47f5116850ef26cbdab2e36479e7629df68f1582a"
     },
     {
       "targetId": "LegacyFabric@1.8.9",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.8.9",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -74784,8 +75333,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -74852,14 +75410,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "a969555ef057186a085b447ca994bcf05aad73ba13bd9f960e6a8dd78e5325a1"
     },
     {
       "targetId": "LegacyFabric@1.9.4",
       "loaderId": "LegacyFabric",
       "minecraftId": "1.9.4",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -74878,8 +75436,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -74946,14 +75513,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "b8acec6236cf66a1aee73084dc8dd0a3d2facd101ed54f35e2b27ec59070e729"
     },
     {
       "targetId": "LegacyFabric@13w11a",
       "loaderId": "LegacyFabric",
       "minecraftId": "13w11a",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -74972,8 +75539,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -75034,14 +75610,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "619189a29f2af88639debc12ad7188026e8ccc208d16a2f649d8b8fbf0b488c8"
     },
     {
       "targetId": "LegacyFabric@13w47a",
       "loaderId": "LegacyFabric",
       "minecraftId": "13w47a",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -75060,8 +75636,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -75128,14 +75713,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "122c6396155d915ee4d30cb6fd2a5a91d888783017a8ddcea73fc81a442028c6"
     },
     {
       "targetId": "LegacyFabric@13w47b",
       "loaderId": "LegacyFabric",
       "minecraftId": "13w47b",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -75154,8 +75739,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -75222,14 +75816,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "153e5a77341e6535f562d466eb4ad8e5ee51ac1f6eb5238b8555e3ce737d5d8a"
     },
     {
       "targetId": "LegacyFabric@13w47c",
       "loaderId": "LegacyFabric",
       "minecraftId": "13w47c",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -75248,8 +75842,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -75316,14 +75919,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "29672782e9b1a5e790a52819b9bdc705cda2713969ae8fe99fd408acae78ffe9"
     },
     {
       "targetId": "LegacyFabric@13w47d",
       "loaderId": "LegacyFabric",
       "minecraftId": "13w47d",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -75342,8 +75945,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -75410,14 +76022,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "e1d0708e599995073a8485a932285c644f538da90c27e4271ffaa3202a588352"
     },
     {
       "targetId": "LegacyFabric@13w47e",
       "loaderId": "LegacyFabric",
       "minecraftId": "13w47e",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -75436,8 +76048,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -75504,14 +76125,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "996bd9d14a114d4743fcdbcb0aca761c7d54e6271e378b74fe433e3c07c93162"
     },
     {
       "targetId": "LegacyFabric@13w48a",
       "loaderId": "LegacyFabric",
       "minecraftId": "13w48a",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -75530,8 +76151,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -75598,14 +76228,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "18a14794d5c9b1cd92cd7e0cb45b8cc81a1792e7ca85ec9d5b63845049c2b223"
     },
     {
       "targetId": "LegacyFabric@13w48b",
       "loaderId": "LegacyFabric",
       "minecraftId": "13w48b",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -75624,8 +76254,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -75692,14 +76331,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "40ccc10e7ffdae064a46aa0bee13487e84631df7dc45de37268f259944a9ff84"
     },
     {
       "targetId": "LegacyFabric@13w49a",
       "loaderId": "LegacyFabric",
       "minecraftId": "13w49a",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -75718,8 +76357,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -75786,14 +76434,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "1df82221cf520c0e7aba39ba880b090f76406f7c2d1b5bd971f746d75a57b16c"
     },
     {
       "targetId": "LegacyFabric@15w14a",
       "loaderId": "LegacyFabric",
       "minecraftId": "15w14a",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -75812,8 +76460,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -75880,14 +76537,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "7e1c2d20bd8642335374f05954eac78bff4b822fb29138022bd46bc486d17b72"
     },
     {
       "targetId": "LegacyFabric@2point0_blue",
       "loaderId": "LegacyFabric",
       "minecraftId": "2point0_blue",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -75906,8 +76563,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -75968,14 +76634,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "5bef4e2787c05d629d9a1f65efa921cf16daeb45131ce1fe6f8f25a66e133546"
     },
     {
       "targetId": "LegacyFabric@2point0_purple",
       "loaderId": "LegacyFabric",
       "minecraftId": "2point0_purple",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -75994,8 +76660,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -76056,14 +76731,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "00b168832fea8e7fcb2c39113b865ee55ce9a505f66884feb85c0a7d092948b8"
     },
     {
       "targetId": "LegacyFabric@2point0_red",
       "loaderId": "LegacyFabric",
       "minecraftId": "2point0_red",
-      "familyId": null,
+      "familyId": "legacyfabric-looming-project-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -76082,8 +76757,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
+            "source-url:https://meta.legacyfabric.net/v2/versions/game",
+            "https://meta.legacyfabric.net/",
+            "https://github.com/Legacy-Fabric/legacy-looming",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -76144,7 +76828,7 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475",
-      "toolchainHash": null,
+      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
       "targetSpecHash": "ccd87b17c2fe506b1b56dbc6623d7d9f044ad3c51d86233b4d24b43246b5dc70"
     },
     {
@@ -174525,7 +175209,7 @@
   "summary": {
     "targetCount": 1631,
     "unknownTargetCount": 0,
-    "pendingImplementationDimensionCount": 19908,
-    "unassignedFamilyCount": 560
+    "pendingImplementationDimensionCount": 19832,
+    "unassignedFamilyCount": 484
   }
 }

@@ -152,4 +152,26 @@ quilt_loom = { id = "org.quiltmc.loom", version = "1.7.4" }
         $failures | Should -BeNullOrEmpty
         $targets.Count | Should -Be 76
     }
+
+    It 'detects every exact LegacyFabric universe target from Legacy Looming coordinates' {
+        $repositoryRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
+        $targets=@($universe.targets|Where-Object{$_.loaderId -ceq 'LegacyFabric' -and $_.availability -ceq 'Available'})
+        $projectRoot=Join-Path $TestDrive 'all-legacyfabric-targets'
+        $resources=Join-Path $projectRoot 'src/main/resources'
+        New-Item -ItemType Directory -Path $resources -Force|Out-Null
+        "plugins { id 'legacy-looming' version '1.9-SNAPSHOT' }"|Set-Content (Join-Path $projectRoot 'build.gradle')
+        '{"schemaVersion":1,"id":"fixture"}'|Set-Content (Join-Path $resources 'fabric.mod.json')
+        $failures=[Collections.Generic.List[string]]::new()
+
+        foreach($target in $targets){
+            if([string]$target.candidateStatus -cne 'Resolved' -or @($target.loaderVersionCandidates).Count -eq 0){$failures.Add("$($target.targetId):CANDIDATES_UNRESOLVED");continue}
+            @("minecraft_version=$($target.minecraftId)","loader_version=$($target.loaderVersionCandidates[0])",'mod_id=fixture') -join [Environment]::NewLine | Set-Content (Join-Path $projectRoot 'gradle.properties')
+            $project=Get-MmtlProject -Path $projectRoot
+            if($project.DetectionStatus -cne 'Resolved' -or $project.Loader -cne 'LegacyFabric' -or $project.MinecraftVersion -cne [string]$target.minecraftId -or $project.LoaderVersion -cne [string]$target.loaderVersionCandidates[0] -or $project.Toolchain.id -cne 'LegacyLooming'){$failures.Add("$($target.targetId):DETECTION_BINDING_MISMATCH")}
+        }
+
+        $failures | Should -BeNullOrEmpty
+        $targets.Count | Should -Be 76
+    }
 }
