@@ -1,4 +1,4 @@
-BeforeAll { $root=Split-Path -Parent $PSScriptRoot;Import-Module (Join-Path $root 'src/Platform/Platform.psm1') -Force;Import-Module (Join-Path $root 'src/ProjectDetector.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/Fabric.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/NeoForge.psm1') -Force }
+BeforeAll { $root=Split-Path -Parent $PSScriptRoot;Import-Module (Join-Path $root 'src/Platform/Platform.psm1') -Force;Import-Module (Join-Path $root 'src/ProjectDetector.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/Fabric.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/NeoForge.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/Quilt.psm1') -Force }
 Describe 'Evidence based project detection' {
     It 'identifies ModDevGradle before the broader NeoForge Gradle plugin marker' {
         $project=Join-Path $TestDrive 'neoforge-moddevgradle';New-Item -ItemType Directory -Path (Join-Path $project 'src/main/resources/META-INF') -Force|Out-Null
@@ -31,8 +31,14 @@ quilt_loader = "0.26.3"
 quilt_loom = { id = "org.quiltmc.loom", version = "1.7.4" }
 '@
         $toml|Set-Content (Join-Path $project 'gradle/libs.versions.toml')
+        $provider=Get-MmtlPlatformProvider;Set-Content (Join-Path $project $provider.GradleWrapper) -Value ''
         $result=Get-MmtlProject -Path $project
         $result.Loader | Should -BeExactly 'Quilt';$result.Toolchain.id | Should -BeExactly 'QuiltLoom';$result.DetectionStatus | Should -BeExactly 'Resolved';$result.MinecraftVersion | Should -BeExactly '1.20.6';$result.LoaderVersion | Should -BeExactly '0.26.3'
+        $repositoryRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
+        $plans=New-MmtlQuiltAdapterPlans -Project $result -Universe $universe
+        $plans.targetId | Should -BeExactly 'Quilt@1.20.6'
+        $plans.launchPlan.task | Should -BeExactly 'runClient'
     }
     It 'surfaces conflicting loader markers as ambiguous' {
         $project=Join-Path $TestDrive 'conflict';New-Item -ItemType Directory -Path (Join-Path $project 'src/main/resources/META-INF') -Force|Out-Null
@@ -91,5 +97,37 @@ quilt_loom = { id = "org.quiltmc.loom", version = "1.7.4" }
 
         $failures | Should -BeNullOrEmpty
         $targets.Count | Should -Be 23
+    }
+
+    It 'detects and creates gated Build and Launch plans for every exact Quilt universe target' {
+        $repositoryRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
+        $targets=@($universe.targets|Where-Object{$_.loaderId -ceq 'Quilt' -and $_.availability -ceq 'Available'})
+        $projectRoot=Join-Path $TestDrive 'all-quilt-targets'
+        $resources=Join-Path $projectRoot 'src/main/resources'
+        $versionCatalog=Join-Path $projectRoot 'gradle'
+        New-Item -ItemType Directory -Path $resources,$versionCatalog -Force|Out-Null
+        "plugins { alias libs.plugins.quilt.loom }"|Set-Content (Join-Path $projectRoot 'build.gradle')
+        '{"schema_version":1,"quilt_loader":{"id":"fixture"}}'|Set-Content (Join-Path $resources 'quilt.mod.json')
+        $provider=Get-MmtlPlatformProvider
+        Set-Content -LiteralPath (Join-Path $projectRoot $provider.GradleWrapper) -Value ''
+        $failures=[Collections.Generic.List[string]]::new()
+
+        foreach($target in $targets){
+            if([string]$target.candidateStatus -cne 'Resolved' -or @($target.loaderVersionCandidates).Count -eq 0){$failures.Add("$($target.targetId):CANDIDATES_UNRESOLVED");continue}
+            @'
+[versions]
+minecraft = "__MINECRAFT__"
+quilt_loader = "__QUILT_LOADER__"
+[plugins]
+quilt_loom = { id = "org.quiltmc.loom", version = "1.7.4" }
+'@.Replace('__MINECRAFT__',[string]$target.minecraftId).Replace('__QUILT_LOADER__',[string]$target.loaderVersionCandidates[0])|Set-Content (Join-Path $versionCatalog 'libs.versions.toml')
+            $project=Get-MmtlProject -Path $projectRoot
+            $plans=New-MmtlQuiltAdapterPlans -Project $project -Universe $universe
+            if($project.DetectionStatus -cne 'Resolved' -or $project.Loader -cne 'Quilt' -or $project.MinecraftVersion -cne [string]$target.minecraftId -or $project.LoaderVersion -cne [string]$target.loaderVersionCandidates[0] -or $project.Toolchain.id -cne 'QuiltLoom' -or $plans.status -cne 'Resolved' -or $plans.targetId -cne [string]$target.targetId -or $plans.buildPlan.task -cne 'build' -or $plans.buildPlan.executionGate -cne 'TRUSTED_VALIDATION_RUNNER_REQUIRED' -or $plans.launchPlan.task -cne 'runClient' -or $plans.launchPlan.runtimeJavaRequirement.major -ne $target.runtimeJavaRequirement.major -or $plans.launchPlan.launchCheckStatus -cne 'Unverified' -or $plans.buildPlan.isExecutablePlan -or $plans.launchPlan.isExecutablePlan){$failures.Add("$($target.targetId):DETECTION_BINDING_OR_PLAN_MISMATCH")}
+        }
+
+        $failures | Should -BeNullOrEmpty
+        $targets.Count | Should -Be 441
     }
 }
