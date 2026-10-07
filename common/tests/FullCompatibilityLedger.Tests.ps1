@@ -174,4 +174,29 @@ Describe 'Full compatibility ledger' {
         $final = Test-MmtlFullCompatibilityLedger -Ledger $ledger -Universe $script:universe -RequireFamilies
         $final.errors | Should -Contain 'LEDGER_FAMILY_UNASSIGNED:Fabric@1.20.1'
     }
+
+    It 'assigns exact Fabric targets to a detection-only family without inheriting build support' {
+        $repositoryRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
+        $families=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/families.json')|ConvertFrom-Json
+        $fabricTargets=@($universe.targets|Where-Object{$_.loaderId -ceq 'Fabric' -and $_.availability -ceq 'Available'})
+        $family=$families.families|Where-Object familyId -CEQ 'fabric-project-metadata-detection-v1'|Select-Object -First 1
+        $ledger=New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $families
+        $rows=@($ledger.targets|Where-Object loaderId -CEQ 'Fabric')
+        $familySchema=Join-Path $repositoryRoot 'common/schemas/compatibility-families.schema.json'
+        $detectorHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
+        $adapterHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/Fabric.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
+        $orderedIds=[string[]]@($fabricTargets|ForEach-Object{[string]$_.minecraftId});[Array]::Sort($orderedIds,[StringComparer]::Ordinal)
+        $hashBasis="fabric-project-metadata-detection-v1`n$($universe.catalogHash)`n$detectorHash`n$adapterHash`n$($orderedIds -join "`n")"
+        $expectedToolchainHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($hashBasis))).ToLowerInvariant()
+
+        (Test-Json -Json ($families|ConvertTo-Json -Depth 30 -Compress) -SchemaFile $familySchema) | Should -BeTrue
+        $family | Should -Not -BeNullOrEmpty
+        $family.toolchainHash | Should -BeExactly $expectedToolchainHash
+        @($family.minecraftIds).Count | Should -Be $fabricTargets.Count
+        @($family.minecraftIds|Sort-Object -Unique).Count | Should -Be $fabricTargets.Count
+        @($rows|Where-Object{$_.dimensions.ProjectDetection.status -cne 'Supported'}).Count | Should -Be 0
+        @($rows|Where-Object{$_.dimensions.BuildPlan.status -ceq 'PendingImplementation'}).Count | Should -Be $fabricTargets.Count
+        @($rows|Where-Object{$_.familyId -cne 'fabric-project-metadata-detection-v1'}).Count | Should -Be 0
+    }
 }
