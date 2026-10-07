@@ -31,23 +31,26 @@ $detectorHash=(Get-FileHash -LiteralPath $detectorPath -Algorithm SHA256).Hash.T
 $adapterHash=(Get-FileHash -LiteralPath $adapterPath -Algorithm SHA256).Hash.ToLowerInvariant()
 $universeHash=[string]$universe.catalogHash
 if($universeHash -notmatch '^(?i:[a-f0-9]{64})$'){throw 'UNIVERSE_HASH_INVALID'}
-$basis="fabric-project-metadata-detection-v1`n$universeHash`n$detectorHash`n$adapterHash`n$($orderedIds -join "`n")"
+$familyId='fabric-loom-build-launch-plan-v1'
+$basis="$familyId`n$universeHash`n$detectorHash`n$adapterHash`n$($orderedIds -join "`n")"
 $basisBytes=[Text.Encoding]::UTF8.GetBytes($basis)
 $toolchainHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($basisBytes)).ToLowerInvariant()
 $family=[ordered]@{
-    familyId='fabric-project-metadata-detection-v1'
+    familyId=$familyId
     loaderId='Fabric'
     minecraftIds=@($orderedIds)
     toolchainHash=$toolchainHash
-    toolchain=[ordered]@{id='ProjectDetectionOnly';version='fabric.mod.json plus exact Gradle project properties'}
-    buildJava=[ordered]@{status='NotAssessedByDetectionFamily';evidence=@()}
+    toolchain=[ordered]@{id='FabricLoomBuildLaunchPlan';version='project-resolved Loom version; plan contract remains version-independent'}
+    buildJava=[ordered]@{status='PerProjectGradleWrapperAndCompilerEvidence';evidenceRef='common/src/ProjectDetector.psm1'}
     runtimeJava=[ordered]@{status='PerTargetMojangMetadata';evidenceRef='compatibility/runtime-java-catalog.json'}
     projectDetectionStrategy='识别 fabric.mod.json 与 Gradle Fabric Loom 项目；从项目配置读取精确 Minecraft ID / Loader 版本，并与 frozen Universe Available target 及官方候选逐字绑定。'
-    buildStrategy='本 family 仅证明项目探测与 exact target binding；BuildPlan、BuildJava、BuildVerified 留给有证据的 Loom/toolchain families。'
-    launchStrategy='本 family 不声明 LaunchPlan 或 LaunchCheck。'
+    buildStrategy='精确目标绑定后生成 Gradle Wrapper build 计划；计划要求 MMTL managed session copy 与受控验证 runner，不代表构建成功或允许任意项目自动执行。'
+    launchStrategy='为精确目标生成 Loom runClient Single Client 计划；工作目录限定 MMTL managed session copy，LaunchCheck 未验证且计划不可直接执行。'
     agentBridge='本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。'
     evidence=@(
         'https://docs.fabricmc.net/develop/loader/fabric-mod-json',
+        'https://docs.fabricmc.net/develop/loom',
+        'https://docs.fabricmc.net/develop/getting-started/building-a-mod',
         "universe-sha256:$universeHash",
         "project-detector-sha256:$detectorHash",
         "fabric-adapter-sha256:$adapterHash",
@@ -57,12 +60,23 @@ $family=[ordered]@{
         ProjectDetection=[ordered]@{status='Supported';evidenceRefs=@(
             "project-detector-sha256:$detectorHash",
             "fabric-adapter-sha256:$adapterHash",
-            'test:ProjectDetectorV2.Tests.ps1:detect-and-bind-all-exact-fabric-targets'
+            'test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-fabric-targets'
+        )}
+        BuildPlan=[ordered]@{status='Supported';evidenceRefs=@(
+            'https://docs.fabricmc.net/develop/loom',
+            'https://docs.fabricmc.net/develop/getting-started/building-a-mod',
+            "fabric-adapter-sha256:$adapterHash",
+            'test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-fabric-targets'
+        )}
+        LaunchPlan=[ordered]@{status='Supported';evidenceRefs=@(
+            'https://docs.fabricmc.net/develop/loom',
+            "fabric-adapter-sha256:$adapterHash",
+            'test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-fabric-targets'
         )}
     }
 }
 $familyRows=[Collections.Generic.List[object]]::new()
-foreach($entry in @($families.families|Where-Object familyId -CNE 'fabric-project-metadata-detection-v1')){$familyRows.Add($entry)}
+foreach($entry in @($families.families|Where-Object{$_.familyId -cnotin @('fabric-project-metadata-detection-v1',$familyId)})){$familyRows.Add($entry)}
 $familyRows.Add([pscustomobject]$family)
 $newFamilies=[ordered]@{
     schemaVersion=[int]$families.schemaVersion

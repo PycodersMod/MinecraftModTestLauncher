@@ -51,4 +51,41 @@ Describe 'Adapter Contract v2' {
         $result.status | Should -BeExactly 'Unresolved'
         $result.reasonCode | Should -BeExactly 'LOADER_VERSION_UNRESOLVED'
     }
+
+    It 'creates exact Fabric Build and Launch plans while keeping execution gated' {
+        $project=[pscustomobject]@{
+            Loader='Fabric';MinecraftVersion='26.1-snapshot-1';LoaderVersion='0.19.2';Root='C:/fixture/fabric'
+            WrapperPath='C:/fixture/fabric/gradlew.bat';BuildTask='build';BuildSystem=[pscustomobject]@{id='GradleWrapper'}
+            Toolchain=[pscustomobject]@{id='FabricLoom';version='1.16-SNAPSHOT'}
+            BuildJavaRequirement=[pscustomobject]@{major=25;requirementKind='Minimum'}
+        }
+        $universe=[pscustomobject]@{
+            catalogHash=('a'*64)
+            targets=@([pscustomobject]@{
+                targetId='Fabric@26.1-snapshot-1';loaderId='Fabric';minecraftId='26.1-snapshot-1';availability='Available'
+                candidateStatus='Resolved';loaderVersionCandidates=@('0.19.2');sourceHash=('b'*64);candidateSourceHash=('c'*64)
+                runtimeJavaRequirement=[pscustomobject]@{major=25;source='MojangVersionMetadata';requirementKind='AuthoritativeMetadata'}
+            })
+        }
+
+        $plans=New-MmtlFabricAdapterPlans -Project $project -Universe $universe
+
+        $plans.status | Should -BeExactly 'Resolved'
+        $plans.targetId | Should -BeExactly 'Fabric@26.1-snapshot-1'
+        $plans.buildPlan.task | Should -BeExactly 'build'
+        $plans.buildPlan.targetId | Should -BeExactly 'Fabric@26.1-snapshot-1'
+        $plans.buildPlan.isExecutablePlan | Should -BeFalse
+        $plans.launchPlan.task | Should -BeExactly 'runClient'
+        $plans.launchPlan.mode | Should -BeExactly 'Single'
+        $plans.launchPlan.runtimeJavaRequirement.major | Should -Be 25
+        $plans.launchPlan.workingDirectoryPolicy | Should -BeExactly 'MMTLManagedSessionCopy'
+        $plans.launchPlan.isExecutablePlan | Should -BeFalse
+    }
+
+    It 'rejects a Fabric Build and Launch plan when Loom is not detected' {
+        $project=[pscustomobject]@{Loader='Fabric';MinecraftVersion='1.20.1';LoaderVersion='0.15.0';Toolchain=[pscustomobject]@{id='Unknown'}}
+        $universe=[pscustomobject]@{catalogHash=('a'*64);targets=@([pscustomobject]@{targetId='Fabric@1.20.1';loaderId='Fabric';minecraftId='1.20.1';availability='Available';candidateStatus='Resolved';loaderVersionCandidates=@('0.15.0')})}
+
+        { New-MmtlFabricAdapterPlans -Project $project -Universe $universe } | Should -Throw '*FABRIC_LOOM_REQUIRED*'
+    }
 }

@@ -4,7 +4,7 @@
   "universeHash": "0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
   "families": [
     {
-      "familyId": "fabric-project-metadata-detection-v1",
+      "familyId": "fabric-loom-build-launch-plan-v1",
       "loaderId": "Fabric",
       "minecraftIds": [
         "1.14",
@@ -538,28 +538,30 @@
         "26w14a",
         "3D Shareware v1.34"
       ],
-      "toolchainHash": "76215eda16bdda89571c0f9e3a24b85f8dd44d3ea6110e495c2e6eb15e8eab32",
+      "toolchainHash": "176d94ab4df978d060169aed717f23bb715804a0796d1964546aef3fff4afaac",
       "toolchain": {
-        "id": "ProjectDetectionOnly",
-        "version": "fabric.mod.json plus exact Gradle project properties"
+        "id": "FabricLoomBuildLaunchPlan",
+        "version": "project-resolved Loom version; plan contract remains version-independent"
       },
       "buildJava": {
-        "status": "NotAssessedByDetectionFamily",
-        "evidence": []
+        "status": "PerProjectGradleWrapperAndCompilerEvidence",
+        "evidenceRef": "common/src/ProjectDetector.psm1"
       },
       "runtimeJava": {
         "status": "PerTargetMojangMetadata",
         "evidenceRef": "compatibility/runtime-java-catalog.json"
       },
       "projectDetectionStrategy": "识别 fabric.mod.json 与 Gradle Fabric Loom 项目；从项目配置读取精确 Minecraft ID / Loader 版本，并与 frozen Universe Available target 及官方候选逐字绑定。",
-      "buildStrategy": "本 family 仅证明项目探测与 exact target binding；BuildPlan、BuildJava、BuildVerified 留给有证据的 Loom/toolchain families。",
-      "launchStrategy": "本 family 不声明 LaunchPlan 或 LaunchCheck。",
+      "buildStrategy": "精确目标绑定后生成 Gradle Wrapper build 计划；计划要求 MMTL managed session copy 与受控验证 runner，不代表构建成功或允许任意项目自动执行。",
+      "launchStrategy": "为精确目标生成 Loom runClient Single Client 计划；工作目录限定 MMTL managed session copy，LaunchCheck 未验证且计划不可直接执行。",
       "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
       "evidence": [
         "https://docs.fabricmc.net/develop/loader/fabric-mod-json",
+        "https://docs.fabricmc.net/develop/loom",
+        "https://docs.fabricmc.net/develop/getting-started/building-a-mod",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
         "project-detector-sha256:f51a8582626fe6f8bc088e603d4fa495ac7ec1ad59d20a27513a19ca25716ba6",
-        "fabric-adapter-sha256:d20532f60c40d4a42736e76edb014dd787fe194cd3d9eed3e11d23b881cc6c6e",
+        "fabric-adapter-sha256:f21a4b0098cace1ddaff5bfb41ec9c2352752f739e01782412d8cee2c88e7829",
         "test:ProjectDetectorV2.Tests.ps1:detect-and-bind-all-exact-fabric-targets"
       ],
       "capabilities": {
@@ -567,8 +569,25 @@
           "status": "Supported",
           "evidenceRefs": [
             "project-detector-sha256:f51a8582626fe6f8bc088e603d4fa495ac7ec1ad59d20a27513a19ca25716ba6",
-            "fabric-adapter-sha256:d20532f60c40d4a42736e76edb014dd787fe194cd3d9eed3e11d23b881cc6c6e",
-            "test:ProjectDetectorV2.Tests.ps1:detect-and-bind-all-exact-fabric-targets"
+            "fabric-adapter-sha256:f21a4b0098cace1ddaff5bfb41ec9c2352752f739e01782412d8cee2c88e7829",
+            "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-fabric-targets"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.fabricmc.net/develop/loom",
+            "https://docs.fabricmc.net/develop/getting-started/building-a-mod",
+            "fabric-adapter-sha256:f21a4b0098cace1ddaff5bfb41ec9c2352752f739e01782412d8cee2c88e7829",
+            "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-fabric-targets"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.fabricmc.net/develop/loom",
+            "fabric-adapter-sha256:f21a4b0098cace1ddaff5bfb41ec9c2352752f739e01782412d8cee2c88e7829",
+            "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-fabric-targets"
           ]
         }
       }
