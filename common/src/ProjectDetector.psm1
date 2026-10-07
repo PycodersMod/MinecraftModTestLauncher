@@ -37,7 +37,7 @@ function Get-MmtlProject {
     Import-Module (Join-Path $PSScriptRoot 'Adapters/ContractV2.psm1') -Force
     $stackResolution=Resolve-MmtlProjectStack -Evidence @($evidence)
     $loader=$stackResolution.loaderId
-    $toolchainId=if($hasLegacyLooming){'LegacyLooming'}elseif($hasPloceus){'Ploceus'}elseif($hasQuiltLoom){'QuiltLoom'}elseif($allBuildText -match '(?i)(net\.minecraftforge\.gradle|ForgeGradle)'){'ForgeGradle'}elseif($allBuildText -match '(?i)(net\.neoforged\.moddev|net\.neoforged\.gradle|NeoGradle)'){'NeoGradle'}elseif($allBuildText -match '(?i)(fabric-loom|net\.fabricmc\.fabric-loom)'){'FabricLoom'}elseif($allBuildText -match '(?i)(net\.neoforged\.moddev\.legacyforge|moddevgradle)'){'ModDevGradle'}else{'Unknown'}
+    $toolchainId=if($hasLegacyLooming){'LegacyLooming'}elseif($hasPloceus){'Ploceus'}elseif($hasQuiltLoom){'QuiltLoom'}elseif($allBuildText -match '(?i)(net\.minecraftforge\.gradle|ForgeGradle)'){'ForgeGradle'}elseif($allBuildText -match '(?i)(net\.neoforged\.moddev(?:\.legacyforge)?|moddevgradle)'){'ModDevGradle'}elseif($allBuildText -match '(?i)(net\.neoforged\.gradle|NeoGradle)'){'NeoGradle'}elseif($allBuildText -match '(?i)(fabric-loom|net\.fabricmc\.fabric-loom)'){'FabricLoom'}else{'Unknown'}
     $mc = [regex]::Match($props, '(?m)^minecraft_version\s*=\s*([^\r\n]+)')
     if (-not $mc.Success) { $mc=[regex]::Match($allBuildText,'(?i)(?:net\.minecraftforge:forge:|com\.mojang:minecraft:|minecraft\s*\(\s*["''])(\d+\.\d+(?:\.\d+)?)') }
     if(-not $mc.Success){$mc=[regex]::Match($versionCatalog,'(?m)^\s*minecraft\s*=\s*["''](\d+\.\d+(?:\.\d+)?)["'']')}

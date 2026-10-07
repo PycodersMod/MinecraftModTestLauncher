@@ -1,5 +1,25 @@
-BeforeAll { $root=Split-Path -Parent $PSScriptRoot;Import-Module (Join-Path $root 'src/Platform/Platform.psm1') -Force;Import-Module (Join-Path $root 'src/ProjectDetector.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/Fabric.psm1') -Force }
+BeforeAll { $root=Split-Path -Parent $PSScriptRoot;Import-Module (Join-Path $root 'src/Platform/Platform.psm1') -Force;Import-Module (Join-Path $root 'src/ProjectDetector.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/Fabric.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/NeoForge.psm1') -Force }
 Describe 'Evidence based project detection' {
+    It 'identifies ModDevGradle before the broader NeoForge Gradle plugin marker' {
+        $project=Join-Path $TestDrive 'neoforge-moddevgradle';New-Item -ItemType Directory -Path (Join-Path $project 'src/main/resources/META-INF') -Force|Out-Null
+        "plugins { id 'net.neoforged.moddev' version '2.0.1' }"|Set-Content (Join-Path $project 'build.gradle')
+        "minecraft_version=1.21.1`nneo_version=21.1.200`nmod_id=fixture"|Set-Content (Join-Path $project 'gradle.properties')
+        'modLoader="javafml"'|Set-Content (Join-Path $project 'src/main/resources/META-INF/neoforge.mods.toml')
+        $provider=Get-MmtlPlatformProvider;Set-Content (Join-Path $project $provider.GradleWrapper) -Value ''
+
+        $result=Get-MmtlProject -Path $project
+
+        $result.Loader | Should -BeExactly 'NeoForge'
+        $result.Toolchain.id | Should -BeExactly 'ModDevGradle'
+        $result.MinecraftVersion | Should -BeExactly '1.21.1'
+        $result.LoaderVersion | Should -BeExactly '21.1.200'
+        $repositoryRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
+        $plans=New-MmtlNeoForgeAdapterPlans -Project $result -Universe $universe
+        $plans.targetId | Should -BeExactly 'NeoForge@1.21.1'
+        $plans.launchPlan.task | Should -BeExactly 'runClient'
+    }
+
     It 'detects Quilt Loom over its compatible fabric.mod.json marker' {
         $project=Join-Path $TestDrive 'quilt';New-Item -ItemType Directory -Path (Join-Path $project 'src/main/resources') -Force|Out-Null
         'plugins { alias libs.plugins.quilt.loom }'|Set-Content (Join-Path $project 'build.gradle');'{}'|Set-Content (Join-Path $project 'src/main/resources/fabric.mod.json');New-Item -ItemType Directory -Path (Join-Path $project 'gradle') -Force|Out-Null
@@ -46,5 +66,30 @@ quilt_loom = { id = "org.quiltmc.loom", version = "1.7.4" }
 
         $failures | Should -BeNullOrEmpty
         $targets.Count | Should -Be 530
+    }
+
+    It 'detects and creates gated Build and Launch plans for every exact NeoForge universe target' {
+        $repositoryRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
+        $targets=@($universe.targets|Where-Object{$_.loaderId -ceq 'NeoForge' -and $_.availability -ceq 'Available'})
+        $projectRoot=Join-Path $TestDrive 'all-neoforge-targets'
+        $resources=Join-Path $projectRoot 'src/main/resources/META-INF'
+        New-Item -ItemType Directory -Path $resources -Force|Out-Null
+        "plugins { id 'net.neoforged.gradle.userdev' version '7.1.0' }"|Set-Content (Join-Path $projectRoot 'build.gradle')
+        'modLoader="javafml"'|Set-Content (Join-Path $resources 'neoforge.mods.toml')
+        $provider=Get-MmtlPlatformProvider
+        Set-Content -LiteralPath (Join-Path $projectRoot $provider.GradleWrapper) -Value ''
+        $failures=[Collections.Generic.List[string]]::new()
+
+        foreach($target in $targets){
+            if([string]$target.candidateStatus -cne 'Resolved' -or @($target.loaderVersionCandidates).Count -eq 0){$failures.Add("$($target.targetId):CANDIDATES_UNRESOLVED");continue}
+            "minecraft_version=$($target.minecraftId)`nneo_version=$($target.loaderVersionCandidates[0])`nmod_id=fixture"|Set-Content (Join-Path $projectRoot 'gradle.properties')
+            $project=Get-MmtlProject -Path $projectRoot
+            $plans=New-MmtlNeoForgeAdapterPlans -Project $project -Universe $universe
+            if($project.DetectionStatus -cne 'Resolved' -or $project.Loader -cne 'NeoForge' -or $project.MinecraftVersion -cne [string]$target.minecraftId -or $project.LoaderVersion -cne [string]$target.loaderVersionCandidates[0] -or $project.Toolchain.id -cne 'NeoGradle' -or $plans.status -cne 'Resolved' -or $plans.targetId -cne [string]$target.targetId -or $plans.buildPlan.task -cne 'build' -or $plans.buildPlan.executionGate -cne 'TRUSTED_VALIDATION_RUNNER_REQUIRED' -or $plans.launchPlan.task -cne 'runClient' -or $plans.launchPlan.runtimeJavaRequirement.major -ne $target.runtimeJavaRequirement.major -or $plans.launchPlan.launchCheckStatus -cne 'Unverified' -or $plans.buildPlan.isExecutablePlan -or $plans.launchPlan.isExecutablePlan){$failures.Add("$($target.targetId):DETECTION_BINDING_OR_PLAN_MISMATCH")}
+        }
+
+        $failures | Should -BeNullOrEmpty
+        $targets.Count | Should -Be 23
     }
 }

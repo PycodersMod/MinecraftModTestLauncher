@@ -88,4 +88,36 @@ Describe 'Adapter Contract v2' {
 
         { New-MmtlFabricAdapterPlans -Project $project -Universe $universe } | Should -Throw '*FABRIC_LOOM_REQUIRED*'
     }
+
+    It 'resolves a NeoForge target exactly and keeps ModDevGradle plans gated' {
+        $project=[pscustomobject]@{
+            Loader='NeoForge';MinecraftVersion='1.21.1';LoaderVersion='21.1.200';Root='C:/fixture/neoforge'
+            WrapperPath='C:/fixture/neoforge/gradlew.bat';BuildSystem=[pscustomobject]@{id='GradleWrapper'}
+            Toolchain=[pscustomobject]@{id='ModDevGradle';version='2.0.1'}
+            BuildJavaRequirement=[pscustomobject]@{major=25;requirementKind='Minimum'}
+        }
+        $universe=[pscustomobject]@{catalogHash=('a'*64);targets=@([pscustomobject]@{
+            targetId='NeoForge@1.21.1';loaderId='NeoForge';minecraftId='1.21.1';availability='Available'
+            candidateStatus='Resolved';loaderVersionCandidates=@('21.1.200');sourceHash=('b'*64);candidateSourceHash=('c'*64)
+            runtimeJavaRequirement=[pscustomobject]@{major=21;source='MojangVersionMetadata';requirementKind='AuthoritativeMetadata'}
+        })}
+
+        $resolution=Resolve-MmtlNeoForgeAdapterTarget -Project $project -Universe $universe
+        $plans=New-MmtlNeoForgeAdapterPlans -Project $project -Universe $universe
+
+        $resolution.targetId | Should -BeExactly 'NeoForge@1.21.1'
+        $plans.buildPlan.task | Should -BeExactly 'build'
+        $plans.buildPlan.isExecutablePlan | Should -BeFalse
+        $plans.launchPlan.task | Should -BeExactly 'runClient'
+        $plans.launchPlan.runtimeJavaRequirement.major | Should -Be 21
+        $plans.launchPlan.launchCheckStatus | Should -BeExactly 'Unverified'
+        $plans.launchPlan.isExecutablePlan | Should -BeFalse
+    }
+
+    It 'rejects a NeoForge project with an unrecognized Gradle toolchain' {
+        $project=[pscustomobject]@{Loader='NeoForge';Toolchain=[pscustomobject]@{id='Unknown'}}
+        $universe=[pscustomobject]@{catalogHash=('a'*64);targets=@()}
+
+        { New-MmtlNeoForgeAdapterPlans -Project $project -Universe $universe } | Should -Throw '*NEOFORGE_GRADLE_TOOLCHAIN_REQUIRED*'
+    }
 }
