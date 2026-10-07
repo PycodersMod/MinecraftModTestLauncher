@@ -61333,7 +61333,7 @@
       "targetId": "Forge@1.1",
       "loaderId": "Forge",
       "minecraftId": "1.1",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -61352,8 +61352,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -61420,14 +61428,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "125eb42e1fea03e19ff2bfc35069e49a5fc825bfe50232f36780a984c631c8d8"
     },
     {
       "targetId": "Forge@1.10",
       "loaderId": "Forge",
       "minecraftId": "1.10",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -61446,8 +61454,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -61514,14 +61530,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "f809fb04ce9cf1ef2f890472c9a032abddc4918b0b104290cb97094f6dddf763"
     },
     {
       "targetId": "Forge@1.10.2",
       "loaderId": "Forge",
       "minecraftId": "1.10.2",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -61540,8 +61556,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -61608,14 +61632,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "1225aac5180c9b42bfcd84d31757d507188cc2f10374c8a2e681b68c390c7fd5"
     },
     {
       "targetId": "Forge@1.11",
       "loaderId": "Forge",
       "minecraftId": "1.11",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -61634,8 +61658,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -61702,14 +61734,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "d3abb8736981a2dac49a29920e2c6efbcb1a285fcc89f8444bb75e4a0bd68b8d"
     },
     {
       "targetId": "Forge@1.11.2",
       "loaderId": "Forge",
       "minecraftId": "1.11.2",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -61728,8 +61760,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -61796,14 +61836,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "882b93dfd6ebda80f07774ea1bb51a2f09f3187fa02eaddf31616bacb08b0ff0"
     },
     {
       "targetId": "Forge@1.12",
       "loaderId": "Forge",
       "minecraftId": "1.12",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -61822,8 +61862,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -61890,14 +61938,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "c5735df8d501fb56b47df5f52dd2bbab54e8ae423fa26b770e86175aadd41876"
     },
     {
       "targetId": "Forge@1.12.1",
       "loaderId": "Forge",
       "minecraftId": "1.12.1",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -61916,8 +61964,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -61984,14 +62040,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "a38a4a5158cb8bf6e7c9ad58103391e5b69a8536020fbd2e26177001ea2156ab"
     },
     {
       "targetId": "Forge@1.12.2",
       "loaderId": "Forge",
       "minecraftId": "1.12.2",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -62010,8 +62066,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -62078,14 +62142,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "e9b57e41d1cf952d5fe2674094988c18503bb264e4526ae9fa6cda8a43b20ccb"
     },
     {
       "targetId": "Forge@1.13.2",
       "loaderId": "Forge",
       "minecraftId": "1.13.2",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -62104,8 +62168,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -62172,14 +62244,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "fd3477ffc228a623ba78cdb44f6f8fcba1ddfde87113237fe474c08657966bc2"
     },
     {
       "targetId": "Forge@1.14.2",
       "loaderId": "Forge",
       "minecraftId": "1.14.2",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -62198,8 +62270,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -62266,14 +62346,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "15900dba1bd07696950619450e5b1d1a2bad6e38caf4d9c8ddcc6db5bb3decaa"
     },
     {
       "targetId": "Forge@1.14.3",
       "loaderId": "Forge",
       "minecraftId": "1.14.3",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -62292,8 +62372,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -62360,14 +62448,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "0f317342a897b9d4b15f7fd45b4a4c51825d60fb3352929bdeaa8b84254f0e9a"
     },
     {
       "targetId": "Forge@1.14.4",
       "loaderId": "Forge",
       "minecraftId": "1.14.4",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -62386,8 +62474,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -62454,14 +62550,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "5d5db4418a2f65f883104014484a670e67ae716eea509fb6bae6d14b28f7e668"
     },
     {
       "targetId": "Forge@1.15",
       "loaderId": "Forge",
       "minecraftId": "1.15",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -62480,8 +62576,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -62548,14 +62652,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "60f416fa16efb707dbb2a6cd698e02c0a448107ca22a580ab6dce44a35bc8a54"
     },
     {
       "targetId": "Forge@1.15.1",
       "loaderId": "Forge",
       "minecraftId": "1.15.1",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -62574,8 +62678,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -62642,14 +62754,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "ac928e06079b2ccf738c96ab32ce59c1ea1765dd231cfa2592a4ac3442679f18"
     },
     {
       "targetId": "Forge@1.15.2",
       "loaderId": "Forge",
       "minecraftId": "1.15.2",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -62668,8 +62780,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -62736,14 +62856,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "b38566af944a999ee55adb1e80fdc250fb5154bdefb2aad008ac58b1e5a5f5c5"
     },
     {
       "targetId": "Forge@1.16.1",
       "loaderId": "Forge",
       "minecraftId": "1.16.1",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -62762,8 +62882,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -62830,14 +62958,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "5087cfb14fbc3265b1198272dbdd2dd56c048404cdce0b72b899436936568b64"
     },
     {
       "targetId": "Forge@1.16.2",
       "loaderId": "Forge",
       "minecraftId": "1.16.2",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -62856,8 +62984,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -62924,14 +63060,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "efbc1982c6c1751c5ab388db121b5b6bba9d189cbd8bfe04345d8dd989796ec2"
     },
     {
       "targetId": "Forge@1.16.3",
       "loaderId": "Forge",
       "minecraftId": "1.16.3",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -62950,8 +63086,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -63018,14 +63162,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "73fbb93644dfc8762f8ce7f7950c9488b2066e95607d1cb413781139f0734349"
     },
     {
       "targetId": "Forge@1.16.4",
       "loaderId": "Forge",
       "minecraftId": "1.16.4",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -63044,8 +63188,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -63112,14 +63264,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "f723e0eb8eaa76be2d935e094a17ddd5591f7e0b81e2d7885972b409193372a5"
     },
     {
       "targetId": "Forge@1.16.5",
       "loaderId": "Forge",
       "minecraftId": "1.16.5",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -63138,8 +63290,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -63206,14 +63366,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "41596d56cb8400ba597cb89c135e4a8e66caf319aea702d7d1f29363232bc088"
     },
     {
       "targetId": "Forge@1.17.1",
       "loaderId": "Forge",
       "minecraftId": "1.17.1",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -63232,8 +63392,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -63300,14 +63468,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "acd592d237dcb9b15c32c62fa020dddf3193d27bc75dd7b339a39ee558d9b279"
     },
     {
       "targetId": "Forge@1.18",
       "loaderId": "Forge",
       "minecraftId": "1.18",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -63326,8 +63494,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -63394,14 +63570,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "64fcce783e59fbdd3fa7242950859ce922da01da6041df517e75b17904b1ba3a"
     },
     {
       "targetId": "Forge@1.18.1",
       "loaderId": "Forge",
       "minecraftId": "1.18.1",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -63420,8 +63596,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -63488,14 +63672,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "b232ac5547c756d23c9782639f233afddd71a3107831d17ddfce0b7c0cd97123"
     },
     {
       "targetId": "Forge@1.18.2",
       "loaderId": "Forge",
       "minecraftId": "1.18.2",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -63514,8 +63698,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -63582,14 +63774,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "b5ffe53720b1b159f79910fbb9aa80feeed602635d8496bedb24c1c13f676df2"
     },
     {
       "targetId": "Forge@1.19",
       "loaderId": "Forge",
       "minecraftId": "1.19",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -63608,8 +63800,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -63676,14 +63876,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "06458960a8e14650e92e4809d92b09e7cc9de1c604d54531f93bb91c42cab5ef"
     },
     {
       "targetId": "Forge@1.19.1",
       "loaderId": "Forge",
       "minecraftId": "1.19.1",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -63702,8 +63902,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -63770,14 +63978,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "9d80110eb06b879c11ffcac107f30d194a21c5196b7a33583e656b1fa2fb6488"
     },
     {
       "targetId": "Forge@1.19.2",
       "loaderId": "Forge",
       "minecraftId": "1.19.2",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -63796,8 +64004,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -63864,14 +64080,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "091e19ceb45a052e4f4590e0d569921da7cb5f0fa7f124ddbaf593a278dd6b0b"
     },
     {
       "targetId": "Forge@1.19.3",
       "loaderId": "Forge",
       "minecraftId": "1.19.3",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -63890,8 +64106,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -63958,14 +64182,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "dcc4ea00f477af0afe3377dd7a98bca4ea8abea47cb424bd0fc67760487e589e"
     },
     {
       "targetId": "Forge@1.19.4",
       "loaderId": "Forge",
       "minecraftId": "1.19.4",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -63984,8 +64208,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -64052,14 +64284,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "d6f61c8afe018af49dc1356908552ac11234169f25571260644a9d09829c7bdc"
     },
     {
       "targetId": "Forge@1.2.3",
       "loaderId": "Forge",
       "minecraftId": "1.2.3",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -64078,8 +64310,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -64146,14 +64386,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "dbdcaf2591d9f7ec693f6887987d550da4fc079be2749c7e0be52d691a373f45"
     },
     {
       "targetId": "Forge@1.2.4",
       "loaderId": "Forge",
       "minecraftId": "1.2.4",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -64172,8 +64412,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -64240,14 +64488,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "c341566fb9d2b81f42157d5a1d8e79d943ef54acab1369306a513abe80285509"
     },
     {
       "targetId": "Forge@1.2.5",
       "loaderId": "Forge",
       "minecraftId": "1.2.5",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -64266,8 +64514,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -64334,14 +64590,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "ed6eac8c75a5fa25540ddb7cdfdb4de2eabc6ee31ff8d297b6d8b40e9206980a"
     },
     {
       "targetId": "Forge@1.20",
       "loaderId": "Forge",
       "minecraftId": "1.20",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -64360,8 +64616,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -64428,14 +64692,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "3aca9a3f7fe02a5978a752c0db5452710d46921d228df8851acc160f3a5ad14b"
     },
     {
       "targetId": "Forge@1.20.1",
       "loaderId": "Forge",
       "minecraftId": "1.20.1",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -64454,8 +64718,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -64522,14 +64794,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "98c82b4aaa22705582b54d540ffd3549b3a7ee1e89386658effeb5946d8caba8"
     },
     {
       "targetId": "Forge@1.20.2",
       "loaderId": "Forge",
       "minecraftId": "1.20.2",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -64548,8 +64820,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -64616,14 +64896,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "ff422a17b4e6c8e6c7b9de5c3ffb1fa43a25eaa1fd800893579799ea83bb3e6a"
     },
     {
       "targetId": "Forge@1.20.3",
       "loaderId": "Forge",
       "minecraftId": "1.20.3",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -64642,8 +64922,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -64710,14 +64998,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "861bce7dceffa2dc29a2642d0614716fd8789e077b4d39d852fb580e6797d715"
     },
     {
       "targetId": "Forge@1.20.4",
       "loaderId": "Forge",
       "minecraftId": "1.20.4",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -64736,8 +65024,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -64804,14 +65100,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "4255f29e66032e7ab91789bf771bc7c86cb425d29147101a11fc70087a4ba634"
     },
     {
       "targetId": "Forge@1.20.6",
       "loaderId": "Forge",
       "minecraftId": "1.20.6",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -64830,8 +65126,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -64898,14 +65202,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "fce97040f13df87438b7d828cce10dda0ad817177c9aa44fd9e843fdbdac760c"
     },
     {
       "targetId": "Forge@1.21",
       "loaderId": "Forge",
       "minecraftId": "1.21",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -64924,8 +65228,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -64992,14 +65304,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "21575fdbb3423b2b5e17afd2c318687c42c3a8f522bf48e2f7c1c4e8942fa99e"
     },
     {
       "targetId": "Forge@1.21.1",
       "loaderId": "Forge",
       "minecraftId": "1.21.1",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -65018,8 +65330,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -65086,14 +65406,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "ad380cb7948dbdf106b22c8fd82ebeb92047cefa78f6ecf8d4cbf39b18243716"
     },
     {
       "targetId": "Forge@1.21.10",
       "loaderId": "Forge",
       "minecraftId": "1.21.10",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -65112,8 +65432,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -65180,14 +65508,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "ec5374a985f52495253eabf86ca95404f3441ae788e8b2b0ce01e27cada5e980"
     },
     {
       "targetId": "Forge@1.21.11",
       "loaderId": "Forge",
       "minecraftId": "1.21.11",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -65206,8 +65534,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -65274,14 +65610,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "c283890f0ba2cb4d9fe2ffe1d723783662b6ff7d6ea737b6c56a37df8ec9aa74"
     },
     {
       "targetId": "Forge@1.21.3",
       "loaderId": "Forge",
       "minecraftId": "1.21.3",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -65300,8 +65636,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -65368,14 +65712,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "39b767237bd23449c46b71814b12b253973ed34926cb4fa1e2e673f37e1b410a"
     },
     {
       "targetId": "Forge@1.21.4",
       "loaderId": "Forge",
       "minecraftId": "1.21.4",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -65394,8 +65738,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -65462,14 +65814,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "58c976f7d6e01f7f04893af16f33ab872546ed90803e6e5308cb05719d009f96"
     },
     {
       "targetId": "Forge@1.21.5",
       "loaderId": "Forge",
       "minecraftId": "1.21.5",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -65488,8 +65840,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -65556,14 +65916,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "4c17ba5b8127e6e8da5ebfbb752ee8462faeb68420bb00afb7c177a80a917375"
     },
     {
       "targetId": "Forge@1.21.6",
       "loaderId": "Forge",
       "minecraftId": "1.21.6",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -65582,8 +65942,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -65650,14 +66018,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "34babdb1e51ba26d416814fb1e390efd43e2572f97440f96ded725b1864fcf35"
     },
     {
       "targetId": "Forge@1.21.7",
       "loaderId": "Forge",
       "minecraftId": "1.21.7",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -65676,8 +66044,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -65744,14 +66120,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "6102b39a8c1bd50652a79028e13c218cb8753143f083bf6baee63f264eb48a3e"
     },
     {
       "targetId": "Forge@1.21.8",
       "loaderId": "Forge",
       "minecraftId": "1.21.8",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -65770,8 +66146,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -65838,14 +66222,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "a413008625068ac99f35adf5820cfc6d9bcfb794d4bc7c47ccd6b289611dbaf6"
     },
     {
       "targetId": "Forge@1.21.9",
       "loaderId": "Forge",
       "minecraftId": "1.21.9",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -65864,8 +66248,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -65932,14 +66324,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "39c8deaeb02190dddcfcdf2885d444745608d6f87f41f718fec354978885d547"
     },
     {
       "targetId": "Forge@1.3.2",
       "loaderId": "Forge",
       "minecraftId": "1.3.2",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -65958,8 +66350,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -66026,14 +66426,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "713be0875e07db9acf2d423a6675d1cb3a57533942642c4b7a93c16d25e8a1cf"
     },
     {
       "targetId": "Forge@1.4.1",
       "loaderId": "Forge",
       "minecraftId": "1.4.1",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -66052,8 +66452,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -66120,14 +66528,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "aeadab53d7b6caca9f5890f8d4f77cc318e9e374b1b9cd4a458ca54b55ec7840"
     },
     {
       "targetId": "Forge@1.4.2",
       "loaderId": "Forge",
       "minecraftId": "1.4.2",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -66146,8 +66554,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -66214,14 +66630,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "0fd60560bfad56d4f68aa6264b5142cb4bf1675bf4dcb28cb1676a280e7e2f8c"
     },
     {
       "targetId": "Forge@1.4.3",
       "loaderId": "Forge",
       "minecraftId": "1.4.3",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -66240,8 +66656,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -66308,14 +66732,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "95f1996e3c400cb7c037e142d3ab4d042505a6fac921e1edfe143db729edeb87"
     },
     {
       "targetId": "Forge@1.4.4",
       "loaderId": "Forge",
       "minecraftId": "1.4.4",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -66334,8 +66758,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -66402,14 +66834,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "bead257942eea8b07078b6031b0185135cee04fffe0076527b5af61fdb4a1d52"
     },
     {
       "targetId": "Forge@1.4.5",
       "loaderId": "Forge",
       "minecraftId": "1.4.5",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -66428,8 +66860,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -66496,14 +66936,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "d5660a0ae93ffb7c19da2cdd181d586599ac696b96f51898e9fd344a14cee7c8"
     },
     {
       "targetId": "Forge@1.4.6",
       "loaderId": "Forge",
       "minecraftId": "1.4.6",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -66522,8 +66962,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -66590,14 +67038,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "09c4aa1479859b32d4a826ac021f630798601b239ce188f3906d12ad233e6a07"
     },
     {
       "targetId": "Forge@1.4.7",
       "loaderId": "Forge",
       "minecraftId": "1.4.7",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -66616,8 +67064,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -66684,14 +67140,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "1bfc5ca297ad8cc66c1b7ef3b3c4f11ed0d46a968032af02b9838d6c2eeb18ba"
     },
     {
       "targetId": "Forge@1.5",
       "loaderId": "Forge",
       "minecraftId": "1.5",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -66710,8 +67166,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -66778,14 +67242,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "62260e6a58dc18dcbf80c13c71b3af18e101f5530956fc9de6cf93bff0d5368e"
     },
     {
       "targetId": "Forge@1.5.1",
       "loaderId": "Forge",
       "minecraftId": "1.5.1",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -66804,8 +67268,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -66872,14 +67344,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "a816648a8b58227ae6765b8dac9bff9e954dda52c9280101ee218620e7b83f49"
     },
     {
       "targetId": "Forge@1.5.2",
       "loaderId": "Forge",
       "minecraftId": "1.5.2",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -66898,8 +67370,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -66966,14 +67446,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "a51c539efd085ef52ba7fbd6783895ec895a9ad60eedf72a676684f38ce36d18"
     },
     {
       "targetId": "Forge@1.6.1",
       "loaderId": "Forge",
       "minecraftId": "1.6.1",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -66992,8 +67472,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -67054,14 +67542,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "bec690ec5787ca4e8aedbdb6cc08b8520e8613e75011744063d42e2dfe8dd100"
     },
     {
       "targetId": "Forge@1.6.2",
       "loaderId": "Forge",
       "minecraftId": "1.6.2",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -67080,8 +67568,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -67142,14 +67638,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "ce65d3e9b6c235b384a391eeb3c5152ecfc5fafcee4cddcb4473d9f7ff675916"
     },
     {
       "targetId": "Forge@1.6.3",
       "loaderId": "Forge",
       "minecraftId": "1.6.3",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -67168,8 +67664,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -67230,14 +67734,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "d1c555421af55c993de7310c1d312f2dcd89beeaaf9210aab82adbfcf79f5598"
     },
     {
       "targetId": "Forge@1.6.4",
       "loaderId": "Forge",
       "minecraftId": "1.6.4",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -67256,8 +67760,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -67318,14 +67830,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "355894d227559197bdff277e833d5b555bb01c670d7ac3018c4167dbe1568cfa"
     },
     {
       "targetId": "Forge@1.7.10",
       "loaderId": "Forge",
       "minecraftId": "1.7.10",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -67344,8 +67856,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -67412,14 +67932,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "a583b7ff15ee5884daf50df024f210c5da70f6c2f652be9213df01164d5629bd"
     },
     {
       "targetId": "Forge@1.7.2",
       "loaderId": "Forge",
       "minecraftId": "1.7.2",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -67438,8 +67958,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -67506,14 +68034,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "234a5ebbf54c80c7dc8d5ba46b58eec5fe8e7a771e87f7121deeb23b6c6020db"
     },
     {
       "targetId": "Forge@1.8",
       "loaderId": "Forge",
       "minecraftId": "1.8",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -67532,8 +68060,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -67600,14 +68136,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "1bfede67df68cbc478b4cd700aa0903e7ae16ecd7e78ec1d58f0bf5623bbabd3"
     },
     {
       "targetId": "Forge@1.8.8",
       "loaderId": "Forge",
       "minecraftId": "1.8.8",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -67626,8 +68162,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -67694,14 +68238,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "4fb1831f91a8b079b815fdc9e13d42823640c96c4318ccefb455d5b97f402668"
     },
     {
       "targetId": "Forge@1.8.9",
       "loaderId": "Forge",
       "minecraftId": "1.8.9",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -67720,8 +68264,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -67788,14 +68340,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "3e1870e5cf16d92aa116f077a7e3f54605f08597834dadf901bfcb7ee48a09d2"
     },
     {
       "targetId": "Forge@1.9",
       "loaderId": "Forge",
       "minecraftId": "1.9",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -67814,8 +68366,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -67882,14 +68442,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "6a8a7f8de62a9f9cd9b0dfbdf0ee9e6257399a847f79c6d264129263c05bc81b"
     },
     {
       "targetId": "Forge@1.9.4",
       "loaderId": "Forge",
       "minecraftId": "1.9.4",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -67908,8 +68468,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -67976,14 +68544,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "e5a147c4c3b87cf3642965b574182e6ae2a31320253b92174e934e9f791dd511"
     },
     {
       "targetId": "Forge@26.1",
       "loaderId": "Forge",
       "minecraftId": "26.1",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -68002,8 +68570,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -68070,14 +68646,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "c74714265ac9f3eaf7fcec4e95183245cdf07c46c6e90209daadb88cbbbeafae"
     },
     {
       "targetId": "Forge@26.1.1",
       "loaderId": "Forge",
       "minecraftId": "26.1.1",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -68096,8 +68672,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -68164,14 +68748,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "0a01a3d955cb082c4485eec146ee879a6be8415f889c2c01e6500e7325b02c3a"
     },
     {
       "targetId": "Forge@26.1.2",
       "loaderId": "Forge",
       "minecraftId": "26.1.2",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -68190,8 +68774,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -68258,14 +68850,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "5e11431f5b2e4ecf438ff61ab907bf56eec2bd816c5863a2712fb11ab6a29422"
     },
     {
       "targetId": "Forge@26.2",
       "loaderId": "Forge",
       "minecraftId": "26.2",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -68284,8 +68876,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -68352,14 +68952,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "e71562e18e4be0c4b48a401c9f6d1cb8447be6674b2a5862f129c74c1e089fd6"
     },
     {
       "targetId": "Forge@26.3",
       "loaderId": "Forge",
       "minecraftId": "26.3",
-      "familyId": null,
+      "familyId": "forge-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -68378,8 +68978,16 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
+            "source-url:https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -68446,7 +69054,7 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64",
-      "toolchainHash": null,
+      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
       "targetSpecHash": "0faeabd81f6687b0dd8a465b308c44fdadfdb26affc69855b2bfa83dd02a1963"
     },
     {
@@ -173917,7 +174525,7 @@
   "summary": {
     "targetCount": 1631,
     "unknownTargetCount": 0,
-    "pendingImplementationDimensionCount": 19984,
-    "unassignedFamilyCount": 636
+    "pendingImplementationDimensionCount": 19908,
+    "unassignedFamilyCount": 560
   }
 }

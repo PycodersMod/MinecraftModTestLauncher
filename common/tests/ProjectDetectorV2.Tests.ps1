@@ -1,4 +1,4 @@
-BeforeAll { $root=Split-Path -Parent $PSScriptRoot;Import-Module (Join-Path $root 'src/Platform/Platform.psm1') -Force;Import-Module (Join-Path $root 'src/ProjectDetector.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/Fabric.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/NeoForge.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/Quilt.psm1') -Force }
+BeforeAll { $root=Split-Path -Parent $PSScriptRoot;Import-Module (Join-Path $root 'src/Platform/Platform.psm1') -Force;Import-Module (Join-Path $root 'src/ProjectDetector.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/Fabric.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/NeoForge.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/Quilt.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/Forge.psm1') -Force }
 Describe 'Evidence based project detection' {
     It 'identifies ModDevGradle before the broader NeoForge Gradle plugin marker' {
         $project=Join-Path $TestDrive 'neoforge-moddevgradle';New-Item -ItemType Directory -Path (Join-Path $project 'src/main/resources/META-INF') -Force|Out-Null
@@ -129,5 +129,27 @@ quilt_loom = { id = "org.quiltmc.loom", version = "1.7.4" }
 
         $failures | Should -BeNullOrEmpty
         $targets.Count | Should -Be 441
+    }
+
+    It 'detects every exact Forge universe target from project coordinates' {
+        $repositoryRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
+        $targets=@($universe.targets|Where-Object{$_.loaderId -ceq 'Forge' -and $_.availability -ceq 'Available'})
+        $projectRoot=Join-Path $TestDrive 'all-forge-targets'
+        $resources=Join-Path $projectRoot 'src/main/resources/META-INF'
+        New-Item -ItemType Directory -Path $resources -Force|Out-Null
+        "plugins { id 'net.minecraftforge.gradle' version '2.3-SNAPSHOT' }"|Set-Content (Join-Path $projectRoot 'build.gradle')
+        'modLoader="javafml"'|Set-Content (Join-Path $resources 'mods.toml')
+        $failures=[Collections.Generic.List[string]]::new()
+
+        foreach($target in $targets){
+            if([string]$target.candidateStatus -cne 'Resolved' -or @($target.loaderVersionCandidates).Count -eq 0){$failures.Add("$($target.targetId):CANDIDATES_UNRESOLVED");continue}
+            @("minecraft_version=$($target.minecraftId)","forge_version=$($target.loaderVersionCandidates[0])",'mod_id=fixture') -join [Environment]::NewLine | Set-Content (Join-Path $projectRoot 'gradle.properties')
+            $project=Get-MmtlProject -Path $projectRoot
+            if($project.DetectionStatus -cne 'Resolved' -or $project.Loader -cne 'Forge' -or $project.MinecraftVersion -cne [string]$target.minecraftId -or $project.LoaderVersion -cne [string]$target.loaderVersionCandidates[0] -or $project.Toolchain.id -cne 'ForgeGradle'){$failures.Add("$($target.targetId):DETECTION_BINDING_MISMATCH")}
+        }
+
+        $failures | Should -BeNullOrEmpty
+        $targets.Count | Should -Be 76
     }
 }
