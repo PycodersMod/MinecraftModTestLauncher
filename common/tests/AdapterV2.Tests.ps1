@@ -17,4 +17,38 @@ Describe 'Adapter Contract v2' {
         (Get-MmtlNeoForgeAdapterProbe -Evidence @([pscustomobject]@{loaderId='NeoForge'})).adapterId | Should -BeExactly 'NeoForge'
         (Get-MmtlQuiltAdapterProbe -Evidence @([pscustomobject]@{loaderId='Quilt'})).adapterId | Should -BeExactly 'Quilt'
     }
+
+    It 'resolves a Fabric prerelease target by exact frozen Minecraft and Loader versions' {
+        $project=[pscustomobject]@{Loader='Fabric';MinecraftVersion='1.14 Pre-Release 1';LoaderVersion='0.8.0+build.192'}
+        $universe=[pscustomobject]@{catalogHash=('a'*64);targets=@([pscustomobject]@{targetId='Fabric@1.14 Pre-Release 1';loaderId='Fabric';minecraftId='1.14 Pre-Release 1';availability='Available';candidateStatus='Resolved';loaderVersionCandidates=@('0.8.0+build.192');sourceHash=('b'*64);candidateSourceHash=('c'*64)})}
+
+        $result=Resolve-MmtlFabricAdapterTarget -Project $project -Universe $universe
+
+        $result.status | Should -BeExactly 'Resolved'
+        $result.targetId | Should -BeExactly 'Fabric@1.14 Pre-Release 1'
+        $result.minecraftId | Should -BeExactly '1.14 Pre-Release 1'
+        $result.loaderVersion | Should -BeExactly '0.8.0+build.192'
+        $result.evidence | Should -Contain "universe-sha256:$('a'*64)"
+    }
+
+    It 'does not treat a version range as an exact Fabric target' {
+        $project=[pscustomobject]@{Loader='Fabric';MinecraftVersion='1.20.x';LoaderVersion='0.15.0'}
+        $universe=[pscustomobject]@{catalogHash=('a'*64);targets=@([pscustomobject]@{targetId='Fabric@1.20.1';loaderId='Fabric';minecraftId='1.20.1';availability='Available';candidateStatus='Resolved';loaderVersionCandidates=@('0.15.0')})}
+
+        $result=Resolve-MmtlFabricAdapterTarget -Project $project -Universe $universe
+
+        $result.status | Should -BeExactly 'Unresolved'
+        $result.reasonCode | Should -BeExactly 'TARGET_NOT_IN_FROZEN_UNIVERSE'
+        $result.targetId | Should -BeNullOrEmpty
+    }
+
+    It 'keeps a missing Fabric Loader version unresolved' {
+        $project=[pscustomobject]@{Loader='Fabric';MinecraftVersion='1.20.1';LoaderVersion=$null}
+        $universe=[pscustomobject]@{catalogHash=('a'*64);targets=@([pscustomobject]@{targetId='Fabric@1.20.1';loaderId='Fabric';minecraftId='1.20.1';availability='Available';candidateStatus='Resolved';loaderVersionCandidates=@('0.15.0')})}
+
+        $result=Resolve-MmtlFabricAdapterTarget -Project $project -Universe $universe
+
+        $result.status | Should -BeExactly 'Unresolved'
+        $result.reasonCode | Should -BeExactly 'LOADER_VERSION_UNRESOLVED'
+    }
 }
