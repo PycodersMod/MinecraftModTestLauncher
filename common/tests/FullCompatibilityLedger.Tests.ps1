@@ -112,6 +112,7 @@ Describe 'Full compatibility ledger' {
             unassignedTargetPolicy = 'Exact targets only.'
             families = @([pscustomobject]@{
                 familyId = 'fabric-1.20.1'; loaderId = 'Fabric'; minecraftIds = @('1.20.1')
+                toolchainHash = 'f' * 64
                 toolchain = 'Loom'; buildJava = '17'; runtimeJava = '17'
                 projectDetectionStrategy = 'fabric.mod.json'; launchStrategy = 'Loom runClient'
                 agentBridge = 'not implemented'; evidence = @('source-snapshots/example.json')
@@ -131,6 +132,35 @@ Describe 'Full compatibility ledger' {
             $futureFamily.families[0].minecraftIds = @('1.20.2')
             New-MmtlFullCompatibilityLedger -Universe $script:universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $futureFamily
         } | Should -Throw '*FAMILY_TARGET_NOT_IN_UNIVERSE*'
+    }
+
+    It 'applies family capability evidence only to explicitly listed exact targets and dimensions' {
+        $familyManifest = [pscustomobject]@{
+            schemaVersion = 1; auditStatus = 'IN_PROGRESS'; universeHash = $script:universe.catalogHash
+            unassignedTargetPolicy = 'Exact targets only.'
+            families = @([pscustomobject]@{
+                familyId = 'fabric-1.20.1'; loaderId = 'Fabric'; minecraftIds = @('1.20.1')
+                toolchainHash = 'f' * 64
+                toolchain = 'Loom'; buildJava = '17'; runtimeJava = '17'
+                projectDetectionStrategy = 'fabric.mod.json'; launchStrategy = 'Loom runClient'
+                agentBridge = 'not implemented'; evidence = @('source-snapshots/example.json')
+                capabilities = [pscustomobject]@{
+                    ProjectDetection = [pscustomobject]@{status='Supported';evidenceRefs=@('test:exact-detection')}
+                    BuildPlan = [pscustomobject]@{status='Supported';evidenceRefs=@('test:exact-build-plan')}
+                }
+            })
+        }
+        $ledger = New-MmtlFullCompatibilityLedger -Universe $script:universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $familyManifest
+        $familySchema = Join-Path (Split-Path -Parent $PSScriptRoot) 'schemas/compatibility-families.schema.json'
+        (Test-Json -Json ($familyManifest | ConvertTo-Json -Depth 20 -Compress) -SchemaFile $familySchema) | Should -BeTrue
+        $validation = Test-MmtlFullCompatibilityLedger -Ledger $ledger -Universe $script:universe -FamilyManifest $familyManifest
+
+        $ledger.targets[0].dimensions.ProjectDetection.status | Should -BeExactly 'Supported'
+        $ledger.targets[0].dimensions.BuildPlan.evidenceRefs | Should -Contain 'test:exact-build-plan'
+        $ledger.targets[0].toolchainHash | Should -Be ('f' * 64)
+        $ledger.targets[0].dimensions.BuildVerified.status | Should -BeExactly 'PendingImplementation'
+        $ledger.targets[1].dimensions.ProjectDetection.status | Should -BeExactly 'PendingImplementation'
+        $validation.isValid | Should -BeTrue
     }
 
     It 'requires evidence for supported capability claims and exact family membership at final gate' {

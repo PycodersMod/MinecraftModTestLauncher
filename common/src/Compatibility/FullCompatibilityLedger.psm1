@@ -84,6 +84,16 @@ function Get-MmtlCompatibilityFamilyMap {
             if (-not $family.PSObject.Properties[$field]) { throw "FAMILY_MANIFEST_INVALID:MISSING_FIELD:${familyId}:$field" }
         }
         if (@($family.minecraftIds).Count -eq 0 -or @($family.evidence).Count -eq 0) { throw "FAMILY_MANIFEST_INVALID:MISSING_EXACT_SCOPE_OR_EVIDENCE:$familyId" }
+        if ($family.PSObject.Properties['toolchainHash'] -and [string]$family.toolchainHash -notmatch '^(?i:[a-f0-9]{64})$') { throw "FAMILY_MANIFEST_INVALID:TOOLCHAIN_HASH:$familyId" }
+        if ($family.PSObject.Properties['capabilities'] -and $family.capabilities) {
+            foreach ($dimensionName in @($family.capabilities.PSObject.Properties.Name)) {
+                if ($dimensionName -notin $script:LedgerDimensions) { throw "FAMILY_MANIFEST_INVALID:UNKNOWN_CAPABILITY:$familyId`:$dimensionName" }
+                $capability = $family.capabilities.$dimensionName
+                if ([string]$capability.status -notin $script:LedgerStatuses -or -not $capability.PSObject.Properties['evidenceRefs']) { throw "FAMILY_MANIFEST_INVALID:CAPABILITY_SHAPE:$familyId`:$dimensionName" }
+                if ([string]$capability.status -ceq 'Supported' -and @($capability.evidenceRefs).Count -eq 0) { throw "FAMILY_MANIFEST_INVALID:SUPPORTED_CAPABILITY_WITHOUT_EVIDENCE:$familyId`:$dimensionName" }
+                foreach ($evidenceRef in @($capability.evidenceRefs)) { if ([string]::IsNullOrWhiteSpace([string]$evidenceRef)) { throw "FAMILY_MANIFEST_INVALID:EMPTY_CAPABILITY_EVIDENCE:$familyId`:$dimensionName" } }
+            }
+        }
         foreach ($minecraftId in @($family.minecraftIds)) {
             $targetId = "$([string]$family.loaderId)@$([string]$minecraftId)"
             if (-not $universeIds.Contains($targetId)) { throw "FAMILY_TARGET_NOT_IN_UNIVERSE:${familyId}:$targetId" }
@@ -114,6 +124,16 @@ function New-MmtlFullCompatibilityLedger {
     )
 
     $familyMap = Get-MmtlCompatibilityFamilyMap -Universe $Universe -FamilyManifest $FamilyManifest
+    $familyCapabilities = @{}
+    $familyDetails = @{}
+    $manifestFamilies = if ($FamilyManifest -and $FamilyManifest.PSObject.Properties['families']) { @($FamilyManifest.families) } else { @() }
+    foreach ($family in $manifestFamilies) {
+        foreach ($minecraftId in @($family.minecraftIds)) {
+            $targetId = "$([string]$family.loaderId)@$([string]$minecraftId)"
+            $familyDetails[$targetId] = $family
+            if ($family.PSObject.Properties['capabilities'] -and $family.capabilities) { $familyCapabilities[$targetId] = $family.capabilities }
+        }
+    }
     $targets = [Collections.Generic.List[object]]::new()
     foreach ($target in @($Universe.targets | Sort-Object { [string]$_.targetId })) {
         if ([string]$target.availability -cne 'Available') { continue }
@@ -126,6 +146,12 @@ function New-MmtlFullCompatibilityLedger {
                 'RuntimeJava' { if (@(Get-MmtlRuntimeJavaEvidenceRefs -Target $target).Count) { 'Supported' } else { 'PendingImplementation' } }
                 default { 'PendingImplementation' }
             }
+            $capability = $null
+            if ($familyCapabilities.ContainsKey([string]$target.targetId)) {
+                $familyDimension = $familyCapabilities[[string]$target.targetId].PSObject.Properties[$name]
+                if ($familyDimension) { $capability = $familyDimension.Value }
+            }
+            if ($capability) { $status = [string]$capability.status }
             $evidenceRefs = @()
             if ($status -ceq 'Supported') {
                 $evidenceRefs += "universe-sha256:$([string]$Universe.catalogHash)"
@@ -133,6 +159,7 @@ function New-MmtlFullCompatibilityLedger {
                 if (-not [string]::IsNullOrWhiteSpace([string]$target.authoritativeSource)) { $evidenceRefs += "source-url:$([string]$target.authoritativeSource)" }
             }
             if ($name -ceq 'RuntimeJava' -and $status -ceq 'Supported') { $evidenceRefs += @(Get-MmtlRuntimeJavaEvidenceRefs -Target $target) }
+            if ($capability) { $evidenceRefs += @($capability.evidenceRefs) }
             $dimensions[$name] = New-MmtlLedgerDimension -Status $status -EvidenceRefs $evidenceRefs
         }
         $targets.Add([pscustomobject][ordered]@{
@@ -143,7 +170,7 @@ function New-MmtlFullCompatibilityLedger {
             dimensions = [pscustomobject]$dimensions
             status = Get-MmtlTargetLedgerStatus -Dimensions ([pscustomobject]$dimensions)
             sourceHash = if ($target.PSObject.Properties['sourceHash']) { $target.sourceHash } else { $null }
-            toolchainHash = $null
+            toolchainHash = if ($familyDetails.ContainsKey([string]$target.targetId) -and $familyDetails[[string]$target.targetId].PSObject.Properties['toolchainHash']) { [string]$familyDetails[[string]$target.targetId].toolchainHash } else { $null }
             targetSpecHash = Get-MmtlTargetSpecHash -Target $target
         })
     }

@@ -16,32 +16,41 @@
     "httpRepositoriesPresent": true,
     "publishingTasksPresent": true,
     "automaticBuildExecutionAllowed": false,
-    "notes": "Build JVM requirement is not inferred from sourceCompatibility. The original project includes an HTTP Maven repository and publish/release tasks, so direct automatic execution remains denied."
+    "notes": "Build JVM requirement is not inferred from sourceCompatibility. The original project includes an HTTP Maven repository and publish/release tasks, so direct automatic execution remains denied.",
+    "launchPlanDefined": true,
+    "launchCheckStatus": "Unverified"
   },
   "files": [
-  {
-    "path": "build.gradle",
-    "url": "https://raw.githubusercontent.com/DimensionalDevelopment/Rift/dfc75ff7254cbbea81535c02ddc5252e384ac806/build.gradle",
-    "relativePath": "RiftSource/669a1b40f1c34dbfbe0b81a9b5ccc841be477a85638c484527748bffd376b4dd.bin",
-    "byteLength": 3298,
-    "sha256": "669a1b40f1c34dbfbe0b81a9b5ccc841be477a85638c484527748bffd376b4dd",
-    "httpStatus": 200
-  },
-  {
-    "path": "gradle/wrapper/gradle-wrapper.properties",
-    "url": "https://raw.githubusercontent.com/DimensionalDevelopment/Rift/dfc75ff7254cbbea81535c02ddc5252e384ac806/gradle/wrapper/gradle-wrapper.properties",
-    "relativePath": "RiftSource/260293f0a95a6a43081dac50afd574d6efdb6c55ed9fc945397133901c371743.bin",
-    "byteLength": 200,
-    "sha256": "260293f0a95a6a43081dac50afd574d6efdb6c55ed9fc945397133901c371743",
-    "httpStatus": 200
-  },
-  {
-    "path": "LICENSE",
-    "url": "https://raw.githubusercontent.com/DimensionalDevelopment/Rift/dfc75ff7254cbbea81535c02ddc5252e384ac806/LICENSE",
-    "relativePath": "RiftSource/a0b75a53b9ddc1e51961318c65cc1cb05e3c3e06e157f67fe6dd17e3ddb27eb3.bin",
-    "byteLength": 1080,
-    "sha256": "a0b75a53b9ddc1e51961318c65cc1cb05e3c3e06e157f67fe6dd17e3ddb27eb3",
-    "httpStatus": 200
+    {
+      "path": "build.gradle",
+      "url": "https://raw.githubusercontent.com/DimensionalDevelopment/Rift/dfc75ff7254cbbea81535c02ddc5252e384ac806/build.gradle",
+      "relativePath": "RiftSource/669a1b40f1c34dbfbe0b81a9b5ccc841be477a85638c484527748bffd376b4dd.bin",
+      "byteLength": 3298,
+      "sha256": "669a1b40f1c34dbfbe0b81a9b5ccc841be477a85638c484527748bffd376b4dd",
+      "httpStatus": 200
+    },
+    {
+      "path": "gradle/wrapper/gradle-wrapper.properties",
+      "url": "https://raw.githubusercontent.com/DimensionalDevelopment/Rift/dfc75ff7254cbbea81535c02ddc5252e384ac806/gradle/wrapper/gradle-wrapper.properties",
+      "relativePath": "RiftSource/260293f0a95a6a43081dac50afd574d6efdb6c55ed9fc945397133901c371743.bin",
+      "byteLength": 200,
+      "sha256": "260293f0a95a6a43081dac50afd574d6efdb6c55ed9fc945397133901c371743",
+      "httpStatus": 200
+    },
+    {
+      "path": "LICENSE",
+      "url": "https://raw.githubusercontent.com/DimensionalDevelopment/Rift/dfc75ff7254cbbea81535c02ddc5252e384ac806/LICENSE",
+      "relativePath": "RiftSource/a0b75a53b9ddc1e51961318c65cc1cb05e3c3e06e157f67fe6dd17e3ddb27eb3.bin",
+      "byteLength": 1080,
+      "sha256": "a0b75a53b9ddc1e51961318c65cc1cb05e3c3e06e157f67fe6dd17e3ddb27eb3",
+      "httpStatus": 200
+    }
+  ],
+  "validationEvidence": {
+    "file": "compatibility/rift-build-validation.json",
+    "sha256": "4f54adb38894fb9ea6ac5d5b90c7974d902f2602eaa4409e4ca08bb12f2da7cc",
+    "buildStatus": "BuildVerifiedForPinnedFixture",
+    "launchPlanStatus": "DefinedButUnverified",
+    "automaticArbitraryProjectExecution": "Denied"
   }
-  ]
 }

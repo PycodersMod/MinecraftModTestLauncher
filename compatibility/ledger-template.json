@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "auditStatus": "IN_PROGRESS",
-  "generatedAt": "2026-10-06T22:20:21.4802293+00:00",
+  "generatedAt": "2026-10-07T00:00:00.0000000+00:00",
   "universeHash": "0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
   "candidateCatalogHash": "2f9db2262dc499e96b30ab5e7069c60e2c7b485347d98649a5991beec4396d98",
   "targets": [
@@ -152401,7 +152401,7 @@
       "targetId": "Rift@1.13",
       "loaderId": "Rift",
       "minecraftId": "1.13",
-      "familyId": null,
+      "familyId": "rift-forgegradle-2.3-mc1.13",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -152420,16 +152420,36 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b6f4f736adce2234149d450eaafb87cc5cf3c20c6e60ea22f9d99d22f1ff202b",
+            "source-url:https://github.com/DimensionalDevelopment/Rift",
+            "rift-source-sha256:b6f4f736adce2234149d450eaafb87cc5cf3c20c6e60ea22f9d99d22f1ff202b",
+            "test:HistoricalAdapters.Tests.ps1:Rift-1.13-detection"
+          ]
         },
         "BuildPlan": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b6f4f736adce2234149d450eaafb87cc5cf3c20c6e60ea22f9d99d22f1ff202b",
+            "source-url:https://github.com/DimensionalDevelopment/Rift",
+            "mmtl-adapter-source-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "mmtl-adapter-test-sha256:2eb15c92f9f109e3db0d059d604b3d21f91a3c57f7b77c53677d2066182efeaa",
+            "test:HistoricalAdapters.Tests.ps1:Rift-1.13-build-plan"
+          ]
         },
         "BuildJava": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b6f4f736adce2234149d450eaafb87cc5cf3c20c6e60ea22f9d99d22f1ff202b",
+            "source-url:https://github.com/DimensionalDevelopment/Rift",
+            "gradle-runtime-java-range:7-10",
+            "rift-compiler-target-java:8",
+            "https://docs.gradle.org/4.9/userguide/compatibility.html"
+          ]
         },
         "RuntimeJava": {
           "status": "Supported",
@@ -152446,12 +152466,27 @@
           "evidenceRefs": []
         },
         "BuildVerified": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b6f4f736adce2234149d450eaafb87cc5cf3c20c6e60ea22f9d99d22f1ff202b",
+            "source-url:https://github.com/DimensionalDevelopment/Rift",
+            "rift-output-sha256:5ec9ae72dc8a647dacc5fea65a16079d0b243d9f7590a567a72f3012e405d6cd",
+            "forgegradle-artifact-sha256:7ad389d3a88e25f5a6e7cc24d9d2db8cd58f587cbb3f3fe2fdc2fc5ac72436d3",
+            "rift-build-validation-sha256:4f54adb38894fb9ea6ac5d5b90c7974d902f2602eaa4409e4ca08bb12f2da7cc"
+          ]
         },
         "LaunchPlan": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b6f4f736adce2234149d450eaafb87cc5cf3c20c6e60ea22f9d99d22f1ff202b",
+            "source-url:https://github.com/DimensionalDevelopment/Rift",
+            "mmtl-adapter-source-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "mmtl-adapter-test-sha256:2eb15c92f9f109e3db0d059d604b3d21f91a3c57f7b77c53677d2066182efeaa",
+            "run-task:ForgeGradle-2.3-SNAPSHOT:runClient",
+            "rift-tweaker-class:org.dimdev.riftloader.launch.RiftLoaderClientTweaker"
+          ]
         },
         "LaunchCheck": {
           "status": "PendingImplementation",
@@ -152482,20 +152517,26 @@
           "evidenceRefs": []
         },
         "EvidenceLevel": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:b6f4f736adce2234149d450eaafb87cc5cf3c20c6e60ea22f9d99d22f1ff202b",
+            "source-url:https://github.com/DimensionalDevelopment/Rift",
+            "scope:CanonicalPinnedFixtureOnly",
+            "rift-build-validation-sha256:4f54adb38894fb9ea6ac5d5b90c7974d902f2602eaa4409e4ca08bb12f2da7cc"
+          ]
         }
       },
       "status": "PendingImplementation",
       "sourceHash": "b6f4f736adce2234149d450eaafb87cc5cf3c20c6e60ea22f9d99d22f1ff202b",
-      "toolchainHash": null,
+      "toolchainHash": "519ac844092b91fdf457da4009403cfcbab66f3d15ab6cf6efe7ac3192c40c24",
       "targetSpecHash": "de17063da666f5ee81c8b25a79b5c6b022fad464630fa1fa6c76a8b68bbd3841"
     }
   ],
   "summary": {
     "targetCount": 1631,
     "unknownTargetCount": 0,
-    "pendingImplementationDimensionCount": 22972,
-    "unassignedFamilyCount": 1631
+    "pendingImplementationDimensionCount": 22966,
+    "unassignedFamilyCount": 1630
   }
 }

@@ -2,6 +2,99 @@
   "schemaVersion": 1,
   "auditStatus": "IN_PROGRESS",
   "universeHash": "0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-  "families": [],
+  "families": [
+    {
+      "familyId": "rift-forgegradle-2.3-mc1.13",
+      "loaderId": "Rift",
+      "minecraftIds": [
+        "1.13"
+      ],
+      "toolchainHash": "519ac844092b91fdf457da4009403cfcbab66f3d15ab6cf6efe7ac3192c40c24",
+      "toolchain": {
+        "id": "ForgeGradle",
+        "version": "2.3-SNAPSHOT",
+        "sourceCommit": "70d441a286c6673dc0288c3ade5fb8568ca5ce7f",
+        "sourceUrl": "https://github.com/DimensionalDevelopment/ForgeGradle",
+        "verifiedLocalArtifactSha256": "7ad389d3a88e25f5a6e7cc24d9d2db8cd58f587cbb3f3fe2fdc2fc5ac72436d3"
+      },
+      "buildJava": {
+        "minimumMajor": 8,
+        "maximumMajor": 10,
+        "preferredMajor": 8,
+        "source": "Gradle 4.9 JVM range intersected with Rift Java 8 compile target",
+        "evidence": "https://docs.gradle.org/4.9/userguide/compatibility.html"
+      },
+      "runtimeJava": {
+        "major": 8,
+        "component": "jre-legacy",
+        "source": "MojangVersionMetadata",
+        "url": "https://piston-meta.mojang.com/v1/packages/c24c2fd37c8ca2e1c18721e2c77caf4d24c87f92/1.13.json",
+        "sha1": "c24c2fd37c8ca2e1c18721e2c77caf4d24c87f92",
+        "snapshotSha256": "a4db43540601793fe6b4d5c4823f4c55899b84912e48a7a73c00e798775ea2ba"
+      },
+      "projectDetectionStrategy": "Exact Rift ForgeGradle tweaker markers plus minecraft.version=1.13; covered by HistoricalAdapters.Tests.ps1.",
+      "buildStrategy": "Gradle 4.9 build task; pinned canonical source fixture verified. General project execution remains gated pending trusted toolchain source injection and transport-safe dependency resolution.",
+      "launchStrategy": "Rift Gradle runClient task plus the RiftLoader client tweaker; deterministic plan only, execution gated and launch unverified.",
+      "agentBridge": "Unverified; no Rift-specific Agent bridge or injection verification.",
+      "evidence": [
+        "compatibility/rift-source-audit.json",
+        "rift-source-commit:dfc75ff7254cbbea81535c02ddc5252e384ac806",
+        "forgegradle-source-commit:70d441a286c6673dc0288c3ade5fb8568ca5ce7f",
+        "gradle-distribution-sha256:e66e69dce8173dd2004b39ba93586a184628bc6c28461bc771d6835f7f9b0d28",
+        "mcp-config-sha256:4e5462425274bb077dde79fe80d8f8e462e48087d7b8ae1afb7dc5c940bac13c",
+        "mcp-snapshot-sha256:fd416b6520185d04dbd4f50ba508225f539b76b54edaabc4c976c4b155c98984",
+        "compatibility/rift-build-validation.json#sha256:4f54adb38894fb9ea6ac5d5b90c7974d902f2602eaa4409e4ca08bb12f2da7cc"
+      ],
+      "capabilities": {
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "rift-source-sha256:b6f4f736adce2234149d450eaafb87cc5cf3c20c6e60ea22f9d99d22f1ff202b",
+            "test:HistoricalAdapters.Tests.ps1:Rift-1.13-detection"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "mmtl-adapter-source-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "mmtl-adapter-test-sha256:2eb15c92f9f109e3db0d059d604b3d21f91a3c57f7b77c53677d2066182efeaa",
+            "test:HistoricalAdapters.Tests.ps1:Rift-1.13-build-plan"
+          ]
+        },
+        "BuildJava": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "gradle-runtime-java-range:7-10",
+            "rift-compiler-target-java:8",
+            "https://docs.gradle.org/4.9/userguide/compatibility.html"
+          ]
+        },
+        "BuildVerified": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "rift-output-sha256:5ec9ae72dc8a647dacc5fea65a16079d0b243d9f7590a567a72f3012e405d6cd",
+            "forgegradle-artifact-sha256:7ad389d3a88e25f5a6e7cc24d9d2db8cd58f587cbb3f3fe2fdc2fc5ac72436d3",
+            "rift-build-validation-sha256:4f54adb38894fb9ea6ac5d5b90c7974d902f2602eaa4409e4ca08bb12f2da7cc"
+          ]
+        },
+        "EvidenceLevel": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "scope:CanonicalPinnedFixtureOnly",
+            "rift-build-validation-sha256:4f54adb38894fb9ea6ac5d5b90c7974d902f2602eaa4409e4ca08bb12f2da7cc"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "mmtl-adapter-source-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "mmtl-adapter-test-sha256:2eb15c92f9f109e3db0d059d604b3d21f91a3c57f7b77c53677d2066182efeaa",
+            "run-task:ForgeGradle-2.3-SNAPSHOT:runClient",
+            "rift-tweaker-class:org.dimdev.riftloader.launch.RiftLoaderClientTweaker"
+          ]
+        }
+      }
+    }
+  ],
   "unassignedTargetPolicy": "No automatic inheritance. Every exact target remains unassigned until family boundaries and evidence are reviewed."
 }

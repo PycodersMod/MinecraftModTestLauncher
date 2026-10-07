@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "targetId": "Rift@1.13",
+  "result": "BuildVerifiedForPinnedFixture",
+  "verifiedAt": "2026-10-07",
+  "scope": "Canonical pinned Rift source fixture only; no client/server launch was attempted.",
+  "sources": [
+    {
+      "role": "Rift",
+      "url": "https://github.com/DimensionalDevelopment/Rift",
+      "commit": "dfc75ff7254cbbea81535c02ddc5252e384ac806",
+      "license": "MIT",
+      "sourceSnapshotSha256": "b6f4f736adce2234149d450eaafb87cc5cf3c20c6e60ea22f9d99d22f1ff202b"
+    },
+    {
+      "role": "ForgeGradle",
+      "url": "https://github.com/DimensionalDevelopment/ForgeGradle",
+      "commit": "70d441a286c6673dc0288c3ade5fb8568ca5ce7f",
+      "license": "LGPL-2.1",
+      "buildProduct": "Source-built local plugin; not represented as an official Maven binary."
+    },
+    {
+      "role": "MixinGradle",
+      "url": "https://github.com/SpongePowered/MixinGradle",
+      "commit": "dcfaf61de110fbce80e0e77a080d42baf7a4ee4b",
+      "license": "MIT",
+      "builtWith": "Gradle 4.9 / Java 8",
+      "artifactSha256": "efa3d51b0a5a07befbfec1c0815035f372926653b63362a94bb538bd63e2cdcd"
+    },
+    {
+      "role": "Mixin",
+      "url": "https://github.com/DimensionalDevelopment/Mixin",
+      "commit": "84519bceca8d574038c3e07d27913b45dfb94f4d",
+      "license": "MIT",
+      "builtWith": "Gradle 2.11 / Java 8",
+      "artifactSha256": "02b4a379e58d069330d6d5b5b3f57f1c8ec499d5b1359118469fcb23270f9299"
+    }
+  ],
+  "toolchain": {
+    "gradleVersion": "4.9",
+    "gradleDistributionSha256": "e66e69dce8173dd2004b39ba93586a184628bc6c28461bc771d6835f7f9b0d28",
+    "javaVersion": "1.8.0_503",
+    "javaVendor": "Oracle",
+    "javaArchitecture": "x86_64",
+    "buildJavaMajor": 8,
+    "forgeGradleArtifactSha256": "7ad389d3a88e25f5a6e7cc24d9d2db8cd58f587cbb3f3fe2fdc2fc5ac72436d3",
+    "sourceBuildDistributions": [
+      {
+        "version": "4.9",
+        "sha256": "e66e69dce8173dd2004b39ba93586a184628bc6c28461bc771d6835f7f9b0d28"
+      },
+      {
+        "version": "2.11",
+        "sha256": "8d7437082356c9fd6309a4479c8db307673965546daea445c6c72759cd6b1ed6"
+      }
+    ]
+  },
+  "fixtureOnlyAdjustments": [
+    {
+      "kind": "transport",
+      "file": "ForgeGradle build.gradle",
+      "sha256": "d38ce135bb62674834587831bbb9aea8babaa7dcde84dcaffa8830ede37622a4",
+      "change": "HTTP Forge Maven endpoint switched to official HTTPS; obsolete Eclipse repository removed; JDT 3.12.3 forced because upstream-required 3.12.0 artifact was unavailable from tested repositories."
+    },
+    {
+      "kind": "transport",
+      "file": "ForgeGradle Constants.java",
+      "sha256": "5d9cc2c033ea009a597f70b37c4f1aa943f6f35a605a795bf7e083db12089212",
+      "change": "Forge Maven, asset and Fernflower URLs switched to HTTPS; dead HTTP MCPBot fallback removed."
+    },
+    {
+      "kind": "dependency-coordinate",
+      "change": "Rift fixture resolved the same ForgeGradle source-built plugin under the generated Maven coordinate and MixinGradle/Mixin under their official source-built coordinates; no Rift project source files were changed."
+    }
+  ],
+  "minecraftArtifacts": [
+    {
+      "coordinate": "de.oceanlabs.mcp:mcp_config:1.13",
+      "url": "https://maven.minecraftforge.net/de/oceanlabs/mcp/mcp_config/1.13/mcp_config-1.13.zip",
+      "sha256": "4e5462425274bb077dde79fe80d8f8e462e48087d7b8ae1afb7dc5c940bac13c"
+    },
+    {
+      "coordinate": "de.oceanlabs.mcp:mcp_snapshot:20180908-1.13",
+      "url": "https://maven.minecraftforge.net/de/oceanlabs/mcp/mcp_snapshot/20180908-1.13/mcp_snapshot-20180908-1.13.zip",
+      "sha256": "fd416b6520185d04dbd4f50ba508225f539b76b54edaabc4c976c4b155c98984"
+    }
+  ],
+  "execution": {
+    "dryRun": "PASS",
+    "task": "build",
+    "result": "BUILD_SUCCESSFUL",
+    "tasksObserved": [
+      "extractMcpData",
+      "extractMcpMappings",
+      "genSrgs",
+      "accessTransform",
+      "deobfMcMCP",
+      "compileJava",
+      "reobfJar",
+      "jar",
+      "assemble",
+      "check",
+      "build"
+    ],
+    "notRun": [
+      "runClient",
+      "runServer",
+      "publish",
+      "uploadArchives",
+      "release",
+      "SFTP"
+    ]
+  },
+  "outputArtifact": {
+    "filename": "Rift-1.0.4-SNAPSHOT.jar",
+    "sizeBytes": 140356,
+    "sha256": "5ec9ae72dc8a647dacc5fea65a16079d0b243d9f7590a567a72f3012e405d6cd"
+  },
+  "safety": {
+    "automaticArbitraryProjectExecution": "Denied",
+    "minecraftClientStarted": false,
+    "dedicatedServerStarted": false,
+    "publishingExecuted": false,
+    "originalRiftSourceModified": false,
+    "reason": "The upstream source declares mixed/obsolete transports and publishing endpoints. This pass only verifies an isolated, pinned fixture after transport remediation."
+  },
+  "launchPlan": {
+    "status": "DefinedButUnverified",
+    "task": "runClient",
+    "tweaker": "org.dimdev.riftloader.launch.RiftLoaderClientTweaker",
+    "executionPerformed": false,
+    "executionGate": "PINNED_TRUSTED_TOOLCHAIN_REQUIRED"
+  }
+}

@@ -140,6 +140,10 @@ Describe 'Historical providers and provenance' {
         $original = Get-MmtlRiftCandidates -MinecraftId '1.13' | Where-Object originality -eq 'Original' | Select-Object -First 1
         $original.sourceClass | Should -Be 'HistoricalOfficial'
         $original.loaderId | Should -Be 'Rift'
+        $original.buildJavaRequirement.minimumMajor | Should -Be 8
+        $original.buildJavaRequirement.maximumMajor | Should -Be 10
+        $original.runtimeJavaRequirement.major | Should -Be 8
+        $original.runtimeJavaRequirement.source | Should -BeExactly 'MojangVersionMetadata'
         $original.commit | Should -Match '^[0-9a-f]{40}$'
         $port = Get-MmtlRiftCandidates -MinecraftId '1.13.2' | Select-Object -First 1
         if ($port) { $port.originality | Should -Be 'CommunityPort';$port.displayName | Should -Be 'Rift Community Port' }

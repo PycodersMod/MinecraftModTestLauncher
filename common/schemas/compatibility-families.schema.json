@@ -17,15 +17,49 @@
       "required": ["familyId", "loaderId", "minecraftIds", "toolchain", "buildJava", "runtimeJava", "projectDetectionStrategy", "launchStrategy", "agentBridge", "evidence"],
       "properties": {
         "familyId": { "type": "string", "minLength": 1 },
+        "toolchainHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
         "loaderId": { "type": "string", "minLength": 1 },
         "minecraftIds": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
         "toolchain": {},
         "buildJava": {},
         "runtimeJava": {},
         "projectDetectionStrategy": { "type": "string", "minLength": 1 },
+        "buildStrategy": { "type": "string", "minLength": 1 },
         "launchStrategy": { "type": "string", "minLength": 1 },
         "agentBridge": { "type": "string", "minLength": 1 },
-        "evidence": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+        "evidence": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "capabilities": {
+          "type": "object",
+          "properties": {
+            "Catalogued": { "$ref": "#/$defs/dimensionEvidence" },
+            "LoaderResolved": { "$ref": "#/$defs/dimensionEvidence" },
+            "ProjectDetection": { "$ref": "#/$defs/dimensionEvidence" },
+            "BuildPlan": { "$ref": "#/$defs/dimensionEvidence" },
+            "BuildJava": { "$ref": "#/$defs/dimensionEvidence" },
+            "RuntimeJava": { "$ref": "#/$defs/dimensionEvidence" },
+            "RuntimeBinding": { "$ref": "#/$defs/dimensionEvidence" },
+            "BuildVerified": { "$ref": "#/$defs/dimensionEvidence" },
+            "LaunchPlan": { "$ref": "#/$defs/dimensionEvidence" },
+            "LaunchCheck": { "$ref": "#/$defs/dimensionEvidence" },
+            "AgentBuild": { "$ref": "#/$defs/dimensionEvidence" },
+            "AgentInjection": { "$ref": "#/$defs/dimensionEvidence" },
+            "SingleCapability": { "$ref": "#/$defs/dimensionEvidence" },
+            "IntegratedLANCapability": { "$ref": "#/$defs/dimensionEvidence" },
+            "DedicatedCapability": { "$ref": "#/$defs/dimensionEvidence" },
+            "LogObservation": { "$ref": "#/$defs/dimensionEvidence" },
+            "EvidenceLevel": { "$ref": "#/$defs/dimensionEvidence" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "dimensionEvidence": {
+      "type": "object",
+      "required": ["status", "evidenceRefs"],
+      "properties": {
+        "status": { "enum": ["Supported", "PartiallySupported", "NotApplicable", "ExternallyBlocked", "Unsupported", "Unknown", "PendingImplementation"] },
+        "evidenceRefs": { "type": "array", "items": { "type": "string", "minLength": 1 } }
       },
       "additionalProperties": false
     }
