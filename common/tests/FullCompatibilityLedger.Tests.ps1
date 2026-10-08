@@ -54,6 +54,34 @@ Describe 'Full compatibility ledger' {
         $ledger.targets[1].dimensions.RuntimeJava.status | Should -BeExactly 'PendingImplementation'
     }
 
+    It 'attaches universal structured-log observation evidence to every exact available target' {
+        $repositoryRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
+        $families=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/families.json')|ConvertFrom-Json
+        $ledger=New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-08T12:00:00Z') -FamilyManifest $families
+        $sourceHash=(Get-FileHash (Join-Path $repositoryRoot 'common/src/Logs/StructuredLogWorkspace.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
+        $fixtureHash=(Get-FileHash (Join-Path $repositoryRoot 'common/tests/StructuredLogs.Tests.ps1') -Algorithm SHA256).Hash.ToLowerInvariant()
+        $expected=@($universe.targets|Where-Object availability -CEQ 'Available')
+
+        @($ledger.targets).Count | Should -Be $expected.Count
+        @($ledger.targets|Where-Object{$_.dimensions.LogObservation.status -cne 'Supported'}).Count | Should -Be 0
+        @($ledger.targets|Where-Object{
+            $refs=@($_.dimensions.LogObservation.evidenceRefs)
+            "structured-log-source-sha256:$sourceHash" -notin $refs -or
+            "structured-log-fixture-sha256:$fixtureHash" -notin $refs -or
+            'test:StructuredLogs.Tests.ps1:observes-every-exact-available-target' -notin $refs
+        }).Count | Should -Be 0
+        $validation=Test-MmtlFullCompatibilityLedger -Ledger $ledger -Universe $universe -FamilyManifest $families
+        $validation.isValid | Should -BeTrue -Because ($validation.errors -join ', ')
+
+        $tampered=$ledger|ConvertTo-Json -Depth 40|ConvertFrom-Json
+        $targetId=[string]$tampered.targets[0].targetId
+        $tampered.targets[0].dimensions.LogObservation.evidenceRefs=@($tampered.targets[0].dimensions.LogObservation.evidenceRefs|Where-Object{$_ -ne "structured-log-source-sha256:$sourceHash"})
+        $invalid=Test-MmtlFullCompatibilityLedger -Ledger $tampered -Universe $universe -FamilyManifest $families
+        $invalid.isValid | Should -BeFalse
+        $invalid.errors | Should -Contain "LOG_OBSERVATION_EVIDENCE_INVALID:$targetId"
+    }
+
     It 'classifies exact Mojang manifest omissions as evidenced RuntimeJava external blockers' {
         $universe = $script:universe | ConvertTo-Json -Depth 30 | ConvertFrom-Json
         $universe.targets[1] | Add-Member -NotePropertyName runtimeJavaRequirement -NotePropertyValue ([pscustomobject]@{

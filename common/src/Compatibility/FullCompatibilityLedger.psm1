@@ -7,6 +7,7 @@ $script:LedgerDimensions = @(
     'DedicatedCapability', 'LogObservation', 'EvidenceLevel'
 )
 $script:LedgerStatuses = @('Supported', 'PartiallySupported', 'NotApplicable', 'ExternallyBlocked', 'Unsupported', 'Unknown', 'PendingImplementation')
+$script:MmtlLogObservationEvidenceCache = $null
 
 function Get-MmtlLedgerSha256 {
     param([Parameter(Mandatory)][string]$Text)
@@ -43,6 +44,28 @@ function Get-MmtlTargetSpecHash {
 function New-MmtlLedgerDimension {
     param([Parameter(Mandatory)][string]$Status, [string[]]$EvidenceRefs = @())
     [pscustomobject][ordered]@{ status = $Status; evidenceRefs = @($EvidenceRefs) }
+}
+
+function Get-MmtlLogObservationEvidenceRefs {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)]$Universe,[Parameter(Mandatory)]$Target)
+    if(-not $script:MmtlLogObservationEvidenceCache){
+        $logSource=Join-Path $PSScriptRoot '../Logs/StructuredLogWorkspace.psm1'
+        $fixtureSource=Join-Path $PSScriptRoot '../../tests/StructuredLogs.Tests.ps1'
+        if(-not(Test-Path -LiteralPath $logSource -PathType Leaf) -or -not(Test-Path -LiteralPath $fixtureSource -PathType Leaf)){throw 'LOG_OBSERVATION_EVIDENCE_SOURCE_MISSING'}
+        $script:MmtlLogObservationEvidenceCache=[pscustomobject]@{
+            sourceHash=(Get-FileHash -LiteralPath $logSource -Algorithm SHA256).Hash.ToLowerInvariant()
+            fixtureHash=(Get-FileHash -LiteralPath $fixtureSource -Algorithm SHA256).Hash.ToLowerInvariant()
+        }
+    }
+    $refs=[Collections.Generic.List[string]]::new()
+    $refs.Add("universe-sha256:$([string]$Universe.catalogHash)")
+    if(-not [string]::IsNullOrWhiteSpace([string]$Target.sourceHash)){$refs.Add("source-sha256:$([string]$Target.sourceHash)")}
+    if(-not [string]::IsNullOrWhiteSpace([string]$Target.authoritativeSource)){$refs.Add("source-url:$([string]$Target.authoritativeSource)")}
+    $refs.Add("structured-log-source-sha256:$($script:MmtlLogObservationEvidenceCache.sourceHash)")
+    $refs.Add("structured-log-fixture-sha256:$($script:MmtlLogObservationEvidenceCache.fixtureHash)")
+    $refs.Add('test:StructuredLogs.Tests.ps1:observes-every-exact-available-target')
+    return @($refs.ToArray())
 }
 
 function Get-MmtlRuntimeJavaEvidenceRefs {
@@ -169,6 +192,7 @@ function New-MmtlFullCompatibilityLedger {
                 'Catalogued' { 'Supported' }
                 'LoaderResolved' { if ($candidateResolved) { 'Supported' } else { 'Unknown' } }
                 'RuntimeJava' { if (@(Get-MmtlRuntimeJavaEvidenceRefs -Target $target).Count) { 'Supported' } elseif (Get-MmtlRuntimeJavaBlockerEvidence -Target $target) { 'ExternallyBlocked' } else { 'PendingImplementation' } }
+                'LogObservation' { 'Supported' }
                 default { 'PendingImplementation' }
             }
             $capability = $null
@@ -184,6 +208,7 @@ function New-MmtlFullCompatibilityLedger {
                 if (-not [string]::IsNullOrWhiteSpace([string]$target.authoritativeSource)) { $evidenceRefs += "source-url:$([string]$target.authoritativeSource)" }
             }
             if ($name -ceq 'RuntimeJava' -and $status -ceq 'Supported') { $evidenceRefs += @(Get-MmtlRuntimeJavaEvidenceRefs -Target $target) }
+            if ($name -ceq 'LogObservation' -and $status -ceq 'Supported') { $evidenceRefs += @(Get-MmtlLogObservationEvidenceRefs -Universe $Universe -Target $target) }
             if ($name -ceq 'RuntimeJava' -and $status -ceq 'ExternallyBlocked' -and -not $capability) {
                 $blocker=Get-MmtlRuntimeJavaBlockerEvidence -Target $target
                 if(-not $blocker){throw "RUNTIME_JAVA_EXTERNAL_BLOCKER_EVIDENCE_INVALID:$([string]$target.targetId)"}
@@ -271,6 +296,10 @@ function Test-MmtlFullCompatibilityLedger {
             $dimension = $row.dimensions.$name
             if ([string]$dimension.status -cnotin $script:LedgerStatuses) { $errors.Add("LEDGER_STATUS_INVALID:$($row.targetId):$name") }
             if ([string]$dimension.status -cin @('Supported', 'PartiallySupported') -and @($dimension.evidenceRefs).Count -eq 0) { $errors.Add("LEDGER_CAPABILITY_EVIDENCE_MISSING:$($row.targetId):$name") }
+            if($name -ceq 'LogObservation' -and $universeById.ContainsKey([string]$row.targetId)){
+                $expectedLogEvidence=@(Get-MmtlLogObservationEvidenceRefs -Universe $Universe -Target $universeById[[string]$row.targetId])
+                if([string]$dimension.status -cne 'Supported' -or @($expectedLogEvidence|Where-Object{$_ -notin @($dimension.evidenceRefs)}).Count -gt 0){$errors.Add("LOG_OBSERVATION_EVIDENCE_INVALID:$($row.targetId)")}
+            }
             if ([string]$dimension.status -ceq 'ExternallyBlocked') {
                 foreach ($field in @('reasonCode','source','evidence','attemptedRemediation')) {
                     if (-not $dimension.PSObject.Properties[$field] -or [string]::IsNullOrWhiteSpace([string]$dimension.$field)) {
