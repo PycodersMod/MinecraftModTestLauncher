@@ -69,6 +69,31 @@ function Get-MmtlRuntimeJavaEvidenceRefs {
     @("runtime-java-source-url:$sourceUrl", "runtime-java-fallback-reason:$([string]$requirement.reason)")
 }
 
+function Get-MmtlRuntimeJavaBlockerEvidence {
+    param([Parameter(Mandatory)]$Target)
+    if(-not $Target.PSObject.Properties['runtimeJavaRequirement']){return $null}
+    $requirement=$Target.runtimeJavaRequirement
+    if(-not $requirement -or [string]$requirement.requirementKind -cne 'Unknown' -or [string]$requirement.source -cne 'Unknown' -or $null -ne $requirement.major){return $null}
+    $provenance=$requirement.provenance
+    if(-not $provenance -or [string]$provenance.minecraftId -cne [string]$Target.minecraftId){return $null}
+    $uri=$null
+    if(-not [Uri]::TryCreate([string]$provenance.url,[UriKind]::Absolute,[ref]$uri) -or $uri.Scheme -cne 'https' -or $uri.Host -cne 'piston-meta.mojang.com' -or $uri.UserInfo.Length -gt 0){return $null}
+    if([string]$requirement.metadataStatus -ceq 'NOT_IN_MOJANG_MANIFEST'){
+        if([string]$provenance.sourceType -cne 'official-manifest-absence' -or $uri.AbsolutePath -cne '/mc/game/version_manifest_v2.json' -or [string]$provenance.reasonCode -cne 'MOJANG_TARGET_NOT_IN_VERSION_MANIFEST' -or [string]$provenance.manifestSha256 -notmatch '^[a-f0-9]{64}$'){return $null}
+        $refs=@("runtime-java-manifest-url:$($uri.AbsoluteUri)","runtime-java-manifest-sha256:$([string]$provenance.manifestSha256)","runtime-java-target-absent:$([string]$Target.minecraftId)")
+        return [pscustomobject][ordered]@{reasonCode='MOJANG_RUNTIME_JAVA_METADATA_UNAVAILABLE';source='Official Mojang version manifest';evidence=($refs -join '; ');attemptedRemediation='Verified the frozen Mojang version manifest snapshot and exact Minecraft ID. No manifest entry exists; no neighboring-version Java inference was applied. Await an authoritative per-version metadata source.';evidenceRefs=$refs}
+    }
+    if([string]$requirement.metadataStatus -ceq 'VERIFIED_NO_JAVA_VERSION'){
+        if([string]$provenance.sourceType -cne 'official-version-json-absence' -or [string]$provenance.reasonCode -cne 'MOJANG_JAVA_VERSION_FIELD_ABSENT' -or [string]$provenance.manifestSha1 -notmatch '^[a-f0-9]{40}$' -or [string]$provenance.snapshotSha256 -notmatch '^[a-f0-9]{64}$'){return $null}
+        if($uri.AbsolutePath -notmatch '^/v1/packages/(?<sha1>[a-f0-9]{40})/(?<version>.+)\.json$' -or $Matches.sha1 -cne [string]$provenance.manifestSha1){return $null}
+        $versionId=[Uri]::UnescapeDataString([string]$Matches.version)
+        if($versionId -cne [string]$Target.minecraftId){return $null}
+        $refs=@("runtime-java-version-url:$($uri.AbsoluteUri)","runtime-java-version-manifest-sha1:$([string]$provenance.manifestSha1)","runtime-java-snapshot-sha256:$([string]$provenance.snapshotSha256)","runtime-java-javaVersion-absent:$([string]$Target.minecraftId)")
+        return [pscustomobject][ordered]@{reasonCode='MOJANG_RUNTIME_JAVA_METADATA_UNAVAILABLE';source='Official Mojang per-version JSON';evidence=($refs -join '; ');attemptedRemediation='Verified the manifest SHA-1 and exact per-version JSON snapshot SHA-256. The exact JSON has no javaVersion field and no compatibility fallback applies. Await an authoritative Java requirement source.';evidenceRefs=$refs}
+    }
+    return $null
+}
+
 function Get-MmtlCompatibilityFamilyMap {
     param([Parameter(Mandatory)]$Universe, $FamilyManifest)
     $map = [Collections.Generic.Dictionary[string, string]]::new([StringComparer]::Ordinal)
@@ -143,7 +168,7 @@ function New-MmtlFullCompatibilityLedger {
             $status = switch ($name) {
                 'Catalogued' { 'Supported' }
                 'LoaderResolved' { if ($candidateResolved) { 'Supported' } else { 'Unknown' } }
-                'RuntimeJava' { if (@(Get-MmtlRuntimeJavaEvidenceRefs -Target $target).Count) { 'Supported' } else { 'PendingImplementation' } }
+                'RuntimeJava' { if (@(Get-MmtlRuntimeJavaEvidenceRefs -Target $target).Count) { 'Supported' } elseif (Get-MmtlRuntimeJavaBlockerEvidence -Target $target) { 'ExternallyBlocked' } else { 'PendingImplementation' } }
                 default { 'PendingImplementation' }
             }
             $capability = $null
@@ -159,6 +184,12 @@ function New-MmtlFullCompatibilityLedger {
                 if (-not [string]::IsNullOrWhiteSpace([string]$target.authoritativeSource)) { $evidenceRefs += "source-url:$([string]$target.authoritativeSource)" }
             }
             if ($name -ceq 'RuntimeJava' -and $status -ceq 'Supported') { $evidenceRefs += @(Get-MmtlRuntimeJavaEvidenceRefs -Target $target) }
+            if ($name -ceq 'RuntimeJava' -and $status -ceq 'ExternallyBlocked' -and -not $capability) {
+                $blocker=Get-MmtlRuntimeJavaBlockerEvidence -Target $target
+                if(-not $blocker){throw "RUNTIME_JAVA_EXTERNAL_BLOCKER_EVIDENCE_INVALID:$([string]$target.targetId)"}
+                $dimensions[$name]=[pscustomobject][ordered]@{status=$status;evidenceRefs=@($blocker.evidenceRefs);reasonCode=$blocker.reasonCode;source=$blocker.source;evidence=$blocker.evidence;attemptedRemediation=$blocker.attemptedRemediation}
+                continue
+            }
             if ($capability) { $evidenceRefs += @($capability.evidenceRefs) }
             $dimensions[$name] = New-MmtlLedgerDimension -Status $status -EvidenceRefs $evidenceRefs
         }
@@ -246,6 +277,10 @@ function Test-MmtlFullCompatibilityLedger {
                         $errors.Add("EXTERNAL_BLOCKER_EVIDENCE_MISSING:$($row.targetId):$name")
                         break
                     }
+                }
+                if($name -ceq 'RuntimeJava' -and $universeById.ContainsKey($targetId)){
+                    $blocker=Get-MmtlRuntimeJavaBlockerEvidence -Target $universeById[$targetId]
+                    if(-not $blocker -or [string]$dimension.reasonCode -cne [string]$blocker.reasonCode -or [string]$dimension.source -cne [string]$blocker.source -or [string]$dimension.evidence -cne [string]$blocker.evidence -or [string]$dimension.attemptedRemediation -cne [string]$blocker.attemptedRemediation -or (@($blocker.evidenceRefs|Where-Object{$_ -notin @($dimension.evidenceRefs)}).Count -gt 0)){$errors.Add("RUNTIME_JAVA_EXTERNAL_BLOCKER_EVIDENCE_INVALID:$targetId")}
                 }
             }
         }

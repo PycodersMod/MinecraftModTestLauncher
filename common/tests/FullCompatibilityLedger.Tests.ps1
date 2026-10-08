@@ -54,6 +54,46 @@ Describe 'Full compatibility ledger' {
         $ledger.targets[1].dimensions.RuntimeJava.status | Should -BeExactly 'PendingImplementation'
     }
 
+    It 'classifies exact Mojang manifest omissions as evidenced RuntimeJava external blockers' {
+        $universe = $script:universe | ConvertTo-Json -Depth 30 | ConvertFrom-Json
+        $universe.targets[1] | Add-Member -NotePropertyName runtimeJavaRequirement -NotePropertyValue ([pscustomobject]@{
+            major=$null;source='Unknown';confidence='Unknown';requirementKind='Unknown';metadataStatus='NOT_IN_MOJANG_MANIFEST'
+            provenance=[pscustomobject]@{sourceType='official-manifest-absence';url='https://piston-meta.mojang.com/mc/game/version_manifest_v2.json';manifestSha256='a'*64;minecraftId='old-beta-1.7.3';reasonCode='MOJANG_TARGET_NOT_IN_VERSION_MANIFEST'}
+        })
+        $ledger=New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z')
+        $row=$ledger.targets|Where-Object targetId -CEQ 'Legacy@old-beta-1.7.3'
+        $row.dimensions.RuntimeJava.status|Should -BeExactly 'ExternallyBlocked'
+        $row.dimensions.RuntimeJava.reasonCode|Should -BeExactly 'MOJANG_RUNTIME_JAVA_METADATA_UNAVAILABLE'
+        $row.dimensions.RuntimeJava.evidenceRefs|Should -Contain ('runtime-java-manifest-sha256:'+('a'*64))
+        $row.dimensions.RuntimeJava.evidence|Should -Match 'old-beta-1.7.3'
+        (Test-MmtlFullCompatibilityLedger -Ledger $ledger -Universe $universe).isValid|Should -BeTrue
+    }
+
+    It 'classifies a hash-verified version JSON without javaVersion as an exact external blocker' {
+        $universe = $script:universe | ConvertTo-Json -Depth 30 | ConvertFrom-Json
+        $universe.targets[0] | Add-Member -NotePropertyName runtimeJavaRequirement -NotePropertyValue ([pscustomobject]@{
+            major=$null;source='Unknown';confidence='Unknown';requirementKind='Unknown';metadataStatus='VERIFIED_NO_JAVA_VERSION'
+            provenance=[pscustomobject]@{sourceType='official-version-json-absence';url='https://piston-meta.mojang.com/v1/packages/'+('b'*40)+'/1.20.1.json';manifestSha1='b'*40;snapshotSha256='c'*64;minecraftId='1.20.1';reasonCode='MOJANG_JAVA_VERSION_FIELD_ABSENT'}
+        })
+        $ledger=New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z')
+        $row=$ledger.targets|Where-Object targetId -CEQ 'Fabric@1.20.1'
+        $row.dimensions.RuntimeJava.status|Should -BeExactly 'ExternallyBlocked'
+        $row.dimensions.RuntimeJava.evidenceRefs|Should -Contain ('runtime-java-snapshot-sha256:'+('c'*64))
+        (Test-MmtlFullCompatibilityLedger -Ledger $ledger -Universe $universe).isValid|Should -BeTrue
+    }
+
+    It 'keeps missing or malformed upstream absence evidence PendingImplementation' {
+        $universe = $script:universe | ConvertTo-Json -Depth 30 | ConvertFrom-Json
+        $universe.targets[1] | Add-Member -NotePropertyName runtimeJavaRequirement -NotePropertyValue ([pscustomobject]@{
+            major=$null;source='Unknown';confidence='Unknown';requirementKind='Unknown';metadataStatus='NOT_IN_MOJANG_MANIFEST'
+            provenance=[pscustomobject]@{sourceType='official-manifest-absence';url='http://example.invalid/manifest.json';manifestSha256='invalid';minecraftId='wrong-id';reasonCode='UNTRUSTED'}
+        })
+        $ledger=New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z')
+        $row=$ledger.targets|Where-Object targetId -CEQ 'Legacy@old-beta-1.7.3'
+        $row.dimensions.RuntimeJava.status|Should -BeExactly 'PendingImplementation'
+        $row.dimensions.RuntimeJava.evidenceRefs|Should -BeNullOrEmpty
+    }
+
     It 'rejects omitted targets and external blockers without evidence' {
         $ledger = New-MmtlFullCompatibilityLedger -Universe $script:universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z')
         $ledger.targets = @($ledger.targets | Select-Object -First 1)
