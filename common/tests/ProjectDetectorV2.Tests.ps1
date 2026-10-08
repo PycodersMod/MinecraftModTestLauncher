@@ -1,5 +1,71 @@
 BeforeAll { $root=Split-Path -Parent $PSScriptRoot;Import-Module (Join-Path $root 'src/Platform/Platform.psm1') -Force;Import-Module (Join-Path $root 'src/ProjectDetector.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/Fabric.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/NeoForge.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/Quilt.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/Forge.psm1') -Force }
 Describe 'Evidence based project detection' {
+    It 'detects a Gradle-less MCP ModLoader project from source and version configuration' {
+        $project=Join-Path $TestDrive 'mcp-modloader'
+        $source=Join-Path $project 'src/minecraft/net/minecraft/src'
+        $config=Join-Path $project 'conf'
+        New-Item -ItemType Directory -Path $source,$config -Force|Out-Null
+        @'
+package net.minecraft.src;
+public class mod_fixture extends BaseMod {
+    public String Version() { return "1.0"; }
+    public void load() { ModLoader.AddName(new Item(1000), "Fixture"); }
+}
+'@|Set-Content (Join-Path $source 'mod_fixture.java')
+        "ClientVersion=b1.7.3`nServerVersion=b1.7.3"|Set-Content (Join-Path $config 'version.cfg')
+
+        $result=Get-MmtlProject -Path $project
+
+        $result.Loader | Should -BeExactly 'ModLoader'
+        $result.MinecraftVersion | Should -BeExactly 'b1.7.3'
+        $result.DetectionStatus | Should -BeExactly 'Resolved'
+        $result.BuildSystem.id | Should -BeExactly 'Legacy'
+        $result.Wrapper | Should -BeFalse
+        @($result.Evidence|Where-Object{ $_.loaderId -ceq 'ModLoader' -and $_.source -ceq 'LegacyJavaSource' }).Count | Should -Be 1
+    }
+
+    It 'distinguishes ModLoaderMP source markers from base ModLoader project markers' {
+        $project=Join-Path $TestDrive 'mcp-modloadermp'
+        $source=Join-Path $project 'src/minecraft/net/minecraft/src'
+        $config=Join-Path $project 'conf'
+        New-Item -ItemType Directory -Path $source,$config -Force|Out-Null
+        @'
+package net.minecraft.src;
+public class mod_fixture extends BaseModMp {
+    public void load() { ModLoaderMp.RegisterNetClientHandler(this, new Handler()); }
+}
+'@|Set-Content (Join-Path $source 'mod_fixture.java')
+        'ClientVersion=b1.7.3'|Set-Content (Join-Path $config 'version.cfg')
+
+        $result=Get-MmtlProject -Path $project
+
+        $result.Loader | Should -BeExactly 'ModLoaderMP'
+        $result.MinecraftVersion | Should -BeExactly 'b1.7.3'
+        @($result.Evidence|Where-Object loaderId -ceq 'ModLoader').Count | Should -Be 0
+    }
+
+    It 'detects every exact frozen ModLoader and ModLoaderMP target from MCP source layout' {
+        $repositoryRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
+        $project=Join-Path $TestDrive 'all-mcp-loader-targets'
+        $source=Join-Path $project 'src/minecraft/net/minecraft/src'
+        $config=Join-Path $project 'conf'
+        New-Item -ItemType Directory -Path $source,$config -Force|Out-Null
+        $failures=[Collections.Generic.List[string]]::new()
+        foreach($loaderId in @('ModLoader','ModLoaderMP')){
+            $targets=@($universe.targets|Where-Object{$_.loaderId -ceq $loaderId -and $_.availability -ceq 'Available'})
+            $classBody=if($loaderId -ceq 'ModLoaderMP'){'public class mod_fixture extends BaseModMp { void load() { ModLoaderMp.RegisterNetClientHandler(this, new Handler()); } }'}else{'public class mod_fixture extends BaseMod { void load() { ModLoader.AddName(new Item(1000), "Fixture"); } }'}
+            "package net.minecraft.src;`n$classBody"|Set-Content (Join-Path $source 'mod_fixture.java')
+            foreach($target in $targets){
+                "ClientVersion=$($target.minecraftId)"|Set-Content (Join-Path $config 'version.cfg')
+                $result=Get-MmtlProject -Path $project
+                if($result.Loader -cne $loaderId -or $result.MinecraftVersion -cne [string]$target.minecraftId -or $result.DetectionStatus -cne 'Resolved'){$failures.Add("$($target.targetId):MCP_DETECTION_MISMATCH")}
+            }
+            $targets.Count | Should -BeGreaterThan 0
+        }
+        $failures | Should -BeNullOrEmpty
+    }
+
     It 'identifies ModDevGradle before the broader NeoForge Gradle plugin marker' {
         $project=Join-Path $TestDrive 'neoforge-moddevgradle';New-Item -ItemType Directory -Path (Join-Path $project 'src/main/resources/META-INF') -Force|Out-Null
         "plugins { id 'net.neoforged.moddev' version '2.0.1' }"|Set-Content (Join-Path $project 'build.gradle')

@@ -371,4 +371,38 @@ Describe 'Full compatibility ledger' {
         @($targets|Where-Object{$_.candidateSourceUrl -cne 'https://dl.liteloader.com/versions/versions.json'}).Count | Should -Be 0
         @($targets|Where-Object{$_.candidateSourceHash -notmatch '^(?i:[a-f0-9]{64})$'}).Count | Should -Be 0
     }
+
+    It 'assigns exact MCP ModLoader targets to detection-only families with hash-bound provenance' {
+        $repositoryRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
+        $families=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/families.json')|ConvertFrom-Json
+        $ledger=New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-08T00:00:00Z') -FamilyManifest $families
+        $detectorHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
+        foreach($loaderId in @('ModLoader','ModLoaderMP')){
+            $targets=@($universe.targets|Where-Object{$_.loaderId -ceq $loaderId -and $_.availability -ceq 'Available'})
+            $family=$families.families|Where-Object{$_.loaderId -ceq $loaderId}|Select-Object -First 1
+            $rows=@($ledger.targets|Where-Object loaderId -CEQ $loaderId)
+            $expectedFamilyId=if($loaderId -ceq 'ModLoader'){'modloader-mcp-source-project-detection-v1'}else{'modloadermp-mcp-source-project-detection-v1'}
+            $hashLines=[Collections.Generic.List[string]]::new()
+            foreach($part in @($expectedFamilyId,[string]$universe.catalogHash,$detectorHash)){[void]$hashLines.Add([string]$part)}
+            foreach($target in @($targets|Sort-Object targetId)){$versionLabels=@($target.loaderVersionCandidates|ForEach-Object{[string]$_.loaderVersion});[void]$hashLines.Add("$($target.targetId)|$([string]$target.candidateSourceHash)|$($versionLabels -join ',')")}
+            $expectedHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($hashLines -join [string][char]10))).ToLowerInvariant()
+            $family | Should -Not -BeNullOrEmpty
+            $family.familyId | Should -BeExactly $expectedFamilyId
+            $family.toolchainHash | Should -BeExactly $expectedHash
+            $family.minecraftIds.Count | Should -Be $targets.Count
+            @($family.minecraftIds|Sort-Object -Unique).Count | Should -Be $targets.Count
+            @($rows|Where-Object{$_.familyId -cne [string]$family.familyId}).Count | Should -Be 0
+            @($rows|Where-Object{$_.dimensions.ProjectDetection.status -cne 'Supported'}).Count | Should -Be 0
+            @($rows|Where-Object{$_.dimensions.BuildPlan.status -cne 'PendingImplementation' -or $_.dimensions.LaunchPlan.status -cne 'PendingImplementation' -or $_.dimensions.BuildVerified.status -cne 'PendingImplementation'}).Count | Should -Be 0
+            foreach($target in $targets){
+                $family.minecraftIds | Should -Contain ([string]$target.minecraftId)
+                $row=$rows|Where-Object targetId -CEQ ([string]$target.targetId)|Select-Object -First 1
+                $row.dimensions.ProjectDetection.evidenceRefs | Should -Contain "project-detector-sha256:$detectorHash"
+            }
+            $family.capabilities.PSObject.Properties.Name | Should -Be @('ProjectDetection')
+        }
+        $familySchema=Join-Path $repositoryRoot 'common/schemas/compatibility-families.schema.json'
+        (Test-Json -Json ($families|ConvertTo-Json -Depth 50 -Compress) -SchemaFile $familySchema) | Should -BeTrue
+    }
 }

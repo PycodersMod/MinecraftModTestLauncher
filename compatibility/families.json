@@ -538,7 +538,7 @@
         "26w14a",
         "3D Shareware v1.34"
       ],
-      "toolchainHash": "85be4d31642f0afa30cdc8a769a008e945b2ca869531110d65b493ec792aa7e0",
+      "toolchainHash": "f87a4880e3e0b6e0f03845c6bacf2de67fcea149b40b31bd465bcd36fc999371",
       "toolchain": {
         "id": "FabricLoomBuildLaunchPlan",
         "version": "project-resolved Loom version; plan contract remains version-independent"
@@ -560,7 +560,7 @@
         "https://docs.fabricmc.net/develop/loom",
         "https://docs.fabricmc.net/develop/getting-started/building-a-mod",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+        "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
         "fabric-adapter-sha256:f21a4b0098cace1ddaff5bfb41ec9c2352752f739e01782412d8cee2c88e7829",
         "test:ProjectDetectorV2.Tests.ps1:detect-and-bind-all-exact-fabric-targets"
       ],
@@ -568,7 +568,7 @@
         "ProjectDetection": {
           "status": "Supported",
           "evidenceRefs": [
-            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
             "fabric-adapter-sha256:f21a4b0098cace1ddaff5bfb41ec9c2352752f739e01782412d8cee2c88e7829",
             "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-fabric-targets"
           ]
@@ -673,7 +673,7 @@
         "26.2",
         "26.3"
       ],
-      "toolchainHash": "a9326a72919a86762cda4785b205e1e48979f3bbb475feba0c50eb7e26da91a4",
+      "toolchainHash": "29b5b3a9f5d92eb8a64ce9939333362ad5f89a1bb6d98abd01e2ed11e7214e47",
       "toolchain": {
         "id": "ForgeGradleProjectDetection",
         "version": "per-project resolved ForgeGradle; no Build or Launch support implied"
@@ -694,7 +694,7 @@
         "https://docs.minecraftforge.net/en/latest/gettingstarted/",
         "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+        "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
         "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
         "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
       ],
@@ -703,7 +703,7 @@
           "status": "Supported",
           "evidenceRefs": [
             "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
-            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
             "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
             "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
           ]
@@ -791,7 +791,7 @@
         "2point0_purple",
         "2point0_red"
       ],
-      "toolchainHash": "8fda6f2967deb43731cf910247bfbb6083829d1f18cbc493b682e3c66a4436a0",
+      "toolchainHash": "9e387ea5a1093d57fa9060689ec0c54f470df23d175589caa047766c75b1e62a",
       "toolchain": {
         "id": "LegacyLoomingProjectDetection",
         "version": "per-project resolved Legacy Looming; no Build or Launch support implied"
@@ -812,7 +812,7 @@
         "https://meta.legacyfabric.net/",
         "https://github.com/Legacy-Fabric/legacy-looming",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+        "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
         "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
         "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
       ],
@@ -822,7 +822,7 @@
           "evidenceRefs": [
             "https://meta.legacyfabric.net/",
             "https://github.com/Legacy-Fabric/legacy-looming",
-            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
             "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
             "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
           ]
@@ -850,7 +850,7 @@
         "1.9",
         "1.9.4"
       ],
-      "toolchainHash": "dc3c3ede4d467a81311ee43c3ad03e9a2421e74e0d4bacb4006761cb61e95070",
+      "toolchainHash": "e8c0e47c3d012205d30c193e7e36fae5002004a495614f218c80fc25b290eb45",
       "toolchain": {
         "id": "LiteLoaderProjectMetadata",
         "version": "per-project historical Gradle configuration; no Build support implied"
@@ -871,7 +871,7 @@
         "https://dl.liteloader.com/versions/versions.json",
         "source-sha256:778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+        "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
         "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
         "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
         "https://www.liteloader.com/explore/docs/user%3Ainstall%3Amanual%3A1.7.10",
@@ -883,9 +883,161 @@
           "evidenceRefs": [
             "https://dl.liteloader.com/versions/versions.json",
             "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
-            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
             "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
             "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
+          ]
+        }
+      }
+    },
+    {
+      "familyId": "modloader-mcp-source-project-detection-v1",
+      "loaderId": "ModLoader",
+      "minecraftIds": [
+        "1.0.0",
+        "1.1",
+        "1.2.3",
+        "1.2.4",
+        "1.2.5",
+        "1.3.1",
+        "1.3.2",
+        "1.4.2",
+        "1.4.4",
+        "1.4.5",
+        "1.4.6",
+        "1.4.7",
+        "1.5",
+        "1.5.1",
+        "1.5.2",
+        "1.6.1",
+        "1.6.2",
+        "a1.1.2_01",
+        "a1.2.0_02",
+        "a1.2.1_01",
+        "a1.2.2",
+        "a1.2.3_04",
+        "a1.2.4_01",
+        "a1.2.5",
+        "a1.2.6",
+        "b1.0_01",
+        "b1.1_02",
+        "b1.2",
+        "b1.2_01",
+        "b1.2_02",
+        "b1.3",
+        "b1.3_01",
+        "b1.4",
+        "b1.4_01",
+        "b1.5_01",
+        "b1.6.4",
+        "b1.6.5",
+        "b1.6.6",
+        "b1.7.2",
+        "b1.7.3",
+        "b1.8.1",
+        "b1.9p5"
+      ],
+      "toolchainHash": "be51c0baf26d3e52d06d037c791e6a6edb208b0d3013f77f7ecf31f14c97a600",
+      "toolchain": {
+        "id": "ClassicMCPSourceDetection",
+        "version": "historical source/layout inspection only; Build and Launch remain unverified"
+      },
+      "buildJava": {
+        "status": "PerProjectConfigurationRequired",
+        "evidenceRef": "common/src/ProjectDetector.psm1"
+      },
+      "runtimeJava": {
+        "status": "PerTargetMojangMetadata",
+        "evidenceRef": "compatibility/runtime-java-catalog.json"
+      },
+      "projectDetectionStrategy": "识别经典 MCP 源码目录中的 ModLoader API 形态：ModLoader 需 mod_* 类及 BaseMod/ModLoader 标记；ModLoaderMP 需 BaseModMp/ModLoaderMp 标记。仅在 conf/version.cfg 等版本配置恰好给出 frozen Universe 中的精确 Minecraft ID 时绑定目标；Gradle-less 项目不产生 Build/Launch 计划。",
+      "buildStrategy": "尚未声明受支持的 Legacy MCP BuildPlan；不执行 MCP scripts、JAR patch 或未知构建工具。",
+      "launchStrategy": "尚未声明受支持的 Legacy MCP LaunchPlan；不执行 startclient/startserver 或修改游戏 JAR。",
+      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
+      "evidence": [
+        "https://mcarchive.net/mods/modloader",
+        "https://legacymcmodding.github.io/ModLoader-JavaDoc/",
+        "https://minecraft.fandom.com/ru/wiki/Создание_модификаций_с_помощью_ModLoader_(Beta_1.7.3)",
+        "https://github.com/MCPHackers/RetroMCP-Java",
+        "candidate-catalog:compatibility/candidate-catalogs/ModLoader.json",
+        "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+        "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-frozen-modloader-target-from-mcp-source-layout"
+      ],
+      "capabilities": {
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
+            "https://legacymcmodding.github.io/ModLoader-JavaDoc/",
+            "https://minecraft.fandom.com/ru/wiki/Создание_модификаций_с_помощью_ModLoader_(Beta_1.7.3)",
+            "https://github.com/MCPHackers/RetroMCP-Java",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-frozen-modloader-target-from-mcp-source-layout"
+          ]
+        }
+      }
+    },
+    {
+      "familyId": "modloadermp-mcp-source-project-detection-v1",
+      "loaderId": "ModLoaderMP",
+      "minecraftIds": [
+        "1.0.0",
+        "1.1",
+        "1.2.3",
+        "1.2.4",
+        "1.2.5",
+        "1.3.1",
+        "1.3.2",
+        "b1.1_02",
+        "b1.2_02",
+        "b1.3",
+        "b1.3_01",
+        "b1.4_01",
+        "b1.5_01",
+        "b1.6.4",
+        "b1.6.5",
+        "b1.6.6",
+        "b1.7.2",
+        "b1.7.3",
+        "b1.8.1",
+        "b1.9p5"
+      ],
+      "toolchainHash": "9b490dc59624eb03f1d6fdb48b0265707bffea934a2c1e419a7c5789627f0a4a",
+      "toolchain": {
+        "id": "ClassicMCPSourceDetection",
+        "version": "historical source/layout inspection only; Build and Launch remain unverified"
+      },
+      "buildJava": {
+        "status": "PerProjectConfigurationRequired",
+        "evidenceRef": "common/src/ProjectDetector.psm1"
+      },
+      "runtimeJava": {
+        "status": "PerTargetMojangMetadata",
+        "evidenceRef": "compatibility/runtime-java-catalog.json"
+      },
+      "projectDetectionStrategy": "识别经典 MCP 源码目录中的 ModLoader API 形态：ModLoader 需 mod_* 类及 BaseMod/ModLoader 标记；ModLoaderMP 需 BaseModMp/ModLoaderMp 标记。仅在 conf/version.cfg 等版本配置恰好给出 frozen Universe 中的精确 Minecraft ID 时绑定目标；Gradle-less 项目不产生 Build/Launch 计划。",
+      "buildStrategy": "尚未声明受支持的 Legacy MCP BuildPlan；不执行 MCP scripts、JAR patch 或未知构建工具。",
+      "launchStrategy": "尚未声明受支持的 Legacy MCP LaunchPlan；不执行 startclient/startserver 或修改游戏 JAR。",
+      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
+      "evidence": [
+        "https://mcarchive.net/mods/modloadermp",
+        "https://legacymcmodding.github.io/ModLoader-JavaDoc/",
+        "https://minecraft.fandom.com/ru/wiki/Создание_модификаций_с_помощью_ModLoader_(Beta_1.7.3)",
+        "https://github.com/MCPHackers/RetroMCP-Java",
+        "candidate-catalog:compatibility/candidate-catalogs/ModLoaderMP.json",
+        "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+        "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-frozen-modloader-target-from-mcp-source-layout"
+      ],
+      "capabilities": {
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
+            "https://legacymcmodding.github.io/ModLoader-JavaDoc/",
+            "https://minecraft.fandom.com/ru/wiki/Создание_модификаций_с_помощью_ModLoader_(Beta_1.7.3)",
+            "https://github.com/MCPHackers/RetroMCP-Java",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-frozen-modloader-target-from-mcp-source-layout"
           ]
         }
       }
@@ -918,7 +1070,7 @@
         "26.2",
         "26.3"
       ],
-      "toolchainHash": "6fd492a4826ce0ba2ca88a5eb8a04ce3dfe1f51f0d095085486280e3e98b73fa",
+      "toolchainHash": "343faad108b9921bc4d03f9ae4a780089fe0a4f99d5d6685cc79ec2105f8c50e",
       "toolchain": {
         "id": "NeoGradleOrModDevGradle",
         "version": "project-resolved toolchain version; plan contract is version-independent"
@@ -941,7 +1093,7 @@
         "https://github.com/neoforged/Documentation/blob/main/docs/gettingstarted/index.md",
         "https://github.com/NeoForgeMDKs",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+        "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
         "neoforge-adapter-sha256:444b863e9e7b10ac2f332c8e3300603ddfea8c1637b8b9ec4f48a47f20fba084",
         "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-neoforge-targets"
       ],
@@ -949,7 +1101,7 @@
         "ProjectDetection": {
           "status": "Supported",
           "evidenceRefs": [
-            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
             "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-neoforge-targets"
           ]
         },
@@ -1382,7 +1534,7 @@
         "b1.9-pre5",
         "b1.9-pre6"
       ],
-      "toolchainHash": "fc319e6872020f336f18049bba44202a06d965ba9fe471bae1a11dedb52ee12e",
+      "toolchainHash": "c869674d7c211f392462089bd3d9c770db471dfa9348940cd09f000df50827bc",
       "toolchain": {
         "id": "PloceusProjectDetection",
         "version": "per-project resolved Ploceus; no Build or Launch support implied"
@@ -1404,7 +1556,7 @@
         "https://github.com/OrnitheMC/ploceus",
         "https://github.com/OrnitheMC/ornithe-meta",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+        "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
         "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
         "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-ornithe-target-from-ploceus-coordinates"
       ],
@@ -1414,7 +1566,7 @@
           "evidenceRefs": [
             "https://meta.ornithemc.net/",
             "https://github.com/OrnitheMC/ploceus",
-            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
             "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
             "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-ornithe-target-from-ploceus-coordinates"
           ]
@@ -1867,7 +2019,7 @@
         "26.3-snapshot-9",
         "26w14a"
       ],
-      "toolchainHash": "6a4f804b22e677c429619c6d7ef99160c5f3ffb2ba70a890b79886c9e12daf99",
+      "toolchainHash": "8ed2791a845aa48c35093b296757bd907e324bbd2412ae1f360790116ea83989",
       "toolchain": {
         "id": "QuiltLoomBuildLaunchPlan",
         "version": "project-resolved Quilt Loom version; plan contract remains version-independent"
@@ -1888,7 +2040,7 @@
         "https://github.com/QuiltMC/quilt-loom",
         "https://github.com/QuiltMC/quilt-loader",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+        "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
         "quilt-adapter-sha256:374a319dcb5478ca2f0a5ef397fb2185f2c0c672353021417ec4997aaa12b3d8",
         "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-quilt-targets"
       ],
@@ -1896,7 +2048,7 @@
         "ProjectDetection": {
           "status": "Supported",
           "evidenceRefs": [
-            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
             "quilt-adapter-sha256:374a319dcb5478ca2f0a5ef397fb2185f2c0c672353021417ec4997aaa12b3d8",
             "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-quilt-targets"
           ]
