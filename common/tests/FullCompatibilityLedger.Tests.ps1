@@ -311,4 +311,32 @@ Describe 'Full compatibility ledger' {
         @($rows|Where-Object{$_.dimensions.AgentBuild.status -cne 'PendingImplementation'}).Count | Should -Be 0
         @($rows|Where-Object{$_.familyId -cne 'legacyfabric-looming-project-detection-v1'}).Count | Should -Be 0
     }
+
+    It 'assigns exact OrnitheLoader targets to a detection-only family' {
+        $repositoryRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
+        $families=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/families.json')|ConvertFrom-Json
+        $targets=@($universe.targets|Where-Object{$_.loaderId -ceq 'OrnitheLoader' -and $_.availability -ceq 'Available'})
+        $family=$families.families|Where-Object familyId -CEQ 'ornithemc-ploceus-project-detection-v1'|Select-Object -First 1
+        $ledger=New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $families
+        $rows=@($ledger.targets|Where-Object loaderId -CEQ 'OrnitheLoader')
+        $familySchema=Join-Path $repositoryRoot 'common/schemas/compatibility-families.schema.json'
+        $detectorHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
+        $adapterHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/ContractV2.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
+        $orderedIds=[string[]]@($targets|ForEach-Object{[string]$_.minecraftId});[Array]::Sort($orderedIds,[StringComparer]::Ordinal)
+        $lf=[string][char]10
+        $hashBasis=(@('ornithemc-ploceus-project-detection-v1',[string]$universe.catalogHash,$detectorHash,$adapterHash)+$orderedIds) -join $lf
+        $expectedToolchainHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($hashBasis))).ToLowerInvariant()
+
+        (Test-Json -Json ($families|ConvertTo-Json -Depth 30 -Compress) -SchemaFile $familySchema) | Should -BeTrue
+        $family | Should -Not -BeNullOrEmpty
+        $family.toolchainHash | Should -BeExactly $expectedToolchainHash
+        @($family.minecraftIds).Count | Should -Be $targets.Count
+        @($family.minecraftIds|Sort-Object -Unique).Count | Should -Be $targets.Count
+        @($rows|Where-Object{$_.dimensions.ProjectDetection.status -cne 'Supported'}).Count | Should -Be 0
+        @($rows|Where-Object{$_.dimensions.BuildPlan.status -cne 'PendingImplementation'}).Count | Should -Be 0
+        @($rows|Where-Object{$_.dimensions.LaunchPlan.status -cne 'PendingImplementation'}).Count | Should -Be 0
+        @($rows|Where-Object{$_.dimensions.AgentBuild.status -cne 'PendingImplementation'}).Count | Should -Be 0
+        @($rows|Where-Object{$_.familyId -cne 'ornithemc-ploceus-project-detection-v1'}).Count | Should -Be 0
+    }
 }

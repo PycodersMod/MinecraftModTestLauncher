@@ -174,4 +174,24 @@ quilt_loom = { id = "org.quiltmc.loom", version = "1.7.4" }
         $failures | Should -BeNullOrEmpty
         $targets.Count | Should -Be 76
     }
+
+    It 'detects every exact OrnitheLoader universe target from Ploceus coordinates' {
+        $repositoryRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
+        $targets=@($universe.targets|Where-Object{$_.loaderId -ceq 'OrnitheLoader' -and $_.availability -ceq 'Available'})
+        $projectRoot=Join-Path $TestDrive 'all-ornithe-targets'
+        New-Item -ItemType Directory -Path $projectRoot -Force|Out-Null
+        @("plugins { id 'ploceus' version '1.18-SNAPSHOT' }","dependencies { modImplementation 'net.ornithemc:ornithe-loader:0.1.2' }") -join [Environment]::NewLine | Set-Content (Join-Path $projectRoot 'build.gradle')
+        $failures=[Collections.Generic.List[string]]::new()
+
+        foreach($target in $targets){
+            if([string]$target.candidateStatus -cne 'Resolved' -or @($target.loaderVersionCandidates).Count -eq 0){$failures.Add("$($target.targetId):CANDIDATES_UNRESOLVED");continue}
+            @("minecraft_version=$($target.minecraftId)","loader_version=$($target.loaderVersionCandidates[0])",'mod_id=fixture') -join [Environment]::NewLine | Set-Content (Join-Path $projectRoot 'gradle.properties')
+            $project=Get-MmtlProject -Path $projectRoot
+            if($project.DetectionStatus -cne 'Resolved' -or $project.Loader -cne 'OrnitheLoader' -or $project.MinecraftVersion -cne [string]$target.minecraftId -or $project.LoaderVersion -cne [string]$target.loaderVersionCandidates[0] -or $project.Toolchain.id -cne 'Ploceus' -or $project.Toolchain.ecosystem -cne 'Ornithe'){$failures.Add("$($target.targetId):DETECTION_BINDING_MISMATCH")}
+        }
+
+        $failures | Should -BeNullOrEmpty
+        $targets.Count | Should -Be 406
+    }
 }
