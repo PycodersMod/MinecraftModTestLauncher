@@ -673,10 +673,10 @@
         "26.2",
         "26.3"
       ],
-      "toolchainHash": "29b5b3a9f5d92eb8a64ce9939333362ad5f89a1bb6d98abd01e2ed11e7214e47",
+      "toolchainHash": "6a8adbedee8b2afcc88d2e4d7f92b2381a1afac150d71d4ad8b0a8a1d512d886",
       "toolchain": {
-        "id": "ForgeGradleProjectDetection",
-        "version": "per-project resolved ForgeGradle; no Build or Launch support implied"
+        "id": "ForgeGradleProjectPlans",
+        "version": "per-project ForgeGradle; Build and Launch planning only, execution requires trusted runner"
       },
       "buildJava": {
         "status": "PerProjectWrapperAndCompilerEvidence",
@@ -687,15 +687,18 @@
         "evidenceRef": "compatibility/runtime-java-catalog.json"
       },
       "projectDetectionStrategy": "识别 ForgeGradle 项目标记与 Forge 运行依赖，并从项目配置读取精确 Minecraft ID / Forge 坐标版本；将目标逐字绑定到 frozen Universe Available target 和官方候选。",
-      "buildStrategy": "尚未为该兼容家族声明 build task 计划支持。",
-      "launchStrategy": "尚未为该兼容家族声明客户端或服务端启动计划支持。",
+      "buildStrategy": "ForgeGradle Gradle Wrapper build task；只生成不可执行 plan，执行必须经过 MMTL managed session copy 与可信 validation runner。",
+      "launchStrategy": "为 exact Forge target 生成 Single Client runClient plan；LaunchCheck 未验证，plan 不可直接执行。",
       "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
       "evidence": [
+        "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
         "https://docs.minecraftforge.net/en/latest/gettingstarted/",
         "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
         "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
-        "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+        "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
         "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
       ],
       "capabilities": {
@@ -704,7 +707,29 @@
           "evidenceRefs": [
             "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
             "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
-            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
             "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
           ]
         }

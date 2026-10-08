@@ -206,13 +206,16 @@ quilt_loom = { id = "org.quiltmc.loom", version = "1.7.4" }
         New-Item -ItemType Directory -Path $resources -Force|Out-Null
         "plugins { id 'net.minecraftforge.gradle' version '2.3-SNAPSHOT' }"|Set-Content (Join-Path $projectRoot 'build.gradle')
         'modLoader="javafml"'|Set-Content (Join-Path $resources 'mods.toml')
+        $provider=Get-MmtlPlatformProvider
+        Set-Content -LiteralPath (Join-Path $projectRoot $provider.GradleWrapper) -Value ''
         $failures=[Collections.Generic.List[string]]::new()
 
         foreach($target in $targets){
             if([string]$target.candidateStatus -cne 'Resolved' -or @($target.loaderVersionCandidates).Count -eq 0){$failures.Add("$($target.targetId):CANDIDATES_UNRESOLVED");continue}
             @("minecraft_version=$($target.minecraftId)","forge_version=$($target.loaderVersionCandidates[0])",'mod_id=fixture') -join [Environment]::NewLine | Set-Content (Join-Path $projectRoot 'gradle.properties')
             $project=Get-MmtlProject -Path $projectRoot
-            if($project.DetectionStatus -cne 'Resolved' -or $project.Loader -cne 'Forge' -or $project.MinecraftVersion -cne [string]$target.minecraftId -or $project.LoaderVersion -cne [string]$target.loaderVersionCandidates[0] -or $project.Toolchain.id -cne 'ForgeGradle'){$failures.Add("$($target.targetId):DETECTION_BINDING_MISMATCH")}
+            $plans=New-MmtlForgeAdapterPlans -Project $project -Universe $universe
+            if($project.DetectionStatus -cne 'Resolved' -or $project.Loader -cne 'Forge' -or $project.MinecraftVersion -cne [string]$target.minecraftId -or $project.LoaderVersion -cne [string]$target.loaderVersionCandidates[0] -or $project.Toolchain.id -cne 'ForgeGradle' -or $plans.status -cne 'Resolved' -or $plans.targetId -cne [string]$target.targetId -or $plans.buildPlan.task -cne 'build' -or $plans.buildPlan.executionGate -cne 'TRUSTED_VALIDATION_RUNNER_REQUIRED' -or $plans.launchPlan.task -cne 'runClient' -or $plans.launchPlan.runtimeJavaRequirement.major -ne $target.runtimeJavaRequirement.major -or $plans.launchPlan.launchCheckStatus -cne 'Unverified' -or $plans.buildPlan.isExecutablePlan -or $plans.launchPlan.isExecutablePlan){$failures.Add("$($target.targetId):DETECTION_BINDING_OR_PLAN_MISMATCH")}
         }
 
         $failures | Should -BeNullOrEmpty

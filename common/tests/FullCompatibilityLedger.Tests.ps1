@@ -296,7 +296,7 @@ Describe 'Full compatibility ledger' {
         @($rows|Where-Object{$_.familyId -cne 'quilt-loom-build-launch-plan-v1'}).Count | Should -Be 0
     }
 
-    It 'assigns exact Forge targets to a detection-only family' {
+    It 'assigns exact Forge targets to a BuildPlan and LaunchPlan family' {
         $repositoryRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
         $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
         $families=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/families.json')|ConvertFrom-Json
@@ -318,8 +318,10 @@ Describe 'Full compatibility ledger' {
         @($family.minecraftIds).Count | Should -Be $targets.Count
         @($family.minecraftIds|Sort-Object -Unique).Count | Should -Be $targets.Count
         @($rows|Where-Object{$_.dimensions.ProjectDetection.status -cne 'Supported'}).Count | Should -Be 0
-        @($rows|Where-Object{$_.dimensions.BuildPlan.status -cne 'PendingImplementation'}).Count | Should -Be 0
-        @($rows|Where-Object{$_.dimensions.LaunchPlan.status -cne 'PendingImplementation'}).Count | Should -Be 0
+        @($rows|Where-Object{$_.dimensions.BuildPlan.status -cne 'Supported'}).Count | Should -Be 0
+        @($rows|Where-Object{$_.dimensions.LaunchPlan.status -cne 'Supported'}).Count | Should -Be 0
+        @($rows|Where-Object{$_.dimensions.BuildVerified.status -ne 'PendingImplementation'}).Count | Should -Be 0
+        @($rows|Where-Object{$_.dimensions.LaunchCheck.status -ne 'PendingImplementation'}).Count | Should -Be 0
         @($rows|Where-Object{$_.dimensions.AgentBuild.status -cne 'PendingImplementation'}).Count | Should -Be 0
         @($rows|Where-Object{$_.familyId -cne 'forge-project-metadata-detection-v1'}).Count | Should -Be 0
     }
