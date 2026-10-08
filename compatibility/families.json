@@ -830,6 +830,67 @@
       }
     },
     {
+      "familyId": "liteloader-project-metadata-detection-v1",
+      "loaderId": "LiteLoader",
+      "minecraftIds": [
+        "1.10",
+        "1.10.2",
+        "1.11",
+        "1.11.2",
+        "1.12",
+        "1.12.1",
+        "1.12.2",
+        "1.5.2",
+        "1.6.2",
+        "1.6.4",
+        "1.7.10",
+        "1.7.2",
+        "1.8",
+        "1.8.9",
+        "1.9",
+        "1.9.4"
+      ],
+      "toolchainHash": "dc3c3ede4d467a81311ee43c3ad03e9a2421e74e0d4bacb4006761cb61e95070",
+      "toolchain": {
+        "id": "LiteLoaderProjectMetadata",
+        "version": "per-project historical Gradle configuration; no Build support implied"
+      },
+      "buildJava": {
+        "status": "PerProjectWrapperAndCompilerEvidence",
+        "evidenceRef": "common/src/ProjectDetector.psm1"
+      },
+      "runtimeJava": {
+        "status": "PerTargetMojangMetadata",
+        "evidenceRef": "compatibility/runtime-java-catalog.json"
+      },
+      "projectDetectionStrategy": "识别 LiteLoader Gradle 插件标记及 litemod.json；从项目配置读取精确 Minecraft ID 与 LiteLoader 版本，并逐字绑定到 frozen Universe Available target 及官方 LiteLoader versions.json 候选。",
+      "buildStrategy": "尚未声明 BuildPlan 支持。官方历史版本元数据指向 HTTP Maven 仓库；安全核验完成前不下载或执行历史构建依赖。",
+      "launchStrategy": "官方历史安装说明使用 LiteLoaderTweaker 与旧版依赖仓库；本 family 不声明可执行启动计划。",
+      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
+      "evidence": [
+        "https://dl.liteloader.com/versions/versions.json",
+        "source-sha256:778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+        "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+        "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+        "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+        "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
+        "https://www.liteloader.com/explore/docs/user%3Ainstall%3Amanual%3A1.7.10",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
+      ],
+      "capabilities": {
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://dl.liteloader.com/versions/versions.json",
+            "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
+          ]
+        }
+      }
+    },
+    {
       "familyId": "neoforge-gradle-build-launch-plan-v1",
       "loaderId": "NeoForge",
       "minecraftIds": [

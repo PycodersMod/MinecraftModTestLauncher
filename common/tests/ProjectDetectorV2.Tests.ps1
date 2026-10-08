@@ -194,4 +194,27 @@ quilt_loom = { id = "org.quiltmc.loom", version = "1.7.4" }
         $failures | Should -BeNullOrEmpty
         $targets.Count | Should -Be 406
     }
+
+    It 'detects every exact LiteLoader universe target from official metadata candidates' {
+        $repositoryRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
+        $targets=@($universe.targets|Where-Object{$_.loaderId -ceq 'LiteLoader' -and $_.availability -ceq 'Available'})
+        $projectRoot=Join-Path $TestDrive 'all-liteloader-targets'
+        $resources=Join-Path $projectRoot 'src/main/resources'
+        New-Item -ItemType Directory -Path $resources -Force|Out-Null
+        "plugins { id 'net.minecraftforge.gradle.liteloader' version '2.2' }"|Set-Content (Join-Path $projectRoot 'build.gradle')
+        $liteModTemplate=@('{','  "name": "fixture",','  "version": "1.0",','  "revision": "1",','  "mcversion": "__MINECRAFT__"','}') -join [Environment]::NewLine
+        $failures=[Collections.Generic.List[string]]::new()
+
+        foreach($target in $targets){
+            if([string]$target.candidateStatus -cne 'Resolved' -or @($target.loaderVersionCandidates).Count -eq 0 -or [string]$target.candidateSourceUrl -cne 'https://dl.liteloader.com/versions/versions.json' -or [string]$target.candidateSourceHash -notmatch '^(?i:[a-f0-9]{64})$'){$failures.Add("$($target.targetId):CANDIDATE_PROVENANCE_INVALID");continue}
+            "minecraft_version=$($target.minecraftId)`nliteloader_version=$($target.loaderVersionCandidates[0])"|Set-Content (Join-Path $projectRoot 'gradle.properties')
+            $liteModTemplate.Replace('__MINECRAFT__',[string]$target.minecraftId)|Set-Content (Join-Path $resources 'litemod.json')
+            $project=Get-MmtlProject -Path $projectRoot
+            if($project.DetectionStatus -cne 'Resolved' -or $project.Loader -cne 'LiteLoader' -or $project.MinecraftVersion -cne [string]$target.minecraftId -or $project.LoaderVersion -cne [string]$target.loaderVersionCandidates[0] -or $project.Toolchain.id -cne 'ForgeGradle' -or @($project.LoaderStack|Where-Object{$_ -ceq 'Forge'}).Count -gt 0){$failures.Add("$($target.targetId):DETECTION_BINDING_MISMATCH")}
+        }
+
+        $failures | Should -BeNullOrEmpty
+        $targets.Count | Should -Be 16
+    }
 }

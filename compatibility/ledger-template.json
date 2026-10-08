@@ -76835,7 +76835,7 @@
       "targetId": "LiteLoader@1.10",
       "loaderId": "LiteLoader",
       "minecraftId": "1.10",
-      "familyId": null,
+      "familyId": "liteloader-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -76854,8 +76854,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+            "source-url:https://dl.liteloader.com/versions/versions.json",
+            "https://dl.liteloader.com/versions/versions.json",
+            "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -76922,14 +76931,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
-      "toolchainHash": null,
+      "toolchainHash": "dc3c3ede4d467a81311ee43c3ad03e9a2421e74e0d4bacb4006761cb61e95070",
       "targetSpecHash": "57f0da6403440515cd87ed6ab522270b824cc26c00d81703bbf394a45c32e684"
     },
     {
       "targetId": "LiteLoader@1.10.2",
       "loaderId": "LiteLoader",
       "minecraftId": "1.10.2",
-      "familyId": null,
+      "familyId": "liteloader-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -76948,8 +76957,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+            "source-url:https://dl.liteloader.com/versions/versions.json",
+            "https://dl.liteloader.com/versions/versions.json",
+            "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -77016,14 +77034,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
-      "toolchainHash": null,
+      "toolchainHash": "dc3c3ede4d467a81311ee43c3ad03e9a2421e74e0d4bacb4006761cb61e95070",
       "targetSpecHash": "51622f80d38a43cad2ac95efb864ff53fd581af809aa10d6f808a354e0d27ec8"
     },
     {
       "targetId": "LiteLoader@1.11",
       "loaderId": "LiteLoader",
       "minecraftId": "1.11",
-      "familyId": null,
+      "familyId": "liteloader-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -77042,8 +77060,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+            "source-url:https://dl.liteloader.com/versions/versions.json",
+            "https://dl.liteloader.com/versions/versions.json",
+            "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -77110,14 +77137,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
-      "toolchainHash": null,
+      "toolchainHash": "dc3c3ede4d467a81311ee43c3ad03e9a2421e74e0d4bacb4006761cb61e95070",
       "targetSpecHash": "274f96e4c521a2606886788627969cfa51beb428e01503c8a8fb222d6c72d9b3"
     },
     {
       "targetId": "LiteLoader@1.11.2",
       "loaderId": "LiteLoader",
       "minecraftId": "1.11.2",
-      "familyId": null,
+      "familyId": "liteloader-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -77136,8 +77163,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+            "source-url:https://dl.liteloader.com/versions/versions.json",
+            "https://dl.liteloader.com/versions/versions.json",
+            "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -77204,14 +77240,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
-      "toolchainHash": null,
+      "toolchainHash": "dc3c3ede4d467a81311ee43c3ad03e9a2421e74e0d4bacb4006761cb61e95070",
       "targetSpecHash": "53953ad78f5689aae3286b9b1bf1b3d240c4ec8b42751c39677f8f979f3272ef"
     },
     {
       "targetId": "LiteLoader@1.12",
       "loaderId": "LiteLoader",
       "minecraftId": "1.12",
-      "familyId": null,
+      "familyId": "liteloader-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -77230,8 +77266,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+            "source-url:https://dl.liteloader.com/versions/versions.json",
+            "https://dl.liteloader.com/versions/versions.json",
+            "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -77298,14 +77343,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
-      "toolchainHash": null,
+      "toolchainHash": "dc3c3ede4d467a81311ee43c3ad03e9a2421e74e0d4bacb4006761cb61e95070",
       "targetSpecHash": "b4c9247094b6887a4a8d8628267b9f9ff6b39c9c901e3ee49f292eef7a9996d0"
     },
     {
       "targetId": "LiteLoader@1.12.1",
       "loaderId": "LiteLoader",
       "minecraftId": "1.12.1",
-      "familyId": null,
+      "familyId": "liteloader-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -77324,8 +77369,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+            "source-url:https://dl.liteloader.com/versions/versions.json",
+            "https://dl.liteloader.com/versions/versions.json",
+            "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -77392,14 +77446,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
-      "toolchainHash": null,
+      "toolchainHash": "dc3c3ede4d467a81311ee43c3ad03e9a2421e74e0d4bacb4006761cb61e95070",
       "targetSpecHash": "fb543ca9fdc1ab7487a0695bce326c0a4fff2162acde9b2e78fcc7f3eb602cb5"
     },
     {
       "targetId": "LiteLoader@1.12.2",
       "loaderId": "LiteLoader",
       "minecraftId": "1.12.2",
-      "familyId": null,
+      "familyId": "liteloader-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -77418,8 +77472,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+            "source-url:https://dl.liteloader.com/versions/versions.json",
+            "https://dl.liteloader.com/versions/versions.json",
+            "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -77486,14 +77549,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
-      "toolchainHash": null,
+      "toolchainHash": "dc3c3ede4d467a81311ee43c3ad03e9a2421e74e0d4bacb4006761cb61e95070",
       "targetSpecHash": "457b6e175604161c7103f0628f06c17b9edd610db346a5e2a30152d481943fea"
     },
     {
       "targetId": "LiteLoader@1.5.2",
       "loaderId": "LiteLoader",
       "minecraftId": "1.5.2",
-      "familyId": null,
+      "familyId": "liteloader-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -77512,8 +77575,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+            "source-url:https://dl.liteloader.com/versions/versions.json",
+            "https://dl.liteloader.com/versions/versions.json",
+            "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -77580,14 +77652,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
-      "toolchainHash": null,
+      "toolchainHash": "dc3c3ede4d467a81311ee43c3ad03e9a2421e74e0d4bacb4006761cb61e95070",
       "targetSpecHash": "413136555653025aa703aaaa91f4543e6633c444b03289212bfa1442dd4db0c3"
     },
     {
       "targetId": "LiteLoader@1.6.2",
       "loaderId": "LiteLoader",
       "minecraftId": "1.6.2",
-      "familyId": null,
+      "familyId": "liteloader-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -77606,8 +77678,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+            "source-url:https://dl.liteloader.com/versions/versions.json",
+            "https://dl.liteloader.com/versions/versions.json",
+            "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -77668,14 +77749,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
-      "toolchainHash": null,
+      "toolchainHash": "dc3c3ede4d467a81311ee43c3ad03e9a2421e74e0d4bacb4006761cb61e95070",
       "targetSpecHash": "bcaf4a50ae71e9c8884b456c55461cc30d8792d102757f93b1e43b60224f7958"
     },
     {
       "targetId": "LiteLoader@1.6.4",
       "loaderId": "LiteLoader",
       "minecraftId": "1.6.4",
-      "familyId": null,
+      "familyId": "liteloader-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -77694,8 +77775,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+            "source-url:https://dl.liteloader.com/versions/versions.json",
+            "https://dl.liteloader.com/versions/versions.json",
+            "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -77756,14 +77846,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
-      "toolchainHash": null,
+      "toolchainHash": "dc3c3ede4d467a81311ee43c3ad03e9a2421e74e0d4bacb4006761cb61e95070",
       "targetSpecHash": "779396dd665ca4c8573894b9401a707c8196400c8f7cd357f474d227aeb4a299"
     },
     {
       "targetId": "LiteLoader@1.7.10",
       "loaderId": "LiteLoader",
       "minecraftId": "1.7.10",
-      "familyId": null,
+      "familyId": "liteloader-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -77782,8 +77872,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+            "source-url:https://dl.liteloader.com/versions/versions.json",
+            "https://dl.liteloader.com/versions/versions.json",
+            "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -77850,14 +77949,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
-      "toolchainHash": null,
+      "toolchainHash": "dc3c3ede4d467a81311ee43c3ad03e9a2421e74e0d4bacb4006761cb61e95070",
       "targetSpecHash": "1fe28c669583753471fc788a4af94088bc3ca2bdcfd24ef7e1688052c4c70031"
     },
     {
       "targetId": "LiteLoader@1.7.2",
       "loaderId": "LiteLoader",
       "minecraftId": "1.7.2",
-      "familyId": null,
+      "familyId": "liteloader-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -77876,8 +77975,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+            "source-url:https://dl.liteloader.com/versions/versions.json",
+            "https://dl.liteloader.com/versions/versions.json",
+            "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -77944,14 +78052,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
-      "toolchainHash": null,
+      "toolchainHash": "dc3c3ede4d467a81311ee43c3ad03e9a2421e74e0d4bacb4006761cb61e95070",
       "targetSpecHash": "486eafd91b2c6a5e57d61f592a5b5d9f762208e987748056c0eaf1b1f07c0128"
     },
     {
       "targetId": "LiteLoader@1.8",
       "loaderId": "LiteLoader",
       "minecraftId": "1.8",
-      "familyId": null,
+      "familyId": "liteloader-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -77970,8 +78078,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+            "source-url:https://dl.liteloader.com/versions/versions.json",
+            "https://dl.liteloader.com/versions/versions.json",
+            "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -78038,14 +78155,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
-      "toolchainHash": null,
+      "toolchainHash": "dc3c3ede4d467a81311ee43c3ad03e9a2421e74e0d4bacb4006761cb61e95070",
       "targetSpecHash": "4ffd0914cab5c9d1fe71c836afdf3f25c57b91130ebc8c5c00c9690bfa453dc2"
     },
     {
       "targetId": "LiteLoader@1.8.9",
       "loaderId": "LiteLoader",
       "minecraftId": "1.8.9",
-      "familyId": null,
+      "familyId": "liteloader-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -78064,8 +78181,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+            "source-url:https://dl.liteloader.com/versions/versions.json",
+            "https://dl.liteloader.com/versions/versions.json",
+            "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -78132,14 +78258,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
-      "toolchainHash": null,
+      "toolchainHash": "dc3c3ede4d467a81311ee43c3ad03e9a2421e74e0d4bacb4006761cb61e95070",
       "targetSpecHash": "456f232f7288416bccc05cf492567c25cb4826cb8b328f64d663620667c1bed8"
     },
     {
       "targetId": "LiteLoader@1.9",
       "loaderId": "LiteLoader",
       "minecraftId": "1.9",
-      "familyId": null,
+      "familyId": "liteloader-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -78158,8 +78284,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+            "source-url:https://dl.liteloader.com/versions/versions.json",
+            "https://dl.liteloader.com/versions/versions.json",
+            "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -78226,14 +78361,14 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
-      "toolchainHash": null,
+      "toolchainHash": "dc3c3ede4d467a81311ee43c3ad03e9a2421e74e0d4bacb4006761cb61e95070",
       "targetSpecHash": "3d6bb6018414fd767ac4208f06fda1cd84f2aacfb047d91d0d73ec703a38db17"
     },
     {
       "targetId": "LiteLoader@1.9.4",
       "loaderId": "LiteLoader",
       "minecraftId": "1.9.4",
-      "familyId": null,
+      "familyId": "liteloader-project-metadata-detection-v1",
       "dimensions": {
         "Catalogued": {
           "status": "Supported",
@@ -78252,8 +78387,17 @@
           ]
         },
         "ProjectDetection": {
-          "status": "PendingImplementation",
-          "evidenceRefs": []
+          "status": "Supported",
+          "evidenceRefs": [
+            "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+            "source-sha256:778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+            "source-url:https://dl.liteloader.com/versions/versions.json",
+            "https://dl.liteloader.com/versions/versions.json",
+            "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
+            "project-detector-sha256:99cc700191b34adc950d902fc80f4e8dbd9c4c96d38328e125a8d0ba3a707353",
+            "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
+          ]
         },
         "BuildPlan": {
           "status": "PendingImplementation",
@@ -78320,7 +78464,7 @@
       },
       "status": "PendingImplementation",
       "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
-      "toolchainHash": null,
+      "toolchainHash": "dc3c3ede4d467a81311ee43c3ad03e9a2421e74e0d4bacb4006761cb61e95070",
       "targetSpecHash": "9c61d19d47d6d438d83f2875ff0af62d5595a46ac3bcf62de7aa9e8e46cec61f"
     },
     {
@@ -178863,7 +179007,7 @@
   "summary": {
     "targetCount": 1631,
     "unknownTargetCount": 0,
-    "pendingImplementationDimensionCount": 19426,
-    "unassignedFamilyCount": 78
+    "pendingImplementationDimensionCount": 19410,
+    "unassignedFamilyCount": 62
   }
 }
