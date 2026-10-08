@@ -58,3 +58,10 @@
 - [x] `git diff --check`、PowerShell parser、检查无本轮遗留测试进程。
 - [x] 更新本地 HANDOVER；保留 Goal 为 PARTIAL。
 - [x] 建立本地 checkpoint commit；不创建 PR。
+
+### Task 4：用户 CLI 工作流
+
+- [x] `--jarmod-overlay <session-id>` 严格校验 Session ID、必需参数和允许参数，且只在 Runtime sessions 根目录定位 Session。
+- [x] JSON 返回 Session 相对路径和 SHA-256，不包含源 JAR/patch 的绝对路径。
+- [x] Windows CLI 集成测试覆盖成功、缺参、未知参数、原始输入不变和 Session v2 校验。
+- [x] 官方 Windows Pester 全仓复跑：96 文件，541 passed、0 failed、2 skipped。

@@ -20,6 +20,15 @@ New-MmtlJarModSessionOverlay \
   -PatchStrategy OverlayRejectConflicts|OverlayReplaceConflicts
 ```
 
+用户 CLI 入口：
+
+```powershell
+launcher.cmd --jarmod-overlay <session-id> --base-jar <path> --patch-archive <path> \
+  --patch-strategy OverlayRejectConflicts|OverlayReplaceConflicts [--json]
+```
+
+CLI 只允许在已配置 Runtime 下寻址已有 Session，并严格限制本命令可用参数。JSON 输出只给 Session 相对路径，不暴露 base/patch 源路径或 Runtime 绝对路径。
+
 Session 必须是有效 v2 Session 且状态为 `Created`、`Preparing` 或 `Building`。所有输入必须是普通本地文件、在大小上限内并可解析为 ZIP/JAR。函数记录输入 SHA-256，复制输入到 Session 私有子目录，重新校验副本，再对 base 副本执行 overlay。返回的输出 JAR 与 provenance manifest 均位于 Session 目录下并写入 v2 artifacts。
 
 ## Overlay 规则
