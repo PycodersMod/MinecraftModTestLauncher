@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "AncientCoderPack",
+  "auditStatus": "INVESTIGATE_ONLY",
+  "automaticDownloadAllowed": false,
+  "automaticExecutionAllowed": false,
+  "sourceRepositories": [
+    {
+      "repository": "https://github.com/ancientmc/AncientCoderPack",
+      "ref": "0.4.x-beta",
+      "commit": "3ec47aefd6f23dfa8598c5a1358751e98dd9f5a9",
+      "files": [
+        {
+          "path": "LICENSE",
+          "sha256": "3aca6cd1d2ae4ff223a32b12ddc9755edc3955194ea434e7f6e0b8855a2f47ee"
+        },
+        {
+          "path": "README.md",
+          "sha256": "dc95680254b3c0cd1ce50ea3d09bfabd27b64ec2bce6db5484a49994643aaa65"
+        },
+        {
+          "path": "HOWTO.md",
+          "sha256": "b3e08df05cf55fcbc2a6d616ddd1a0cefdaba5ae5ae8537e35f3c05262926d6f"
+        },
+        {
+          "path": "build.gradle",
+          "sha256": "e95b8869f51ed2631615d7c5fd96c6c0c86191996e28e85230ff6f7724155836"
+        },
+        {
+          "path": "gradle.properties",
+          "sha256": "7261752ab3a0271b8e5999eb091a044aac172b4f90d516e0bfaeb4cc0ef2e657"
+        }
+      ],
+      "declaredCapabilities": [
+        "decompile",
+        "downloadModLoader",
+        "runClient",
+        "buildMod"
+      ],
+      "verificationStatus": "SOURCE_ONLY_NO_BUILD_OR_LAUNCH_EXECUTED",
+      "declaredProjectState": "WIP",
+      "licenseReview": {
+        "licenseName": "AncientMC License v3",
+        "fileDate": "2025-03-22",
+        "statedUseRestriction": "non-commercial and non-proprietary purposes",
+        "cuneiformMappingLicense": "GPL-2.0",
+        "alpha-1.2.6-dataNote": "MCP-derived names and legacy SRG data; exact rights and permitted reuse are not independently established",
+        "integrationDecision": "REQUIRES_COMPATIBILITY_AND_LICENSE_REVIEW"
+      }
+    },
+    {
+      "repository": "https://github.com/ancientmc/modloaders",
+      "ref": "a1.1.2_01",
+      "commit": "e2cd2ac65e4ab5005eb1fb995f91dfe7953d6081",
+      "files": [
+        {
+          "path": "loaders.json",
+          "sha256": "de4dfe07c8cdedbfc9c94d57465e8ca3f7496ad9b3d40eee7176f05b9b9af2ba"
+        }
+      ],
+      "declaredUse": "Generate ModLoader LZMA patches for ACP",
+      "targetEvidence": "a1.1.2_01 profile points to a B2-hosted mcarchive ModLoader RAR; the URL includes an opaque hex path component, but no checksum algorithm, size, or signature provenance is declared and no independent digest verification was performed",
+      "artifactUrl": "https://b2.mcarchive.net/file/mcarchive/3b0a919bd74c09274d607707dae0c165682a2dab63fd91a6b27a98efcebe9b23/ModLoader%201.1.rar",
+      "artifactDownloaded": false,
+      "artifactExecuted": false
+    },
+    {
+      "repository": "https://github.com/ancientmc/ancientmc-maven",
+      "ref": "maven",
+      "commit": "5b088adface6d0b679fec2d20de8119d952803c6",
+      "path": "com/ancientmc/versions/maven-metadata.xml",
+      "retrieval": "GitHub rendered source read; local clone stalled during transfer, raw-byte hash unavailable",
+      "versionCount": 16,
+      "versionIds": [
+        "c0.0.13a_03",
+        "c0.0.14a_08",
+        "a1.2.6-legacy",
+        "c0.0.15a-05311904",
+        "c0.0.16a_02-081047",
+        "c0.0.17a-2014",
+        "c0.0.18a_02",
+        "c0.0.19a_04",
+        "c0.0.19a_06-0137",
+        "c0.0.20a_01",
+        "c0.0.20a_02",
+        "c0.0.21a-2008",
+        "rd-132211",
+        "rd-132328",
+        "rd-160052",
+        "rd-161348"
+      ],
+      "lastUpdatedRaw": "20260331002949"
+    }
+  ],
+  "exactTargetPairsConfirmed": [],
+  "unresolved": [
+    "a1.2.6-legacy is not proven to be an exact alias for frozen Universe target a1.2.6",
+    "the published ModLoader LZMA profile references an unverified community-hosted binary",
+    "the upstream license limits use and redistribution; MMTL integration rights are not established",
+    "no target has passed setup, build, launch, Agent, or security verification"
+  ],
+  "decision": "Do not add ACP to executable backend catalog or change Ledger capabilities until exact profile mapping, artifact trust, and license compatibility are resolved."
+}
