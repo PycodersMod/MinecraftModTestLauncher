@@ -20,36 +20,40 @@ foreach($target in $targets){
     if([string]$target.candidateSourceHash -notmatch '^(?i:[a-f0-9]{64})$'){throw "LEGACYFABRIC_CANDIDATE_HASH_MISSING:$($target.targetId)"}
 }
 $detectorPath=Join-Path $RepositoryRoot 'common/src/ProjectDetector.psm1'
-$adapterPath=Join-Path $RepositoryRoot 'common/src/Adapters/ContractV2.psm1'
-$testPath=Join-Path $RepositoryRoot 'common/tests/ProjectDetectorV2.Tests.ps1'
+$adapterPath=Join-Path $RepositoryRoot 'common/src/Adapters/LegacyFabric.psm1'
+$testPath=Join-Path $RepositoryRoot 'common/tests/LegacyFabricAdapter.Tests.ps1'
 foreach($requiredPath in @($detectorPath,$adapterPath,$testPath)){if(-not(Test-Path -LiteralPath $requiredPath -PathType Leaf)){throw "LEGACYFABRIC_DETECTION_EVIDENCE_FILE_MISSING:$requiredPath"}}
 $detectorHash=(Get-FileHash -LiteralPath $detectorPath -Algorithm SHA256).Hash.ToLowerInvariant()
 $adapterHash=(Get-FileHash -LiteralPath $adapterPath -Algorithm SHA256).Hash.ToLowerInvariant()
 $universeHash=[string]$universe.catalogHash
 if($universeHash -notmatch '^(?i:[a-f0-9]{64})$'){throw 'UNIVERSE_HASH_INVALID'}
-$familyId='legacyfabric-looming-project-detection-v1'
+$familyId='legacyfabric-looming-build-launch-plan-v1'
+$fixtureCommit='422896c188108632da97825f801719f0015b1b32'
+$loomingCommit='d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79'
 $lf=[string][char]10
-$basis=(@($familyId,$universeHash,$detectorHash,$adapterHash)+$orderedIds) -join $lf
+$basis=(@($familyId,$universeHash,$detectorHash,$adapterHash,$fixtureCommit,$loomingCommit)+$orderedIds) -join $lf
 $toolchainHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($basis))).ToLowerInvariant()
 $family=[ordered]@{
     familyId=$familyId
     loaderId='LegacyFabric'
     minecraftIds=@($orderedIds)
     toolchainHash=$toolchainHash
-    toolchain=[ordered]@{id='LegacyLoomingProjectDetection';version='per-project resolved Legacy Looming; no Build or Launch support implied'}
+    toolchain=[ordered]@{id='LegacyLoomingBuildLaunchPlans';version='per-project resolved Legacy Looming; only non-executable Build/Launch plans, actual execution remains unverified'}
     buildJava=[ordered]@{status='PerProjectWrapperAndCompilerEvidence';evidenceRef='common/src/ProjectDetector.psm1'}
     runtimeJava=[ordered]@{status='PerTargetMojangMetadata';evidenceRef='compatibility/runtime-java-catalog.json'}
     projectDetectionStrategy='识别 Legacy Looming 与兼容的 Fabric 模组元数据；读取项目配置中的精确 Minecraft ID / LegacyFabric Loader 版本，并逐字绑定到 frozen Universe Available target 与该游戏版本专属 LegacyFabric Meta candidates。'
-    buildStrategy='尚未为该兼容家族声明 build task 计划支持。'
-    launchStrategy='尚未为该兼容家族声明客户端或服务端启动计划支持。'
+    buildStrategy='Legacy Looming 官方示例使用 Gradle Wrapper，并声明 ./gradlew build；对 exact detected target 仅生成非执行式 build 计划，执行仍要求 MMTL managed Session copy 与 trusted validation runner。'
+    launchStrategy='Legacy Looming 官方示例声明 ./gradlew runClient；对 exact detected target 仅生成非执行式 Single Client 计划，LaunchCheck 保持未验证。'
     agentBridge='本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。'
-    evidence=@('https://meta.legacyfabric.net/','https://github.com/Legacy-Fabric/legacy-looming',"universe-sha256:$universeHash","project-detector-sha256:$detectorHash","legacyfabric-adapter-contract-sha256:$adapterHash",'test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates')
+    evidence=@('https://meta.legacyfabric.net/','https://github.com/Legacy-Fabric/legacy-looming/tree/d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79','https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/README.md','https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/build.gradle',"legacy-looming-commit:$loomingCommit","legacyfabric-fixture-commit:$fixtureCommit","universe-sha256:$universeHash","project-detector-sha256:$detectorHash","legacyfabric-adapter-sha256:$adapterHash","legacyfabric-plan-test-sha256:$testHash",'test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates','test:LegacyFabricAdapter.Tests.ps1:detects-and-plans-every-frozen-legacyfabric-target-without-making-plans-executable')
     capabilities=[ordered]@{
-        ProjectDetection=[ordered]@{status='Supported';evidenceRefs=@('https://meta.legacyfabric.net/', 'https://github.com/Legacy-Fabric/legacy-looming',"project-detector-sha256:$detectorHash","legacyfabric-adapter-contract-sha256:$adapterHash",'test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates')}
+        ProjectDetection=[ordered]@{status='Supported';evidenceRefs=@('https://meta.legacyfabric.net/', 'https://github.com/Legacy-Fabric/legacy-looming',"project-detector-sha256:$detectorHash",'test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates')}
+        BuildPlan=[ordered]@{status='Supported';evidenceRefs=@('https://github.com/Legacy-Fabric/legacy-looming/tree/d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79','https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/README.md','https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/build.gradle',"legacy-looming-commit:$loomingCommit","legacyfabric-fixture-commit:$fixtureCommit","legacyfabric-adapter-sha256:$adapterHash","legacyfabric-plan-test-sha256:$testHash",'test:LegacyFabricAdapter.Tests.ps1:detects-and-plans-every-frozen-legacyfabric-target-without-making-plans-executable')}
+        LaunchPlan=[ordered]@{status='Supported';evidenceRefs=@('https://github.com/Legacy-Fabric/legacy-looming/tree/d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79','https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/README.md','https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/build.gradle',"legacy-looming-commit:$loomingCommit","legacyfabric-fixture-commit:$fixtureCommit","legacyfabric-adapter-sha256:$adapterHash","legacyfabric-plan-test-sha256:$testHash",'test:LegacyFabricAdapter.Tests.ps1:detects-and-plans-every-frozen-legacyfabric-target-without-making-plans-executable')}
     }
 }
 $familyRows=[Collections.Generic.List[object]]::new()
-foreach($entry in @($families.families|Where-Object{$_.familyId -cne $familyId})){$familyRows.Add($entry)}
+foreach($entry in @($families.families|Where-Object{$_.familyId -notin @($familyId,'legacyfabric-looming-project-detection-v1')})){$familyRows.Add($entry)}
 $familyRows.Add([pscustomobject]$family)
 $newFamilies=[ordered]@{schemaVersion=[int]$families.schemaVersion;auditStatus=[string]$families.auditStatus;universeHash=$universeHash;families=@($familyRows.ToArray()|Sort-Object loaderId,familyId);unassignedTargetPolicy=[string]$families.unassignedTargetPolicy}
 Set-Content -LiteralPath $FamilyManifestPath -Value (ConvertTo-Json -InputObject $newFamilies -Depth 50) -Encoding utf8

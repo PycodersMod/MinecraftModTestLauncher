@@ -736,7 +736,7 @@
       }
     },
     {
-      "familyId": "legacyfabric-looming-project-detection-v1",
+      "familyId": "legacyfabric-looming-build-launch-plan-v1",
       "loaderId": "LegacyFabric",
       "minecraftIds": [
         "1.10.2",
@@ -816,10 +816,10 @@
         "2point0_purple",
         "2point0_red"
       ],
-      "toolchainHash": "9e387ea5a1093d57fa9060689ec0c54f470df23d175589caa047766c75b1e62a",
+      "toolchainHash": "b5822594c0a9afca1f7d45c9f690cef7007d0cbbea206038e75972dfea56159e",
       "toolchain": {
-        "id": "LegacyLoomingProjectDetection",
-        "version": "per-project resolved Legacy Looming; no Build or Launch support implied"
+        "id": "LegacyLoomingBuildLaunchPlans",
+        "version": "per-project resolved Legacy Looming; only non-executable Build/Launch plans, actual execution remains unverified"
       },
       "buildJava": {
         "status": "PerProjectWrapperAndCompilerEvidence",
@@ -830,16 +830,22 @@
         "evidenceRef": "compatibility/runtime-java-catalog.json"
       },
       "projectDetectionStrategy": "识别 Legacy Looming 与兼容的 Fabric 模组元数据；读取项目配置中的精确 Minecraft ID / LegacyFabric Loader 版本，并逐字绑定到 frozen Universe Available target 与该游戏版本专属 LegacyFabric Meta candidates。",
-      "buildStrategy": "尚未为该兼容家族声明 build task 计划支持。",
-      "launchStrategy": "尚未为该兼容家族声明客户端或服务端启动计划支持。",
+      "buildStrategy": "Legacy Looming 官方示例使用 Gradle Wrapper，并声明 ./gradlew build；对 exact detected target 仅生成非执行式 build 计划，执行仍要求 MMTL managed Session copy 与 trusted validation runner。",
+      "launchStrategy": "Legacy Looming 官方示例声明 ./gradlew runClient；对 exact detected target 仅生成非执行式 Single Client 计划，LaunchCheck 保持未验证。",
       "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
       "evidence": [
         "https://meta.legacyfabric.net/",
-        "https://github.com/Legacy-Fabric/legacy-looming",
+        "https://github.com/Legacy-Fabric/legacy-looming/tree/d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79",
+        "https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/README.md",
+        "https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/build.gradle",
+        "legacy-looming-commit:d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79",
+        "legacyfabric-fixture-commit:422896c188108632da97825f801719f0015b1b32",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
         "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
-        "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
-        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+        "legacyfabric-adapter-sha256:7e95e7c0ca628b437b93e6a3ea941bbe5424b078bcab378ca04564b52d9f96dc",
+        "legacyfabric-plan-test-sha256:",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates",
+        "test:LegacyFabricAdapter.Tests.ps1:detects-and-plans-every-frozen-legacyfabric-target-without-making-plans-executable"
       ],
       "capabilities": {
         "ProjectDetection": {
@@ -848,8 +854,33 @@
             "https://meta.legacyfabric.net/",
             "https://github.com/Legacy-Fabric/legacy-looming",
             "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
-            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
             "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://github.com/Legacy-Fabric/legacy-looming/tree/d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79",
+            "https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/README.md",
+            "https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/build.gradle",
+            "legacy-looming-commit:d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79",
+            "legacyfabric-fixture-commit:422896c188108632da97825f801719f0015b1b32",
+            "legacyfabric-adapter-sha256:7e95e7c0ca628b437b93e6a3ea941bbe5424b078bcab378ca04564b52d9f96dc",
+            "legacyfabric-plan-test-sha256:",
+            "test:LegacyFabricAdapter.Tests.ps1:detects-and-plans-every-frozen-legacyfabric-target-without-making-plans-executable"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://github.com/Legacy-Fabric/legacy-looming/tree/d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79",
+            "https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/README.md",
+            "https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/build.gradle",
+            "legacy-looming-commit:d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79",
+            "legacyfabric-fixture-commit:422896c188108632da97825f801719f0015b1b32",
+            "legacyfabric-adapter-sha256:7e95e7c0ca628b437b93e6a3ea941bbe5424b078bcab378ca04564b52d9f96dc",
+            "legacyfabric-plan-test-sha256:",
+            "test:LegacyFabricAdapter.Tests.ps1:detects-and-plans-every-frozen-legacyfabric-target-without-making-plans-executable"
           ]
         }
       }
