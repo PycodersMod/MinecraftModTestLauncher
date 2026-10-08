@@ -1559,10 +1559,10 @@
         "b1.9-pre5",
         "b1.9-pre6"
       ],
-      "toolchainHash": "c869674d7c211f392462089bd3d9c770db471dfa9348940cd09f000df50827bc",
+      "toolchainHash": "4dd6ef997359b1b6fefe456b5c434d25a0685f32a24bcfdcf0030c72b9caf71b",
       "toolchain": {
-        "id": "PloceusProjectDetection",
-        "version": "per-project resolved Ploceus; no Build or Launch support implied"
+        "id": "PloceusBuildLaunchPlans",
+        "version": "per-project resolved Ploceus; only non-executable Build/Launch plans, actual execution remains unverified"
       },
       "buildJava": {
         "status": "PerProjectWrapperAndCompilerEvidence",
@@ -1573,17 +1573,20 @@
         "evidenceRef": "compatibility/runtime-java-catalog.json"
       },
       "projectDetectionStrategy": "识别 Ploceus 与 net.ornithemc:ornithe-loader 项目依赖；读取项目中的精确 Minecraft ID / Ornithe Loader 版本，并逐字绑定到 frozen Universe Available target 与其专属 Ornithe Meta candidates。",
-      "buildStrategy": "尚未为该兼容家族声明 build task 计划支持。",
-      "launchStrategy": "尚未为该兼容家族声明客户端或服务端启动计划支持。",
+      "buildStrategy": "Ploceus extends Fabric/Quilt Loom. For an exact detected Ploceus Gradle Wrapper project, generate a non-executable build task plan; execution requires an MMTL managed Session copy and trusted validation runner. Ploceus inheritance of Loom task semantics is an explicit inference from the official plugin description and official Ornithe project build file.",
+      "launchStrategy": "For an exact detected Ploceus Gradle Wrapper project, generate a non-executable Single Client runClient plan. LaunchCheck remains unverified; the plan cannot be executed without the trusted validation runner.",
       "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
       "evidence": [
         "https://meta.ornithemc.net/",
         "https://github.com/OrnitheMC/ploceus",
-        "https://github.com/OrnitheMC/ornithe-meta",
+        "https://github.com/OrnitheMC/modmenu/blob/1.13/build.gradle",
+        "https://docs.fabricmc.net/develop/loom",
+        "https://github.com/FabricMC/fabric-docs/blob/main/versions/1.21.1/develop/getting-started/launching-the-game.md",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
         "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
-        "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
-        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-ornithe-target-from-ploceus-coordinates"
+        "ornithe-adapter-sha256:73af482457a93b1b977bb0be8450b3e52378836373db8b960edb6dcde8a0f36c",
+        "ornithe-plan-test-sha256:bdde1dc03f2cc3393f95dd86cd334fe955d6a9837002a415f3547ad6111fe8d7",
+        "test:OrnitheAdapter.Tests.ps1:detects-and-plans-every-frozen-ornithe-target-without-making-plans-executable"
       ],
       "capabilities": {
         "ProjectDetection": {
@@ -1592,8 +1595,30 @@
             "https://meta.ornithemc.net/",
             "https://github.com/OrnitheMC/ploceus",
             "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
-            "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
             "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-ornithe-target-from-ploceus-coordinates"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://github.com/OrnitheMC/ploceus",
+            "https://github.com/OrnitheMC/modmenu/blob/1.13/build.gradle",
+            "https://docs.fabricmc.net/develop/loom",
+            "ornithe-adapter-sha256:73af482457a93b1b977bb0be8450b3e52378836373db8b960edb6dcde8a0f36c",
+            "ornithe-plan-test-sha256:bdde1dc03f2cc3393f95dd86cd334fe955d6a9837002a415f3547ad6111fe8d7",
+            "test:OrnitheAdapter.Tests.ps1:detects-and-plans-every-frozen-ornithe-target-without-making-plans-executable"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://github.com/OrnitheMC/ploceus",
+            "https://github.com/OrnitheMC/modmenu/blob/1.13/build.gradle",
+            "https://docs.fabricmc.net/develop/loom",
+            "https://github.com/FabricMC/fabric-docs/blob/main/versions/1.21.1/develop/getting-started/launching-the-game.md",
+            "ornithe-adapter-sha256:73af482457a93b1b977bb0be8450b3e52378836373db8b960edb6dcde8a0f36c",
+            "ornithe-plan-test-sha256:bdde1dc03f2cc3393f95dd86cd334fe955d6a9837002a415f3547ad6111fe8d7",
+            "test:OrnitheAdapter.Tests.ps1:detects-and-plans-every-frozen-ornithe-target-without-making-plans-executable"
           ]
         }
       }
