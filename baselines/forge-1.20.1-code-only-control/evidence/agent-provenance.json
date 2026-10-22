@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "providerId": "forge-1.20.1",
+  "artifact": "common/agent/providers/forge-1.20.1/mmtl-agent-forge-1.20.1-0.1.0.jar",
+  "buildTask": "stageMmtlAgent",
+  "verificationTask": "verifyMmtlAgentJar",
+  "gradleWrapperVersion": "8.5",
+  "buildJavaMajor": 17,
+  "builtTwiceWithIdenticalArchiveHash": true,
+  "repeatBuildSha256": [
+    "a20437589b521e089293eaeada212a99eb45ae03f4c06ca9607eb896e17e607a",
+    "a20437589b521e089293eaeada212a99eb45ae03f4c06ca9607eb896e17e607a"
+  ],
+  "manifestSha256MatchesArtifact": true,
+  "archivedAcceptanceSessionArtifactSha256": "197729d23065f81b44804d35d6c1df0ee19c0c3f64c07fc0ea79cbc5b80ebcfe",
+  "archivedAndRebuiltJarEntryCount": 31,
+  "archivedAndRebuiltJarEntryContentsMatch": true,
+  "note": "The historical JAR container checksum differs because ZIP metadata differed; all 31 decompressed entries match the twice-built reproducible artifact."
+}

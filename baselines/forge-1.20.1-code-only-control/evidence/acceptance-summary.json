@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-22",
+  "timezone": "Asia/Shanghai",
+  "target": {
+    "minecraftVersion": "1.20.1",
+    "loader": "Forge",
+    "loaderVersion": "47.4.23",
+    "javaMajor": 17,
+    "os": "Windows"
+  },
+  "entrypoint": "Start-MMTL.bat",
+  "sourceEvidenceSha256": "8a57a82470cfc28e8a238ac233c15f952b470ee8d2677cd1c0d4fdb3f48b76fd",
+  "summary": { "pass": 8, "fail": 1, "total": 9 },
+  "scenarios": [
+    { "cycle": 1, "scenario": "default-single", "status": "PASS", "stableSeconds": 10.032, "clients": 1, "assertion": "client entered isolated world and stopped safely" },
+    { "cycle": 1, "scenario": "command-line-two-client", "status": "PASS", "stableSeconds": 10.035, "clients": 2, "assertion": "Host and Guest joined the same Integrated LAN world" },
+    { "cycle": 1, "scenario": "profile-three-client", "status": "FAIL", "stableSeconds": null, "clientsStarted": 2, "failurePhase": "waiting-guest-world", "error": "Guest Netty read timeout (disconnect.timeout): Timed out", "disconnectAfterSeconds": 31.204, "hostObserved": ["Dev"], "secondGuestStarted": false, "stoppedSafely": true, "lanPortReleased": true },
+    { "cycle": 2, "scenario": "default-single", "status": "PASS", "stableSeconds": 10.037, "clients": 1, "assertion": "client entered isolated world and stopped safely" },
+    { "cycle": 2, "scenario": "command-line-two-client", "status": "PASS", "stableSeconds": 10.044, "clients": 2, "assertion": "Host and Guest joined the same Integrated LAN world" },
+    { "cycle": 2, "scenario": "profile-three-client", "status": "PASS", "stableSeconds": 10.047, "clients": 3, "assertion": "Host observed both Guests in the same world" },
+    { "cycle": 3, "scenario": "default-single", "status": "PASS", "stableSeconds": 10.050, "clients": 1, "assertion": "client entered isolated world and stopped safely" },
+    { "cycle": 3, "scenario": "command-line-two-client", "status": "PASS", "stableSeconds": 10.033, "clients": 2, "assertion": "Host and Guest joined the same Integrated LAN world" },
+    { "cycle": 3, "scenario": "profile-three-client", "status": "PASS", "stableSeconds": 10.052, "clients": 3, "assertion": "Host observed both Guests in the same world" }
+  ],
+  "limitations": [
+    "These are archived local real-game results, not fresh tests in this publication task.",
+    "The first three-client profile run failed; subsequent successes do not erase it.",
+    "Evidence does not establish that the failure was caused by the computer itself or that it is fixed.",
+    "The result only covers the exact target and test environment listed above."
+  ]
+}

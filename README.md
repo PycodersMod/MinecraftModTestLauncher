@@ -11,6 +11,10 @@ MMTL 是面向 Minecraft Java Edition Mod 开发者的**测试启动器与场景
 - 收集分角色日志，保留原始证据，并提供 Mod-aware 规则分析。
 - 在支持的 Loader 版本上使用独立 MMTL Test Agent 做就绪观察与 loopback IntegratedLAN 自动化。
 
+## Forge 1.20.1 Windows 基线
+
+[打开 Forge 1.20.1 纯代码控制基线](baselines/forge-1.20.1-code-only-control/README.md)。首次运行前必须在本机配置 JDK 17、Minecraft 根目录和 Forge 版本目录。该基线的归档实测为 8/9 场景通过，存在一轮三人联机的登录超时；它是后续复用起点，尚不能作为“多窗口稳定性已完全验收”的证明。
+
 ## 平台能力
 
 | 平台 | CLI / Build | Minecraft GUI | 说明 |
