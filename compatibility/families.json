@@ -538,7 +538,7 @@
         "26w14a",
         "3D Shareware v1.34"
       ],
-      "toolchainHash": "e71b4cafd651de192a72fbcebf2e04360ac696812145400bedcaa1f1c43a2d8f",
+      "toolchainHash": "b48db6a717f3c5a5ccf4725794a6aed30cc0badfbcf7052866e8ef600e0d68c9",
       "toolchain": {
         "id": "FabricLoomBuildLaunchPlan",
         "version": "project-resolved Loom version; plan contract remains version-independent"
@@ -560,16 +560,16 @@
         "https://docs.fabricmc.net/develop/loom",
         "https://docs.fabricmc.net/develop/getting-started/building-a-mod",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:f52f747e9bb9f472e7afaa1d845d7f63597d0cf8d690b537dfc2bf3be5153afc",
-        "fabric-adapter-sha256:f21a4b0098cace1ddaff5bfb41ec9c2352752f739e01782412d8cee2c88e7829",
+        "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
+        "fabric-adapter-sha256:0279c382bee6b4900f37ec00c2285ce3ddb3d5e57fe2a73c4808210310b0850b",
         "test:ProjectDetectorV2.Tests.ps1:detect-and-bind-all-exact-fabric-targets"
       ],
       "capabilities": {
         "ProjectDetection": {
           "status": "Supported",
           "evidenceRefs": [
-            "project-detector-sha256:f52f747e9bb9f472e7afaa1d845d7f63597d0cf8d690b537dfc2bf3be5153afc",
-            "fabric-adapter-sha256:f21a4b0098cace1ddaff5bfb41ec9c2352752f739e01782412d8cee2c88e7829",
+            "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
+            "fabric-adapter-sha256:0279c382bee6b4900f37ec00c2285ce3ddb3d5e57fe2a73c4808210310b0850b",
             "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-fabric-targets"
           ]
         },
@@ -578,7 +578,7 @@
           "evidenceRefs": [
             "https://docs.fabricmc.net/develop/loom",
             "https://docs.fabricmc.net/develop/getting-started/building-a-mod",
-            "fabric-adapter-sha256:f21a4b0098cace1ddaff5bfb41ec9c2352752f739e01782412d8cee2c88e7829",
+            "fabric-adapter-sha256:0279c382bee6b4900f37ec00c2285ce3ddb3d5e57fe2a73c4808210310b0850b",
             "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-fabric-targets"
           ]
         },
@@ -586,7 +586,7 @@
           "status": "Supported",
           "evidenceRefs": [
             "https://docs.fabricmc.net/develop/loom",
-            "fabric-adapter-sha256:f21a4b0098cace1ddaff5bfb41ec9c2352752f739e01782412d8cee2c88e7829",
+            "fabric-adapter-sha256:0279c382bee6b4900f37ec00c2285ce3ddb3d5e57fe2a73c4808210310b0850b",
             "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-fabric-targets"
           ]
         }
@@ -673,7 +673,7 @@
         "26.2",
         "26.3"
       ],
-      "toolchainHash": "a4ed79f089419d9390de3481313bba3c074e736826f6baac7844e8e5024ab7f3",
+      "toolchainHash": "a964a7dd9a8598b580939fbc58a57564f55592eb1c120820520a567efa2f9645",
       "toolchain": {
         "id": "ForgeGradleProjectDetection",
         "version": "per-project resolved ForgeGradle; no Build or Launch support implied"
@@ -694,8 +694,8 @@
         "https://docs.minecraftforge.net/en/latest/gettingstarted/",
         "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:f52f747e9bb9f472e7afaa1d845d7f63597d0cf8d690b537dfc2bf3be5153afc",
-        "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+        "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
+        "forge-adapter-sha256:fa848e414f93baddaa86c4bb5411dd4ab98408e15a7cd3a0b5ce599dcc5f6ff3",
         "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
       ],
       "capabilities": {
@@ -703,8 +703,8 @@
           "status": "Supported",
           "evidenceRefs": [
             "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
-            "project-detector-sha256:f52f747e9bb9f472e7afaa1d845d7f63597d0cf8d690b537dfc2bf3be5153afc",
-            "forge-adapter-sha256:ebca0f54d2137d252c684076defab60fb07f8e8b19616c49fc52b79d3fa9a015",
+            "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
+            "forge-adapter-sha256:fa848e414f93baddaa86c4bb5411dd4ab98408e15a7cd3a0b5ce599dcc5f6ff3",
             "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
           ]
         }
@@ -791,7 +791,7 @@
         "2point0_purple",
         "2point0_red"
       ],
-      "toolchainHash": "5927a886917f3d4c5a9c5a2d3c8b16629df7867df631e7e4a2e93e22610bad1a",
+      "toolchainHash": "bf205f3560667281e26050ad8fc1437ddacbf7464ae0a98ba0475638c0c1719d",
       "toolchain": {
         "id": "LegacyLoomingProjectDetection",
         "version": "per-project resolved Legacy Looming; no Build or Launch support implied"
@@ -812,7 +812,7 @@
         "https://meta.legacyfabric.net/",
         "https://github.com/Legacy-Fabric/legacy-looming",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:f52f747e9bb9f472e7afaa1d845d7f63597d0cf8d690b537dfc2bf3be5153afc",
+        "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
         "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
         "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
       ],
@@ -822,7 +822,7 @@
           "evidenceRefs": [
             "https://meta.legacyfabric.net/",
             "https://github.com/Legacy-Fabric/legacy-looming",
-            "project-detector-sha256:f52f747e9bb9f472e7afaa1d845d7f63597d0cf8d690b537dfc2bf3be5153afc",
+            "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
             "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
             "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
           ]
@@ -850,7 +850,7 @@
         "1.9",
         "1.9.4"
       ],
-      "toolchainHash": "cbcd569083ed93343349352a85965da8117f411be6eb0de2fff7fb0d9a5cf09c",
+      "toolchainHash": "916d16bc9468a934e11c3e9f91af9349d037753d69a92baf665ee129ae4f579d",
       "toolchain": {
         "id": "LiteLoaderProjectMetadata",
         "version": "per-project historical Gradle configuration; no Build support implied"
@@ -871,7 +871,7 @@
         "https://dl.liteloader.com/versions/versions.json",
         "source-sha256:778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:f52f747e9bb9f472e7afaa1d845d7f63597d0cf8d690b537dfc2bf3be5153afc",
+        "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
         "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
         "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
         "https://www.liteloader.com/explore/docs/user%3Ainstall%3Amanual%3A1.7.10",
@@ -883,7 +883,7 @@
           "evidenceRefs": [
             "https://dl.liteloader.com/versions/versions.json",
             "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
-            "project-detector-sha256:f52f747e9bb9f472e7afaa1d845d7f63597d0cf8d690b537dfc2bf3be5153afc",
+            "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
             "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
             "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
           ]
@@ -937,7 +937,7 @@
         "b1.8.1",
         "b1.9p5"
       ],
-      "toolchainHash": "78860be61f16d53f9eb593c21a34518be0bfe92c7201c1f8a2ab9c0b85350ed0",
+      "toolchainHash": "c22fedebc3be7a50cae8a352d58051bd8feb823f9bc2cbf91cc70b8debe4d6a4",
       "toolchain": {
         "id": "ClassicMCPSourceDetection",
         "version": "historical source/layout inspection only; Build and Launch remain unverified"
@@ -961,14 +961,14 @@
         "https://github.com/MCPHackers/RetroMCP-Java",
         "candidate-catalog:compatibility/candidate-catalogs/ModLoader.json",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:f52f747e9bb9f472e7afaa1d845d7f63597d0cf8d690b537dfc2bf3be5153afc",
+        "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
         "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-frozen-modloader-target-from-mcp-source-layout"
       ],
       "capabilities": {
         "ProjectDetection": {
           "status": "Supported",
           "evidenceRefs": [
-            "project-detector-sha256:f52f747e9bb9f472e7afaa1d845d7f63597d0cf8d690b537dfc2bf3be5153afc",
+            "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
             "https://legacymcmodding.github.io/ModLoader-JavaDoc/",
             "https://minecraft.fandom.com/ru/wiki/Создание_модификаций_с_помощью_ModLoader_(Beta_1.7.3)",
             "https://github.com/MCPHackers/RetroMCP-Java",
@@ -1002,7 +1002,7 @@
         "b1.8.1",
         "b1.9p5"
       ],
-      "toolchainHash": "624b4f46e5a287058d6c508f67393f4f8d5d5323b557b4fc437efe2c8168da0e",
+      "toolchainHash": "a9fd0a490e656894cc98c139b5c245a8dfbecddab3d612de25d936682b80a932",
       "toolchain": {
         "id": "ClassicMCPSourceDetection",
         "version": "historical source/layout inspection only; Build and Launch remain unverified"
@@ -1026,14 +1026,14 @@
         "https://github.com/MCPHackers/RetroMCP-Java",
         "candidate-catalog:compatibility/candidate-catalogs/ModLoaderMP.json",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:f52f747e9bb9f472e7afaa1d845d7f63597d0cf8d690b537dfc2bf3be5153afc",
+        "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
         "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-frozen-modloader-target-from-mcp-source-layout"
       ],
       "capabilities": {
         "ProjectDetection": {
           "status": "Supported",
           "evidenceRefs": [
-            "project-detector-sha256:f52f747e9bb9f472e7afaa1d845d7f63597d0cf8d690b537dfc2bf3be5153afc",
+            "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
             "https://legacymcmodding.github.io/ModLoader-JavaDoc/",
             "https://minecraft.fandom.com/ru/wiki/Создание_модификаций_с_помощью_ModLoader_(Beta_1.7.3)",
             "https://github.com/MCPHackers/RetroMCP-Java",
@@ -1070,7 +1070,7 @@
         "26.2",
         "26.3"
       ],
-      "toolchainHash": "d357116ccf22fbfc618b93f31a8611dcbcf96a277711a3dcb42b5fda02364951",
+      "toolchainHash": "efc5a5329f8d23d5fb2a93ac17bedabd4360727eb43b1c29700bf00cfa8f2822",
       "toolchain": {
         "id": "NeoGradleOrModDevGradle",
         "version": "project-resolved toolchain version; plan contract is version-independent"
@@ -1093,15 +1093,15 @@
         "https://github.com/neoforged/Documentation/blob/main/docs/gettingstarted/index.md",
         "https://github.com/NeoForgeMDKs",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:f52f747e9bb9f472e7afaa1d845d7f63597d0cf8d690b537dfc2bf3be5153afc",
-        "neoforge-adapter-sha256:444b863e9e7b10ac2f332c8e3300603ddfea8c1637b8b9ec4f48a47f20fba084",
+        "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
+        "neoforge-adapter-sha256:68c0823d8e12cf194fcd9ce7a2a244149c30f30aeb418c9cc5b97621d636b2d5",
         "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-neoforge-targets"
       ],
       "capabilities": {
         "ProjectDetection": {
           "status": "Supported",
           "evidenceRefs": [
-            "project-detector-sha256:f52f747e9bb9f472e7afaa1d845d7f63597d0cf8d690b537dfc2bf3be5153afc",
+            "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
             "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-neoforge-targets"
           ]
         },
@@ -1109,7 +1109,7 @@
           "status": "Supported",
           "evidenceRefs": [
             "https://github.com/neoforged/Documentation/blob/main/docs/gettingstarted/index.md",
-            "neoforge-adapter-sha256:444b863e9e7b10ac2f332c8e3300603ddfea8c1637b8b9ec4f48a47f20fba084",
+            "neoforge-adapter-sha256:68c0823d8e12cf194fcd9ce7a2a244149c30f30aeb418c9cc5b97621d636b2d5",
             "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-neoforge-targets"
           ]
         },
@@ -1117,7 +1117,7 @@
           "status": "Supported",
           "evidenceRefs": [
             "https://github.com/neoforged/Documentation/blob/main/docs/gettingstarted/index.md",
-            "neoforge-adapter-sha256:444b863e9e7b10ac2f332c8e3300603ddfea8c1637b8b9ec4f48a47f20fba084",
+            "neoforge-adapter-sha256:68c0823d8e12cf194fcd9ce7a2a244149c30f30aeb418c9cc5b97621d636b2d5",
             "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-neoforge-targets"
           ]
         }
@@ -1534,7 +1534,7 @@
         "b1.9-pre5",
         "b1.9-pre6"
       ],
-      "toolchainHash": "456d2aaa1f7eee1c22c9f682b50f21c6ea51ec983b062b8641fc8d855ad51714",
+      "toolchainHash": "d520584695593058cfd58b35c9bd747cd07a5881cce735761643ddd9b3228294",
       "toolchain": {
         "id": "PloceusProjectDetection",
         "version": "per-project resolved Ploceus; no Build or Launch support implied"
@@ -1556,7 +1556,7 @@
         "https://github.com/OrnitheMC/ploceus",
         "https://github.com/OrnitheMC/ornithe-meta",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:f52f747e9bb9f472e7afaa1d845d7f63597d0cf8d690b537dfc2bf3be5153afc",
+        "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
         "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
         "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-ornithe-target-from-ploceus-coordinates"
       ],
@@ -1566,7 +1566,7 @@
           "evidenceRefs": [
             "https://meta.ornithemc.net/",
             "https://github.com/OrnitheMC/ploceus",
-            "project-detector-sha256:f52f747e9bb9f472e7afaa1d845d7f63597d0cf8d690b537dfc2bf3be5153afc",
+            "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
             "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
             "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-ornithe-target-from-ploceus-coordinates"
           ]
@@ -2019,7 +2019,7 @@
         "26.3-snapshot-9",
         "26w14a"
       ],
-      "toolchainHash": "2e63ff358d9f4ad8b2c8dd98a3f2a4fb505d0c418987c908832238e7a0c4513a",
+      "toolchainHash": "efa69c25e97ac983d9200854295c0ed4f4a2cc09dc1cb2b46848f1e1e6ae33b1",
       "toolchain": {
         "id": "QuiltLoomBuildLaunchPlan",
         "version": "project-resolved Quilt Loom version; plan contract remains version-independent"
@@ -2040,16 +2040,16 @@
         "https://github.com/QuiltMC/quilt-loom",
         "https://github.com/QuiltMC/quilt-loader",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:f52f747e9bb9f472e7afaa1d845d7f63597d0cf8d690b537dfc2bf3be5153afc",
-        "quilt-adapter-sha256:374a319dcb5478ca2f0a5ef397fb2185f2c0c672353021417ec4997aaa12b3d8",
+        "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
+        "quilt-adapter-sha256:ecd9adcdbdf29196c9c8fda1b7c140a0f1c40a21e00fc7284f517efc4a19d615",
         "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-quilt-targets"
       ],
       "capabilities": {
         "ProjectDetection": {
           "status": "Supported",
           "evidenceRefs": [
-            "project-detector-sha256:f52f747e9bb9f472e7afaa1d845d7f63597d0cf8d690b537dfc2bf3be5153afc",
-            "quilt-adapter-sha256:374a319dcb5478ca2f0a5ef397fb2185f2c0c672353021417ec4997aaa12b3d8",
+            "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
+            "quilt-adapter-sha256:ecd9adcdbdf29196c9c8fda1b7c140a0f1c40a21e00fc7284f517efc4a19d615",
             "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-quilt-targets"
           ]
         },
@@ -2057,7 +2057,7 @@
           "status": "Supported",
           "evidenceRefs": [
             "https://github.com/QuiltMC/quilt-loom",
-            "quilt-adapter-sha256:374a319dcb5478ca2f0a5ef397fb2185f2c0c672353021417ec4997aaa12b3d8",
+            "quilt-adapter-sha256:ecd9adcdbdf29196c9c8fda1b7c140a0f1c40a21e00fc7284f517efc4a19d615",
             "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-quilt-targets"
           ]
         },
@@ -2065,7 +2065,7 @@
           "status": "Supported",
           "evidenceRefs": [
             "https://github.com/QuiltMC/quilt-loom",
-            "quilt-adapter-sha256:374a319dcb5478ca2f0a5ef397fb2185f2c0c672353021417ec4997aaa12b3d8",
+            "quilt-adapter-sha256:ecd9adcdbdf29196c9c8fda1b7c140a0f1c40a21e00fc7284f517efc4a19d615",
             "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-quilt-targets"
           ]
         }
