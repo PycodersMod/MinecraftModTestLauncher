@@ -1,9 +1,25 @@
 BeforeAll {
     $modulePath = Join-Path (Split-Path -Parent $PSScriptRoot) 'src/Compatibility/FullCompatibilityLedger.psm1'
     Import-Module $modulePath -Force
+    function Get-TestCanonicalTextSha256 {
+        param([Parameter(Mandatory)][string]$LiteralPath)
+        $content = [IO.File]::ReadAllText($LiteralPath)
+        $normalized = $content -replace "`r`n?", "`n"
+        $bytes = [Text.UTF8Encoding]::new($false).GetBytes($normalized)
+        [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
+    }
 }
 
 Describe 'Full compatibility ledger' {
+    It 'hashes text files consistently across LF and CRLF checkouts' {
+        $lfPath = Join-Path $TestDrive 'canonical-lf.psm1'
+        $crlfPath = Join-Path $TestDrive 'canonical-crlf.psm1'
+        [IO.File]::WriteAllText($lfPath, "line one`nline two`n", [Text.UTF8Encoding]::new($false))
+        [IO.File]::WriteAllText($crlfPath, "line one`r`nline two`r`n", [Text.UTF8Encoding]::new($false))
+
+        (Get-TestCanonicalTextSha256 -LiteralPath $lfPath) | Should -BeExactly (Get-TestCanonicalTextSha256 -LiteralPath $crlfPath)
+    }
+
     BeforeAll {
         $script:universe = [pscustomobject]@{
             schemaVersion = 1; auditStatus = 'IN_PROGRESS'; generatedAt = '2026-10-07T00:00:00Z'
@@ -184,8 +200,8 @@ Describe 'Full compatibility ledger' {
         $ledger=New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $families
         $rows=@($ledger.targets|Where-Object loaderId -CEQ 'Fabric')
         $familySchema=Join-Path $repositoryRoot 'common/schemas/compatibility-families.schema.json'
-        $detectorHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
-        $adapterHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/Fabric.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
+        $detectorHash=(Get-TestCanonicalTextSha256 -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1'))
+        $adapterHash=(Get-TestCanonicalTextSha256 -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/Fabric.psm1'))
         $orderedIds=[string[]]@($fabricTargets|ForEach-Object{[string]$_.minecraftId});[Array]::Sort($orderedIds,[StringComparer]::Ordinal)
         $hashBasis="fabric-loom-build-launch-plan-v1`n$($universe.catalogHash)`n$detectorHash`n$adapterHash`n$($orderedIds -join "`n")"
         $expectedToolchainHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($hashBasis))).ToLowerInvariant()
@@ -211,8 +227,8 @@ Describe 'Full compatibility ledger' {
         $ledger=New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $families
         $rows=@($ledger.targets|Where-Object loaderId -CEQ 'NeoForge')
         $familySchema=Join-Path $repositoryRoot 'common/schemas/compatibility-families.schema.json'
-        $detectorHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
-        $adapterHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/NeoForge.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
+        $detectorHash=(Get-TestCanonicalTextSha256 -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1'))
+        $adapterHash=(Get-TestCanonicalTextSha256 -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/NeoForge.psm1'))
         $orderedIds=[string[]]@($targets|ForEach-Object{[string]$_.minecraftId});[Array]::Sort($orderedIds,[StringComparer]::Ordinal)
         $hashBasis="neoforge-gradle-build-launch-plan-v1`n$($universe.catalogHash)`n$detectorHash`n$adapterHash`n$($orderedIds -join "`n")"
         $expectedToolchainHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($hashBasis))).ToLowerInvariant()
@@ -237,8 +253,8 @@ Describe 'Full compatibility ledger' {
         $ledger=New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $families
         $rows=@($ledger.targets|Where-Object loaderId -CEQ 'Quilt')
         $familySchema=Join-Path $repositoryRoot 'common/schemas/compatibility-families.schema.json'
-        $detectorHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
-        $adapterHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/Quilt.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
+        $detectorHash=(Get-TestCanonicalTextSha256 -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1'))
+        $adapterHash=(Get-TestCanonicalTextSha256 -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/Quilt.psm1'))
         $orderedIds=[string[]]@($targets|ForEach-Object{[string]$_.minecraftId});[Array]::Sort($orderedIds,[StringComparer]::Ordinal)
         $lf=[string][char]10
         $hashBasis=(@('quilt-loom-build-launch-plan-v1',[string]$universe.catalogHash,$detectorHash,$adapterHash)+$orderedIds) -join $lf
@@ -265,8 +281,8 @@ Describe 'Full compatibility ledger' {
         $ledger=New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $families
         $rows=@($ledger.targets|Where-Object loaderId -CEQ 'Forge')
         $familySchema=Join-Path $repositoryRoot 'common/schemas/compatibility-families.schema.json'
-        $detectorHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
-        $adapterHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/Forge.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
+        $detectorHash=(Get-TestCanonicalTextSha256 -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1'))
+        $adapterHash=(Get-TestCanonicalTextSha256 -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/Forge.psm1'))
         $orderedIds=[string[]]@($targets|ForEach-Object{[string]$_.minecraftId});[Array]::Sort($orderedIds,[StringComparer]::Ordinal)
         $lf=[string][char]10
         $hashBasis=(@('forge-project-metadata-detection-v1',[string]$universe.catalogHash,$detectorHash,$adapterHash)+$orderedIds) -join $lf
@@ -293,8 +309,8 @@ Describe 'Full compatibility ledger' {
         $ledger=New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $families
         $rows=@($ledger.targets|Where-Object loaderId -CEQ 'LegacyFabric')
         $familySchema=Join-Path $repositoryRoot 'common/schemas/compatibility-families.schema.json'
-        $detectorHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
-        $adapterHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/ContractV2.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
+        $detectorHash=(Get-TestCanonicalTextSha256 -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1'))
+        $adapterHash=(Get-TestCanonicalTextSha256 -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/ContractV2.psm1'))
         $orderedIds=[string[]]@($targets|ForEach-Object{[string]$_.minecraftId});[Array]::Sort($orderedIds,[StringComparer]::Ordinal)
         $lf=[string][char]10
         $hashBasis=(@('legacyfabric-looming-project-detection-v1',[string]$universe.catalogHash,$detectorHash,$adapterHash)+$orderedIds) -join $lf
@@ -321,8 +337,8 @@ Describe 'Full compatibility ledger' {
         $ledger=New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $families
         $rows=@($ledger.targets|Where-Object loaderId -CEQ 'OrnitheLoader')
         $familySchema=Join-Path $repositoryRoot 'common/schemas/compatibility-families.schema.json'
-        $detectorHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
-        $adapterHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/ContractV2.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
+        $detectorHash=(Get-TestCanonicalTextSha256 -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1'))
+        $adapterHash=(Get-TestCanonicalTextSha256 -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/ContractV2.psm1'))
         $orderedIds=[string[]]@($targets|ForEach-Object{[string]$_.minecraftId});[Array]::Sort($orderedIds,[StringComparer]::Ordinal)
         $lf=[string][char]10
         $hashBasis=(@('ornithemc-ploceus-project-detection-v1',[string]$universe.catalogHash,$detectorHash,$adapterHash)+$orderedIds) -join $lf
@@ -349,11 +365,12 @@ Describe 'Full compatibility ledger' {
         $ledger=New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $families
         $rows=@($ledger.targets|Where-Object loaderId -CEQ 'LiteLoader')
         $familySchema=Join-Path $repositoryRoot 'common/schemas/compatibility-families.schema.json'
-        $detectorHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
-        $adapterHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/ContractV2.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
+        $detectorHash=(Get-TestCanonicalTextSha256 -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1'))
+        $adapterHash=(Get-TestCanonicalTextSha256 -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/ContractV2.psm1'))
         $hashLines=[Collections.Generic.List[string]]::new()
         foreach($value in @('liteloader-project-metadata-detection-v1',[string]$universe.catalogHash,$detectorHash,$adapterHash)){$hashLines.Add([string]$value)}
-        foreach($target in @($targets|Sort-Object targetId)){$hashLines.Add("$($target.targetId)|$($target.candidateSourceHash)|$(@($target.loaderVersionCandidates) -join ',')")}
+        $orderedTargetIds=[string[]]@($targets|ForEach-Object{[string]$_.targetId});[Array]::Sort($orderedTargetIds,[StringComparer]::Ordinal)
+        foreach($targetId in $orderedTargetIds){$target=$targets|Where-Object targetId -CEQ $targetId|Select-Object -First 1;$hashLines.Add("$($target.targetId)|$($target.candidateSourceHash)|$(@($target.loaderVersionCandidates) -join ',')")}
         $hashBasis=$hashLines -join [string][char]10
         $expectedToolchainHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($hashBasis))).ToLowerInvariant()
 
@@ -377,7 +394,7 @@ Describe 'Full compatibility ledger' {
         $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
         $families=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/families.json')|ConvertFrom-Json
         $ledger=New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-08T00:00:00Z') -FamilyManifest $families
-        $detectorHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
+        $detectorHash=(Get-TestCanonicalTextSha256 -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1'))
         foreach($loaderId in @('ModLoader','ModLoaderMP')){
             $targets=@($universe.targets|Where-Object{$_.loaderId -ceq $loaderId -and $_.availability -ceq 'Available'})
             $family=$families.families|Where-Object{$_.loaderId -ceq $loaderId}|Select-Object -First 1
@@ -385,7 +402,8 @@ Describe 'Full compatibility ledger' {
             $expectedFamilyId=if($loaderId -ceq 'ModLoader'){'modloader-mcp-source-project-detection-v1'}else{'modloadermp-mcp-source-project-detection-v1'}
             $hashLines=[Collections.Generic.List[string]]::new()
             foreach($part in @($expectedFamilyId,[string]$universe.catalogHash,$detectorHash)){[void]$hashLines.Add([string]$part)}
-            foreach($target in @($targets|Sort-Object targetId)){$versionLabels=@($target.loaderVersionCandidates|ForEach-Object{[string]$_.loaderVersion});[void]$hashLines.Add("$($target.targetId)|$([string]$target.candidateSourceHash)|$($versionLabels -join ',')")}
+            $orderedTargetIds=[string[]]@($targets|ForEach-Object{[string]$_.targetId});[Array]::Sort($orderedTargetIds,[StringComparer]::Ordinal)
+            foreach($targetId in $orderedTargetIds){$target=$targets|Where-Object targetId -CEQ $targetId|Select-Object -First 1;$versionLabels=@($target.loaderVersionCandidates|ForEach-Object{[string]$_.loaderVersion});[void]$hashLines.Add("$($target.targetId)|$([string]$target.candidateSourceHash)|$($versionLabels -join ',')")}
             $expectedHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($hashLines -join [string][char]10))).ToLowerInvariant()
             $family | Should -Not -BeNullOrEmpty
             $family.familyId | Should -BeExactly $expectedFamilyId
