@@ -65,6 +65,7 @@ MMTL 是面向 Minecraft Java Edition Mod 开发者的**测试启动器与场景
 - [运行时观察与事件](docs/runtime-observation.md)
 - [人工实机验证准备](docs/human-validation.md)
 - [Profile 字段审计](docs/config-profile-field-audit.md)
+- [长期暂停研究档案（2026-10-23）](docs/archives/2026-10-23-long-term-freeze/README.md)：全版本兼容性、可选模型、XLoader 与 XTranslator 的脱敏历史断点；当前均暂停或未实现。
 
 ## 安全边界
 

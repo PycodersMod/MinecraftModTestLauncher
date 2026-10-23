@@ -1,0 +1,19 @@
+{
+  "archiveDate": "2026-10-23",
+  "status": "ARCHIVED_PAUSED",
+  "repositories": {
+    "mmtl": "https://github.com/PycodersMod/MinecraftModTestLauncher",
+    "xloader": "https://github.com/PycodersMod/XLoader",
+    "xtranslator": "https://github.com/PycodersMod/XTranslator"
+  },
+  "source": {
+    "mmtlMainSha": "a5ef212e585efa3c444fb7c5c4f3227067d4c31f",
+    "fullCompatibilityBranchHead": "cfc269c6ba86e449cd8153ebe8d5bf37d55cb5be",
+    "frozenExactTargetCount": 1631,
+    "fullCompatibilityStatus": "PARTIAL",
+    "xloader": "PAUSED_RESEARCH_NOT_IMPLEMENTED",
+    "xtranslator": "PAUSED_RESEARCH_NOT_IMPLEMENTED",
+    "mmtlAi": "PAUSED_RESEARCH_NOT_IMPLEMENTED"
+  },
+  "privacy": "Public summary excludes local paths, user data, credentials, raw sessions, worlds, private prompts and caches."
+}
