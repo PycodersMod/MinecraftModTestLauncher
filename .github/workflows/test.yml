@@ -123,3 +123,11 @@ jobs:
       - name: macOS Intel 入口安全 smoke
         shell: bash
         run: sh ./macos/launcher.sh --help
+
+  public-hygiene:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Public repository path and credential scan
+        shell: pwsh
+        run: ./.github/scripts/Test-PublicRepositoryHygiene.ps1

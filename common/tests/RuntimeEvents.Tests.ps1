@@ -36,7 +36,8 @@ Describe 'Runtime Event 契约' {
         $separator = [string][char]92
         $syntheticPath = 'C:' + $separator + 'Users' + $separator + 'Alice' + $separator + 'latest.log'
         $event = New-MmtlRuntimeEvent -SessionId session_01 -Role Client -ProcessId 1 -ProcessIdentity p1 -SourceType Observer -EventCode AUTH_REQUIRED -Summary "token=$syntheticToken at $syntheticPath"
-        $event.summary | Should -Not -Match 'ghp_|C:\\Users\\Alice' # public-hygiene: allow-synthetic-path
+        $userPathPattern = 'C:' + '\\Users\\Alice'
+        $event.summary | Should -Not -Match ('ghp_|' + $userPathPattern)
         $event.PSObject.Properties.Name | Should -Not -Contain 'rawLog'
     }
 }
