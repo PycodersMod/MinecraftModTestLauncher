@@ -1,0 +1,1625 @@
+[ {
+  "version" : "b1.9-pre6",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "b1.9-pre5",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "b1.9-pre2",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "b1.9-pre1",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "b1.8.1",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "b1.8-pre2",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "b1.8",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "b1.7_01",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "b1.7.3",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "b1.7.2",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "b1.7",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w30e",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w30d",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w30c",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w30b",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w30a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w27a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w26a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w25a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w24a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w23b",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w23a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w22a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w21b",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w21a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w19a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w18a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w17a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w16a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w15a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w08a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w07b",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w07a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w06a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w05b",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w05a-1442",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w04a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w03a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "12w01a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "11w50a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "11w49a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "11w48a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "11w47a",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "1.2.5",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "1.2.4",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "1.2.3",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "1.2.2",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "1.2.1",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "1.2",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "1.1",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "1.0.0-rc2-3",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "1.0.0-rc1",
+  "stable" : false,
+  "environment" : "client"
+}, {
+  "version" : "1.13.2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.13.2-pre2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.13.2-pre1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.13.1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.13.1-pre2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.13.1-pre1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w33a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w32a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w31a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w30b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w30a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.13",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.13-pre10",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.13-pre9",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.13-pre8",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.13-pre7",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.13-pre6",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.13-pre5",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.13-pre4",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.13-pre3",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.13-pre2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.13-pre1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w22c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w22b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w22a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w21b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w21a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w20c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w20b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w20a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w19b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w19a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w16a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w15a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w14b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w14a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w11a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w10d",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w10c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w10b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w10a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w09a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w08b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w08a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w07c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w07b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w07a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w06a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w05a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w03b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w03a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w02a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "18w01a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w50a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w49b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w49a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w48a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w47b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w47a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w46a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w45b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w45a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w43b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w43a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.12.2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.12.2-pre2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.12.2-pre1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.12.1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.12.1-pre1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w31a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.12",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.12-pre7",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.12-pre6",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.12-pre5",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.12-pre4",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.12-pre2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.12-pre1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w18b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w18a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w17b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w17a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w16b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w16a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w15a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w14a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w13b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w13a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "17w06a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.11.2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.11.1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.11",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.11-pre1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w44a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w43a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w42a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w41a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w40a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w39c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w39b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w39a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w38a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w36a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w35a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w33a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w32b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w32a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.10.2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.10.1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.10",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.10-pre2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.10-pre1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w21b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w21a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w20a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.9.4",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.9.3",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.9.3-pre3",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.9.3-pre2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.9.3-pre1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w15b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w15a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w14a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.9.2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.9.1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.9.1-pre3",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.9.1-pre2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.9.1-pre1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.9",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.9-pre4",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.9-pre3",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.9-pre2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.9-pre1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w07b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w07a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w06a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w05b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w05a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w04a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w03a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "16w02a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w51b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w51a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w50a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8.9",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w49b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w49a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w47c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w47b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w47a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w46a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w45a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w44b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w44a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w43c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w43b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w43a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w42a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w41b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w41a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w40b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w40a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w39c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w39b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w39a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w38b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w38a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w37a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w36d",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w36c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w36b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w36a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w35e",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w35d",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w35c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w35b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w35a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w34d",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w34c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w34b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w34a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w33c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w33b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w33a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w32c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w32b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w32a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w31c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w31b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "15w31a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8.8",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8.7",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8.6",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8.5",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8.4",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8.3",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8.2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8.2-pre7",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8.2-pre6",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8.2-pre5",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8.2-pre4",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8.2-pre3",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8.2-pre2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8.2-pre1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8.1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8.1-pre5",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8.1-pre4",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8.1-pre3",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8.1-pre2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8.1-pre1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8-pre3",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8-pre2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.8-pre1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w34d",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w34b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w34a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w33c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w33b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w33a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w32d",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w32c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w32b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w32a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w31a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w30c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w30b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w30a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w29b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w29a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w28b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w28a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w27a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w26c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.7.10",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w26b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w26a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w25b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w25a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.7.10-pre4",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.7.10-pre3",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.7.10-pre2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.7.10-pre1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w21b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w21a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w20b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w20a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w19a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w18b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w18a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w17a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w11b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.7.9",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.7.8",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.7.6",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.7.6-pre2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.7.6-pre1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w11a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w10c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w10b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w10a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w08a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.7.5",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w07a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w06b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w06a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w05b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w05a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w03b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w03a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w02c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w02b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "14w02a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.7.4",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w49a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w48b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w48a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w47e",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w47d",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w47c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w47b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w47a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.7.2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w43a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w42b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w42a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w41a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w39b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w39a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w38c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w38b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w38a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.6.4",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w37b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w37a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.6.1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w26a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w25c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w25b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w25a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w24b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w24a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w23a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w22a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w21b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w21a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w19a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w18c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w18b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w18a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.5.2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w17a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.5.1",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w11a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.5",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w10b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w10a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w09c",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w09b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w09a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w07a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w06a-1636",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w05b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w05a-1538",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w04a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w03a-1647",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w02b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w02a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.4.7",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w01b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "13w01a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.4.6",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "12w50b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.4.4",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "12w50a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "12w49a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.4.5",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.4.2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "12w42b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "12w42a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "12w41b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "12w41a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "12w40b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "12w40a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "12w39b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "12w39a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "12w38b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "12w38a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "12w37a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "12w36a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "12w34b",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "12w34a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.3.2",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "12w32a",
+  "stable" : false,
+  "environment" : "*"
+}, {
+  "version" : "1.3.1",
+  "stable" : false,
+  "environment" : "*"
+} ]

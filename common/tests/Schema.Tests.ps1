@@ -8,6 +8,7 @@ BeforeAll {
     $script:catalogSchema = Join-Path $script:repoRoot 'schemas/minecraft-version-catalog.schema.json'
     $script:availabilitySchema = Join-Path $script:repoRoot 'schemas/loader-availability.schema.json'
     $script:historicalAvailabilitySchema = Join-Path $script:repoRoot 'schemas/historical-availability.schema.json'
+    $script:compatibilityUniverseSchema = Join-Path $script:repoRoot 'schemas/compatibility-universe.schema.json'
     $script:provenance = @{
         sourceType = 'archivedOfficial'
         url = 'https://example.invalid/archive'
@@ -52,7 +53,7 @@ BeforeAll {
 
 Describe 'MMTL v2 JSON Schemas' {
     It '所有 Schema 文件自身是合法 JSON 并使用 JSON Schema Draft 7' {
-        foreach ($path in @($script:matrixSchema, $script:exceptionSchema, $script:configSchema,$script:availabilitySchema)) {
+        foreach ($path in @($script:matrixSchema, $script:exceptionSchema, $script:configSchema,$script:availabilitySchema,$script:compatibilityUniverseSchema)) {
             $schema = Get-Content -LiteralPath $path -Raw | ConvertFrom-Json -ErrorAction Stop
             $schema.'$schema' | Should -Be 'http://json-schema.org/draft-07/schema#'
         }

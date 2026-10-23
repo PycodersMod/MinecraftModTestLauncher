@@ -23,8 +23,23 @@ function Get-MmtlGradleWrapperRuntimeJavaRequirement {
     $match=[regex]::Match($content,'(?im)^\s*distributionUrl\s*=\s*.*?/gradle-([0-9]+)\.([0-9]+)(?:\.([0-9]+))?-(?:bin|all)\.zip')
     if(-not $match.Success){return [pscustomobject]@{major=$null;source='Unknown';confidence='Unknown';gradleVersion=$null;reason='无法识别 Gradle Wrapper 发行版版本。'}}
     $gradleMajor=[int]$match.Groups[1].Value;$gradleMinor=[int]$match.Groups[2].Value;$gradleVersion="$gradleMajor.$gradleMinor"
-    $minimum=if($gradleMajor -ge 9){17}elseif($gradleMajor -ge 5){8}elseif($gradleMajor -eq 4 -and $gradleMinor -ge 3){7}else{$null}
-    [pscustomobject]@{major=$minimum;minimumMajor=$minimum;preferredMajor=$null;exactMajor=$null;requirementKind=if($minimum){'Minimum'}else{'Unknown'};source=if($minimum){'GradleWrapperRuntimeCompatibility'}else{'Unknown'};confidence=if($minimum){'High'}else{'Unknown'};gradleVersion=$gradleVersion;reason=if($minimum -eq 17){'Gradle 9 需要 JVM 17 或更高版本。'}elseif($minimum -eq 8){'Gradle 5 及更新版本需要 JVM 8 或更高版本。'}elseif($minimum -eq 7){'Gradle 4.3 支持在 JVM 7 或更高版本上运行。'}else{'此 Wrapper 版本未记录最低 JVM 要求。'};provenance=if($minimum){'https://docs.gradle.org/current/userguide/compatibility.html'}else{$null}}
+    $version=[version]::new($gradleMajor,$gradleMinor)
+    $minimum=if($version -ge [version]'9.0'){17}elseif($version -ge [version]'5.0'){8}elseif($version -ge [version]'3.0'){7}elseif($version -ge [version]'2.0'){6}else{$null}
+    $javaIntroduction=@(
+        [pscustomobject]@{major=8;minimumGradle=[version]'2.0'},[pscustomobject]@{major=9;minimumGradle=[version]'4.3'},
+        [pscustomobject]@{major=10;minimumGradle=[version]'4.7'},[pscustomobject]@{major=11;minimumGradle=[version]'5.0'},
+        [pscustomobject]@{major=12;minimumGradle=[version]'5.4'},[pscustomobject]@{major=13;minimumGradle=[version]'6.0'},
+        [pscustomobject]@{major=14;minimumGradle=[version]'6.3'},[pscustomobject]@{major=15;minimumGradle=[version]'6.7'},
+        [pscustomobject]@{major=16;minimumGradle=[version]'7.0'},[pscustomobject]@{major=17;minimumGradle=[version]'7.3'},
+        [pscustomobject]@{major=18;minimumGradle=[version]'7.5'},[pscustomobject]@{major=19;minimumGradle=[version]'7.6'},
+        [pscustomobject]@{major=20;minimumGradle=[version]'8.3'},[pscustomobject]@{major=21;minimumGradle=[version]'8.5'},
+        [pscustomobject]@{major=22;minimumGradle=[version]'8.8'},[pscustomobject]@{major=23;minimumGradle=[version]'8.10'},
+        [pscustomobject]@{major=24;minimumGradle=[version]'8.14'},[pscustomobject]@{major=25;minimumGradle=[version]'9.1'},
+        [pscustomobject]@{major=26;minimumGradle=[version]'9.4'},[pscustomobject]@{major=27;minimumGradle=[version]'9.8'}
+    )
+    $maximum=($javaIntroduction|Where-Object{$version -ge $_.minimumGradle}|Measure-Object -Property major -Maximum).Maximum
+    if($null -eq $maximum -or $maximum -eq 0){$maximum=$null}else{$maximum=[int]$maximum}
+    [pscustomobject]@{major=$minimum;minimumMajor=$minimum;maximumMajor=$maximum;preferredMajor=$null;exactMajor=$null;requirementKind=if($minimum){'Minimum'}else{'Unknown'};source=if($minimum){'GradleWrapperRuntimeCompatibility'}else{'Unknown'};confidence=if($minimum){'High'}else{'Unknown'};gradleVersion=$gradleVersion;reason=if($minimum -eq 17){'Gradle 9 需要 JVM 17 或更高版本。'}elseif($minimum -eq 8){'Gradle 5 及更新版本需要 JVM 8 或更高版本。'}elseif($minimum -eq 7){'Gradle 3–4 需要 JVM 7 或更高版本。'}elseif($minimum -eq 6){'Gradle 2 需要 JVM 6 或更高版本。'}else{'此 Wrapper 版本未记录最低 JVM 要求。'};provenance=if($minimum){'https://docs.gradle.org/current/userguide/compatibility.html'}else{$null}}
 }
 
 Export-ModuleMember -Function Get-MmtlBuildJavaCompatibilityFallback,Get-MmtlGradleWrapperRuntimeJavaRequirement
