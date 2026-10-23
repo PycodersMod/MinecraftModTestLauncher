@@ -57,6 +57,16 @@ Describe 'Public repository hygiene scanner' {
         ($findings | ConvertTo-Json -Compress) | Should -Not -Match 'SyntheticHostName'
     }
 
+    It 'does not treat the generic GitHub Actions runner account as a private identity' {
+        $runnerProfile = ('C:' + '\' + 'Users\runner')
+        $automatic = @(Get-MmtlPublicHygieneIdentityCandidates -EnvironmentUserName 'runner' -MachineName 'fv-az123' -UserProfile $runnerProfile -GitHubActions)
+        $automatic | Should -Not -Contain 'runner'
+        $automatic | Should -Contain 'fv-az123'
+
+        $explicit = @(Get-MmtlPublicHygieneIdentityCandidates -SensitiveIdentities @('runner') -EnvironmentUserName 'runner' -MachineName 'fv-az123' -UserProfile $runnerProfile -GitHubActions)
+        $explicit | Should -Contain 'runner'
+    }
+
     It 'allows a generic path placeholder and a single explicitly marked synthetic fixture' {
         $placeholder = 'JDK path: ' + ('C:' + '\' + '<JDK_HOME>' + '\bin\java.exe') + '; home: ' + ('/' + 'home' + '/' + '<user>' + '/.gradle')
         $fixture = 'test executable: ' + ('C:' + '\' + 'fake\java.exe') + ' # public-hygiene: allow-synthetic-path'

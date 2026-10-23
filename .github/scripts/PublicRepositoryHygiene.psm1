@@ -9,6 +9,28 @@ $script:PathFindingCodes = @(
     'LOCAL_PROXY_ENDPOINT'
 )
 
+function Get-MmtlPublicHygieneIdentityCandidates {
+    [CmdletBinding()]
+    param(
+        [string[]]$SensitiveIdentities = @(),
+        [string]$EnvironmentUserName = [Environment]::UserName,
+        [string]$MachineName = [Environment]::MachineName,
+        [string]$UserProfile = $env:USERPROFILE,
+        [switch]$GitHubActions
+    )
+
+    $automatic = @($EnvironmentUserName, $MachineName)
+    if ($UserProfile) {
+        $automatic += [IO.Path]::GetFileName($UserProfile.TrimEnd([IO.Path]::DirectorySeparatorChar, [IO.Path]::AltDirectorySeparatorChar))
+    }
+    if ($GitHubActions) {
+        $genericRunnerIdentities = @('runner', 'runneradmin', 'github-actions', 'github-actions[bot]')
+        $automatic = @($automatic | Where-Object { $_ -and $_.ToLowerInvariant() -notin $genericRunnerIdentities })
+    }
+
+    @($SensitiveIdentities + $automatic | Where-Object { $_ -and $_.Trim().Length -ge 4 } | Sort-Object -Unique)
+}
+
 function Get-MmtlPublicHygieneContentFinding {
     [CmdletBinding()]
     param(
@@ -153,4 +175,4 @@ function Get-MmtlPublicHygieneFileFinding {
     $all | Sort-Object Path, Line, Code -Unique
 }
 
-Export-ModuleMember -Function Get-MmtlPublicHygieneContentFinding, Get-MmtlPublicHygieneFileFinding
+Export-ModuleMember -Function Get-MmtlPublicHygieneIdentityCandidates, Get-MmtlPublicHygieneContentFinding, Get-MmtlPublicHygieneFileFinding
