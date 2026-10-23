@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 2,
+  "date": "2026-10-22",
+  "timezone": "Asia/Shanghai",
+  "target": {
+    "minecraftVersion": "1.20.1",
+    "loader": "Forge",
+    "loaderVersion": "47.4.23",
+    "javaMajor": 17,
+    "os": "Windows"
+  },
+  "entrypoint": "Start-MMTL.bat",
+  "latestAcceptance": {
+    "sourceArchive": {
+      "file": "MMTL-Forge-Three-Cycle-Acceptance-20261022T1640.zip",
+      "sha256": "da8f2fe3307fc296669d6d59b62760b8d086a092051cb4611d2d811c1d192960",
+      "fullReportJsonSha256": "d9f89617eb931f3d09087aff582d0f41b0300d88ffa9b0275ec9078d4a484160",
+      "rawArchiveIncluded": false
+    },
+    "launcherSha256": {
+      "bat": "f76fcc4386787287d39207f104018f76c65b2bf89de505e7e4c198b4bf59563e",
+      "powerShell": "4f702d7bf13300ec0dca2307f493344271d03650b8169c02b0243b102086e1cb"
+    },
+    "summary": {
+      "pass": 9,
+      "fail": 0,
+      "total": 9,
+      "cycleCount": 3,
+      "scenariosPerCycle": ["default-single", "command-line-two-client", "profile-three-client"]
+    },
+    "scenarios": [
+      {"cycle":1,"scenario":"default-single","status":"PASS","clientCount":1,"stableSeconds":68.09,"allClientsJoinedWorld":true,"hostObservedAllPlayers":true,"integratedLan":false,"allProcessesStopped":true,"allStopsGraceful":true,"allLanPortsReleased":null,"sessionId":"20261022T080619Z_forge-control_a34c3308","sourceReport":"cycle01-single-report.json"},
+      {"cycle":1,"scenario":"command-line-two-client","status":"PASS","clientCount":2,"stableSeconds":240.24,"allClientsJoinedWorld":true,"hostObservedAllPlayers":true,"integratedLan":true,"allProcessesStopped":true,"allStopsGraceful":true,"allLanPortsReleased":true,"sessionId":"20261022T080850Z_forge-control_22970b76","sourceReport":"cycle01-two-report.json"},
+      {"cycle":1,"scenario":"profile-three-client","status":"PASS","clientCount":3,"stableSeconds":10.02,"allClientsJoinedWorld":true,"hostObservedAllPlayers":true,"integratedLan":true,"allProcessesStopped":true,"allStopsGraceful":true,"allLanPortsReleased":true,"sessionId":"20261022T081650Z_forge-control_63a60b21","sourceReport":"cycle01-profile-three-report.json"},
+      {"cycle":2,"scenario":"default-single","status":"PASS","clientCount":1,"stableSeconds":10.04,"allClientsJoinedWorld":true,"hostObservedAllPlayers":true,"integratedLan":false,"allProcessesStopped":true,"allStopsGraceful":true,"allLanPortsReleased":null,"sessionId":"20261022T081906Z_forge-control_eb1e07cd","sourceReport":"cycle02-default-single-report.json"},
+      {"cycle":2,"scenario":"command-line-two-client","status":"PASS","clientCount":2,"stableSeconds":10.02,"allClientsJoinedWorld":true,"hostObservedAllPlayers":true,"integratedLan":true,"allProcessesStopped":true,"allStopsGraceful":true,"allLanPortsReleased":true,"sessionId":"20261022T082622Z_forge-control_14cb7b05","sourceReport":"cycle02-commandline-two-report.json"},
+      {"cycle":2,"scenario":"profile-three-client","status":"PASS","clientCount":3,"stableSeconds":10.01,"allClientsJoinedWorld":true,"hostObservedAllPlayers":true,"integratedLan":true,"allProcessesStopped":true,"allStopsGraceful":true,"allLanPortsReleased":true,"sessionId":"20261022T082806Z_forge-control_395ff5b8","sourceReport":"cycle02-profile-three-report.json"},
+      {"cycle":3,"scenario":"default-single","status":"PASS","clientCount":1,"stableSeconds":10.02,"allClientsJoinedWorld":true,"hostObservedAllPlayers":true,"integratedLan":false,"allProcessesStopped":true,"allStopsGraceful":true,"allLanPortsReleased":null,"sessionId":"20261022T083032Z_forge-control_c4851cef","sourceReport":"cycle03-default-single-report.json"},
+      {"cycle":3,"scenario":"command-line-two-client","status":"PASS","clientCount":2,"stableSeconds":10.02,"allClientsJoinedWorld":true,"hostObservedAllPlayers":true,"integratedLan":true,"allProcessesStopped":true,"allStopsGraceful":true,"allLanPortsReleased":true,"sessionId":"20261022T083148Z_forge-control_7cc75cc2","sourceReport":"cycle03-commandline-two-report.json"},
+      {"cycle":3,"scenario":"profile-three-client","status":"PASS","clientCount":3,"stableSeconds":10.02,"allClientsJoinedWorld":true,"hostObservedAllPlayers":true,"integratedLan":true,"allProcessesStopped":true,"allStopsGraceful":true,"allLanPortsReleased":true,"sessionId":"20261022T083328Z_forge-control_1309dff8","sourceReport":"cycle03-profile-three-report.json"}
+    ],
+    "preflightNotes": [
+      "Two command-line parameter attempts failed configuration validation before any Minecraft game session started; they are excluded from the nine formal sessions. The corrected formal command-line scenarios passed."
+    ],
+    "limitations": [
+      "The raw local archive is not included because it contains machine-specific paths and runtime identifiers; only this sanitized summary and source hashes are published.",
+      "The first single-player and two-client cases stayed open longer than the 10-second minimum; all nine cases met or exceeded 10 seconds before safe stop.",
+      "The nine successful sessions demonstrate repeatability for this target and test environment. They do not establish that the earlier intermittent timeout was caused by a computer bug or guarantee that the fault can never recur.",
+      "No new Minecraft GUI sessions were launched during this repository publication and review task."
+    ]
+  },
+  "historicalAcceptance": {
+    "date": "2026-10-22",
+    "sourceEvidenceSha256": "8a57a82470cfc28e8a238ac233c15f952b470ee8d2677cd1c0d4fdb3f48b76fd",
+    "summary": {"pass":8,"fail":1,"total":9},
+    "failedScenario": {
+      "cycle":1,
+      "scenario":"profile-three-client",
+      "status":"FAIL",
+      "disconnectAfterSeconds":31.204,
+      "error":"Guest Netty read timeout (disconnect.timeout): Timed out",
+      "hostObserved":["Dev"],
+      "secondGuestStarted":false,
+      "stoppedSafely":true,
+      "lanPortReleased":true
+    },
+    "note":"This historical failure is retained and is not erased or rewritten by the later 9/9 result."
+  },
+  "interpretation": "The latest archived three-cycle acceptance passed 9/9 formal A/B/C game sessions. The separate earlier 8/9 record remains in the history. These results support this target-specific baseline but do not prove the earlier failure root cause."
+}

@@ -30,6 +30,9 @@ jobs:
       - name: Windows 与 common Pester 测试
         shell: pwsh
         run: ./.github/scripts/Invoke-MmtlPester.ps1
+      - name: Forge 1.20.1 基线 Pester 测试
+        shell: pwsh
+        run: ./baselines/forge-1.20.1-code-only-control/Invoke-BaselineTests.ps1
       - name: Windows 入口安全 smoke
         shell: pwsh
         run: ./windows/launcher.ps1 --help
