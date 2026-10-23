@@ -11445,9 +11445,11 @@
       "trustClass": "TrustedOfficial",
       "transportSecurity": "HTTPS",
       "retrievedAt": "2026-10-07T02:02:33.1456071+08:00",
-      "relativePath": "Rift/b6f4f736adce2234149d450eaafb87cc5cf3c20c6e60ea22f9d99d22f1ff202b.bin",
-      "byteLength": 254394,
-      "sha256": "b6f4f736adce2234149d450eaafb87cc5cf3c20c6e60ea22f9d99d22f1ff202b"
+      "relativePath": "Rift/5e88738a8a93065f5f618827b1ad82a68fedb2b5ea9b9f2398f2eedcc8e5249b.bin",
+      "byteLength": 254318,
+      "sha256": "5e88738a8a93065f5f618827b1ad82a68fedb2b5ea9b9f2398f2eedcc8e5249b",
+      "originalResponseSha256": "b6f4f736adce2234149d450eaafb87cc5cf3c20c6e60ea22f9d99d22f1ff202b",
+      "redactions": ["GitHub page uploadToken value"]
     }
   ]
 }
