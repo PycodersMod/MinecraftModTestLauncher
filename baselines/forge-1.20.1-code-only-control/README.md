@@ -4,7 +4,7 @@
 
 ## 验收状态
 
-本目录随附的是 **2026-10-22 九场景历史验收摘要：8 PASS / 1 FAIL**。单窗口 3/3、命令行双窗口 3/3、配置文件三窗口 2/3；第一轮三窗口中 Guest 在连接后约 31.204 秒发生 `Guest Netty read timeout (disconnect.timeout): Timed out`。后两轮三窗口成功，失败窗口由控制器安全关闭，LAN 端口释放。现有证据不能证明故障已消失，也不能归因于电脑自身错误。请先阅读 [验收证据摘要](evidence/acceptance-summary.md)。
+2026-10-22 后续三循环验收归档记录 **9/9 个正式游戏场景通过**：每轮依次运行默认单窗口、命令行双窗口、配置文件三窗口；多人场景确认 Host 与 Guest 进入同一 Integrated LAN 世界，稳定至少 10 秒后由交付 BAT 安全停止。更早一组正式九场景记录为 **8 PASS / 1 FAIL**，其约 31.204 秒登录超时保留为历史失败，不由后续 9/9 覆盖。后续成功说明该测试环境重复运行通过，但不能证明先前故障的根因是电脑问题，也不能证明不会再次间歇发生。详见 [验收证据摘要](evidence/acceptance-summary.md)。
 
 因此，这是一份可复用的 **Forge 1.20.1 技术基线候选**，不是“多窗口稳定性已完全通过”的声明，也不代表其他 Minecraft 版本、Loader 或 Windows 电脑已验证。
 
@@ -34,7 +34,7 @@
 
 ## 环境要求
 
-- Windows x64；BAT 会优先使用 `pwsh.exe`，找不到时回退到系统 `powershell.exe`。
+- Windows x64；必须安装 PowerShell 7。BAT 只调用 `pwsh.exe`；找不到时会提示安装要求并以非零退出码返回，不回退到 Windows PowerShell 5.1。
 - 已安装可运行的 Java 17 JDK，并在配置中指定 `java.exe`。
 - Minecraft Java Edition 1.20.1 和 Forge 47.4.23 已安装在 `minecraftRoot` 指定的游戏数据树中；启动控制器不会替用户下载 Minecraft/Forge。
 - 游戏数据树中需要对应版本 JSON/JAR、Forge Libraries 与 Assets。
@@ -114,5 +114,5 @@
 - 当前只覆盖 Minecraft 1.20.1 + Forge 47.4.23 + Java 17 + Windows；不推断其他版本或 Loader 能力。
 - 离线身份只用于 MMTL 本地测试；不支持在线账号认证。
 - 双窗口/三窗口 LAN 需要真实客户端窗口、内存和可用 loopback 端口。
-- 2026-10-22 历史九项中有一项三窗口登录超时。该项在摘要中保留为失败，不被后续两次成功覆盖。
+- 2026-10-22 较早九项验收中的三窗口登录超时作为历史失败保留；后续三循环 9/9 结果单独记录，不能推导出根因或零故障保证。
 - 本目录不含 Minecraft/Forge 下载包、Libraries、Assets、用户存档、原始 Session 日志或 JDK。

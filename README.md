@@ -13,7 +13,7 @@ MMTL 是面向 Minecraft Java Edition Mod 开发者的**测试启动器与场景
 
 ## Forge 1.20.1 Windows 基线
 
-[打开 Forge 1.20.1 纯代码控制基线](baselines/forge-1.20.1-code-only-control/README.md)。首次运行前必须在本机配置 JDK 17、Minecraft 根目录和 Forge 版本目录。该基线的归档实测为 8/9 场景通过，存在一轮三人联机的登录超时；它是后续复用起点，尚不能作为“多窗口稳定性已完全验收”的证明。
+[打开 Forge 1.20.1 纯代码控制基线](baselines/forge-1.20.1-code-only-control/README.md)。首次运行前必须在本机配置 JDK 17、Minecraft 根目录和 Forge 版本目录。后续一次归档的三循环正式实测为 9/9 场景通过；更早的 8/9 记录及其中一次三人联机登录超时仍作为历史失败保留。9/9 结果只代表该目标和测试环境，不能证明历史根因或排除未来间歇故障。
 
 ## 平台能力
 

@@ -1,32 +1,33 @@
-# Forge 1.20.1 BAT 九场景历史验收摘要
+# Forge 1.20.1 BAT 验收摘要
 
-- 日期：2026-10-22（北京时间）
-- 目标：Minecraft 1.20.1 / Forge 47.4.23 / Java 17 / Windows
-- 正式入口：`Start-MMTL.bat`
-- 汇总：**8 PASS / 1 FAIL**。本摘要复用已归档的实机证据，不是本轮新启动的游戏测试。
+- 目标：Minecraft 1.20.1 / Forge 47.4.23 / Java 17 / Windows。
+- 最新正式验收：**三轮九场，9 PASS / 0 FAIL**。
+- 场景顺序：每轮依次为默认单窗口、命令行双窗口、配置文件三窗口。
+- 每场均经交付的 `Start-MMTL.bat` 启动。报告记录真实客户端、世界加入与受控停止；多人场景另记录 Host 玩家列表、Integrated LAN 和端口释放。全部场景至少稳定 10 秒。
+- 验收归档 SHA-256：`da8f2fe3307fc296669d6d59b62760b8d086a092051cb4611d2d811c1d192960`。
+- 归档总报告 JSON SHA-256：`d9f89617eb931f3d09087aff582d0f41b0300d88ffa9b0275ec9078d4a484160`。
+- 原始 ZIP 未纳入公开仓库：其中包含本机路径、PID、窗口句柄等机器专属字段。公开内容仅保留脱敏摘要和哈希。
 
-| 循环 | 场景 | 结果 | 真实稳定观察 | 结果摘要 |
-|---:|---|---|---:|---|
-| 1 | 默认单窗口 | PASS | 10.032 秒 | 一个客户端进入隔离世界，安全停止 |
-| 1 | 命令行双窗口 | PASS | 10.035 秒 | Host 与一个 Guest 进入同一 Integrated LAN 世界 |
-| 1 | 配置文件三窗口 | FAIL | 未开始 | Host 成功发布 LAN；Guest 在连接约 31.204 秒后报告 `Guest Netty read timeout (disconnect.timeout): Timed out`；第二个 Guest 未启动 |
-| 2 | 默认单窗口 | PASS | 10.037 秒 | 一个客户端进入隔离世界，安全停止 |
-| 2 | 命令行双窗口 | PASS | 10.044 秒 | Host 与一个 Guest 进入同一 Integrated LAN 世界 |
-| 2 | 配置文件三窗口 | PASS | 10.047 秒 | Host 与两个 Guest 均进入同一世界，Host 观察到三名玩家 |
-| 3 | 默认单窗口 | PASS | 10.050 秒 | 一个客户端进入隔离世界，安全停止 |
-| 3 | 命令行双窗口 | PASS | 10.033 秒 | Host 与一个 Guest 进入同一 Integrated LAN 世界 |
-| 3 | 配置文件三窗口 | PASS | 10.052 秒 | Host 与两个 Guest 均进入同一世界，Host 观察到三名玩家 |
+| 循环 | 场景 | 客户端数 | Session | 稳定秒数 | 核心断言 | 结果 |
+|---:|---|---:|---|---:|---|---|
+| 1 | 默认单窗口 | 1 | `20261022T080619Z_forge-control_a34c3308` | 68.09 | 客户端进入隔离单人世界，安全停止 | PASS |
+| 1 | 命令行双窗口 | 2 | `20261022T080850Z_forge-control_22970b76` | 240.24 | Host 与 Guest 同处 Integrated LAN 世界；端口释放 | PASS |
+| 1 | 配置文件三窗口 | 3 | `20261022T081650Z_forge-control_63a60b21` | 10.02 | Host、Dev_1、Dev_2 加入同一世界；安全停止、端口释放 | PASS |
+| 2 | 默认单窗口 | 1 | `20261022T081906Z_forge-control_eb1e07cd` | 10.04 | 客户端进入隔离单人世界，安全停止 | PASS |
+| 2 | 命令行双窗口 | 2 | `20261022T082622Z_forge-control_14cb7b05` | 10.02 | Host 与 Guest 同处 Integrated LAN 世界；端口释放 | PASS |
+| 2 | 配置文件三窗口 | 3 | `20261022T082806Z_forge-control_395ff5b8` | 10.01 | Host、Dev_1、Dev_2 加入同一世界；安全停止、端口释放 | PASS |
+| 3 | 默认单窗口 | 1 | `20261022T083032Z_forge-control_c4851cef` | 10.02 | 客户端进入隔离单人世界，安全停止 | PASS |
+| 3 | 命令行双窗口 | 2 | `20261022T083148Z_forge-control_7cc75cc2` | 10.02 | Host 与 Guest 同处 Integrated LAN 世界；端口释放 | PASS |
+| 3 | 配置文件三窗口 | 3 | `20261022T083328Z_forge-control_1309dff8` | 10.02 | Host、Dev_1、Dev_2 加入同一世界；安全停止、端口释放 | PASS |
 
-## 失败处理与解读
+## 前置调用
 
-失败轮中，控制器记录阶段为等待 Guest 进入世界，Host 仅观察到 Host 玩家；控制器随后安全关闭已启动窗口并确认 LAN 端口释放。失败没有从统计中删除，也没有被后续成功覆盖。现有证据与约 31 秒登录时限现象相符，但不足以证明是 Windows/电脑本身故障，也不足以证明本问题已修复。
+两次命令行双窗口参数预检因调用参数格式错误而未通过配置校验；它们没有启动游戏进程，不计入九个正式 Session。随后修正调用并完成命令行双窗口实测。
 
-配置解析期间另修复了命令行客户端数覆盖单人 Profile 时默认玩家列表不足的问题。自动化结果为定向配置测试 5/5，仓库标准 Pester 491 passed / 0 failed / 2 skipped。该摘要不把配置测试当作游戏实测。
+## 历史失败记录
 
-## 来源与隐私
+较早的一组独立九场景验收为 **8 PASS / 1 FAIL**，原摘要来源 SHA-256 为 `8a57a82470cfc28e8a238ac233c15f952b470ee8d2677cd1c0d4fdb3f48b76fd`。失败发生在第一轮配置文件三窗口场景：Guest 在连接约 31.204 秒后报告 `Guest Netty read timeout (disconnect.timeout): Timed out`；Host 只观察到 Dev，第二个 Guest 未启动。已启动窗口安全关闭，端口释放。该失败保留为历史记录，不由后续 9/9 覆盖或删除。
 
-本摘要根据本机归档记录整理。来源报告 SHA-256：
+## 结论边界
 
-`8a57a82470cfc28e8a238ac233c15f952b470ee8d2677cd1c0d4fdb3f48b76fd`
-
-原始 Session、游戏日志、事件 JSONL、绝对路径、PID、窗口句柄和用户数据均留在本机，没有复制到此公开摘要。机器可读数据见 [`acceptance-summary.json`](acceptance-summary.json)。
+最新 9/9 表明该目标和本机环境在这次连续多样化验收中可重复运行成功。它不能证明早先间歇性超时由电脑自身故障引起，也不能保证未来不会再次发生。结果仅适用于本摘要列出的 Minecraft、Forge、Java、Windows 和测试配置；本轮仓库审查没有重新启动游戏。

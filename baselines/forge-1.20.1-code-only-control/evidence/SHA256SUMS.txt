@@ -54,8 +54,8 @@ ab4ff7a41b763c20eb0f269462d69668f291c39c94aa3b64136235b9ceb67d53  baselines/forg
 d9b9d15c1ffddf4f970e3183d1c8fab159c8c677a80aa6a10a0608bf4ce0e9b7  baselines/forge-1.20.1-code-only-control/common/src/Agent/AgentEvents.psm1
 59cc69a482eca07b3bd655e85fd82de3f71988b68277b53099d4abefe1cfd9af  baselines/forge-1.20.1-code-only-control/common/src/Agent/AgentProvider.psm1
 5ecc34cd2f65a5d475c9c8e29f4de6af69a801fd2fedcf5ef16487a70cd5dcf1  baselines/forge-1.20.1-code-only-control/common/src/AtomicFile.psm1
-e1cbb88435f8c81cdc3e22498a865b1ea9edd8f91f2ea98f28a5a9d2a6707534  baselines/forge-1.20.1-code-only-control/common/src/Execution/ExecutionPlan.psm1
-f9f3330bfe3116bf0402785692b22473f31c858417c5996b8fe6ebccb768b039  baselines/forge-1.20.1-code-only-control/common/src/Observation/RuntimeEvents.psm1
+3dd9d13fe56b5559864e39dc124e29621fe329e14b5667613e34dec45090b5d5  baselines/forge-1.20.1-code-only-control/common/src/Execution/ExecutionPlan.psm1
+21be2ff173db6bd49fc41184177252dbf04e062348b3b2960cc62674c366147f  baselines/forge-1.20.1-code-only-control/common/src/Observation/RuntimeEvents.psm1
 eaf442b308cf7e071290c950594e08fd1dfab94aa460e93c6f805f3d82dc0434  baselines/forge-1.20.1-code-only-control/common/src/Platform/Platform.psm1
 7d981ea606704fda82fbcdc38cf2ef1e7e8d9408503deafadcbcfa0c90286013  baselines/forge-1.20.1-code-only-control/common/src/ProcessManager.psm1
 fcdb1fad009d79c8ba95d5777bb1869933b6db3d51861042155d622c3b62306b  baselines/forge-1.20.1-code-only-control/common/src/RuntimeManager.psm1
@@ -71,12 +71,12 @@ fcdb1fad009d79c8ba95d5777bb1869933b6db3d51861042155d622c3b62306b  baselines/forg
 4ce849c3bd2652b183d81efe7d8e3ccf7f69d6bf2c6a143fe4ecb9f8baf5d306  baselines/forge-1.20.1-code-only-control/config/forge-1.20.1-two-client.json
 de271e8fbd73ac1d7add5c03885e1e6c2b16a12311adbbdae54d7ac90b2783b2  baselines/forge-1.20.1-code-only-control/docs/launch-flow.md
 3a8965a1431bc5256a5a96c8e4f0d54cbd766be4845539941358d803da536a3a  baselines/forge-1.20.1-code-only-control/docs/security-and-evidence.md
-0046a011efab83f54daeb1ecdfe783d314c2659ae8aca3935f344d5d1076ef6c  baselines/forge-1.20.1-code-only-control/evidence/acceptance-summary.json
-d3ce13ffb2cda900b997a7d93b6c2483485c2b0eca860a5da634a35bcbc96626  baselines/forge-1.20.1-code-only-control/evidence/acceptance-summary.md
+f5aa9f07188c04cbe46735373e06573763a4e3ac845a2b42856ec428ce938747  baselines/forge-1.20.1-code-only-control/evidence/acceptance-summary.json
+2e5118b601921b027594d51c0e4181b4c9c0554d3fd02540a79ef45e587819c8  baselines/forge-1.20.1-code-only-control/evidence/acceptance-summary.md
 e919366b44a89055c76a1ad1325853aefe75e462bc5151171bd0f073b3a0c3cc  baselines/forge-1.20.1-code-only-control/evidence/agent-provenance.json
 b30358b5acb4e79bf163d56602c9d5882019276aa1096be0819c1773d4a18e18  baselines/forge-1.20.1-code-only-control/Invoke-BaselineTests.ps1
-1262f417d667f7ecba17fceda682c86869aa5a7efb01e2f37783392cf9a4f483  baselines/forge-1.20.1-code-only-control/README.md
-f76fcc4386787287d39207f104018f76c65b2bf89de505e7e4c198b4bf59563e  baselines/forge-1.20.1-code-only-control/Start-MMTL.bat
+cf2e5ac5529d5166766739df9d650868cefb15a2574d1016268338bd1fda8efb  baselines/forge-1.20.1-code-only-control/README.md
+60b3f71599754cad779c9b97b2b53b067eaa0a8c4dc8fb5578a1a034609beeac  baselines/forge-1.20.1-code-only-control/Start-MMTL.bat
 2097baacc86b85a32d2dad160cac793d142d32394013e56772ba68116491dc5b  baselines/forge-1.20.1-code-only-control/Start-MMTL.ps1
 81294044655a095de41911dbe94eefe6cfe3770a484873a2d1a46338f4e626a4  baselines/forge-1.20.1-code-only-control/windows/src/ForgeControl/ForgeClientLaunch.psm1
 a61480e99a5106a3dcdd9521727b7a8c2e69e395d23b39a173da90164ceb7e68  baselines/forge-1.20.1-code-only-control/windows/src/ForgeControl/ForgeControlConfig.psm1
@@ -87,4 +87,5 @@ d2facc0e870b6d9be983abba3ffe435872515a0bad8ddc9a6aeadd81e6bb6276  baselines/forg
 9ff57a78233ef3211d149be90f3ffdcf3850104efa6d9c7d0e7bba2f52676bd8  baselines/forge-1.20.1-code-only-control/windows/tests/ForgeClientLaunch.Tests.ps1
 e3fe7e5eece16a19734bc9de183a8ab6773967b6e49b95d550de78bcbac09487  baselines/forge-1.20.1-code-only-control/windows/tests/ForgeControlConfig.Tests.ps1
 9a3220aaefc106f7037bdf7dcd973d2e0c6b3b3152b86164fb070c71c1336cee  baselines/forge-1.20.1-code-only-control/windows/tests/ForgeControlSession.FailureReport.Tests.ps1
-0cb23a408102e439fc3215f578d82843a343564c989944fd71bad32010fb08c1  README.md
+83285b431cff6aa8e1b94baeb0c8438ff1d7517cfbd47ce71cd0a2b65a015e26  baselines/forge-1.20.1-code-only-control/windows/tests/Start-MMTL.Bat.Tests.ps1
+5b0f0196c473a10d8c9b5761ec12bf67a1789b04b17fcfc3538f9a72065196ee  README.md
