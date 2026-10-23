@@ -9,9 +9,8 @@ $root = [IO.Path]::GetFullPath($RepositoryRoot)
 if (-not (Test-Path -LiteralPath (Join-Path $root '.git'))) { throw 'REPOSITORY_ROOT_INVALID' }
 Import-Module (Join-Path $PSScriptRoot 'PublicRepositoryHygiene.psm1') -Force
 
-$identities = @($SensitiveIdentities + [Environment]::UserName + [Environment]::MachineName)
-if ($env:USERPROFILE) { $identities += [IO.Path]::GetFileName($env:USERPROFILE.TrimEnd([IO.Path]::DirectorySeparatorChar, [IO.Path]::AltDirectorySeparatorChar)) }
-$identities = @($identities | Where-Object { $_ -and $_.Trim().Length -ge 4 } | Sort-Object -Unique)
+$isGitHubActions = $env:GITHUB_ACTIONS -eq 'true'
+$identities = @(Get-MmtlPublicHygieneIdentityCandidates -SensitiveIdentities $SensitiveIdentities -EnvironmentUserName ([Environment]::UserName) -MachineName ([Environment]::MachineName) -UserProfile $env:USERPROFILE -GitHubActions:$isGitHubActions)
 $paths = @(git -C $root ls-files --cached --others --exclude-standard)
 if ($LASTEXITCODE -ne 0) { throw 'GIT_FILE_LIST_FAILED' }
 
