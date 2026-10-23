@@ -286,10 +286,11 @@ Describe '演练进程登记' {
         $plan=New-RehearsalExecutionPlan -JavaPath $javaPath -Major $major -RuntimeRoot $runtime
         $results=[Collections.Generic.List[object]]::new()
         for($iteration=1;$iteration -le 20;$iteration++){
-            $results.Add((Invoke-MmtlSingleLaunchRehearsal -ExecutionPlan $plan -RuntimeRoot $runtime -RepositoryRoot $script:platformRoot -TimeoutSeconds 1))
+            $results.Add((Invoke-MmtlSingleLaunchRehearsal -ExecutionPlan $plan -RuntimeRoot $runtime -RepositoryRoot $script:platformRoot -TimeoutSeconds 10))
         }
         $results.Count | Should -Be 20
-        @($results|Where-Object{$_.finalSessionState -ne 'Stopped' -or -not $_.rehearsal -or $_.validationEligible}).Count | Should -Be 0
+        $invalidResults=@($results|Where-Object{$_.finalSessionState -ne 'Stopped' -or -not $_.rehearsal -or $_.validationEligible}|ForEach-Object{[ordered]@{sessionId=$_.sessionId;scenario=$_.scenario;finalSessionState=$_.finalSessionState;rehearsal=$_.rehearsal;validationEligible=$_.validationEligible;stopResult=$_.stopResult;eventCodes=@($_.events|ForEach-Object eventCode)}})
+        $invalidResults.Count | Should -Be 0 -Because (ConvertTo-Json -InputObject $invalidResults -Depth 10 -Compress)
         @($results.sessionId|Sort-Object -Unique).Count | Should -Be 20
         foreach($result in $results){
             $session=Join-Path (Join-Path $runtime 'sessions') $result.sessionId

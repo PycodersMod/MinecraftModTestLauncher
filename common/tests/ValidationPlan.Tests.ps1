@@ -21,11 +21,10 @@ Describe 'Validation plan selection and fixture trust' {
     }
 
     It 'selects real projects as Tier 1 targets without converting their paths into commands' {
-        $projectRoot = 'D:' + '\mods\CarpetPlayerAddition'
-        $projects=@([pscustomobject]@{targetId='user-fabric';minecraftId='1.21.6';loaderId='Fabric';projectRoot=$projectRoot;tier='Tier1'})
+        $projects=@([pscustomobject]@{targetId='user-fabric';minecraftId='1.21.6';loaderId='Fabric';projectRoot='D:\mods\CarpetPlayerAddition';tier='Tier1'}) # public-hygiene: allow-synthetic-path
         $plan=New-MmtlValidationPlan -Scope Portfolio -CurrentStable '26.3' -CatalogReleaseIds @('1.21.6','26.3') -ProjectTargets $projects
         $plan.targets[0].tier | Should -Be 'Tier1'
-        $plan.targets[0].projectRoot | Should -Be $projectRoot
+        $plan.targets[0].projectRoot | Should -Be 'D:\mods\CarpetPlayerAddition' # public-hygiene: allow-synthetic-path
     }
 
     It 'accepts only pinned trusted official owners and allowlisted Gradle tasks' {

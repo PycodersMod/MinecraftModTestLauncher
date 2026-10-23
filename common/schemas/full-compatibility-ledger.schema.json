@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pycodersmod.github.io/MinecraftModTestLauncher/schemas/full-compatibility-ledger.schema.json",
+  "title": "MMTL Full Compatibility Ledger",
+  "type": "object",
+  "required": ["schemaVersion", "auditStatus", "generatedAt", "universeHash", "candidateCatalogHash", "targets", "summary"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "auditStatus": { "enum": ["IN_PROGRESS", "FROZEN"] },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "universeHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "candidateCatalogHash": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+    "targets": { "type": "array", "items": { "$ref": "#/$defs/target" } },
+    "summary": { "$ref": "#/$defs/summary" }
+  },
+  "$defs": {
+    "dimension": {
+      "type": "object",
+      "required": ["status", "evidenceRefs"],
+      "properties": {
+        "status": { "enum": ["Supported", "PartiallySupported", "NotApplicable", "ExternallyBlocked", "Unsupported", "Unknown", "PendingImplementation"] },
+        "evidenceRefs": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "reasonCode": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "evidence": { "type": "string", "minLength": 1 },
+        "attemptedRemediation": { "type": "string", "minLength": 1 }
+      },
+      "allOf": [{
+        "if": { "properties": { "status": { "const": "ExternallyBlocked" } }, "required": ["status"] },
+        "then": { "required": ["reasonCode", "source", "evidence", "attemptedRemediation"] }
+      }],
+      "additionalProperties": false
+    },
+    "dimensions": {
+      "type": "object",
+      "required": ["Catalogued", "LoaderResolved", "ProjectDetection", "BuildPlan", "BuildJava", "RuntimeJava", "RuntimeBinding", "BuildVerified", "LaunchPlan", "LaunchCheck", "AgentBuild", "AgentInjection", "SingleCapability", "IntegratedLANCapability", "DedicatedCapability", "LogObservation", "EvidenceLevel"],
+      "properties": {
+        "Catalogued": { "$ref": "#/$defs/dimension" },
+        "LoaderResolved": { "$ref": "#/$defs/dimension" },
+        "ProjectDetection": { "$ref": "#/$defs/dimension" },
+        "BuildPlan": { "$ref": "#/$defs/dimension" },
+        "BuildJava": { "$ref": "#/$defs/dimension" },
+        "RuntimeJava": { "$ref": "#/$defs/dimension" },
+        "RuntimeBinding": { "$ref": "#/$defs/dimension" },
+        "BuildVerified": { "$ref": "#/$defs/dimension" },
+        "LaunchPlan": { "$ref": "#/$defs/dimension" },
+        "LaunchCheck": { "$ref": "#/$defs/dimension" },
+        "AgentBuild": { "$ref": "#/$defs/dimension" },
+        "AgentInjection": { "$ref": "#/$defs/dimension" },
+        "SingleCapability": { "$ref": "#/$defs/dimension" },
+        "IntegratedLANCapability": { "$ref": "#/$defs/dimension" },
+        "DedicatedCapability": { "$ref": "#/$defs/dimension" },
+        "LogObservation": { "$ref": "#/$defs/dimension" },
+        "EvidenceLevel": { "$ref": "#/$defs/dimension" }
+      },
+      "additionalProperties": false
+    },
+    "target": {
+      "type": "object",
+      "required": ["targetId", "loaderId", "minecraftId", "familyId", "dimensions", "status", "sourceHash", "toolchainHash", "targetSpecHash"],
+      "properties": {
+        "targetId": { "type": "string", "minLength": 1 },
+        "loaderId": { "type": "string", "minLength": 1 },
+        "minecraftId": { "type": "string", "minLength": 1 },
+        "familyId": { "type": ["string", "null"] },
+        "dimensions": { "$ref": "#/$defs/dimensions" },
+        "status": { "enum": ["Supported", "PartiallySupported", "NotApplicable", "ExternallyBlocked", "Unsupported", "Unknown", "PendingImplementation"] },
+        "sourceHash": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+        "toolchainHash": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+        "targetSpecHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      },
+      "additionalProperties": false
+    },
+    "summary": {
+      "type": "object",
+      "required": ["targetCount", "unknownTargetCount", "pendingImplementationDimensionCount", "unassignedFamilyCount"],
+      "properties": {
+        "targetCount": { "type": "integer", "minimum": 0 },
+        "unknownTargetCount": { "type": "integer", "minimum": 0 },
+        "pendingImplementationDimensionCount": { "type": "integer", "minimum": 0 },
+        "unassignedFamilyCount": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

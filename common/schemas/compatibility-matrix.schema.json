@@ -79,6 +79,7 @@
         "requirementKind": {"enum": ["Minimum", "Preferred", "Exact", "Unknown", "AuthoritativeMetadata", "OfficialReleaseRequirement", "CompatibilityFallback", "ProjectOverride", "ToolchainRequirement"]},
         "requirementSourceKind": {"type": "string"},
         "minimumMajor": {"type": ["integer", "null"], "minimum": 1},
+        "maximumMajor": {"type": ["integer", "null"], "minimum": 1},
         "preferredMajor": {"type": ["integer", "null"], "minimum": 1},
         "exactMajor": {"type": ["integer", "null"], "minimum": 1},
         "purpose": {"enum": ["BuildJava", "RuntimeJava"]},

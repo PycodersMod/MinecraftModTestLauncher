@@ -59,6 +59,38 @@ Describe 'Historical adapters, detection, overlay, and manual mode' {
         $result=Get-MmtlProject -Path $project
         $result.Loader | Should -BeExactly 'Rift';$result.DetectionStatus | Should -BeExactly 'Resolved';$result.MinecraftVersion | Should -BeExactly '1.13';$result.BuildJavaMajor | Should -Be 8
     }
+    It 'creates a pinned Rift 1.13 build plan with audited toolchain bounds and execution safety gates' {
+        $project=Join-Path $TestDrive 'rift-build-plan';New-Item -ItemType Directory -Path (Join-Path $project 'gradle/wrapper') -Force|Out-Null
+        "buildscript { dependencies { classpath 'org.dimdev:ForgeGradle:2.3-SNAPSHOT' } }`napply plugin: 'net.minecraftforge.gradle.tweaker-client'`nsourceCompatibility = 1.8`nminecraft { version = '1.13' }"|Set-Content (Join-Path $project 'build.gradle')
+        'distributionUrl=https\://services.gradle.org/distributions/gradle-4.9-bin.zip'|Set-Content (Join-Path $project 'gradle/wrapper/gradle-wrapper.properties')
+        $result=Get-MmtlProject -Path $project
+        $plan=& $script:adapterModule { param($inputProject) New-MmtlAdapterBuildPlan -Project $inputProject } $result
+        $plan.adapterId | Should -BeExactly 'Rift'
+        $plan.task | Should -BeExactly 'build'
+        $plan.buildJavaRequirement.minimumMajor | Should -Be 8
+        $plan.buildJavaRequirement.maximumMajor | Should -Be 10
+        $plan.runtimeJavaRequirement.major | Should -Be 8
+        $plan.runtimeJavaRequirement.source | Should -BeExactly 'MojangVersionMetadata'
+        $plan.runtimeJavaRequirement.provenance.sha1 | Should -BeExactly 'c24c2fd37c8ca2e1c18721e2c77caf4d24c87f92'
+        $plan.isExecutablePlan | Should -BeFalse
+        $plan.executionGate | Should -BeExactly 'PINNED_TRUSTED_TOOLCHAIN_REQUIRED'
+        $plan.historical.validationStatus | Should -BeExactly 'BuildVerifiedForPinnedFixture'
+        $plan.historical.automaticArtifactExecution | Should -BeExactly 'Denied'
+        $plan.buildEvidence.riftSourceCommit | Should -BeExactly 'dfc75ff7254cbbea81535c02ddc5252e384ac806'
+        $plan.buildEvidence.forgeGradleSourceCommit | Should -BeExactly '70d441a286c6673dc0288c3ade5fb8568ca5ce7f'
+        $plan.buildEvidence.minecraftConfiguration | Should -BeExactly 'mcp_config:1.13 + mcp_snapshot:20180908-1.13'
+        $plan.historical.sourceTransportSecurity | Should -BeExactly 'Mixed'
+        $historicalPlan=& $script:adapterModule { param($inputProject) New-MmtlHistoricalAdapterBuildPlan -Project $inputProject } $result
+        $historicalPlan.buildEvidence.riftSourceCommit | Should -BeExactly $plan.buildEvidence.riftSourceCommit
+        $launchPlan=& $script:adapterModule { param($inputProject) New-MmtlRiftAdapterLaunchPlan -Project $inputProject } $result
+        $launchPlan.task | Should -BeExactly 'runClient'
+        $launchPlan.clientTweaker | Should -BeExactly 'org.dimdev.riftloader.launch.RiftLoaderClientTweaker'
+        $launchPlan.runtimeJavaRequirement.major | Should -Be 8
+        $launchPlan.isExecutablePlan | Should -BeFalse
+        $launchPlan.launchCheckStatus | Should -BeExactly 'Unverified'
+        { New-MmtlRiftAdapterBuildPlan -Project ([pscustomobject]@{Loader='Rift';MinecraftVersion='1.13.2';Toolchain=[pscustomobject]@{id='ForgeGradle';version='2.3-SNAPSHOT'}}) } | Should -Throw
+        { New-MmtlRiftAdapterLaunchPlan -Project ([pscustomobject]@{Loader='Rift';MinecraftVersion='1.13.2';Toolchain=[pscustomobject]@{id='ForgeGradle';version='2.3-SNAPSHOT'}}) } | Should -Throw
+    }
     It 'creates non-executable historical BuildPlans with independent build/runtime Java requirements' {
         $project=Join-Path $TestDrive 'build-plan';New-Item -ItemType Directory -Path $project -Force|Out-Null
         "plugins { id 'legacy-looming' version '1.16-SNAPSHOT' }"|Set-Content (Join-Path $project 'build.gradle')

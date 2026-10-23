@@ -173,6 +173,7 @@ function New-MmtlBuildEvidence {
     if($ArtifactSha256 -and $ArtifactSha256 -notmatch '^(?i:[0-9a-f]{64})$'){throw 'Artifact SHA-256 必须恰好包含 64 个十六进制字符。'}
     if($Result -eq 'PASSED' -and -not $ArtifactSha256){throw '通过的构建证据必须包含产物 SHA-256。'}
     if($Result -eq 'PASSED' -and $BuildJavaRequirement.requirementKind -eq 'Minimum' -and [int]$ObservedBuildJava.major -lt [int]$BuildJavaRequirement.minimumMajor){throw '实测构建 JVM 低于要求的最低版本。'}
+    if($Result -eq 'PASSED' -and $BuildJavaRequirement.PSObject.Properties['maximumMajor'] -and $BuildJavaRequirement.maximumMajor -and [int]$ObservedBuildJava.major -gt [int]$BuildJavaRequirement.maximumMajor){throw '实测构建 JVM 高于要求的最高版本。'}
     [pscustomobject][ordered]@{
         minecraftId=$MinecraftId
         loaderId=$LoaderId
