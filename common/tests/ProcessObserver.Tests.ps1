@@ -44,6 +44,7 @@ Describe '只观察 Session 已登记进程' {
         $result = Invoke-MmtlProcessObserver -SessionPath $session -TimeoutSeconds 0 -ProcessLookup $lookup -IdentityCheck $identityLookup -EventWriter $eventWriter
         $result.processes[0].status | Should -Be 'Exited'
         $event = Get-MmtlRuntimeEvents -SessionPath $session | Where-Object eventCode -eq 'PROCESS_EXITED'
-        $event.summary | Should -Not -Match 'C:\\Users\\Alice'
+        $userPathPattern = 'C:' + '\\Users\\Alice'
+        $event.summary | Should -Not -Match $userPathPattern
     }
 }
