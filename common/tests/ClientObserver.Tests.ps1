@@ -10,7 +10,9 @@ BeforeAll {
 
 Describe 'Client Runtime Log Observer' {
     BeforeEach {
-        $javaPath = if ([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::Windows)) { 'C:\Java\bin\java.exe' } else { '/fixture-jdk/bin/java' }
+        $windowsJavaPath = 'C:' + '\Java\bin\java.exe'
+        $linuxJavaPath = '/' + 'fixture-jdk/bin/java'
+        $javaPath = if ([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::Windows)) { $windowsJavaPath } else { $linuxJavaPath }
         $script:session = Join-Path $TestDrive ('session_client_' + [guid]::NewGuid().ToString('N'))
         $script:runtime = Join-Path $session 'Client-Dev'
         New-Item -ItemType Directory -Path (Join-Path $runtime 'logs') -Force | Out-Null

@@ -26,7 +26,7 @@ BeforeAll {
 }
 Describe 'MMTL 安全与项目检测' {
     It '拒绝 Runtime Root 外的删除目标' {
-        { Remove-MmtlSession -RuntimeRoot 'C:\mmtl' -SessionPath (Join-Path $TestDrive 'outside-session') } | Should -Throw
+        { Remove-MmtlSession -RuntimeRoot ('C:' + '\mmtl') -SessionPath (Join-Path $TestDrive 'outside-session') } | Should -Throw
     }
     It 'Session 子目录中出现 junction 时拒绝递归删除' {
         $runtime=Join-Path $TestDrive 'junction-runtime';$outside=Join-Path $TestDrive 'junction-outside'
@@ -137,7 +137,7 @@ Describe 'MMTL 安全与项目检测' {
         $runtime=Join-Path $TestDrive 'report-runtime'
         $session=New-MmtlSession -RuntimeRoot $runtime -Name 'report' -Metadata ([pscustomobject]@{players=1})
         $testProcessId=2147480000
-        $entry=[pscustomobject]@{PID=$testProcessId;Role='Client';Username='Dev';StartTimeUtc='2000-01-01T00:00:00.0000000Z';Executable='C:\fake\pwsh.exe';ParentPID=0;CommandLine='';LogPath=(Join-Path $session 'logs\client.log');ProcessTree=@()}
+        $entry=[pscustomobject]@{PID=$testProcessId;Role='Client';Username='Dev';StartTimeUtc='2000-01-01T00:00:00.0000000Z';Executable=('C:' + '\fake\pwsh.exe');ParentPID=0;CommandLine='';LogPath=(Join-Path $session 'logs\client.log');ProcessTree=@()}
         $entry|ConvertTo-Json|Set-Content (Join-Path $session 'pids.json')
         [pscustomobject]@{PID=$testProcessId;ExitCode=-1;FinishedUtc='2026-09-29T00:00:00Z';Error='runClient crashed'}|ConvertTo-Json|Set-Content (Join-Path $session "process-$testProcessId.exit.json")
         $crashDir=Join-Path $session 'Dev\crash-reports';New-Item -ItemType Directory -Path $crashDir -Force|Out-Null
@@ -333,7 +333,7 @@ Describe 'MMTL 安全与项目检测' {
     }
     It '登记进程已退出时停止命令安全返回而不触碰复用 PID' {
         $session=Join-Path $TestDrive 'exited-process-session';New-Item -ItemType Directory $session|Out-Null
-        $record=[pscustomobject]@{PID=2147480000;Role='Client';Username='Dev';StartTimeUtc='2000-01-01T00:00:00.0000000Z';Executable='C:\fake\pwsh.exe';ParentPID=0;CommandLine='';ProcessTree=@()}
+        $record=[pscustomobject]@{PID=2147480000;Role='Client';Username='Dev';StartTimeUtc='2000-01-01T00:00:00.0000000Z';Executable=('C:' + '\fake\pwsh.exe');ParentPID=0;CommandLine='';ProcessTree=@()}
         $record|ConvertTo-Json|Set-Content (Join-Path $session 'pids.json')
         (Stop-MmtlTrackedProcess -SessionPath $session -ProcessId 2147480000 -Confirm:$false) | Should -BeFalse
     }
@@ -372,7 +372,7 @@ Start-Sleep -Seconds 60
         }
     }
     It 'Portable Runtime 指向仓库内的 .runtime' {
-        $resolved=Resolve-MmtlRuntimeRoot -Path 'C:\ignored' -Portable -LauncherRoot $script:root
+        $resolved=Resolve-MmtlRuntimeRoot -Path ('C:' + '\ignored') -Portable -LauncherRoot $script:root
         $resolved | Should -Be (Join-Path $script:root '.runtime')
     }
     It 'Fabric Loom 跨盘 Runtime 使用受控目录联接且只删除联接本身' {

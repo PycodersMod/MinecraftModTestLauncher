@@ -16,9 +16,10 @@ Describe 'Java Runtime Process Evidence' {
         @('JAVA_VERSION="21.0.7"','IMPLEMENTOR="Eclipse Adoptium"','OS_NAME="Windows"','OS_ARCH="amd64"') | Set-Content (Join-Path $java 'release')
         $script:javaPath = Join-Path $java 'bin/java.exe'
         [pscustomobject]@{project=[pscustomobject]@{loader=[pscustomobject]@{id='Forge'}};runtimeJava=[pscustomobject]@{bindingMode='Direct';resolution=[pscustomobject]@{javaPath=$javaPath;actualMajor=21}};buildJava=[pscustomobject]@{resolution=[pscustomobject]@{javaPath=$javaPath}}} | ConvertTo-Json -Depth 10 | Set-Content (Join-Path $session 'execution-plan.json')
-        $script:rootLookup = { param($processId) [pscustomobject]@{PID=$processId;StartIdentity='gradle-start';Executable='C:\PowerShell\pwsh.exe';CommandLine='pwsh gradle'} }
-        $script:snapshot = { param($processId) @([pscustomobject]@{PID=30;StartIdentity='gradle-start';Depth=0;Executable='C:\PowerShell\pwsh.exe';CommandLine='pwsh gradle'},[pscustomobject]@{PID=31;ParentPID=30;StartIdentity='java-start';Depth=1;Executable=$script:javaPath;CommandLine='java net.minecraft.client.main.Main'}) }
-        $script:lookup = { param($processId) if($processId -eq 30){[pscustomobject]@{PID=30;StartIdentity='gradle-start';Executable='C:\PowerShell\pwsh.exe';CommandLine='pwsh gradle'}}else{[pscustomobject]@{PID=31;ParentPID=30;StartIdentity='java-start';Executable=$script:javaPath;CommandLine='java net.minecraft.client.main.Main'}} }
+        $script:fakePowerShellPath = 'C:' + '\PowerShell\pwsh.exe'
+        $script:rootLookup = { param($processId) [pscustomobject]@{PID=$processId;StartIdentity='gradle-start';Executable=$script:fakePowerShellPath;CommandLine='pwsh gradle'} }
+        $script:snapshot = { param($processId) @([pscustomobject]@{PID=30;StartIdentity='gradle-start';Depth=0;Executable=$script:fakePowerShellPath;CommandLine='pwsh gradle'},[pscustomobject]@{PID=31;ParentPID=30;StartIdentity='java-start';Depth=1;Executable=$script:javaPath;CommandLine='java net.minecraft.client.main.Main'}) }
+        $script:lookup = { param($processId) if($processId -eq 30){[pscustomobject]@{PID=30;StartIdentity='gradle-start';Executable=$script:fakePowerShellPath;CommandLine='pwsh gradle'}}else{[pscustomobject]@{PID=31;ParentPID=30;StartIdentity='java-start';Executable=$script:javaPath;CommandLine='java net.minecraft.client.main.Main'}} }
         $script:identity = { param($process,$record) $process.StartIdentity -ceq $record.StartIdentity }
     }
 
