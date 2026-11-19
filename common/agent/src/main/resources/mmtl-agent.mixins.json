@@ -8,6 +8,9 @@
     "IntegratedServerLoopbackMixin",
     "LanServerPingerMixin",
     "IntegratedServerInvoker",
-    "CreateWorldScreenInvoker"
+    "CreateWorldScreenInvoker",
+    "GuestLoginDisconnectMixin",
+    "GuestHandshakeProgressMixin",
+    "GuestLoginPacketObserverMixin"
   ]
 }

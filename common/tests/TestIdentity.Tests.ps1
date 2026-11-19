@@ -38,6 +38,14 @@ Describe '离线 Test Identity 与角色隔离目录' {
         @($first | Where-Object role -eq 'Guest').Count | Should -Be 3
     }
 
+    It '允许受控配置给 Host 与 Guest 分配明确且互不重复的离线名称' {
+        $profile=[pscustomobject]@{mode='IntegratedLAN';players=3;playerNames=@('Dev','Dev_1','Dev_2')}
+        $roles=@(New-MmtlTestIdentityRolePlan -Profile $profile)
+        @($roles|ForEach-Object username) | Should -Be @('Dev','Dev_1','Dev_2')
+        @($roles|ForEach-Object role) | Should -Be @('Host','Guest','Guest')
+        { New-MmtlTestIdentityRolePlan -Profile ([pscustomobject]@{mode='IntegratedLAN';players=2;playerNames=@('Dev','dev')}) } | Should -Throw '*IDENTITY_PLAYER_NAMES_INVALID*'
+    }
+
     It '为 Host/Guest 创建唯一隔离 gameDir 与日志和存档目录' {
         $identities = Initialize-MmtlTestIdentityDirectories -SessionId 'session-a' -SessionPath $script:sessionPath -Roles $script:roles
 
@@ -86,12 +94,13 @@ Describe '离线 Test Identity 与角色隔离目录' {
 
     It '正式 Session 创建时登记 offline identities 并使用隔离目录' {
         $runtime = Join-Path $TestDrive 'identity-session-runtime'
-        $metadata = [pscustomobject]@{mode='IntegratedLAN';players=3;hostUsername='HostDev';clientPrefix='Guest_';runtimeJavaMajor=21;runtimeJavaPath='C:/Java/21/bin/java.exe'}
+        $metadata = [pscustomobject]@{mode='IntegratedLAN';players=3;hostUsername='HostDev';clientPrefix='Guest_';playerNames=@('TestHost','TestGuest1','TestGuest2');runtimeJavaMajor=21;runtimeJavaPath='C:/Java/21/bin/java.exe'}
 
         $session = New-MmtlSession -RuntimeRoot $runtime -Name 'identity_integration' -Metadata $metadata
         $record = Get-Content -LiteralPath (Join-Path $session 'session.json') -Raw | ConvertFrom-Json
 
         @($record.testIdentities).Count | Should -Be 3
+        @($record.testIdentities|ForEach-Object username) | Should -Be @('TestHost','TestGuest1','TestGuest2')
         @($record.testIdentities | Where-Object role -eq 'Host').Count | Should -Be 1
         @($record.testIdentities | Where-Object role -eq 'Guest').Count | Should -Be 2
         @($record.testIdentities | ForEach-Object gameDir | Select-Object -Unique).Count | Should -Be 3

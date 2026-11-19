@@ -14,7 +14,7 @@ function New-MmtlSession {
         $clientPrefix=if($Metadata.clientPrefix){[string]$Metadata.clientPrefix}else{'Dev_'}
         $identityRoles=$null
         if ($Metadata.mode -in @('Single','IntegratedLAN','Dedicated') -and [int]$Metadata.players -ge 1) {
-            $profile=[pscustomobject]@{mode=[string]$Metadata.mode;players=[int]$Metadata.players;hostUsername=$hostName;clientPrefix=$clientPrefix;runtimeJavaMajor=$(if($Metadata.PSObject.Properties['runtimeJavaMajor']){$Metadata.runtimeJavaMajor}else{$null});runtimeJavaPath=$(if($Metadata.PSObject.Properties['runtimeJavaPath']){$Metadata.runtimeJavaPath}else{$null})}
+            $profile=[pscustomobject]@{mode=[string]$Metadata.mode;players=[int]$Metadata.players;hostUsername=$hostName;clientPrefix=$clientPrefix;playerNames=$(if($Metadata.PSObject.Properties['playerNames']){@($Metadata.playerNames)}else{$null});runtimeJavaMajor=$(if($Metadata.PSObject.Properties['runtimeJavaMajor']){$Metadata.runtimeJavaMajor}else{$null});runtimeJavaPath=$(if($Metadata.PSObject.Properties['runtimeJavaPath']){$Metadata.runtimeJavaPath}else{$null})}
             $identityRoles=@(New-MmtlTestIdentityRolePlan -Profile $profile)
             $players=@($identityRoles|Where-Object username|ForEach-Object username|Select-Object -Unique)
         } else {

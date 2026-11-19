@@ -45,7 +45,14 @@ function New-MmtlTestIdentityRolePlan {
     $mode = [string]$Profile.mode
     $players = 0
     if ($mode -notin @('Single','IntegratedLAN','Dedicated') -or -not [int]::TryParse([string]$Profile.players,[ref]$players) -or $players -lt 1 -or $players -gt 8) { throw 'IDENTITY_PROFILE_INVALID' }
-    $hostName = if ($Profile.PSObject.Properties['hostUsername'] -and $Profile.hostUsername) { [string]$Profile.hostUsername } else { 'Dev' }
+    $explicitNames = @()
+    if ($Profile.PSObject.Properties['playerNames'] -and $null -ne $Profile.playerNames) { $explicitNames = @($Profile.playerNames | ForEach-Object { [string]$_ }) }
+    if ($explicitNames.Count -and $explicitNames.Count -ne $players) { throw 'IDENTITY_PLAYER_NAMES_COUNT_MISMATCH' }
+    if ($explicitNames.Count) {
+        $explicitSeen = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+        foreach ($explicitName in $explicitNames) { if ($explicitName -notmatch '^[A-Za-z0-9_]{1,16}$' -or -not $explicitSeen.Add($explicitName)) { throw 'IDENTITY_PLAYER_NAMES_INVALID' } }
+    }
+    $hostName = if ($explicitNames.Count) { $explicitNames[0] } elseif ($Profile.PSObject.Properties['hostUsername'] -and $Profile.hostUsername) { [string]$Profile.hostUsername } else { 'Dev' }
     $prefix = if ($Profile.PSObject.Properties['clientPrefix'] -and $Profile.clientPrefix) { [string]$Profile.clientPrefix } else { 'Dev_' }
     if ($hostName -notmatch '^[A-Za-z0-9_]{1,16}$' -or $prefix -notmatch '^[A-Za-z0-9_]{1,15}$') { throw 'IDENTITY_USERNAME_INVALID' }
     $roles = [Collections.Generic.List[object]]::new()
@@ -60,7 +67,7 @@ function New-MmtlTestIdentityRolePlan {
             $suffix = [string]$index
             $maxPrefixLength = 16 - $suffix.Length
             $candidatePrefix = $prefix.Substring(0,[Math]::Min($prefix.Length,$maxPrefixLength))
-            $candidate = $candidatePrefix + $suffix
+            $candidate = if ($explicitNames.Count) { $explicitNames[$index] } else { $candidatePrefix + $suffix }
             if ($used.Contains($candidate)) {
                 $candidate = ('Guest' + $index)
                 if ($candidate.Length -gt 16) { $candidate = $candidate.Substring(0,16) }

@@ -46,13 +46,13 @@ function Get-MmtlAgentProviderStatus {
 
 function New-MmtlAgentLaunchBinding {
     [CmdletBinding()]
-    param([Parameter(Mandatory)]$Provider,[Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][ValidatePattern('^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$')][string]$SessionId,[Parameter(Mandatory)][ValidateSet('Client','Host','Guest','Server')][string]$Role,[Parameter(Mandatory)][ValidatePattern('^[A-Za-z0-9._-]{32,128}$')][string]$SessionToken,[ValidateRange(0,65535)][int]$IntegratedLanPort=0,[ValidateRange(0,65535)][int]$ExpectedLoopbackPort=0,[switch]$AutoCreateWorld,[string]$WorldName='MMTL-Test',[ValidateSet('survival','creative')][string]$WorldGameMode='survival',[ValidateSet('peaceful','easy','normal','hard')][string]$WorldDifficulty='normal',[string]$WorldSeed='',[switch]$WorldAllowCommands)
+    param([Parameter(Mandatory)]$Provider,[Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][ValidatePattern('^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$')][string]$SessionId,[Parameter(Mandatory)][ValidateSet('Client','Host','Guest','Server')][string]$Role,[Parameter(Mandatory)][ValidatePattern('^[A-Za-z0-9._-]{32,128}$')][string]$SessionToken,[ValidateRange(0,65535)][int]$IntegratedLanPort=0,[ValidateRange(0,65535)][int]$ExpectedLoopbackPort=0,[ValidateSet('QuickPlay','AgentAfterMainMenu')][string]$GuestConnectionMode='AgentAfterMainMenu',[switch]$GuestHandshakeDiagnostics,[ValidatePattern('^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$')][string]$InstanceId,[switch]$AutoCreateWorld,[string]$WorldName='MMTL-Test',[ValidateSet('survival','creative')][string]$WorldGameMode='survival',[ValidateSet('peaceful','easy','normal','hard')][string]$WorldDifficulty='normal',[string]$WorldSeed='',[switch]$WorldAllowCommands)
     if($Provider.status -cne 'Supported'){throw 'AGENT_PROVIDER_UNSUPPORTED'}
     if(@($Provider.roles) -notcontains $Role){throw 'AGENT_ROLE_UNSUPPORTED'}
     if($IntegratedLanPort -gt 0 -and $Role -cne 'Host'){throw 'AGENT_LAN_PUBLISH_HOST_ONLY'}
     if($ExpectedLoopbackPort -gt 0 -and $Role -cne 'Guest'){throw 'AGENT_LOOPBACK_EXPECTATION_GUEST_ONLY'}
     if($Role -ceq 'Guest' -and $ExpectedLoopbackPort -eq 0){throw 'AGENT_GUEST_LOOPBACK_PORT_REQUIRED'}
-    if($AutoCreateWorld -and $Role -cne 'Host'){throw 'AGENT_WORLD_CREATE_HOST_ONLY'}
+    if($AutoCreateWorld -and $Role -notin @('Host','Client')){throw 'AGENT_WORLD_CREATE_HOST_ONLY'}
     if($AutoCreateWorld -and ($WorldName -notmatch '^[A-Za-z0-9._ -]{1,64}$' -or $WorldName -in @('.','..'))){throw 'AGENT_WORLD_NAME_INVALID'}
     if($WorldSeed -and $WorldSeed -notmatch '^-?\d{1,20}$'){throw 'AGENT_WORLD_SEED_INVALID'}
     $session=[IO.Path]::GetFullPath($SessionPath)
@@ -76,7 +76,8 @@ function New-MmtlAgentLaunchBinding {
     Assert-MmtlAgentNoReparsePath -Path $artifactPath
     if((Get-FileHash -LiteralPath $artifactPath -Algorithm SHA256).Hash.ToLowerInvariant() -cne [string]$Provider.sha256){throw 'AGENT_SESSION_ARTIFACT_HASH_MISMATCH'}
     $item=Get-Item -LiteralPath $artifactPath -Force;$item.Attributes=$item.Attributes -bor [IO.FileAttributes]::ReadOnly
-    $eventSink=Join-Path $eventDirectory ($Role.ToLowerInvariant()+'.jsonl')
+    $eventFileName=if($InstanceId){$Role.ToLowerInvariant()+'-'+$InstanceId.ToLowerInvariant()+'.jsonl'}else{$Role.ToLowerInvariant()+'.jsonl'}
+    $eventSink=Join-Path $eventDirectory $eventFileName
     if(-not(Test-Path -LiteralPath $eventSink -PathType Leaf)){[IO.File]::WriteAllText($eventSink,'',[Text.UTF8Encoding]::new($false))}
     Assert-MmtlAgentNoReparsePath -Path $eventSink
     $tokenFile=Join-Path $artifactDirectory 'session-token.txt'
@@ -89,6 +90,7 @@ function New-MmtlAgentLaunchBinding {
     $args=@("-Dmmtl.agent.sessionId=$SessionId","-Dmmtl.agent.role=$Role","-Dmmtl.agent.allowedRoles=$allowedRoles","-Dmmtl.agent.sessionTokenFile=$tokenFile","-Dmmtl.agent.sessionNonceHash=$nonceHash","-Dmmtl.agent.sessionRoot=$session","-Dmmtl.agent.eventSink=$eventSink")
     if($IntegratedLanPort -gt 0){$args+="-Dmmtl.agent.integratedLanPort=$IntegratedLanPort"}
     if($ExpectedLoopbackPort -gt 0){$args+="-Dmmtl.agent.expectedLoopbackPort=$ExpectedLoopbackPort"}
+    if($Role -ceq 'Guest'){$args+="-Dmmtl.agent.guestConnectionMode=$GuestConnectionMode";if($GuestHandshakeDiagnostics){$args+='-Dmmtl.agent.guestHandshakeDiagnostics=true'}}
     if($AutoCreateWorld){$args+=@('-Dmmtl.agent.autoCreateWorld=true',"-Dmmtl.agent.worldName=$WorldName","-Dmmtl.agent.worldGameMode=$WorldGameMode","-Dmmtl.agent.worldDifficulty=$WorldDifficulty","-Dmmtl.agent.worldSeed=$WorldSeed","-Dmmtl.agent.worldAllowCommands=$($WorldAllowCommands.IsPresent.ToString().ToLowerInvariant())")}
     return [pscustomobject][ordered]@{providerId=[string]$Provider.providerId;artifactPath=$artifactPath;artifactSha256=[string]$Provider.sha256;eventSink=$eventSink;sessionId=$SessionId;role=$Role;sessionNonceHash=$nonceHash;integratedLanPort=$IntegratedLanPort;expectedLoopbackPort=$ExpectedLoopbackPort;jvmArgs=$args;capabilities=@($Provider.capabilities)}
 }

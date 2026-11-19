@@ -7,8 +7,10 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ManagedWorldCreationPolicyTest {
-    @Test public void onlyManagedHostMayCreateConfiguredWorld() {
-        assertNull(ManagedWorldCreationPolicy.fromProperties("Client", "true", "Test", "creative", "normal", "", "false"));
+    @Test public void managedHostAndSingleClientMayCreateConfiguredWorld() {
+        ManagedWorldCreationPolicy single=ManagedWorldCreationPolicy.fromProperties("Client", "true", "Test", "creative", "normal", "", "false");
+        assertNotNull(single);
+        assertEquals("Test", single.name);
         assertNull(ManagedWorldCreationPolicy.fromProperties("Host", "false", "Test", "creative", "normal", "", "false"));
         ManagedWorldCreationPolicy policy=ManagedWorldCreationPolicy.fromProperties("Host", "true", "MMTL-Test", "creative", "peaceful", "42", "true");
         assertNotNull(policy);assertEquals(GameType.CREATIVE,policy.gameType);assertEquals(Difficulty.PEACEFUL,policy.difficulty);

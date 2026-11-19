@@ -3,6 +3,9 @@ package org.pycodersmod.mmtl.agent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.gui.screens.ConnectScreen;
+import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
 import net.minecraft.client.gui.screens.worldselection.WorldCreationUiState;
 import net.minecraft.world.Difficulty;
@@ -21,6 +24,7 @@ final class MmtlForgeClientEvents {
     private final ManagedHostActionGate publishGate = new ManagedHostActionGate();
     private final ManagedAgentActionProcessor actionProcessor;
     private boolean clientReadyReported;
+    private boolean guestConnectionRequested;
     private boolean worldCreationRequested;
     private boolean worldCreationSubmitted;
     private final ManagedWorldCreationPolicy worldCreationPolicy;
@@ -42,6 +46,7 @@ final class MmtlForgeClientEvents {
     public void onClientLoggingIn(ClientPlayerNetworkEvent.LoggingIn event) {
         if ("Host".equals(context.role) && context.integratedLanPort > 0) {
             reportClientReady("Managed Host client reached its world login event");
+            events.emit("WORLD_JOINED", "Managed Host client entered the IntegratedLAN test world");
             publishManagedIntegratedLan();
             return;
         }
@@ -51,7 +56,10 @@ final class MmtlForgeClientEvents {
             return;
         }
         reportClientReady("Managed client reached its login event");
-        if ("Guest".equals(context.role)) events.emit("GUEST_CONNECTED", "Offline Guest joined the managed local session", context.expectedLoopbackPort);
+        if ("Guest".equals(context.role)) {
+            events.emit("GUEST_CONNECTED", "Offline Guest joined the managed local session", context.expectedLoopbackPort);
+            MmtlForgeAgent.stopManagedGuestChannelDiagnostics();
+        }
         events.emit("WORLD_JOINED", "Client player entered the joined world");
     }
 
@@ -60,6 +68,19 @@ final class MmtlForgeClientEvents {
         if (event.phase != TickEvent.Phase.END) return;
         Minecraft minecraft = Minecraft.getInstance();
         actionProcessor.tick(minecraft);
+        String guestConnectionMode = System.getProperty("mmtl.agent.guestConnectionMode", "QuickPlay");
+        boolean mainMenuReady = minecraft.screen instanceof TitleScreen;
+        if (GuestConnectionTrigger.shouldStart(context.role, guestConnectionMode, mainMenuReady, guestConnectionRequested)) {
+            guestConnectionRequested = true;
+            reportClientReady("Minecraft main menu is ready before the managed Guest connection");
+            events.emit("CLIENT_INITIALIZED", "Minecraft main menu is ready; managed Guest connection may start");
+            String addressText = GuestConnectionTrigger.loopbackAddress(context.expectedLoopbackPort);
+            ServerAddress address = ServerAddress.parseString(addressText);
+            ServerData serverData = new ServerData("MMTL managed loopback", addressText, false);
+            events.emit("GUEST_CONNECT_REQUESTED", "Agent requested the managed loopback connection after client initialization", context.expectedLoopbackPort);
+            ConnectScreen.startConnecting(minecraft.screen, minecraft, address, serverData, false);
+            return;
+        }
         if (worldCreationPolicy != null && !worldCreationRequested && minecraft.screen instanceof TitleScreen) {
             reportClientReady("Minecraft main menu is ready; MMTL will create the Session-local test world");
             worldCreationRequested = true;
@@ -113,7 +134,7 @@ final class MmtlForgeClientEvents {
                 result = invoker.mmtl$publishServer(server.getDefaultGameType(), worldCreationPolicy != null && worldCreationPolicy.allowCommands,
                         context.integratedLanPort);
             } finally { MmtlForgeAgent.setManagedPublishInProgress(false); }
-            if (result) events.emit("LAN_PUBLISHED", "Managed IntegratedLAN listener is ready on loopback", context.integratedLanPort);
+            if (result) events.emit("LAN_PUBLISHED", "Managed IntegratedLAN listener is ready on loopback", context.integratedLanPort, "127.0.0.1");
             else events.emit("LAN_PUBLISH_FAILED", "IntegratedLAN publish returned false", context.integratedLanPort);
         } catch (RuntimeException failure) {
             MmtlForgeAgent.setManagedPublishInProgress(false);

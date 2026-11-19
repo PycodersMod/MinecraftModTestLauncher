@@ -83,6 +83,8 @@ Describe 'MMTL Agent Provider 与 Session 握手' {
         $worldBinding.jvmArgs | Should -Contain '-Dmmtl.agent.autoCreateWorld=true'
         $worldBinding.jvmArgs | Should -Contain '-Dmmtl.agent.worldGameMode=creative'
         $worldBinding.jvmArgs | Should -Contain '-Dmmtl.agent.worldAllowCommands=true'
+        $singleWorldBinding=New-MmtlAgentLaunchBinding -Provider $provider -SessionPath $script:session -SessionId session_a -Role Client -SessionToken $script:token -AutoCreateWorld -WorldName 'MMTL-Single'
+        $singleWorldBinding.jvmArgs | Should -Contain '-Dmmtl.agent.autoCreateWorld=true'
         {New-MmtlAgentLaunchBinding -Provider $provider -SessionPath $script:session -SessionId session_a -Role Guest -SessionToken $script:token -ExpectedLoopbackPort 25565 -AutoCreateWorld} | Should -Throw '*AGENT_WORLD_CREATE_HOST_ONLY*'
         {New-MmtlAgentLaunchBinding -Provider $provider -SessionPath $script:session -SessionId session_a -Role Host -SessionToken $script:token -AutoCreateWorld -WorldName '../outside'} | Should -Throw '*AGENT_WORLD_NAME_INVALID*'
     }
@@ -102,8 +104,38 @@ Describe 'MMTL Agent Provider 与 Session 握手' {
         $failedEvent=ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId session_a -ExpectedRole Guest -ExpectedNonceHash $nonceHash -ProcessId 77 -ProcessIdentity 'start-77'
         $failedEvent.eventCode | Should -BeExactly 'LAN_PUBLISH_FAILED'
         $failedEvent.metadata.port | Should -Be 25565
-        $expectedCodes=@{AGENT_STARTED='AGENT_STARTED';CLIENT_READY='AGENT_CLIENT_READY';WORLD_JOINED='AGENT_WORLD_JOINED';WORLD_CREATE_REQUESTED='WORLD_CREATE_REQUESTED';WORLD_CREATE_SUBMITTED='WORLD_CREATE_SUBMITTED';INTEGRATED_SERVER_READY='INTEGRATED_SERVER_READY';OFFLINE_AUTH_ENABLED='OFFLINE_AUTH_ENABLED';GUEST_CONNECTING='GUEST_CONNECTING';WORLD_JOIN_TIMEOUT='WORLD_JOIN_TIMEOUT';LAN_PUBLISH_TIMEOUT='LAN_PUBLISH_TIMEOUT';GUEST_JOIN_TIMEOUT='GUEST_JOIN_TIMEOUT'}
-        foreach($eventType in $expectedCodes.Keys){$lineObject.eventType=$eventType;$line=$lineObject|ConvertTo-Json -Compress;(ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId session_a -ExpectedRole Guest -ExpectedNonceHash $nonceHash -ProcessId 77 -ProcessIdentity 'start-77').eventCode | Should -BeExactly $expectedCodes[$eventType]}
+        $expectedCodes=@{AGENT_STARTED='AGENT_STARTED';CLIENT_READY='AGENT_CLIENT_READY';CLIENT_INITIALIZED='CLIENT_INITIALIZED';GUEST_CONNECT_REQUESTED='GUEST_CONNECT_REQUESTED';GUEST_CONNECTION_FAILED='GUEST_CONNECTION_FAILED';GUEST_LOGIN_PACKET_RECEIVED='GUEST_LOGIN_PACKET_RECEIVED';GUEST_CHANNEL_STATE='GUEST_CHANNEL_STATE';WORLD_JOINED='AGENT_WORLD_JOINED';PLAYER_JOINED='PLAYER_JOINED';WORLD_CREATE_REQUESTED='WORLD_CREATE_REQUESTED';WORLD_CREATE_SUBMITTED='WORLD_CREATE_SUBMITTED';INTEGRATED_SERVER_READY='INTEGRATED_SERVER_READY';OFFLINE_AUTH_ENABLED='OFFLINE_AUTH_ENABLED';GUEST_CONNECTING='GUEST_CONNECTING';WORLD_JOIN_TIMEOUT='WORLD_JOIN_TIMEOUT';LAN_PUBLISH_TIMEOUT='LAN_PUBLISH_TIMEOUT';GUEST_JOIN_TIMEOUT='GUEST_JOIN_TIMEOUT'}
+        foreach($eventType in $expectedCodes.Keys){$lineObject.eventType=$eventType;if($eventType -eq 'PLAYER_JOINED'){$lineObject|Add-Member -NotePropertyName playerName -NotePropertyValue 'Dev_1' -Force};$line=$lineObject|ConvertTo-Json -Compress;(ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId session_a -ExpectedRole Guest -ExpectedNonceHash $nonceHash -ProcessId 77 -ProcessIdentity 'start-77').eventCode | Should -BeExactly $expectedCodes[$eventType]}
         $line | Should -Not -Match [regex]::Escape($script:token)
+    }
+
+    It 'validates Guest handshake progress events and maps them into Runtime Events' {
+        $nonceHash = ([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($script:token)))).ToLowerInvariant()
+        $line = [pscustomobject]@{schemaVersion=1;sessionId='session_a';role='Guest';eventId='evt-handshake';eventType='GUEST_HANDSHAKE_PROGRESS';timestampUtc=[DateTimeOffset]::UtcNow.ToString('o');sessionNonceHash=$nonceHash;summary='handler=handleIndexedMessage packet=S2CRegistry sequence=4';port=25565} | ConvertTo-Json -Compress
+        Test-Json -Json $line -SchemaFile (Join-Path (Split-Path -Parent $PSScriptRoot) 'schemas/agent-event-v1.schema.json') | Should -BeTrue
+        $event = ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId session_a -ExpectedRole Guest -ExpectedNonceHash $nonceHash -ProcessId 77 -ProcessIdentity 'start-77'
+        $event.eventCode | Should -BeExactly 'GUEST_HANDSHAKE_PROGRESS'
+        $event.metadata.port | Should -Be 25565
+    }
+
+    It 'validates decoded Guest login packet events and maps them into Runtime Events' {
+        $nonceHash = ([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($script:token)))).ToLowerInvariant()
+        $line = [pscustomobject]@{schemaVersion=1;sessionId='session_a';role='Guest';eventId='evt-login-packet';eventType='GUEST_LOGIN_PACKET_RECEIVED';timestampUtc=[DateTimeOffset]::UtcNow.ToString('o');sessionNonceHash=$nonceHash;summary='decoded inbound login packet=ClientboundCustomQueryPacket';port=25565} | ConvertTo-Json -Compress
+        Test-Json -Json $line -SchemaFile (Join-Path (Split-Path -Parent $PSScriptRoot) 'schemas/agent-event-v1.schema.json') | Should -BeTrue
+        $event = ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId session_a -ExpectedRole Guest -ExpectedNonceHash $nonceHash -ProcessId 77 -ProcessIdentity 'start-77'
+        $event.eventCode | Should -BeExactly 'GUEST_LOGIN_PACKET_RECEIVED'
+        $event.metadata.port | Should -Be 25565
+    }
+
+    It '为相同 Session 中的多个 Guest 使用独立事件文件' {
+        $provider=Get-MmtlAgentProviderStatus -AgentRoot $script:agentRoot -LoaderId Forge -MinecraftVersion '1.20.1'
+        $testToken='session-nonce-'+[guid]::NewGuid().ToString('N')
+        $isolatedSession=Join-Path $script:session 'multiple-guests';New-Item -ItemType Directory -Path $isolatedSession -Force|Out-Null
+        @{sessionId='session_a'}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $isolatedSession 'session.json')
+        $guestOne=New-MmtlAgentLaunchBinding -Provider $provider -SessionPath $isolatedSession -SessionId session_a -Role Guest -SessionToken $testToken -ExpectedLoopbackPort 25565 -InstanceId Guest-01
+        $guestTwo=New-MmtlAgentLaunchBinding -Provider $provider -SessionPath $isolatedSession -SessionId session_a -Role Guest -SessionToken $testToken -ExpectedLoopbackPort 25565 -InstanceId Guest-02
+        $guestOne.eventSink | Should -Not -BeExactly $guestTwo.eventSink
+        [IO.Path]::GetFileName($guestOne.eventSink) | Should -BeExactly 'guest-guest-01.jsonl'
+        [IO.Path]::GetFileName($guestTwo.eventSink) | Should -BeExactly 'guest-guest-02.jsonl'
     }
 }
