@@ -20,6 +20,23 @@ Describe 'Session 并发创建与排序' {
         } finally {$jobs|Remove-Job -Force -ErrorAction SilentlyContinue}
     }
 
+    It 'Session 创建锁等待超过短暂启动抖动后仍可完成' {
+        $runtime=Join-Path $TestDrive 'slow-creation-runtime';$sessions=Join-Path $runtime 'sessions';New-Item -ItemType Directory -Path $sessions -Force|Out-Null
+        $lockPath=Join-Path $sessions '.creation.lock';$readyPath=Join-Path $TestDrive 'creation-lock-ready'
+        $job=Start-Job -ArgumentList $lockPath,$readyPath -ScriptBlock {
+            param($path,$ready)
+            $stream=[IO.FileStream]::new($path,[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
+            try {[IO.File]::WriteAllText($ready,'ready');Start-Sleep -Milliseconds 5500} finally {$stream.Dispose()}
+        }
+        try {
+            $deadline=[DateTimeOffset]::UtcNow.AddSeconds(10)
+            while(-not(Test-Path -LiteralPath $readyPath) -and [DateTimeOffset]::UtcNow -lt $deadline){Start-Sleep -Milliseconds 25}
+            Test-Path -LiteralPath $readyPath | Should -BeTrue
+            $path=New-MmtlSession -RuntimeRoot $runtime -Name 'delayed-lock' -Metadata ([pscustomobject]@{players=1})
+            Test-Path (Join-Path $path 'session.json') | Should -BeTrue
+        } finally {Wait-Job $job -Timeout 10|Out-Null;Remove-Job $job -Force -ErrorAction SilentlyContinue}
+    }
+
     It '第二 writer 无法同时获得同一 Session 锁' {
         $runtime=Join-Path $TestDrive 'writer-runtime';$session=Join-Path $runtime 'sessions/one';New-Item -ItemType Directory -Path $session -Force|Out-Null
         Import-Module (Join-Path $script:root 'src/SessionLock.psm1') -Force

@@ -42,7 +42,7 @@ function ConvertTo-MmtlCanonicalValue {
 function ConvertTo-MmtlSemanticArgument {
     param([AllowNull()][string]$Value)
     if ($null -eq $Value) { return $null }
-    return [regex]::Replace($Value, '(?i)(?:[a-z]:[\\/][^\s";]+|\\\\[^\\\s]+\\[^\\\s]+[^\s";]*|/(?:[^\s/:";]+/)*[^\s/:";]+)', '<LOCAL_PATH>')
+    return [regex]::Replace($Value, '(?i)(?:[a-z]:[\\/][^\s";]+|\\\\[^\\\s]+\\[^\\\s]+[^\s";]*|/(?:[^\s/:";]+/)*[^\s/:";]+)', '<LOCAL_PATH>') # public-hygiene: allow-generic-platform-location
 }
 
 function Get-MmtlExecutionPlanSemanticProjection {

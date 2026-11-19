@@ -22,8 +22,8 @@ function ConvertTo-MmtlSafeObservationSummary {
     $value = [regex]::Replace($value, '(?i)\b(token|password|client_secret|access_token|authorization)\s*([:=])\s*[^\s,;]+', '$1$2[REDACTED]')
     $value = [regex]::Replace($value, '(?i)\bBearer\s+[^\s,;]+', 'Bearer [REDACTED]')
     $value = [regex]::Replace($value, '(?i)[A-Z]:\\Users\\[^\\\s]+', '[LOCAL_PATH]')
-    $value = [regex]::Replace($value, '(?i)/home/[^/\s]+', '[LOCAL_PATH]')
-    $value = [regex]::Replace($value, '(?i)/Users/[^/\s]+', '[LOCAL_PATH]')
+    $value = [regex]::Replace($value, '(?i)/home/[^/\s]+', '[LOCAL_PATH]') # public-hygiene: allow-generic-platform-location
+    $value = [regex]::Replace($value, '(?i)/Users/[^/\s]+', '[LOCAL_PATH]') # public-hygiene: allow-generic-platform-location
     if ($value.Length -gt 240) { $value = $value.Substring(0, 240) }
     return $value
 }

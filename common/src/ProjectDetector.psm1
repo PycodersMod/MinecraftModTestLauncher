@@ -1,9 +1,56 @@
+function Get-MmtlMcpProject {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][string]$Root)
+    $sourceRoots=@('src/minecraft','src/minecraft_server','minecraft_client/src','minecraft_server/src')|ForEach-Object{Join-Path $Root $_}|Where-Object{Test-Path -LiteralPath $_ -PathType Container}
+    if(-not $sourceRoots.Count){return $null}
+    $javaFiles=@(foreach($sourceRoot in $sourceRoots){Get-ChildItem -LiteralPath $sourceRoot -Filter '*.java' -File -Recurse -ErrorAction SilentlyContinue})
+    if(-not $javaFiles.Count){return $null}
+    $modLoaderMatch=$false;$modLoaderMpMatch=$false;$modFiles=[Collections.Generic.List[string]]::new();$modLoaderMpFile=$null
+    foreach($javaFile in $javaFiles){
+        $text=Get-Content -LiteralPath $javaFile.FullName -Raw -ErrorAction SilentlyContinue
+        if($text -match '(?i)\b(?:BaseModMp|ModLoaderMp)\b'){$modLoaderMpMatch=$true;if(-not $modLoaderMpFile){$modLoaderMpFile=$javaFile.FullName}}
+        if($text -match '(?i)\b(?:BaseMod|ModLoader)\b'){$modLoaderMatch=$true}
+        if($javaFile.BaseName -match '^mod_.+'){$modFiles.Add($javaFile.FullName)}
+    }
+    if(-not $modLoaderMpMatch -and -not ($modLoaderMatch -and $modFiles.Count)){return $null}
+    $loaderId=if($modLoaderMpMatch){'ModLoaderMP'}else{'ModLoader'}
+    $versionFiles=@('conf/version.cfg','conf/mcp.cfg','version.cfg','mcp.cfg')|ForEach-Object{Join-Path $Root $_}|Where-Object{Test-Path -LiteralPath $_ -PathType Leaf}
+    $versions=[Collections.Generic.List[string]]::new()
+    foreach($versionFile in $versionFiles){
+        $versionText=Get-Content -LiteralPath $versionFile -Raw -ErrorAction SilentlyContinue
+        foreach($match in [regex]::Matches($versionText,'(?im)^\s*(?:ClientVersion|ServerVersion|MinecraftVersion|minecraft_version)\s*=\s*["'']?([^\s"''#;]+)')){
+            $value=$match.Groups[1].Value.Trim()
+            if($value -match '^(?:b|a)?\d+(?:\.\d+)+(?:[-_p][A-Za-z0-9._-]+)?$' -or $value -match '^\d+w\d+[a-z]$'){$versions.Add($value)}
+        }
+    }
+    $uniqueVersions=@($versions|Select-Object -Unique)
+    $minecraftVersion=if($uniqueVersions.Count -eq 1){$uniqueVersions[0]}else{$null}
+    $evidenceFile=if($loaderId -eq 'ModLoaderMP'){$modLoaderMpFile}else{$modFiles[0]}
+    $evidence=[pscustomobject]@{loaderId=$loaderId;source='LegacyJavaSource';path=[IO.Path]::GetRelativePath($Root,$evidenceFile);confidence='High';detail=if($loaderId -eq 'ModLoaderMP'){'MCP Java source 引用了 BaseModMp/ModLoaderMp'}else{'mod_* Java 类引用了 BaseMod/ModLoader'}}
+    Import-Module (Join-Path $PSScriptRoot 'Adapters/ContractV2.psm1') -Force
+    $stack=Resolve-MmtlProjectStack -Evidence @($evidence)
+    $repositoryRoot=$Root;$ancestor=Get-Item -LiteralPath $Root
+    while($ancestor){if(Test-Path -LiteralPath (Join-Path $ancestor.FullName '.git')){$repositoryRoot=$ancestor.FullName;break};$ancestor=$ancestor.Parent}
+    [pscustomobject]@{
+        RepositoryRoot=$repositoryRoot;ProjectRoot=$Root;Root=$Root;BuildFile=$null;Loader=$loaderId;LoaderVersion=$null;MinecraftVersion=$minecraftVersion
+        JavaMajor=$null;BuildJavaMajor=$null;RuntimeJavaMajor=$null;BuildJavaRequirement=[pscustomobject]@{purpose='BuildJava';major=$null;requirementKind='Unknown';source='Unknown';confidence='Unknown'}
+        RuntimeJavaRequirement=[pscustomobject]@{major=$null;source='Unknown';confidence='Unknown';requirementKind='Unknown'};GradleRuntimeJavaRequirement=$null;CompilerTargetJavaMajor=$null;ModId=$null
+        Wrapper=$false;WrapperPath=$null;RunClient=$null;RunServer=$null;BuildTask=$null;Evidence=@($evidence);DetectionStatus=$stack.status;DetectionConflicts=@($stack.conflicts)
+        LoaderStack=$stack.loaderStack;Toolchain=[pscustomobject]@{id='LegacyMCP';version=$null;ecosystem='MCP'};BuildSystem=[pscustomobject]@{id='Legacy';version=$null}
+        TargetVersionStatus=if($uniqueVersions.Count -eq 1){'Resolved'}elseif($uniqueVersions.Count -gt 1){'Ambiguous'}else{'Unknown'}
+    }
+}
+
 function Get-MmtlProject {
     [CmdletBinding()]
     param([Parameter(Mandatory)][string]$Path)
     $root = (Resolve-Path -LiteralPath $Path -ErrorAction Stop).Path
     $gradle = @('build.gradle','build.gradle.kts') | Where-Object { Test-Path (Join-Path $root $_) } | Select-Object -First 1
-    if (-not $gradle) { throw "无 Gradle 构建文件：$root" }
+    if (-not $gradle) {
+        $legacyProject=Get-MmtlMcpProject -Root $root
+        if($legacyProject){return $legacyProject}
+        throw "无受支持的 Gradle 或经典 MCP 项目标记：$root"
+    }
     $propsPath = Join-Path $root 'gradle.properties'
     $props = if (Test-Path $propsPath) { Get-Content $propsPath -Raw } else { '' }
     $buildPath=Join-Path $root $gradle
@@ -37,10 +84,10 @@ function Get-MmtlProject {
     Import-Module (Join-Path $PSScriptRoot 'Adapters/ContractV2.psm1') -Force
     $stackResolution=Resolve-MmtlProjectStack -Evidence @($evidence)
     $loader=$stackResolution.loaderId
-    $toolchainId=if($hasLegacyLooming){'LegacyLooming'}elseif($hasPloceus){'Ploceus'}elseif($hasQuiltLoom){'QuiltLoom'}elseif($allBuildText -match '(?i)(net\.minecraftforge\.gradle|ForgeGradle)'){'ForgeGradle'}elseif($allBuildText -match '(?i)(net\.neoforged\.moddev|net\.neoforged\.gradle|NeoGradle)'){'NeoGradle'}elseif($allBuildText -match '(?i)(fabric-loom|net\.fabricmc\.fabric-loom)'){'FabricLoom'}elseif($allBuildText -match '(?i)(net\.neoforged\.moddev\.legacyforge|moddevgradle)'){'ModDevGradle'}else{'Unknown'}
+    $toolchainId=if($hasLegacyLooming){'LegacyLooming'}elseif($hasPloceus){'Ploceus'}elseif($hasQuiltLoom){'QuiltLoom'}elseif($allBuildText -match '(?i)(net\.minecraftforge\.gradle|ForgeGradle)'){'ForgeGradle'}elseif($allBuildText -match '(?i)(net\.neoforged\.moddev(?:\.legacyforge)?|moddevgradle)'){'ModDevGradle'}elseif($allBuildText -match '(?i)(net\.neoforged\.gradle|NeoGradle)'){'NeoGradle'}elseif($allBuildText -match '(?i)(fabric-loom|net\.fabricmc\.fabric-loom)'){'FabricLoom'}else{'Unknown'}
     $mc = [regex]::Match($props, '(?m)^minecraft_version\s*=\s*([^\r\n]+)')
     if (-not $mc.Success) { $mc=[regex]::Match($allBuildText,'(?i)(?:net\.minecraftforge:forge:|com\.mojang:minecraft:|minecraft\s*\(\s*["''])(\d+\.\d+(?:\.\d+)?)') }
-    if(-not $mc.Success){$mc=[regex]::Match($versionCatalog,'(?m)^\s*minecraft\s*=\s*["''](\d+\.\d+(?:\.\d+)?)["'']')}
+    if(-not $mc.Success){$mc=[regex]::Match($versionCatalog,'(?m)^\s*minecraft\s*=\s*["'']([^"''\r\n]+)["'']')}
     if(-not $mc.Success -and $hasRift){$mc=[regex]::Match($allBuildText,'(?i)version\s*=\s*["''](1\.13(?:\.\d+)?)["'']')}
     $java=[regex]::Match($props,'(?m)^java_version\s*=\s*(\d+)')
     if (-not $java.Success) { $java=[regex]::Match($allBuildText,'(?i)(?:JavaLanguageVersion\.of\(|VERSION_|languageVersion\.set\([^\d]*)(\d{2})') }
@@ -76,9 +123,9 @@ function Get-MmtlProject {
     if($minimumMajor){
         $buildMajor=if($configuredJavaMajor){[math]::Max([int]$configuredJavaMajor,$minimumMajor)}elseif($major){[math]::Max([int]$major,$minimumMajor)}else{$minimumMajor}
         $major=$buildMajor
-        $buildJavaRequirement=[pscustomobject]@{purpose='BuildJava';major=$minimumMajor;requirementKind='Minimum';minimumMajor=$minimumMajor;preferredMajor=if($configuredJavaMajor -gt $minimumMajor){[int]$configuredJavaMajor}elseif($fallback -and $fallback.preferredMajor -gt $minimumMajor){[int]$fallback.preferredMajor}else{$null};exactMajor=$null;component=$null;source=if($wrapperMinimum -ge $compilerMinimum){$gradleRuntimeJavaRequirement.source}else{'GradleWrapperAndCompilerTarget'};confidence=if($compilerMinimum -and $compilerMinimum -gt $wrapperMinimum){'Medium'}else{'High'};requirementSourceKind=if($configuredJavaMajor){'ProjectConfiguration'}elseif($wrapperMinimum){'GradleRuntimeRequirement'}else{'CompilerTargetRequirement'};gradleVersion=$gradleRuntimeJavaRequirement.gradleVersion;gradleRuntimeMinimum=$wrapperMinimum;compilerTargetMajor=$compilerTargetMajor;reason=if($wrapperMinimum -and $compilerMinimum -and $compilerMinimum -gt $wrapperMinimum){'编译目标高于 Wrapper 的 JVM 运行最低要求。'}else{$gradleRuntimeJavaRequirement.reason}}
+        $buildJavaRequirement=[pscustomobject]@{purpose='BuildJava';major=$minimumMajor;requirementKind='Minimum';minimumMajor=$minimumMajor;maximumMajor=$gradleRuntimeJavaRequirement.maximumMajor;preferredMajor=if($configuredJavaMajor -gt $minimumMajor){[int]$configuredJavaMajor}elseif($fallback -and $fallback.preferredMajor -gt $minimumMajor){[int]$fallback.preferredMajor}else{$null};exactMajor=$null;component=$null;source=if($wrapperMinimum -ge $compilerMinimum){$gradleRuntimeJavaRequirement.source}else{'GradleWrapperAndCompilerTarget'};confidence=if($compilerMinimum -and $compilerMinimum -gt $wrapperMinimum){'Medium'}else{'High'};requirementSourceKind=if($configuredJavaMajor){'ProjectConfiguration'}elseif($wrapperMinimum){'GradleRuntimeRequirement'}else{'CompilerTargetRequirement'};gradleVersion=$gradleRuntimeJavaRequirement.gradleVersion;gradleRuntimeMinimum=$wrapperMinimum;gradleRuntimeMaximum=$gradleRuntimeJavaRequirement.maximumMajor;compilerTargetMajor=$compilerTargetMajor;reason=if($wrapperMinimum -and $compilerMinimum -and $compilerMinimum -gt $wrapperMinimum){'编译目标高于 Wrapper 的 JVM 运行最低要求。'}else{$gradleRuntimeJavaRequirement.reason}}
     }elseif($configuredJavaMajor){
-        $buildJavaRequirement=[pscustomobject]@{purpose='BuildJava';major=[int]$configuredJavaMajor;requirementKind='Preferred';minimumMajor=$null;preferredMajor=[int]$configuredJavaMajor;exactMajor=$null;component=$null;source='ProjectConfiguration';confidence='High';requirementSourceKind='ToolchainRequirement';gradleRuntimeMinimum=$wrapperMinimum;compilerTargetMajor=$compilerTargetMajor}
+        $buildJavaRequirement=[pscustomobject]@{purpose='BuildJava';major=[int]$configuredJavaMajor;requirementKind='Preferred';minimumMajor=$null;maximumMajor=$gradleRuntimeJavaRequirement.maximumMajor;preferredMajor=[int]$configuredJavaMajor;exactMajor=$null;component=$null;source='ProjectConfiguration';confidence='High';requirementSourceKind='ToolchainRequirement';gradleRuntimeMinimum=$wrapperMinimum;gradleRuntimeMaximum=$gradleRuntimeJavaRequirement.maximumMajor;compilerTargetMajor=$compilerTargetMajor}
     }elseif($major){
         $buildJavaRequirement=[pscustomobject]@{purpose='BuildJava';major=[int]$major;requirementKind='Preferred';minimumMajor=$null;preferredMajor=[int]$major;exactMajor=$null;component=$null;source=$javaSource;confidence='Low';requirementSourceKind='CompatibilityFallback';gradleRuntimeMinimum=$wrapperMinimum;compilerTargetMajor=$compilerTargetMajor;reason=$fallback.reason}
     }else{

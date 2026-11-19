@@ -8,7 +8,7 @@ function New-MmtlSession {
     if ($Name -notmatch '^[A-Za-z0-9_-]{1,40}$') { throw 'Session 名称只允许字母、数字、下划线和短横线。' }
     $sessions=Join-Path ([IO.Path]::GetFullPath($RuntimeRoot)) 'sessions'
     New-Item -ItemType Directory -Path $sessions -Force|Out-Null
-    $lock=New-MmtlSessionLock -LockPath (Join-Path $sessions '.creation.lock') -AllowedRoot $sessions
+    $lock=New-MmtlSessionLock -LockPath (Join-Path $sessions '.creation.lock') -AllowedRoot $sessions -TimeoutSeconds 30
     try{
         $hostName=if($Metadata.hostUsername){[string]$Metadata.hostUsername}else{'Dev'}
         $clientPrefix=if($Metadata.clientPrefix){[string]$Metadata.clientPrefix}else{'Dev_'}

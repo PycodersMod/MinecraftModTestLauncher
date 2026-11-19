@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "target": { "minecraftVersion": "1.20.1", "loader": "Forge", "loaderVersion": "47.4.23" },
+  "javaMajor": 17,
+  "javaPath": "",
+  "minecraftRoot": "",
+  "versionDirectory": "",
+  "runtimeRoot": "runtime",
+  "reportRoot": "runtime/reports",
+  "clientCount": 3,
+  "players": ["Dev", "Dev_1", "Dev_2"],
+  "worldName": "MMTL-Test",
+  "worldGameMode": "survival",
+  "worldDifficulty": "normal",
+  "worldSeed": "",
+  "worldAllowCommands": false,
+  "guestConnectionMode": "AgentAfterMainMenu",
+  "guestHandshakeDiagnostics": false,
+  "memoryMb": 1024,
+  "lanEnabled": true
+}

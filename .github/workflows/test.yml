@@ -30,6 +30,9 @@ jobs:
       - name: Windows 与 common Pester 测试
         shell: pwsh
         run: ./.github/scripts/Invoke-MmtlPester.ps1
+      - name: Forge 1.20.1 基线 Pester 测试
+        shell: pwsh
+        run: ./baselines/forge-1.20.1-code-only-control/Invoke-BaselineTests.ps1
       - name: Windows 入口安全 smoke
         shell: pwsh
         run: ./windows/launcher.ps1 --help
@@ -120,3 +123,11 @@ jobs:
       - name: macOS Intel 入口安全 smoke
         shell: bash
         run: sh ./macos/launcher.sh --help
+
+  public-hygiene:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Public repository path and credential scan
+        shell: pwsh
+        run: ./.github/scripts/Test-PublicRepositoryHygiene.ps1

@@ -30,7 +30,7 @@ function Get-MmtlJavaDiscovery {
     }
     foreach($root in $AdditionalRoots){$roots.Add([pscustomobject]@{home=$root;source='StandardLocation';rank=2})}
     $standardRoots=switch([string]$Platform.OS){
-        'Windows' {@('D:\java','C:\Program Files\Java','C:\Program Files\Eclipse Adoptium','C:\Program Files\Microsoft')}
+        'Windows' {@((Get-PSDrive -PSProvider FileSystem | ForEach-Object { Join-Path $_.Root 'java' }) + @((Join-Path $env:SystemDrive 'Program Files/Java'),(Join-Path $env:SystemDrive 'Program Files/Eclipse Adoptium'),(Join-Path $env:SystemDrive 'Program Files/Microsoft')))}
         'Linux' {@('/usr/lib/jvm','/usr/java','/opt/java',(Join-Path ([Environment]::GetFolderPath([Environment+SpecialFolder]::UserProfile)) '.sdkman/candidates/java'))}
         'MacOS' {@('/Library/Java/JavaVirtualMachines')}
     }

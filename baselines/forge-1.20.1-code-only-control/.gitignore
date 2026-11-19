@@ -1,0 +1,15 @@
+/runtime/
+/**/run/
+/**/run-server/
+/**/.gradle/
+/**/build/
+/**/*.log
+/**/*.jsonl
+/**/crash-reports/
+/**/saves/
+/**/agent-events/
+/**/session-token.txt
+/**/*.tmp
+/config/*local*.json
+/common/agent/providers/agent-manifest.json
+/common/agent/providers/mmtl-agent-forge-1.20.1-0.1.0.jar

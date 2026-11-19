@@ -28,6 +28,13 @@ Describe 'Build/Runtime Java 本机候选解析' {
         $result.javaPath | Should -Be (Join-Path $script:jdk21 'bin/java.exe')
     }
 
+    It '不会把超过 Gradle Wrapper JVM 上限的 JDK 选作 Build Java' {
+        $requirement = [pscustomobject]@{ purpose='BuildJava'; major=8; minimumMajor=8; maximumMajor=10; requirementKind='Minimum'; source='GradleWrapperRuntimeCompatibility'; confidence='High' }
+        $result = Resolve-MmtlJavaCandidate -Requirement $requirement -JavaHomes @{ '17'=$script:jdk17; '21'=$script:jdk21 } -Platform ([pscustomobject]@{ os='Windows'; arch='x64' })
+        $result.status | Should -BeExactly 'Unresolved'
+        $result.actualMajor | Should -BeNullOrEmpty
+    }
+
     It '不把缺少所需 Runtime Java 误报为 Build Java 已解析' {
         $requirement = [pscustomobject]@{ purpose='RuntimeJava'; major=21; requirementKind='Exact'; source='MojangVersionMetadata'; confidence='High' }
         $result = Resolve-MmtlJavaCandidate -Requirement $requirement -JavaHomes @{ '17'=$script:jdk17 } -Platform ([pscustomobject]@{ os='Windows'; arch='x64' })
