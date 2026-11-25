@@ -2,6 +2,7 @@
 param([string]$RepositoryRoot=(Split-Path -Parent $PSScriptRoot),[string]$UniversePath,[string]$CandidateCatalogPath,[string]$FamilyManifestPath,[string]$LedgerPath)
 $ErrorActionPreference='Stop'
 $RepositoryRoot=[IO.Path]::GetFullPath($RepositoryRoot)
+Import-Module (Join-Path $RepositoryRoot 'common/src/Hashing.psm1') -Force
 if(-not $UniversePath){$UniversePath=Join-Path $RepositoryRoot 'compatibility/universe-preview.json'}
 if(-not $CandidateCatalogPath){$CandidateCatalogPath=Join-Path $RepositoryRoot 'compatibility/candidate-catalogs/LiteLoader.json'}
 if(-not $FamilyManifestPath){$FamilyManifestPath=Join-Path $RepositoryRoot 'compatibility/families.json'}
@@ -30,8 +31,8 @@ $orderedTargetRows=[object[]]@($orderedTargets.ToArray()|Sort-Object targetId)
 $detectorPath=Join-Path $RepositoryRoot 'common/src/ProjectDetector.psm1'
 $adapterPath=Join-Path $RepositoryRoot 'common/src/Adapters/ContractV2.psm1'
 foreach($requiredPath in @($detectorPath,$adapterPath)){if(-not(Test-Path -LiteralPath $requiredPath -PathType Leaf)){throw "LITELOADER_DETECTION_EVIDENCE_FILE_MISSING:$requiredPath"}}
-$detectorHash=(Get-FileHash -LiteralPath $detectorPath -Algorithm SHA256).Hash.ToLowerInvariant()
-$adapterHash=(Get-FileHash -LiteralPath $adapterPath -Algorithm SHA256).Hash.ToLowerInvariant()
+$detectorHash=Get-MmtlCanonicalTextSha256 -LiteralPath $detectorPath
+$adapterHash=Get-MmtlCanonicalTextSha256 -LiteralPath $adapterPath
 $universeHash=[string]$universe.catalogHash
 if($universeHash -notmatch '^(?i:[a-f0-9]{64})$'){throw 'UNIVERSE_HASH_INVALID'}
 $hashLines=[Collections.Generic.List[string]]::new()

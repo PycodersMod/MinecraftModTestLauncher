@@ -2,6 +2,7 @@
 param([string]$RepositoryRoot=(Split-Path -Parent $PSScriptRoot),[string]$UniversePath,[string]$FamilyManifestPath,[string]$LedgerPath)
 $ErrorActionPreference='Stop'
 $RepositoryRoot=[IO.Path]::GetFullPath($RepositoryRoot)
+Import-Module (Join-Path $RepositoryRoot 'common/src/Hashing.psm1') -Force
 if(-not $UniversePath){$UniversePath=Join-Path $RepositoryRoot 'compatibility/universe-preview.json'}
 if(-not $FamilyManifestPath){$FamilyManifestPath=Join-Path $RepositoryRoot 'compatibility/families.json'}
 if(-not $LedgerPath){$LedgerPath=Join-Path $RepositoryRoot 'compatibility/ledger-template.json'}
@@ -21,8 +22,8 @@ $detectorPath=Join-Path $RepositoryRoot 'common/src/ProjectDetector.psm1'
 $adapterPath=Join-Path $RepositoryRoot 'common/src/Adapters/Forge.psm1'
 $testPath=Join-Path $RepositoryRoot 'common/tests/ProjectDetectorV2.Tests.ps1'
 foreach($requiredPath in @($detectorPath,$adapterPath,$testPath)){if(-not(Test-Path -LiteralPath $requiredPath -PathType Leaf)){throw "FORGE_DETECTION_EVIDENCE_FILE_MISSING:$requiredPath"}}
-$detectorHash=(Get-FileHash -LiteralPath $detectorPath -Algorithm SHA256).Hash.ToLowerInvariant()
-$adapterHash=(Get-FileHash -LiteralPath $adapterPath -Algorithm SHA256).Hash.ToLowerInvariant()
+$detectorHash=Get-MmtlCanonicalTextSha256 -LiteralPath $detectorPath
+$adapterHash=Get-MmtlCanonicalTextSha256 -LiteralPath $adapterPath
 $universeHash=[string]$universe.catalogHash
 if($universeHash -notmatch '^(?i:[a-f0-9]{64})$'){throw 'UNIVERSE_HASH_INVALID'}
 $familyId='forge-project-metadata-detection-v1'
@@ -34,16 +35,18 @@ $family=[ordered]@{
     loaderId='Forge'
     minecraftIds=@($orderedIds)
     toolchainHash=$toolchainHash
-    toolchain=[ordered]@{id='ForgeGradleProjectDetection';version='per-project resolved ForgeGradle; no Build or Launch support implied'}
+    toolchain=[ordered]@{id='ForgeGradleProjectPlans';version='per-project ForgeGradle; Build and Launch planning only, execution requires trusted runner'}
     buildJava=[ordered]@{status='PerProjectWrapperAndCompilerEvidence';evidenceRef='common/src/ProjectDetector.psm1'}
     runtimeJava=[ordered]@{status='PerTargetMojangMetadata';evidenceRef='compatibility/runtime-java-catalog.json'}
     projectDetectionStrategy='识别 ForgeGradle 项目标记与 Forge 运行依赖，并从项目配置读取精确 Minecraft ID / Forge 坐标版本；将目标逐字绑定到 frozen Universe Available target 和官方候选。'
-    buildStrategy='尚未为该兼容家族声明 build task 计划支持。'
-    launchStrategy='尚未为该兼容家族声明客户端或服务端启动计划支持。'
+    buildStrategy='ForgeGradle Gradle Wrapper build task；只生成不可执行 plan，执行必须经过 MMTL managed session copy 与可信 validation runner。'
+    launchStrategy='为 exact Forge target 生成 Single Client runClient plan；LaunchCheck 未验证，plan 不可直接执行。'
     agentBridge='本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。'
-    evidence=@('https://docs.minecraftforge.net/en/latest/gettingstarted/','https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml',"universe-sha256:$universeHash","project-detector-sha256:$detectorHash","forge-adapter-sha256:$adapterHash",'test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates')
+    evidence=@('https://docs.minecraftforge.net/en/1.12.x/gettingstarted/','https://docs.minecraftforge.net/en/1.14.x/gettingstarted/','https://docs.minecraftforge.net/en/1.16.x/gettingstarted/','https://docs.minecraftforge.net/en/latest/gettingstarted/','https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml',"universe-sha256:$universeHash","project-detector-sha256:$detectorHash","forge-adapter-sha256:$adapterHash",'test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates')
     capabilities=[ordered]@{
         ProjectDetection=[ordered]@{status='Supported';evidenceRefs=@('https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml',"project-detector-sha256:$detectorHash","forge-adapter-sha256:$adapterHash",'test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates')}
+        BuildPlan=[ordered]@{status='Supported';evidenceRefs=@('https://docs.minecraftforge.net/en/1.12.x/gettingstarted/','https://docs.minecraftforge.net/en/1.14.x/gettingstarted/','https://docs.minecraftforge.net/en/1.16.x/gettingstarted/','https://docs.minecraftforge.net/en/latest/gettingstarted/',"forge-adapter-sha256:$adapterHash",'test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates')}
+        LaunchPlan=[ordered]@{status='Supported';evidenceRefs=@('https://docs.minecraftforge.net/en/1.12.x/gettingstarted/','https://docs.minecraftforge.net/en/1.14.x/gettingstarted/','https://docs.minecraftforge.net/en/1.16.x/gettingstarted/','https://docs.minecraftforge.net/en/latest/gettingstarted/',"forge-adapter-sha256:$adapterHash",'test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates')}
     }
 }
 $familyRows=[Collections.Generic.List[object]]::new()

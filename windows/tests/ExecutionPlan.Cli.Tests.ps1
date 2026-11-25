@@ -198,4 +198,31 @@ Describe 'Execution Plan CLI' {
         $fixtureRows=@($rows|Where-Object sessionId -in @('20261004T130012Z_tie_a','20261004T130011Z_tie_b','20261004T130010Z_old'))
         @($fixtureRows|Select-Object -ExpandProperty sessionId)|Should -Be @('20261004T130011Z_tie_b','20261004T130012Z_tie_a','20261004T130010Z_old')
     }
+
+    It '--jarmod-overlay 仅通过显式参数为已有 Session 创建隔离副本并输出相对路径 JSON' {
+        Import-Module (Join-Path $script:repoRoot 'common/src/Execution/ExecutionPlan.psm1') -Force
+        Import-Module (Join-Path $script:repoRoot 'common/src/SessionLifecycle.psm1') -Force
+        $planRaw=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --plan --json 2>&1|Out-String
+        $LASTEXITCODE|Should -Be 0;$plan=$planRaw|ConvertFrom-Json -ErrorAction Stop
+        $sessionId='20261004T130020Z_jarmod_fixture';$session=Join-Path $script:runtimeRoot "sessions/$sessionId";New-Item -ItemType Directory $session -Force|Out-Null
+        Initialize-MmtlSessionV2 -SessionPath $session -ExecutionPlan $plan|Out-Null
+        $base=Join-Path $TestDrive 'base.jar';$patch=Join-Path $TestDrive 'patch.zip'
+        foreach($spec in @(@{path=$base;entries=@{'base.txt'='base'}},@{path=$patch;entries=@{'added.txt'='patch'}})){
+            $stream=[IO.File]::Open($spec.path,[IO.FileMode]::CreateNew,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
+            try{$archive=[IO.Compression.ZipArchive]::new($stream,[IO.Compression.ZipArchiveMode]::Create,$false);try{foreach($entryName in $spec.entries.Keys){$entry=$archive.CreateEntry($entryName);$writer=[IO.StreamWriter]::new($entry.Open());try{$writer.Write($spec.entries[$entryName])}finally{$writer.Dispose()}}}finally{$archive.Dispose()}}finally{$stream.Dispose()}
+        }
+        $baseHash=(Get-FileHash $base -Algorithm SHA256).Hash;$patchHash=(Get-FileHash $patch -Algorithm SHA256).Hash
+        $incomplete=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --jarmod-overlay $sessionId --base-jar $base 2>&1|Out-String
+        $LASTEXITCODE|Should -Not -Be 0;$incomplete|Should -Match 'JARMOD_CLI_ARGUMENT_REQUIRED: --patch-archive'
+        $unsupported=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --jarmod-overlay $sessionId --unexpected value 2>&1|Out-String
+        $LASTEXITCODE|Should -Not -Be 0;$unsupported|Should -Match 'JARMOD_CLI_ARGUMENT_UNSUPPORTED: --unexpected'
+        $output=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --jarmod-overlay $sessionId --base-jar $base --patch-archive $patch --patch-strategy OverlayRejectConflicts --json 2>&1|Out-String
+        $LASTEXITCODE|Should -Be 0;$result=$output|ConvertFrom-Json -ErrorAction Stop
+        $result.patchApplied|Should -BeTrue;$result.executePermission|Should -BeExactly 'Denied';$result.sessionId|Should -BeExactly $sessionId
+        $result.outputPath|Should -Match '^artifacts[\\/]jarmod[\\/]overlay-[^\\/]+[\\/]patched\.jar$'
+        $output|Should -Not -Match ([regex]::Escape($script:runtimeRoot));$output|Should -Not -Match ([regex]::Escape($base));$output|Should -Not -Match ([regex]::Escape($patch))
+        (Get-FileHash $base -Algorithm SHA256).Hash|Should -BeExactly $baseHash;(Get-FileHash $patch -Algorithm SHA256).Hash|Should -BeExactly $patchHash
+        $resolved=Join-Path $session $result.outputPath;Test-Path $resolved|Should -BeTrue
+        (Test-MmtlSessionV2 -SessionPath $session).valid|Should -BeTrue
+    }
 }

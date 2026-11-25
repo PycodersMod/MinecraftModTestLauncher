@@ -673,10 +673,10 @@
         "26.2",
         "26.3"
       ],
-      "toolchainHash": "a964a7dd9a8598b580939fbc58a57564f55592eb1c120820520a567efa2f9645",
+      "toolchainHash": "e42f9ac6e2374efdd48f638994d4e18e25bd42d57da222d657cc8fc8563025d5",
       "toolchain": {
-        "id": "ForgeGradleProjectDetection",
-        "version": "per-project resolved ForgeGradle; no Build or Launch support implied"
+        "id": "ForgeGradleProjectPlans",
+        "version": "per-project ForgeGradle; Build and Launch planning only, execution requires trusted runner"
       },
       "buildJava": {
         "status": "PerProjectWrapperAndCompilerEvidence",
@@ -687,15 +687,18 @@
         "evidenceRef": "compatibility/runtime-java-catalog.json"
       },
       "projectDetectionStrategy": "识别 ForgeGradle 项目标记与 Forge 运行依赖，并从项目配置读取精确 Minecraft ID / Forge 坐标版本；将目标逐字绑定到 frozen Universe Available target 和官方候选。",
-      "buildStrategy": "尚未为该兼容家族声明 build task 计划支持。",
-      "launchStrategy": "尚未为该兼容家族声明客户端或服务端启动计划支持。",
+      "buildStrategy": "ForgeGradle Gradle Wrapper build task；只生成不可执行 plan，执行必须经过 MMTL managed session copy 与可信 validation runner。",
+      "launchStrategy": "为 exact Forge target 生成 Single Client runClient plan；LaunchCheck 未验证，plan 不可直接执行。",
       "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
       "evidence": [
+        "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
         "https://docs.minecraftforge.net/en/latest/gettingstarted/",
         "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
         "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
-        "forge-adapter-sha256:fa848e414f93baddaa86c4bb5411dd4ab98408e15a7cd3a0b5ce599dcc5f6ff3",
+        "forge-adapter-sha256:5e686e9290687a8202ea2b6e47998aaefa95498e69adec76234f88e1439f020d",
         "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
       ],
       "capabilities": {
@@ -704,14 +707,36 @@
           "evidenceRefs": [
             "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
             "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
-            "forge-adapter-sha256:fa848e414f93baddaa86c4bb5411dd4ab98408e15a7cd3a0b5ce599dcc5f6ff3",
+            "forge-adapter-sha256:5e686e9290687a8202ea2b6e47998aaefa95498e69adec76234f88e1439f020d",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:5e686e9290687a8202ea2b6e47998aaefa95498e69adec76234f88e1439f020d",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:5e686e9290687a8202ea2b6e47998aaefa95498e69adec76234f88e1439f020d",
             "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
           ]
         }
       }
     },
     {
-      "familyId": "legacyfabric-looming-project-detection-v1",
+      "familyId": "legacyfabric-looming-build-launch-plan-v1",
       "loaderId": "LegacyFabric",
       "minecraftIds": [
         "1.10.2",
@@ -791,10 +816,10 @@
         "2point0_purple",
         "2point0_red"
       ],
-      "toolchainHash": "bf205f3560667281e26050ad8fc1437ddacbf7464ae0a98ba0475638c0c1719d",
+      "toolchainHash": "f3ed7d6225330c13e578345df5da49fd10f17df2f57b6a848ed10d9a76e4d450",
       "toolchain": {
-        "id": "LegacyLoomingProjectDetection",
-        "version": "per-project resolved Legacy Looming; no Build or Launch support implied"
+        "id": "LegacyLoomingBuildLaunchPlans",
+        "version": "per-project resolved Legacy Looming; only non-executable Build/Launch plans, actual execution remains unverified"
       },
       "buildJava": {
         "status": "PerProjectWrapperAndCompilerEvidence",
@@ -805,16 +830,22 @@
         "evidenceRef": "compatibility/runtime-java-catalog.json"
       },
       "projectDetectionStrategy": "识别 Legacy Looming 与兼容的 Fabric 模组元数据；读取项目配置中的精确 Minecraft ID / LegacyFabric Loader 版本，并逐字绑定到 frozen Universe Available target 与该游戏版本专属 LegacyFabric Meta candidates。",
-      "buildStrategy": "尚未为该兼容家族声明 build task 计划支持。",
-      "launchStrategy": "尚未为该兼容家族声明客户端或服务端启动计划支持。",
+      "buildStrategy": "Legacy Looming 官方示例使用 Gradle Wrapper，并声明 ./gradlew build；对 exact detected target 仅生成非执行式 build 计划，执行仍要求 MMTL managed Session copy 与 trusted validation runner。",
+      "launchStrategy": "Legacy Looming 官方示例声明 ./gradlew runClient；对 exact detected target 仅生成非执行式 Single Client 计划，LaunchCheck 保持未验证。",
       "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
       "evidence": [
         "https://meta.legacyfabric.net/",
-        "https://github.com/Legacy-Fabric/legacy-looming",
+        "https://github.com/Legacy-Fabric/legacy-looming/tree/d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79",
+        "https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/README.md",
+        "https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/build.gradle",
+        "legacy-looming-commit:d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79",
+        "legacyfabric-fixture-commit:422896c188108632da97825f801719f0015b1b32",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
         "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
-        "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
-        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+        "legacyfabric-adapter-sha256:7e95e7c0ca628b437b93e6a3ea941bbe5424b078bcab378ca04564b52d9f96dc",
+        "legacyfabric-plan-test-sha256:",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates",
+        "test:LegacyFabricAdapter.Tests.ps1:detects-and-plans-every-frozen-legacyfabric-target-without-making-plans-executable"
       ],
       "capabilities": {
         "ProjectDetection": {
@@ -823,8 +854,33 @@
             "https://meta.legacyfabric.net/",
             "https://github.com/Legacy-Fabric/legacy-looming",
             "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
-            "legacyfabric-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
             "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://github.com/Legacy-Fabric/legacy-looming/tree/d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79",
+            "https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/README.md",
+            "https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/build.gradle",
+            "legacy-looming-commit:d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79",
+            "legacyfabric-fixture-commit:422896c188108632da97825f801719f0015b1b32",
+            "legacyfabric-adapter-sha256:7e95e7c0ca628b437b93e6a3ea941bbe5424b078bcab378ca04564b52d9f96dc",
+            "legacyfabric-plan-test-sha256:",
+            "test:LegacyFabricAdapter.Tests.ps1:detects-and-plans-every-frozen-legacyfabric-target-without-making-plans-executable"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://github.com/Legacy-Fabric/legacy-looming/tree/d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79",
+            "https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/README.md",
+            "https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/build.gradle",
+            "legacy-looming-commit:d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79",
+            "legacyfabric-fixture-commit:422896c188108632da97825f801719f0015b1b32",
+            "legacyfabric-adapter-sha256:7e95e7c0ca628b437b93e6a3ea941bbe5424b078bcab378ca04564b52d9f96dc",
+            "legacyfabric-plan-test-sha256:",
+            "test:LegacyFabricAdapter.Tests.ps1:detects-and-plans-every-frozen-legacyfabric-target-without-making-plans-executable"
           ]
         }
       }
@@ -872,7 +928,7 @@
         "source-sha256:778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
         "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
-        "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+        "historical-adapter-contract-sha256:64345cecf5030573f3c24e5a3db607637f0c68ab3dabd366a14d6f142edbc421",
         "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
         "https://www.liteloader.com/explore/docs/user%3Ainstall%3Amanual%3A1.7.10",
         "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
@@ -884,7 +940,7 @@
             "https://dl.liteloader.com/versions/versions.json",
             "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
             "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
-            "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
+            "historical-adapter-contract-sha256:64345cecf5030573f3c24e5a3db607637f0c68ab3dabd366a14d6f142edbc421",
             "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
           ]
         }
@@ -1534,10 +1590,10 @@
         "b1.9-pre5",
         "b1.9-pre6"
       ],
-      "toolchainHash": "d520584695593058cfd58b35c9bd747cd07a5881cce735761643ddd9b3228294",
+      "toolchainHash": "8a7acefd0878371b0eef40cadf6ee4f7203c1a4ab86a69c8125e913273e916cc",
       "toolchain": {
-        "id": "PloceusProjectDetection",
-        "version": "per-project resolved Ploceus; no Build or Launch support implied"
+        "id": "PloceusBuildLaunchPlans",
+        "version": "per-project resolved Ploceus; only non-executable Build/Launch plans, actual execution remains unverified"
       },
       "buildJava": {
         "status": "PerProjectWrapperAndCompilerEvidence",
@@ -1548,17 +1604,20 @@
         "evidenceRef": "compatibility/runtime-java-catalog.json"
       },
       "projectDetectionStrategy": "识别 Ploceus 与 net.ornithemc:ornithe-loader 项目依赖；读取项目中的精确 Minecraft ID / Ornithe Loader 版本，并逐字绑定到 frozen Universe Available target 与其专属 Ornithe Meta candidates。",
-      "buildStrategy": "尚未为该兼容家族声明 build task 计划支持。",
-      "launchStrategy": "尚未为该兼容家族声明客户端或服务端启动计划支持。",
+      "buildStrategy": "Ploceus extends Fabric/Quilt Loom. For an exact detected Ploceus Gradle Wrapper project, generate a non-executable build task plan; execution requires an MMTL managed Session copy and trusted validation runner. Ploceus inheritance of Loom task semantics is an explicit inference from the official plugin description and official Ornithe project build file.",
+      "launchStrategy": "For an exact detected Ploceus Gradle Wrapper project, generate a non-executable Single Client runClient plan. LaunchCheck remains unverified; the plan cannot be executed without the trusted validation runner.",
       "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
       "evidence": [
         "https://meta.ornithemc.net/",
         "https://github.com/OrnitheMC/ploceus",
-        "https://github.com/OrnitheMC/ornithe-meta",
+        "https://github.com/OrnitheMC/modmenu/blob/1.13/build.gradle",
+        "https://docs.fabricmc.net/develop/loom",
+        "https://github.com/FabricMC/fabric-docs/blob/main/versions/1.21.1/develop/getting-started/launching-the-game.md",
         "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
         "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
-        "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
-        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-ornithe-target-from-ploceus-coordinates"
+        "ornithe-adapter-sha256:73af482457a93b1b977bb0be8450b3e52378836373db8b960edb6dcde8a0f36c",
+        "ornithe-plan-test-sha256:bdde1dc03f2cc3393f95dd86cd334fe955d6a9837002a415f3547ad6111fe8d7",
+        "test:OrnitheAdapter.Tests.ps1:detects-and-plans-every-frozen-ornithe-target-without-making-plans-executable"
       ],
       "capabilities": {
         "ProjectDetection": {
@@ -1567,8 +1626,30 @@
             "https://meta.ornithemc.net/",
             "https://github.com/OrnitheMC/ploceus",
             "project-detector-sha256:1e7b7563eb8e9ff91723f6b19e8a396ad22180cae60edb0782372f32132a2da2",
-            "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
             "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-ornithe-target-from-ploceus-coordinates"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://github.com/OrnitheMC/ploceus",
+            "https://github.com/OrnitheMC/modmenu/blob/1.13/build.gradle",
+            "https://docs.fabricmc.net/develop/loom",
+            "ornithe-adapter-sha256:73af482457a93b1b977bb0be8450b3e52378836373db8b960edb6dcde8a0f36c",
+            "ornithe-plan-test-sha256:bdde1dc03f2cc3393f95dd86cd334fe955d6a9837002a415f3547ad6111fe8d7",
+            "test:OrnitheAdapter.Tests.ps1:detects-and-plans-every-frozen-ornithe-target-without-making-plans-executable"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://github.com/OrnitheMC/ploceus",
+            "https://github.com/OrnitheMC/modmenu/blob/1.13/build.gradle",
+            "https://docs.fabricmc.net/develop/loom",
+            "https://github.com/FabricMC/fabric-docs/blob/main/versions/1.21.1/develop/getting-started/launching-the-game.md",
+            "ornithe-adapter-sha256:73af482457a93b1b977bb0be8450b3e52378836373db8b960edb6dcde8a0f36c",
+            "ornithe-plan-test-sha256:bdde1dc03f2cc3393f95dd86cd334fe955d6a9837002a415f3547ad6111fe8d7",
+            "test:OrnitheAdapter.Tests.ps1:detects-and-plans-every-frozen-ornithe-target-without-making-plans-executable"
           ]
         }
       }

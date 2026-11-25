@@ -2,6 +2,7 @@
 param([string]$RepositoryRoot=(Split-Path -Parent $PSScriptRoot),[string]$UniversePath,[string]$FamilyManifestPath,[string]$LedgerPath)
 $ErrorActionPreference='Stop'
 $RepositoryRoot=[IO.Path]::GetFullPath($RepositoryRoot)
+Import-Module (Join-Path $RepositoryRoot 'common/src/Hashing.psm1') -Force
 if(-not $UniversePath){$UniversePath=Join-Path $RepositoryRoot 'compatibility/universe-preview.json'}
 if(-not $FamilyManifestPath){$FamilyManifestPath=Join-Path $RepositoryRoot 'compatibility/families.json'}
 if(-not $LedgerPath){$LedgerPath=Join-Path $RepositoryRoot 'compatibility/ledger-template.json'}
@@ -10,7 +11,7 @@ $families=Get-Content -LiteralPath $FamilyManifestPath -Raw|ConvertFrom-Json -Er
 $detectorPath=Join-Path $RepositoryRoot 'common/src/ProjectDetector.psm1'
 $testPath=Join-Path $RepositoryRoot 'common/tests/ProjectDetectorV2.Tests.ps1'
 foreach($path in @($detectorPath,$testPath)){if(-not(Test-Path -LiteralPath $path -PathType Leaf)){throw "MODLOADER_DETECTION_EVIDENCE_FILE_MISSING:$path"}}
-$detectorHash=(Get-FileHash -LiteralPath $detectorPath -Algorithm SHA256).Hash.ToLowerInvariant()
+$detectorHash=Get-MmtlCanonicalTextSha256 -LiteralPath $detectorPath
 $universeHash=[string]$universe.catalogHash
 if($universeHash -notmatch '^(?i:[a-f0-9]{64})$'){throw 'UNIVERSE_HASH_INVALID'}
 $definitions=@(

@@ -26,6 +26,26 @@ Describe 'Session Structured Log Workspace' {
         Test-Path (Join-Path $session 'analysis') | Should -BeTrue
     }
 
+    It 'observes every exact available Loader and Minecraft target through the shared log contract' {
+        $repositoryRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
+        $targets=@($universe.targets|Where-Object availability -CEQ 'Available'|Sort-Object targetId)
+        $source=Join-Path $session 'logs/source/universe-matrix.log'
+        $expected=[Collections.Generic.List[string]]::new()
+        foreach($target in $targets){
+            $message="target=$([string]$target.targetId);loader=$([string]$target.loaderId);minecraft=$([string]$target.minecraftId)"
+            $expected.Add($message)
+            Add-MmtlStructuredLogLine -SessionPath $session -Role Client -Identity UniverseMatrix -SourceFile $source -Line $message -ObservedAtUtc '2026-10-08T00:00:00Z'|Out-Null
+        }
+
+        $structuredPath=Join-Path $session 'logs/structured/Client-UniverseMatrix.jsonl'
+        $records=@(Get-Content -LiteralPath $structuredPath|ForEach-Object{$_|ConvertFrom-Json})
+        $records.Count | Should -Be $targets.Count
+        @($records|Where-Object role -cne 'Client').Count | Should -Be 0
+        @($records|Where-Object sourceFile -cne 'logs/source/universe-matrix.log').Count | Should -Be 0
+        @($records.message|Sort-Object -CaseSensitive) | Should -Be @($expected.ToArray()|Sort-Object -CaseSensitive)
+    }
+
     It '合并角色日志、Runtime Event、Agent Event 与 Scenario Event，并保留两类时间戳' {
         $source=Join-Path $session 'logs/source/client.log';New-Item -ItemType Directory -Path (Split-Path $source -Parent) -Force|Out-Null
         $log=Add-MmtlStructuredLogLine -SessionPath $session -Role Client -Identity Iris -SourceFile $source -Line '[12:00:00] [main/WARN]: mod warning' -ObservedAtUtc '2026-10-06T04:00:02Z'

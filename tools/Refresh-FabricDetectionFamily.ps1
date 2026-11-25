@@ -8,6 +8,7 @@ param(
 
 $ErrorActionPreference='Stop'
 $RepositoryRoot=[IO.Path]::GetFullPath($RepositoryRoot)
+Import-Module (Join-Path $RepositoryRoot 'common/src/Hashing.psm1') -Force
 if(-not $UniversePath){$UniversePath=Join-Path $RepositoryRoot 'compatibility/universe-preview.json'}
 if(-not $FamilyManifestPath){$FamilyManifestPath=Join-Path $RepositoryRoot 'compatibility/families.json'}
 if(-not $LedgerPath){$LedgerPath=Join-Path $RepositoryRoot 'compatibility/ledger-template.json'}
@@ -27,8 +28,8 @@ $detectorPath=Join-Path $RepositoryRoot 'common/src/ProjectDetector.psm1'
 $adapterPath=Join-Path $RepositoryRoot 'common/src/Adapters/Fabric.psm1'
 $testPath=Join-Path $RepositoryRoot 'common/tests/ProjectDetectorV2.Tests.ps1'
 foreach($requiredPath in @($detectorPath,$adapterPath,$testPath)){if(-not(Test-Path -LiteralPath $requiredPath -PathType Leaf)){throw "FABRIC_DETECTION_EVIDENCE_FILE_MISSING:$requiredPath"}}
-$detectorHash=(Get-FileHash -LiteralPath $detectorPath -Algorithm SHA256).Hash.ToLowerInvariant()
-$adapterHash=(Get-FileHash -LiteralPath $adapterPath -Algorithm SHA256).Hash.ToLowerInvariant()
+$detectorHash=Get-MmtlCanonicalTextSha256 -LiteralPath $detectorPath
+$adapterHash=Get-MmtlCanonicalTextSha256 -LiteralPath $adapterPath
 $universeHash=[string]$universe.catalogHash
 if($universeHash -notmatch '^(?i:[a-f0-9]{64})$'){throw 'UNIVERSE_HASH_INVALID'}
 $familyId='fabric-loom-build-launch-plan-v1'

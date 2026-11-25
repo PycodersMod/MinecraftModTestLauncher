@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-06T22:20:20.4743883+00:00",
+  "generatedAt": "2026-10-08T07:35:22.9451319+00:00",
   "universeHash": "0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
   "targetVersionCount": 974,
   "officialMetadataCount": 866,
@@ -17,7 +17,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.0.0",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -32,7 +38,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.0.0-rc1",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -47,7 +59,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.0.0-rc2-3",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -1277,7 +1295,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.14_combat-0",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -1292,7 +1316,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.14_combat-212796",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -1307,7 +1337,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.14_combat-3",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -1916,7 +1952,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.15_combat-1",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -2282,7 +2324,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.16_combat-3",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -3350,7 +3398,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.18_experimental-snapshot-1",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -3365,7 +3419,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.18_experimental-snapshot-2",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -3380,7 +3440,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.18_experimental-snapshot-3",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -3395,7 +3461,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.18_experimental-snapshot-4",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -3410,7 +3482,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.18_experimental-snapshot-5",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -3425,7 +3503,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.18_experimental-snapshot-6",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -3440,7 +3524,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.18_experimental-snapshot-7",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -4076,7 +4166,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.19_deep_dark_experimental_snapshot-1",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -5036,7 +5132,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.2",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -6455,7 +6557,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.21.11_unobfuscated",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -6497,7 +6605,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.21.11-pre1_unobfuscated",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -6539,7 +6653,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.21.11-pre2_unobfuscated",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -6581,7 +6701,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.21.11-pre3_unobfuscated",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -6623,7 +6749,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.21.11-pre4_unobfuscated",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -6665,7 +6797,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.21.11-pre5_unobfuscated",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -6707,7 +6845,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.21.11-rc1_unobfuscated",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -6749,7 +6893,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.21.11-rc2_unobfuscated",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -6791,7 +6941,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "1.21.11-rc3_unobfuscated",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -8237,7 +8393,14 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-version-json-absence",
+          "url": "https://piston-meta.mojang.com/v1/packages/20116297638f7c70cd046e25a6ac90fee4cae61a/1.6.json",
+          "manifestSha1": "20116297638f7c70cd046e25a6ac90fee4cae61a",
+          "snapshotSha256": "1d9a8eaab5f87cb2a647f5ed9e31c5dfd94cfade4005495f08315a78996ee193",
+          "minecraftId": "1.6",
+          "reasonCode": "MOJANG_JAVA_VERSION_FIELD_ABSENT"
+        },
         "metadataStatus": "VERIFIED_NO_JAVA_VERSION"
       },
       "metadataSource": {
@@ -8258,7 +8421,14 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-version-json-absence",
+          "url": "https://piston-meta.mojang.com/v1/packages/7fd8e0c76f62813eb0465e31bb74b160c01472d6/1.6.1.json",
+          "manifestSha1": "7fd8e0c76f62813eb0465e31bb74b160c01472d6",
+          "snapshotSha256": "52f39b8a98860204569524cfa1c42a2ce23159d232ac3c3ebc0550db78ff7ddd",
+          "minecraftId": "1.6.1",
+          "reasonCode": "MOJANG_JAVA_VERSION_FIELD_ABSENT"
+        },
         "metadataStatus": "VERIFIED_NO_JAVA_VERSION"
       },
       "metadataSource": {
@@ -8279,7 +8449,14 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-version-json-absence",
+          "url": "https://piston-meta.mojang.com/v1/packages/c0729761bf65dc58138ce508645dba1442fa78b8/1.6.2.json",
+          "manifestSha1": "c0729761bf65dc58138ce508645dba1442fa78b8",
+          "snapshotSha256": "a27950030744d9ccbff962d6edd8b83e5ac77f8e9bf2870a1b4589820b574299",
+          "minecraftId": "1.6.2",
+          "reasonCode": "MOJANG_JAVA_VERSION_FIELD_ABSENT"
+        },
         "metadataStatus": "VERIFIED_NO_JAVA_VERSION"
       },
       "metadataSource": {
@@ -8300,7 +8477,14 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-version-json-absence",
+          "url": "https://piston-meta.mojang.com/v1/packages/903d6ba1bc87c301d88fa418f8b33446201c7d4e/1.6.3.json",
+          "manifestSha1": "903d6ba1bc87c301d88fa418f8b33446201c7d4e",
+          "snapshotSha256": "b04d7657be3e44bd88eaaf892f06e185a34b9c596ff13177c1b5b6881205149b",
+          "minecraftId": "1.6.3",
+          "reasonCode": "MOJANG_JAVA_VERSION_FIELD_ABSENT"
+        },
         "metadataStatus": "VERIFIED_NO_JAVA_VERSION"
       },
       "metadataSource": {
@@ -8321,7 +8505,14 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-version-json-absence",
+          "url": "https://piston-meta.mojang.com/v1/packages/b71bae449192fbbe1582ff32fb3765edf0b9b0a8/1.6.4.json",
+          "manifestSha1": "b71bae449192fbbe1582ff32fb3765edf0b9b0a8",
+          "snapshotSha256": "e773d3d7f2a93c2706d1d06ff9574f9df388f9274a9ed131e11e8b05d09dc977",
+          "minecraftId": "1.6.4",
+          "reasonCode": "MOJANG_JAVA_VERSION_FIELD_ABSENT"
+        },
         "metadataStatus": "VERIFIED_NO_JAVA_VERSION"
       },
       "metadataSource": {
@@ -9881,7 +10072,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "11w47a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -9896,7 +10093,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "11w48a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -9911,7 +10114,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "11w49a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -9926,7 +10135,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "11w50a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -9941,7 +10156,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w01a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -9956,7 +10177,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w03a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -9971,7 +10198,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w04a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -9986,7 +10219,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w05a-1442",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10001,7 +10240,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w05b",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10016,7 +10261,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w06a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10031,7 +10282,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w07a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10046,7 +10303,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w07b",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10061,7 +10324,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w08a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10076,7 +10345,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w15a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10091,7 +10366,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w16a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10106,7 +10387,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w17a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10121,7 +10408,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w18a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10136,7 +10429,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w19a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10151,7 +10450,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w21a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10166,7 +10471,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w21b",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10181,7 +10492,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w22a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10196,7 +10513,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w23a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10211,7 +10534,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w23b",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10226,7 +10555,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w24a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10241,7 +10576,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w25a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10256,7 +10597,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w26a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10271,7 +10618,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w27a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10286,7 +10639,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w30a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10301,7 +10660,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w30b",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10316,7 +10681,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w30c",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10331,7 +10702,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w30d",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10346,7 +10723,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w30e",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10361,7 +10744,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w32a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10376,7 +10765,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w34a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10391,7 +10786,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w34b",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10406,7 +10807,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w36a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10421,7 +10828,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w37a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10436,7 +10849,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w38a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10451,7 +10870,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w38b",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10466,7 +10891,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w39a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10481,7 +10912,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w39b",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10496,7 +10933,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w40a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10511,7 +10954,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w40b",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10526,7 +10975,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w41a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10541,7 +10996,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w41b",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10556,7 +11017,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w42a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10571,7 +11038,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w42b",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10586,7 +11059,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w49a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10601,7 +11080,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w50a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10616,7 +11101,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "12w50b",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10631,7 +11122,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "13w01a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10646,7 +11143,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "13w01b",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10661,7 +11164,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "13w02a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10676,7 +11185,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "13w02b",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10691,7 +11206,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "13w03a-1647",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10706,7 +11227,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "13w04a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10721,7 +11248,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "13w05a-1538",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10736,7 +11269,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "13w05b",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10751,7 +11290,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "13w06a-1636",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10766,7 +11311,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "13w07a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10781,7 +11332,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "13w09a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10796,7 +11353,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "13w09b",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10811,7 +11374,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "13w09c",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10826,7 +11395,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "13w10a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10841,7 +11416,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "13w10b",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -10856,7 +11437,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "13w11a",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -11114,7 +11701,14 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-version-json-absence",
+          "url": "https://piston-meta.mojang.com/v1/packages/74666ab85cc5539f08aec638eabd63a552ed4125/13w24a.json",
+          "manifestSha1": "74666ab85cc5539f08aec638eabd63a552ed4125",
+          "snapshotSha256": "604857a6cb9910243aa31b435e34deeb64c6a3823a41b5e3852414a79d1b2c98",
+          "minecraftId": "13w24a",
+          "reasonCode": "MOJANG_JAVA_VERSION_FIELD_ABSENT"
+        },
         "metadataStatus": "VERIFIED_NO_JAVA_VERSION"
       },
       "metadataSource": {
@@ -11135,7 +11729,14 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-version-json-absence",
+          "url": "https://piston-meta.mojang.com/v1/packages/e1294b52803771cfb06767c4c40dced70475cb25/13w24b.json",
+          "manifestSha1": "e1294b52803771cfb06767c4c40dced70475cb25",
+          "snapshotSha256": "df9289304012f21fecb37755b8a320e7eba5094abdf22cb58b8a4ddece574c4c",
+          "minecraftId": "13w24b",
+          "reasonCode": "MOJANG_JAVA_VERSION_FIELD_ABSENT"
+        },
         "metadataStatus": "VERIFIED_NO_JAVA_VERSION"
       },
       "metadataSource": {
@@ -11156,7 +11757,14 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-version-json-absence",
+          "url": "https://piston-meta.mojang.com/v1/packages/65c0e5fff89b477ac6f8ddb336f0e718d525d311/13w25a.json",
+          "manifestSha1": "65c0e5fff89b477ac6f8ddb336f0e718d525d311",
+          "snapshotSha256": "f21bb514524d82b2a39ff117a35b03d790b3161b1fdada068187990d30629033",
+          "minecraftId": "13w25a",
+          "reasonCode": "MOJANG_JAVA_VERSION_FIELD_ABSENT"
+        },
         "metadataStatus": "VERIFIED_NO_JAVA_VERSION"
       },
       "metadataSource": {
@@ -11177,7 +11785,14 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-version-json-absence",
+          "url": "https://piston-meta.mojang.com/v1/packages/8b7870ddd0d0b38779479ad782d65ad80e688cf7/13w25b.json",
+          "manifestSha1": "8b7870ddd0d0b38779479ad782d65ad80e688cf7",
+          "snapshotSha256": "3f2e0df759ca950adfd127e03a80142064cd2916dc7546ee95999d5f24bf4c39",
+          "minecraftId": "13w25b",
+          "reasonCode": "MOJANG_JAVA_VERSION_FIELD_ABSENT"
+        },
         "metadataStatus": "VERIFIED_NO_JAVA_VERSION"
       },
       "metadataSource": {
@@ -11198,7 +11813,14 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-version-json-absence",
+          "url": "https://piston-meta.mojang.com/v1/packages/934788bc580ef0a19725ee5bd31f02a0b866e0bf/13w25c.json",
+          "manifestSha1": "934788bc580ef0a19725ee5bd31f02a0b866e0bf",
+          "snapshotSha256": "44dc8a458f9782a3b7338c5c096d69cbb7a49c464054eded9e5009056a57eea1",
+          "minecraftId": "13w25c",
+          "reasonCode": "MOJANG_JAVA_VERSION_FIELD_ABSENT"
+        },
         "metadataStatus": "VERIFIED_NO_JAVA_VERSION"
       },
       "metadataSource": {
@@ -11219,7 +11841,14 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-version-json-absence",
+          "url": "https://piston-meta.mojang.com/v1/packages/b349702aef5e3adaebec30c79338300423943930/13w26a.json",
+          "manifestSha1": "b349702aef5e3adaebec30c79338300423943930",
+          "snapshotSha256": "4c7b0d564a4cccdc15c973cc80c1e775e2152464e891681166292a63bfcdcff6",
+          "minecraftId": "13w26a",
+          "reasonCode": "MOJANG_JAVA_VERSION_FIELD_ABSENT"
+        },
         "metadataStatus": "VERIFIED_NO_JAVA_VERSION"
       },
       "metadataSource": {
@@ -11240,7 +11869,14 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-version-json-absence",
+          "url": "https://piston-meta.mojang.com/v1/packages/2f33c613a4bb81ef5f56be03a8f578208ada382a/13w37a.json",
+          "manifestSha1": "2f33c613a4bb81ef5f56be03a8f578208ada382a",
+          "snapshotSha256": "c52cce06cb825f171f586db4cda4cef987300c31cfb1e49fd302482e1d90e269",
+          "minecraftId": "13w37a",
+          "reasonCode": "MOJANG_JAVA_VERSION_FIELD_ABSENT"
+        },
         "metadataStatus": "VERIFIED_NO_JAVA_VERSION"
       },
       "metadataSource": {
@@ -11261,7 +11897,14 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-version-json-absence",
+          "url": "https://piston-meta.mojang.com/v1/packages/b8d28154ee056af6af3c8c37815418fe0e9f34f8/13w37b.json",
+          "manifestSha1": "b8d28154ee056af6af3c8c37815418fe0e9f34f8",
+          "snapshotSha256": "126690863b3e9e94edd12bcd2993ce7de0caa22853e6c64000a86efe5c52a107",
+          "minecraftId": "13w37b",
+          "reasonCode": "MOJANG_JAVA_VERSION_FIELD_ABSENT"
+        },
         "metadataStatus": "VERIFIED_NO_JAVA_VERSION"
       },
       "metadataSource": {
@@ -11282,7 +11925,14 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-version-json-absence",
+          "url": "https://piston-meta.mojang.com/v1/packages/e6dc1d9f9c8efeec67af438d5bf61be082f6e8a4/13w38a.json",
+          "manifestSha1": "e6dc1d9f9c8efeec67af438d5bf61be082f6e8a4",
+          "snapshotSha256": "044aa5bf076ec05542a7d4be1f77126f416b98d404740c1c3684c0481de0245b",
+          "minecraftId": "13w38a",
+          "reasonCode": "MOJANG_JAVA_VERSION_FIELD_ABSENT"
+        },
         "metadataStatus": "VERIFIED_NO_JAVA_VERSION"
       },
       "metadataSource": {
@@ -11303,7 +11953,14 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-version-json-absence",
+          "url": "https://piston-meta.mojang.com/v1/packages/6f426be1993b140ab5d10459c91eb1f542d58c82/13w38b.json",
+          "manifestSha1": "6f426be1993b140ab5d10459c91eb1f542d58c82",
+          "snapshotSha256": "20f7a80070cee5741728654664843d61a0529dbb005d336cdc0f292f2dfcdcb4",
+          "minecraftId": "13w38b",
+          "reasonCode": "MOJANG_JAVA_VERSION_FIELD_ABSENT"
+        },
         "metadataStatus": "VERIFIED_NO_JAVA_VERSION"
       },
       "metadataSource": {
@@ -11324,7 +11981,14 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-version-json-absence",
+          "url": "https://piston-meta.mojang.com/v1/packages/a9e87e0699f19fea280878f5deb744c5d5d3ccb1/13w38c.json",
+          "manifestSha1": "a9e87e0699f19fea280878f5deb744c5d5d3ccb1",
+          "snapshotSha256": "6d89a2aa646dd105032a805f35d7bd0b7ac5537f5e29755491aa096a054ca30f",
+          "minecraftId": "13w38c",
+          "reasonCode": "MOJANG_JAVA_VERSION_FIELD_ABSENT"
+        },
         "metadataStatus": "VERIFIED_NO_JAVA_VERSION"
       },
       "metadataSource": {
@@ -20174,7 +20838,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "23w13a_or_b_original",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -21053,7 +21723,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "24w14potato_original",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -22391,7 +23067,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "25w45a_unobfuscated",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -22433,7 +23115,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "25w46a_unobfuscated",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -24068,7 +24756,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "2point0_blue",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -24083,7 +24777,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "2point0_purple",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -24098,7 +24798,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "2point0_red",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -24221,7 +24927,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "a1.2.2",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -24479,7 +25191,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "b1.3",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -24710,7 +25428,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "b1.7_01",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -24806,7 +25530,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "b1.8-pre2",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -24848,7 +25578,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "b1.9-pre1",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -24863,7 +25599,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "b1.9-pre2",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -24878,7 +25620,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "b1.9-pre5",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -24893,7 +25641,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "b1.9-pre6",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,
@@ -24908,7 +25662,13 @@
         "source": "Unknown",
         "confidence": "Unknown",
         "requirementKind": "Unknown",
-        "provenance": null,
+        "provenance": {
+          "sourceType": "official-manifest-absence",
+          "url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+          "manifestSha256": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04",
+          "minecraftId": "b1.9p5",
+          "reasonCode": "MOJANG_TARGET_NOT_IN_VERSION_MANIFEST"
+        },
         "metadataStatus": "NOT_IN_MOJANG_MANIFEST"
       },
       "metadataSource": null,

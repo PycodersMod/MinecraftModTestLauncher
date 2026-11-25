@@ -212,13 +212,19 @@ foreach ($id in $targetIds) {
         elseif ($requirement.requirementKind -ceq 'CompatibilityFallback') {
             $fallbackCount++
             $requirement.provenance | Add-Member -NotePropertyName registrySha256 -NotePropertyValue $fallbackHash -Force
-        } else { $unknownCount++ }
+        } else {
+            $unknownCount++
+            $requirement.provenance=[pscustomobject][ordered]@{sourceType='official-version-json-absence';url=[string]$entry.url;manifestSha1=[string]$entry.sha1;snapshotSha256=$sha256;minecraftId=$id;reasonCode='MOJANG_JAVA_VERSION_FIELD_ABSENT'}
+        }
         $metadataSource = [pscustomobject]@{ url = [string]$entry.url; manifestSha1 = [string]$entry.sha1; sourceSha1 = $sha1; snapshotSha256 = $sha256; retrievedAt = (ConvertTo-MmtlIsoTimestamp -Value $source.retrievedAt) }
     } else {
         $requirement = Resolve-MmtlMinecraftRuntimeJavaRequirement -MinecraftId $id -CatalogEntry ([pscustomobject]@{ id = $id; metadataStatus = 'NOT_IN_MOJANG_MANIFEST' })
         $observationStatus = 'NOT_IN_MOJANG_MANIFEST'
         $metadataSource = $null
         $unknownCount++
+        if([string]$requirement.requirementKind -ceq 'Unknown'){
+            $requirement.provenance=[pscustomobject][ordered]@{sourceType='official-manifest-absence';url=[string]$manifestRecord[0].sourceUrl;manifestSha256=$manifestHash;minecraftId=$id;reasonCode='MOJANG_TARGET_NOT_IN_VERSION_MANIFEST'}
+        }
     }
     $requirementsById.Add($id, $requirement)
     foreach ($target in $targetsForId) { $target.runtimeJavaRequirement = $requirement }
