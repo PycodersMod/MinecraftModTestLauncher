@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "mmtl_agent",
+  "version": "${agentVersion}",
+  "name": "MMTL Agent",
+  "description": "Session-gated MMTL agent bridge for Fabric ${minecraftVersion}.",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "org.pycodersmod.mmtl.agent.MmtlFabricAgent"
+    ]
+  },
+  "mixins": [
+    "mmtl-agent.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": "=${loaderVersion}",
+    "minecraft": "=${minecraftVersion}",
+    "java": ">=${minimumJavaMajor}"
+  }
+}

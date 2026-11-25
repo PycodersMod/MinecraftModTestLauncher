@@ -1,0 +1,1681 @@
+{
+  "schemaVersion": 1,
+  "targetId": "Forge@1.13.2",
+  "resolver": "Forge 1.13.2 official MDK userdev configuration resolved with Gradle 4.9 and pinned repositories",
+  "artifactStatus": "HashesVerified",
+  "userdevLibraries": [
+    "com.paulscode:soundsystem:201809301515",
+    "org.ow2.asm:asm:6.2",
+    "org.ow2.asm:asm-commons:6.2",
+    "org.ow2.asm:asm-tree:6.2",
+    "cpw.mods:modlauncher:2.1.5",
+    "cpw.mods:grossjava9hacks:1.1.0",
+    "net.minecraftforge:accesstransformers:0.16.0:shadowed",
+    "net.minecraftforge:eventbus:0.9.3:service",
+    "net.minecraftforge:forgespi:0.13.0",
+    "net.minecraftforge:coremods:0.5.0",
+    "net.minecraftforge:unsafe:0.2.0",
+    "com.electronwill.night-config:core:3.6.0",
+    "com.electronwill.night-config:toml:3.6.0",
+    "org.jline:jline:3.9.0",
+    "org.apache.maven:maven-artifact:3.6.0",
+    "net.jodah:typetools:0.6.0",
+    "java3d:vecmath:1.5.2",
+    "org.apache.logging.log4j:log4j-api:2.15.0",
+    "org.apache.logging.log4j:log4j-core:2.15.0",
+    "org.apache.logging.log4j:log4j-slf4j18-impl:2.15.0",
+    "net.minecrell:terminalconsoleappender:1.1.1",
+    "net.sf.jopt-simple:jopt-simple:5.0.4",
+    "net.minecraftforge:forge:1.13.2-25.0.223:launcher"
+  ],
+  "components": [
+    "com.electronwill.night-config:core:3.6.0",
+    "com.electronwill.night-config:toml:3.6.0",
+    "com.google.code.findbugs:jsr305:3.0.2",
+    "com.paulscode:soundsystem:201809301515",
+    "cpw.mods:grossjava9hacks:1.1.0",
+    "cpw.mods:modlauncher:0.10.0",
+    "cpw.mods:modlauncher:1.0.0",
+    "cpw.mods:modlauncher:2.1.5",
+    "java3d:vecmath:1.5.2",
+    "net.java.dev.jna:jna:4.2.2",
+    "net.jodah:typetools:0.6.0",
+    "net.minecraftforge:accesstransformers:0.16.0",
+    "net.minecraftforge:coremods:0.5.0",
+    "net.minecraftforge:eventbus:0.9.3",
+    "net.minecraftforge:forge:1.13.2-25.0.223",
+    "net.minecraftforge:forgespi:0.13.0",
+    "net.minecraftforge:unsafe:0.2.0",
+    "net.minecrell:terminalconsoleappender:1.1.1",
+    "net.sf.jopt-simple:jopt-simple:5.0.4",
+    "org.antlr:antlr4-runtime:4.7.2",
+    "org.apache.commons:commons-lang3:3.8.1",
+    "org.apache.logging.log4j:log4j-api:2.15.0",
+    "org.apache.logging.log4j:log4j-core:2.15.0",
+    "org.apache.logging.log4j:log4j-slf4j18-impl:2.15.0",
+    "org.apache.maven:maven-artifact:3.6.0",
+    "org.codehaus.plexus:plexus-utils:3.1.0",
+    "org.jline:jline-reader:3.9.0",
+    "org.jline:jline-terminal-jna:3.9.0",
+    "org.jline:jline-terminal:3.9.0",
+    "org.jline:jline:3.9.0",
+    "org.ow2.asm:asm-analysis:6.2",
+    "org.ow2.asm:asm-commons:6.2",
+    "org.ow2.asm:asm-tree:6.2",
+    "org.ow2.asm:asm:6.2",
+    "org.slf4j:slf4j-api:1.8.0-beta4"
+  ],
+  "artifacts": [
+    {
+      "group": "com.electronwill.night-config",
+      "artifact": "core",
+      "version": "3.6.0",
+      "file": "core-3.6.0.jar",
+      "extension": "jar",
+      "bytes": 199763,
+      "sha256": "5f3e9099ddbfeb49ace43598c2271d951688aeab5a9d49fbc2b574b740679211",
+      "url": "https://maven.minecraftforge.net/com/electronwill/night-config/core/3.6.0/core-3.6.0.jar"
+    },
+    {
+      "group": "com.electronwill.night-config",
+      "artifact": "toml",
+      "version": "3.6.0",
+      "file": "toml-3.6.0.jar",
+      "extension": "jar",
+      "bytes": 31256,
+      "sha256": "df711db01d6b142b61640e74f2a62df84c9a2bf9ccd3c58afb1b8f3df0ac22d3",
+      "url": "https://maven.minecraftforge.net/com/electronwill/night-config/toml/3.6.0/toml-3.6.0.jar"
+    },
+    {
+      "group": "com.google.code.findbugs",
+      "artifact": "jsr305",
+      "version": "3.0.2",
+      "file": "jsr305-3.0.2.jar",
+      "extension": "jar",
+      "bytes": 19936,
+      "sha256": "766ad2a0783f2687962c8ad74ceecc38a28b9f72a2d085ee438b7813e928d0c7",
+      "url": "https://maven.minecraftforge.net/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar"
+    },
+    {
+      "group": "com.paulscode",
+      "artifact": "soundsystem",
+      "version": "201809301515",
+      "file": "soundsystem-201809301515.jar",
+      "extension": "jar",
+      "bytes": 66607,
+      "sha256": "e0bfb94ada1c7af725a2aa4cbd48675fca529e99886a8aedebfdcb8ee59c1a43",
+      "url": "https://maven.minecraftforge.net/com/paulscode/soundsystem/201809301515/soundsystem-201809301515.jar"
+    },
+    {
+      "group": "cpw.mods",
+      "artifact": "grossjava9hacks",
+      "version": "1.1.0",
+      "file": "grossjava9hacks-1.1.0.jar",
+      "extension": "jar",
+      "bytes": 1759,
+      "sha256": "708db05de641e47ccb054c4beee90cf7d58f46fefba3dd568dfcd16010061660",
+      "url": "https://maven.minecraftforge.net/cpw/mods/grossjava9hacks/1.1.0/grossjava9hacks-1.1.0.jar"
+    },
+    {
+      "group": "cpw.mods",
+      "artifact": "modlauncher",
+      "version": "2.1.5",
+      "file": "modlauncher-2.1.5-api.jar",
+      "extension": "jar",
+      "bytes": 2578,
+      "sha256": "596402def69f64f6fb77d5ef0e779969add8630fc7de0a266e433f822efbe780",
+      "url": "https://maven.minecraftforge.net/cpw/mods/modlauncher/2.1.5/modlauncher-2.1.5-api.jar"
+    },
+    {
+      "group": "cpw.mods",
+      "artifact": "modlauncher",
+      "version": "2.1.5",
+      "file": "modlauncher-2.1.5.jar",
+      "extension": "jar",
+      "bytes": 101896,
+      "sha256": "d00219b4f85ee3355e630751fef05df9c1dd64b1f33b07834c22c9d6adbef616",
+      "url": "https://maven.minecraftforge.net/cpw/mods/modlauncher/2.1.5/modlauncher-2.1.5.jar"
+    },
+    {
+      "group": "java3d",
+      "artifact": "vecmath",
+      "version": "1.5.2",
+      "file": "vecmath-1.5.2.jar",
+      "extension": "jar",
+      "bytes": 318956,
+      "sha256": "09adf7955baa6bddf57a4bdbf9a91cf690261314969b59a18085ece1e05eccf9",
+      "url": "https://libraries.minecraft.net/java3d/vecmath/1.5.2/vecmath-1.5.2.jar"
+    },
+    {
+      "group": "net.java.dev.jna",
+      "artifact": "jna",
+      "version": "4.2.2",
+      "file": "jna-4.2.2.jar",
+      "extension": "jar",
+      "bytes": 1137286,
+      "sha256": "1f38af54e06c6e6f6dbf39ba2c052b952dea5dddb4871127b34639ddeb11bdbe",
+      "url": "https://maven.minecraftforge.net/net/java/dev/jna/jna/4.2.2/jna-4.2.2.jar"
+    },
+    {
+      "group": "net.jodah",
+      "artifact": "typetools",
+      "version": "0.6.0",
+      "file": "typetools-0.6.0.jar",
+      "extension": "jar",
+      "bytes": 14734,
+      "sha256": "5ee0affdd38ec5d1ad51d3eb7ae900dbac8c7c8586cbe68cb0994b3373da6b8a",
+      "url": "https://maven.minecraftforge.net/net/jodah/typetools/0.6.0/typetools-0.6.0.jar"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "accesstransformers",
+      "version": "0.16.0",
+      "file": "accesstransformers-0.16.0-shadowed.jar",
+      "extension": "jar",
+      "bytes": 444428,
+      "sha256": "8b7c6d8c409e39695e4a55f8e50bc3bc0fff78d87f40e24824a251290797731d",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/accesstransformers/0.16.0/accesstransformers-0.16.0-shadowed.jar"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "coremods",
+      "version": "0.5.0",
+      "file": "coremods-0.5.0.jar",
+      "extension": "jar",
+      "bytes": 12284,
+      "sha256": "723bc497b557bd3a643c621b4f7f391ae82476194f445bc550076ae5601e9d4d",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/coremods/0.5.0/coremods-0.5.0.jar"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "eventbus",
+      "version": "0.9.3",
+      "file": "eventbus-0.9.3-service.jar",
+      "extension": "jar",
+      "bytes": 39660,
+      "sha256": "8c1ca9c32750f6f4729652333c068286768b05360822bd1317574c406095bdcb",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/eventbus/0.9.3/eventbus-0.9.3-service.jar"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "forge",
+      "version": "1.13.2-25.0.223",
+      "file": "forge-1.13.2-25.0.223-launcher.jar",
+      "extension": "jar",
+      "bytes": 159947,
+      "sha256": "0ee9ddda49381a67707909502ac9212c89f9d7a8772160e566a27cefda4173c5",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.13.2-25.0.223/forge-1.13.2-25.0.223-launcher.jar"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "forgespi",
+      "version": "0.13.0",
+      "file": "forgespi-0.13.0.jar",
+      "extension": "jar",
+      "bytes": 16607,
+      "sha256": "5c68fa8c2598d8fb0babb1472a33d1822e7b3ffc4c2f33c3dc4aacd208e5c258",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/forgespi/0.13.0/forgespi-0.13.0.jar"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "unsafe",
+      "version": "0.2.0",
+      "file": "unsafe-0.2.0.jar",
+      "extension": "jar",
+      "bytes": 2834,
+      "sha256": "946937e182ab3b518b5b88264f367e1f35ac12bc83abed220490c60c717be239",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/unsafe/0.2.0/unsafe-0.2.0.jar"
+    },
+    {
+      "group": "net.minecrell",
+      "artifact": "terminalconsoleappender",
+      "version": "1.1.1",
+      "file": "terminalconsoleappender-1.1.1.jar",
+      "extension": "jar",
+      "bytes": 15240,
+      "sha256": "56444fde2c7f5d0c0dcfcf23eb8c36c328c0e8fcd83e94d6133d99f2ba6ebf70",
+      "url": "https://maven.minecraftforge.net/net/minecrell/terminalconsoleappender/1.1.1/terminalconsoleappender-1.1.1.jar"
+    },
+    {
+      "group": "net.sf.jopt-simple",
+      "artifact": "jopt-simple",
+      "version": "5.0.4",
+      "file": "jopt-simple-5.0.4.jar",
+      "extension": "jar",
+      "bytes": 78146,
+      "sha256": "df26cc58f235f477db07f753ba5a3ab243ebe5789d9f89ecf68dd62ea9a66c28",
+      "url": "https://maven.minecraftforge.net/net/sf/jopt-simple/jopt-simple/5.0.4/jopt-simple-5.0.4.jar"
+    },
+    {
+      "group": "org.antlr",
+      "artifact": "antlr4-runtime",
+      "version": "4.7.2",
+      "file": "antlr4-runtime-4.7.2.jar",
+      "extension": "jar",
+      "bytes": 337904,
+      "sha256": "4c518b87d4bdff8b44cd8cbc1af816e944b62a3fe5b80b781501cf1f4759bbc4",
+      "url": "https://maven.minecraftforge.net/org/antlr/antlr4-runtime/4.7.2/antlr4-runtime-4.7.2.jar"
+    },
+    {
+      "group": "org.apache.commons",
+      "artifact": "commons-lang3",
+      "version": "3.8.1",
+      "file": "commons-lang3-3.8.1.jar",
+      "extension": "jar",
+      "bytes": 501879,
+      "sha256": "dac807f65b07698ff39b1b07bfef3d87ae3fd46d91bbf8a2bc02b2a831616f68",
+      "url": "https://maven.minecraftforge.net/org/apache/commons/commons-lang3/3.8.1/commons-lang3-3.8.1.jar"
+    },
+    {
+      "group": "org.apache.logging.log4j",
+      "artifact": "log4j-api",
+      "version": "2.15.0",
+      "file": "log4j-api-2.15.0.jar",
+      "extension": "jar",
+      "bytes": 301804,
+      "sha256": "c8c33e7e8e05496dae69cf0caac8c3092cffd937a164526e92922d2d566d0a55",
+      "url": "https://maven.minecraftforge.net/org/apache/logging/log4j/log4j-api/2.15.0/log4j-api-2.15.0.jar"
+    },
+    {
+      "group": "org.apache.logging.log4j",
+      "artifact": "log4j-core",
+      "version": "2.15.0",
+      "file": "log4j-core-2.15.0.jar",
+      "extension": "jar",
+      "bytes": 1789769,
+      "sha256": "419a8512895971b7b4f4f33e620d361254e5c9552b904b0474b09ddd4a6a220b",
+      "url": "https://maven.minecraftforge.net/org/apache/logging/log4j/log4j-core/2.15.0/log4j-core-2.15.0.jar"
+    },
+    {
+      "group": "org.apache.logging.log4j",
+      "artifact": "log4j-slf4j18-impl",
+      "version": "2.15.0",
+      "file": "log4j-slf4j18-impl-2.15.0.jar",
+      "extension": "jar",
+      "bytes": 21223,
+      "sha256": "59fe1bae704100690335039688ce1edcd483201ba84d3cfeded1d49c155b8862",
+      "url": "https://maven.minecraftforge.net/org/apache/logging/log4j/log4j-slf4j18-impl/2.15.0/log4j-slf4j18-impl-2.15.0.jar"
+    },
+    {
+      "group": "org.apache.maven",
+      "artifact": "maven-artifact",
+      "version": "3.6.0",
+      "file": "maven-artifact-3.6.0.jar",
+      "extension": "jar",
+      "bytes": 55051,
+      "sha256": "3d5a0e77cde76d386b18c7400db1eb16aacef02e031ecd0d954477aeccc92155",
+      "url": "https://maven.minecraftforge.net/org/apache/maven/maven-artifact/3.6.0/maven-artifact-3.6.0.jar"
+    },
+    {
+      "group": "org.codehaus.plexus",
+      "artifact": "plexus-utils",
+      "version": "3.1.0",
+      "file": "plexus-utils-3.1.0.jar",
+      "extension": "jar",
+      "bytes": 261617,
+      "sha256": "0ffa0ad084ebff5712540a7b7ea0abda487c53d3a18f78c98d1a3675dab9bf61",
+      "url": "https://maven.minecraftforge.net/org/codehaus/plexus/plexus-utils/3.1.0/plexus-utils-3.1.0.jar"
+    },
+    {
+      "group": "org.jline",
+      "artifact": "jline-reader",
+      "version": "3.9.0",
+      "file": "jline-reader-3.9.0.jar",
+      "extension": "jar",
+      "bytes": 140167,
+      "sha256": "90deb6d314b0be45471601c3a90e7f5e5d863e161ce8134155c0d91bc5b1aea5",
+      "url": "https://maven.minecraftforge.net/org/jline/jline-reader/3.9.0/jline-reader-3.9.0.jar"
+    },
+    {
+      "group": "org.jline",
+      "artifact": "jline-terminal-jna",
+      "version": "3.9.0",
+      "file": "jline-terminal-jna-3.9.0.jar",
+      "extension": "jar",
+      "bytes": 62954,
+      "sha256": "9eeec3c115c58a6b7e62c362713bb2c782a6a61de08ee31b25be5db4c51096ba",
+      "url": "https://maven.minecraftforge.net/org/jline/jline-terminal-jna/3.9.0/jline-terminal-jna-3.9.0.jar"
+    },
+    {
+      "group": "org.jline",
+      "artifact": "jline-terminal",
+      "version": "3.9.0",
+      "file": "jline-terminal-3.9.0.jar",
+      "extension": "jar",
+      "bytes": 208392,
+      "sha256": "623de3c5a526ede88fe02cf4922cba4f2e14d90e21657a0a2737985d74e5501f",
+      "url": "https://maven.minecraftforge.net/org/jline/jline-terminal/3.9.0/jline-terminal-3.9.0.jar"
+    },
+    {
+      "group": "org.jline",
+      "artifact": "jline",
+      "version": "3.9.0",
+      "file": "jline-3.9.0.jar",
+      "extension": "jar",
+      "bytes": 707273,
+      "sha256": "d2b986fd15d05e0b900faba776c1de9b4dc4a4fcdfeaa12a8ab8fb2b290ed527",
+      "url": "https://maven.minecraftforge.net/org/jline/jline/3.9.0/jline-3.9.0.jar"
+    },
+    {
+      "group": "org.ow2.asm",
+      "artifact": "asm-analysis",
+      "version": "6.2",
+      "file": "asm-analysis-6.2.jar",
+      "extension": "jar",
+      "bytes": 32041,
+      "sha256": "62b2c0d818fde5c52cf6404aa10836dbb170a2c3fa8466e656f0f991732fa01f",
+      "url": "https://maven.minecraftforge.net/org/ow2/asm/asm-analysis/6.2/asm-analysis-6.2.jar"
+    },
+    {
+      "group": "org.ow2.asm",
+      "artifact": "asm-commons",
+      "version": "6.2",
+      "file": "asm-commons-6.2.jar",
+      "extension": "jar",
+      "bytes": 78919,
+      "sha256": "15545913db06c987aa404f028e33501d9f27f8ced612f73727e3547ac4de878c",
+      "url": "https://maven.minecraftforge.net/org/ow2/asm/asm-commons/6.2/asm-commons-6.2.jar"
+    },
+    {
+      "group": "org.ow2.asm",
+      "artifact": "asm-tree",
+      "version": "6.2",
+      "file": "asm-tree-6.2.jar",
+      "extension": "jar",
+      "bytes": 50370,
+      "sha256": "02317d9ed739dab470a96f44de712fde51a811362ca26852b34324388e61257c",
+      "url": "https://maven.minecraftforge.net/org/ow2/asm/asm-tree/6.2/asm-tree-6.2.jar"
+    },
+    {
+      "group": "org.ow2.asm",
+      "artifact": "asm",
+      "version": "6.2",
+      "file": "asm-6.2.jar",
+      "extension": "jar",
+      "bytes": 111214,
+      "sha256": "917bda888bc543187325d5fbc1034207eed152574ef78df1734ca0aee40b7fc8",
+      "url": "https://maven.minecraftforge.net/org/ow2/asm/asm/6.2/asm-6.2.jar"
+    },
+    {
+      "group": "org.slf4j",
+      "artifact": "slf4j-api",
+      "version": "1.8.0-beta4",
+      "file": "slf4j-api-1.8.0-beta4.jar",
+      "extension": "jar",
+      "bytes": 44213,
+      "sha256": "602b712329c84b4a83c40464f4fdfd0fe4238c53ef397139a867064739dbf4e0",
+      "url": "https://maven.minecraftforge.net/org/slf4j/slf4j-api/1.8.0-beta4/slf4j-api-1.8.0-beta4.jar"
+    },
+    {
+      "group": "com.electronwill.night-config",
+      "artifact": "core",
+      "version": "3.6.0",
+      "file": "core-3.6.0.pom",
+      "extension": "pom",
+      "bytes": 1223,
+      "sha256": "76ebd71e9f6892f30a6fb102553691f3151f8ec4e07f73ed2bac5a03b591e427",
+      "url": "https://maven.minecraftforge.net/com/electronwill/night-config/core/3.6.0/core-3.6.0.pom"
+    },
+    {
+      "group": "com.electronwill.night-config",
+      "artifact": "toml",
+      "version": "3.6.0",
+      "file": "toml-3.6.0.pom",
+      "extension": "pom",
+      "bytes": 1444,
+      "sha256": "6d1ae41b63725b848f728eae45d095025ee9b45b906aea0f380504516c2e9b47",
+      "url": "https://maven.minecraftforge.net/com/electronwill/night-config/toml/3.6.0/toml-3.6.0.pom"
+    },
+    {
+      "group": "com.google.code.findbugs",
+      "artifact": "jsr305",
+      "version": "3.0.2",
+      "file": "jsr305-3.0.2.pom",
+      "extension": "pom",
+      "bytes": 4286,
+      "sha256": "19889dbdf1b254b2601a5ee645b8147a974644882297684c798afe5d63d78dfe",
+      "url": "https://maven.minecraftforge.net/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.pom"
+    },
+    {
+      "group": "com.paulscode",
+      "artifact": "soundsystem",
+      "version": "201809301515",
+      "file": "soundsystem-201809301515.pom",
+      "extension": "pom",
+      "bytes": 1210,
+      "sha256": "3176fc1a235bf4a144b1b7f5d925f03f7929c19b29c9de8947df3d2f8c410a6b",
+      "url": "https://maven.minecraftforge.net/com/paulscode/soundsystem/201809301515/soundsystem-201809301515.pom"
+    },
+    {
+      "group": "cpw.mods",
+      "artifact": "grossjava9hacks",
+      "version": "1.1.0",
+      "file": "grossjava9hacks-1.1.0.pom",
+      "extension": "pom",
+      "bytes": 1505,
+      "sha256": "b572f4749c96ffad8652a701d438ed031c1ca135ffd90cb959883e7787b25ea2",
+      "url": "https://maven.minecraftforge.net/cpw/mods/grossjava9hacks/1.1.0/grossjava9hacks-1.1.0.pom"
+    },
+    {
+      "group": "cpw.mods",
+      "artifact": "modlauncher",
+      "version": "2.1.5",
+      "file": "modlauncher-2.1.5.pom",
+      "extension": "pom",
+      "bytes": 2448,
+      "sha256": "1be46e0c3584e0732e164f79523072921f5b29060e28006aa6a0425dda83116b",
+      "url": "https://maven.minecraftforge.net/cpw/mods/modlauncher/2.1.5/modlauncher-2.1.5.pom"
+    },
+    {
+      "group": "java3d",
+      "artifact": "vecmath",
+      "version": "1.5.2",
+      "file": "vecmath-1.5.2.pom",
+      "extension": "pom",
+      "bytes": 386,
+      "sha256": "a4aee4668f1b127c95c9afe1b922f4c5a0b1ad879ba811077cb7d0e048dce231",
+      "url": "https://libraries.minecraft.net/java3d/vecmath/1.5.2/vecmath-1.5.2.pom"
+    },
+    {
+      "group": "net.java.dev.jna",
+      "artifact": "jna",
+      "version": "4.2.2",
+      "file": "jna-4.2.2.pom",
+      "extension": "pom",
+      "bytes": 1343,
+      "sha256": "abd66d98c9b3ddd82f9d79cafa4d661f41bbc595d2c81da7af3fc019109af7b7",
+      "url": "https://maven.minecraftforge.net/net/java/dev/jna/jna/4.2.2/jna-4.2.2.pom"
+    },
+    {
+      "group": "net.jodah",
+      "artifact": "typetools",
+      "version": "0.6.0",
+      "file": "typetools-0.6.0.pom",
+      "extension": "pom",
+      "bytes": 6327,
+      "sha256": "cbca71376c5ad28b110475180fa5c356063e44f749aa4a888709951c34c4d489",
+      "url": "https://maven.minecraftforge.net/net/jodah/typetools/0.6.0/typetools-0.6.0.pom"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "accesstransformers",
+      "version": "0.16.0",
+      "file": "accesstransformers-0.16.0.pom",
+      "extension": "pom",
+      "bytes": 3007,
+      "sha256": "ae3211b27d7211e45030a929875398c498c93ae96bedd508921ced0780be8dc3",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/accesstransformers/0.16.0/accesstransformers-0.16.0.pom"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "coremods",
+      "version": "0.5.0",
+      "file": "coremods-0.5.0.pom",
+      "extension": "pom",
+      "bytes": 2467,
+      "sha256": "390f48c81f8cb6ca8e453e7e83fe41d3939aba11ad7ea35a7c9cd34651d92548",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/coremods/0.5.0/coremods-0.5.0.pom"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "eventbus",
+      "version": "0.9.3",
+      "file": "eventbus-0.9.3.pom",
+      "extension": "pom",
+      "bytes": 2572,
+      "sha256": "728ac74a098ff5877637165edfdfbe1dd10167f7f80c86ab70beac850ffa8a41",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/eventbus/0.9.3/eventbus-0.9.3.pom"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "forge",
+      "version": "1.13.2-25.0.223",
+      "file": "forge-1.13.2-25.0.223.pom",
+      "extension": "pom",
+      "bytes": 1228,
+      "sha256": "8159577ca587e0052374da989ef4ab7d7c29ee29055a2b705c56929e0b08c700",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.13.2-25.0.223/forge-1.13.2-25.0.223.pom"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "forgespi",
+      "version": "0.13.0",
+      "file": "forgespi-0.13.0.pom",
+      "extension": "pom",
+      "bytes": 2911,
+      "sha256": "86fd70fdb65c2435e42d747bcd155da6744b868b8486a34bd19aaf95852549c3",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/forgespi/0.13.0/forgespi-0.13.0.pom"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "unsafe",
+      "version": "0.2.0",
+      "file": "unsafe-0.2.0.pom",
+      "extension": "pom",
+      "bytes": 1506,
+      "sha256": "c4b8ce2d2649dc0bfe03f581a0611b72db98ee7b62edaa08fd8439e1d22ed065",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/unsafe/0.2.0/unsafe-0.2.0.pom"
+    },
+    {
+      "group": "net.minecrell",
+      "artifact": "terminalconsoleappender",
+      "version": "1.1.1",
+      "file": "terminalconsoleappender-1.1.1.pom",
+      "extension": "pom",
+      "bytes": 2004,
+      "sha256": "b1872f3ed778ec0f4edea95f87524475a9f7400f26951ab08dd46e9b55900f69",
+      "url": "https://maven.minecraftforge.net/net/minecrell/terminalconsoleappender/1.1.1/terminalconsoleappender-1.1.1.pom"
+    },
+    {
+      "group": "net.sf.jopt-simple",
+      "artifact": "jopt-simple",
+      "version": "5.0.4",
+      "file": "jopt-simple-5.0.4.pom",
+      "extension": "pom",
+      "bytes": 13968,
+      "sha256": "6a67763b76afcd9c80b95e5c5e24782d18cc1b0e3d9b454ad3f8754c76b76815",
+      "url": "https://maven.minecraftforge.net/net/sf/jopt-simple/jopt-simple/5.0.4/jopt-simple-5.0.4.pom"
+    },
+    {
+      "group": "org.antlr",
+      "artifact": "antlr4-runtime",
+      "version": "4.7.2",
+      "file": "antlr4-runtime-4.7.2.pom",
+      "extension": "pom",
+      "bytes": 3617,
+      "sha256": "dc09cba98c25d3c06e4aec516885d4c3af03062ba55f4fe6283fc9cf176a60fb",
+      "url": "https://maven.minecraftforge.net/org/antlr/antlr4-runtime/4.7.2/antlr4-runtime-4.7.2.pom"
+    },
+    {
+      "group": "org.apache.commons",
+      "artifact": "commons-lang3",
+      "version": "3.8.1",
+      "file": "commons-lang3-3.8.1.pom",
+      "extension": "pom",
+      "bytes": 27888,
+      "sha256": "ec8e09f75411685205bd0d9d7872cc3622e67c76df44a0a227b278bea04458d5",
+      "url": "https://maven.minecraftforge.net/org/apache/commons/commons-lang3/3.8.1/commons-lang3-3.8.1.pom"
+    },
+    {
+      "group": "org.apache.logging.log4j",
+      "artifact": "log4j-api",
+      "version": "2.15.0",
+      "file": "log4j-api-2.15.0.pom",
+      "extension": "pom",
+      "bytes": 14045,
+      "sha256": "cc75a1281e48700547a81336b564f512a7226e995800bf88ab849ab5adbffa47",
+      "url": "https://maven.minecraftforge.net/org/apache/logging/log4j/log4j-api/2.15.0/log4j-api-2.15.0.pom"
+    },
+    {
+      "group": "org.apache.logging.log4j",
+      "artifact": "log4j-core",
+      "version": "2.15.0",
+      "file": "log4j-core-2.15.0.pom",
+      "extension": "pom",
+      "bytes": 23502,
+      "sha256": "7c74c42fd7abae9ba61068ea11fb2a65f13407704994bb65fb57916c96cdc75c",
+      "url": "https://maven.minecraftforge.net/org/apache/logging/log4j/log4j-core/2.15.0/log4j-core-2.15.0.pom"
+    },
+    {
+      "group": "org.apache.logging.log4j",
+      "artifact": "log4j-slf4j18-impl",
+      "version": "2.15.0",
+      "file": "log4j-slf4j18-impl-2.15.0.pom",
+      "extension": "pom",
+      "bytes": 9231,
+      "sha256": "db1cf970e999fbf49e2da3af75d85f37bbb7e2a4d19ae355dd31e8e66c65f91b",
+      "url": "https://maven.minecraftforge.net/org/apache/logging/log4j/log4j-slf4j18-impl/2.15.0/log4j-slf4j18-impl-2.15.0.pom"
+    },
+    {
+      "group": "org.apache.maven",
+      "artifact": "maven-artifact",
+      "version": "3.6.0",
+      "file": "maven-artifact-3.6.0.pom",
+      "extension": "pom",
+      "bytes": 2112,
+      "sha256": "9f8565b290586518c31ebf69a2b16318795390a78ee08c01fb3862c21e162703",
+      "url": "https://maven.minecraftforge.net/org/apache/maven/maven-artifact/3.6.0/maven-artifact-3.6.0.pom"
+    },
+    {
+      "group": "org.codehaus.plexus",
+      "artifact": "plexus-utils",
+      "version": "3.1.0",
+      "file": "plexus-utils-3.1.0.pom",
+      "extension": "pom",
+      "bytes": 4658,
+      "sha256": "1473d1eb9e2ffbed025819892b078985c5dd55c190b1d82fd1b5685505b2b819",
+      "url": "https://maven.minecraftforge.net/org/codehaus/plexus/plexus-utils/3.1.0/plexus-utils-3.1.0.pom"
+    },
+    {
+      "group": "org.jline",
+      "artifact": "jline-reader",
+      "version": "3.9.0",
+      "file": "jline-reader-3.9.0.pom",
+      "extension": "pom",
+      "bytes": 1116,
+      "sha256": "9ddafc756de317e5dda7f1bc3c43328b59a9578fcef965cc7ba4630ff50d45b6",
+      "url": "https://maven.minecraftforge.net/org/jline/jline-reader/3.9.0/jline-reader-3.9.0.pom"
+    },
+    {
+      "group": "org.jline",
+      "artifact": "jline-terminal-jna",
+      "version": "3.9.0",
+      "file": "jline-terminal-jna-3.9.0.pom",
+      "extension": "pom",
+      "bytes": 1765,
+      "sha256": "c1a846aa3a81ea05711bca3e0d3d072720e80fc657b5aa66cfe61416dc11f058",
+      "url": "https://maven.minecraftforge.net/org/jline/jline-terminal-jna/3.9.0/jline-terminal-jna-3.9.0.pom"
+    },
+    {
+      "group": "org.jline",
+      "artifact": "jline-terminal",
+      "version": "3.9.0",
+      "file": "jline-terminal-3.9.0.pom",
+      "extension": "pom",
+      "bytes": 1149,
+      "sha256": "9544fb2b04dd64156ae0202534c4438e51aeee35a6b8e282566c71853d3feb41",
+      "url": "https://maven.minecraftforge.net/org/jline/jline-terminal/3.9.0/jline-terminal-3.9.0.pom"
+    },
+    {
+      "group": "org.jline",
+      "artifact": "jline",
+      "version": "3.9.0",
+      "file": "jline-3.9.0.pom",
+      "extension": "pom",
+      "bytes": 15038,
+      "sha256": "87924e688e9892d8607f0083507990a1a3ecfba28111ec0349fb8800a05fdd8d",
+      "url": "https://maven.minecraftforge.net/org/jline/jline/3.9.0/jline-3.9.0.pom"
+    },
+    {
+      "group": "org.ow2.asm",
+      "artifact": "asm-analysis",
+      "version": "6.2",
+      "file": "asm-analysis-6.2.pom",
+      "extension": "pom",
+      "bytes": 3152,
+      "sha256": "b1268f8e91c64bf49c67a3987456cf5bd3a65a862d5d836a8e78b4e3af68edbc",
+      "url": "https://maven.minecraftforge.net/org/ow2/asm/asm-analysis/6.2/asm-analysis-6.2.pom"
+    },
+    {
+      "group": "org.ow2.asm",
+      "artifact": "asm-commons",
+      "version": "6.2",
+      "file": "asm-commons-6.2.pom",
+      "extension": "pom",
+      "bytes": 3660,
+      "sha256": "17c3b1f22217717e62bd2cef965ad6c30be0ebfc467a9124df63372243f11b5f",
+      "url": "https://maven.minecraftforge.net/org/ow2/asm/asm-commons/6.2/asm-commons-6.2.pom"
+    },
+    {
+      "group": "org.ow2.asm",
+      "artifact": "asm-tree",
+      "version": "6.2",
+      "file": "asm-tree-6.2.pom",
+      "extension": "pom",
+      "bytes": 3123,
+      "sha256": "e3141a6eeea9ca42467aefc67907a3c10ca6cb0b53393279d1a5ccb52ba34632",
+      "url": "https://maven.minecraftforge.net/org/ow2/asm/asm-tree/6.2/asm-tree-6.2.pom"
+    },
+    {
+      "group": "org.ow2.asm",
+      "artifact": "asm",
+      "version": "6.2",
+      "file": "asm-6.2.pom",
+      "extension": "pom",
+      "bytes": 2936,
+      "sha256": "92ec633f93f9c84dcb087a79df1395cfef07be574076ceaeb3159e096b4d4643",
+      "url": "https://maven.minecraftforge.net/org/ow2/asm/asm/6.2/asm-6.2.pom"
+    },
+    {
+      "group": "org.slf4j",
+      "artifact": "slf4j-api",
+      "version": "1.8.0-beta4",
+      "file": "slf4j-api-1.8.0-beta4.pom",
+      "extension": "pom",
+      "bytes": 1654,
+      "sha256": "f8316d28acf252b21b1e9e8eed9a84c2afbdc8e040f69d3a10bab813d3d85a85",
+      "url": "https://maven.minecraftforge.net/org/slf4j/slf4j-api/1.8.0-beta4/slf4j-api-1.8.0-beta4.pom"
+    },
+    {
+      "group": "cpw.mods",
+      "artifact": "modlauncher",
+      "version": "0.10.0",
+      "file": "modlauncher-0.10.0.jar",
+      "extension": "jar",
+      "bytes": 80865,
+      "sha256": "982a75e66fa14c783fff34d541f32d50a9d12305602f74f880a00e7a09171b5a",
+      "url": "https://maven.minecraftforge.net/cpw/mods/modlauncher/0.10.0/modlauncher-0.10.0.jar"
+    },
+    {
+      "group": "cpw.mods",
+      "artifact": "modlauncher",
+      "version": "0.10.0",
+      "file": "modlauncher-0.10.0.pom",
+      "extension": "pom",
+      "bytes": 2273,
+      "sha256": "112709cd86b8495ad568a8de1518a322fe22917ea1113d8d94a8c2bb69af98f3",
+      "url": "https://maven.minecraftforge.net/cpw/mods/modlauncher/0.10.0/modlauncher-0.10.0.pom"
+    },
+    {
+      "group": "cpw.mods",
+      "artifact": "modlauncher",
+      "version": "1.0.0",
+      "file": "modlauncher-1.0.0.jar",
+      "extension": "jar",
+      "bytes": 87486,
+      "sha256": "47a4756e2e1b5494ae8207e9d0bb3de26c7fbcdefe4da6449e56e79a7da806c2",
+      "url": "https://maven.minecraftforge.net/cpw/mods/modlauncher/1.0.0/modlauncher-1.0.0.jar"
+    },
+    {
+      "group": "cpw.mods",
+      "artifact": "modlauncher",
+      "version": "1.0.0",
+      "file": "modlauncher-1.0.0.pom",
+      "extension": "pom",
+      "bytes": 2272,
+      "sha256": "31633c0a2954757661acb9a10614100653e2083a9f72a4396fab22218546abf8",
+      "url": "https://maven.minecraftforge.net/cpw/mods/modlauncher/1.0.0/modlauncher-1.0.0.pom"
+    }
+  ],
+  "supportArtifacts": [
+    {
+      "group": "org.sonatype.oss",
+      "artifact": "oss-parent",
+      "version": "7",
+      "file": "oss-parent-7.pom",
+      "extension": "pom",
+      "bytes": 4824,
+      "sha256": "b51f8867c92b6a722499557fc3a1fdea77bdf9ef574722fe90ce436a29559454",
+      "url": "https://repo.maven.apache.org/maven2/org/sonatype/oss/oss-parent/7/oss-parent-7.pom"
+    },
+    {
+      "group": "org.antlr",
+      "artifact": "antlr4-master",
+      "version": "4.7.2",
+      "file": "antlr4-master-4.7.2.pom",
+      "extension": "pom",
+      "bytes": 4404,
+      "sha256": "ba99cb25d2390f38680c7502842a0ee0959d1e6403e013ccff698fd5856eead1",
+      "url": "https://repo.maven.apache.org/maven2/org/antlr/antlr4-master/4.7.2/antlr4-master-4.7.2.pom"
+    },
+    {
+      "group": "org.apache.commons",
+      "artifact": "commons-parent",
+      "version": "47",
+      "file": "commons-parent-47.pom",
+      "extension": "pom",
+      "bytes": 77562,
+      "sha256": "8a8ecb570553bf9f1ffae211a8d4ca9ee630c17afe59293368fba7bd9b42fcb7",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-parent/47/commons-parent-47.pom"
+    },
+    {
+      "group": "org.apache.logging.log4j",
+      "artifact": "log4j",
+      "version": "2.15.0",
+      "file": "log4j-2.15.0.pom",
+      "extension": "pom",
+      "bytes": 68853,
+      "sha256": "3f745daa4ea6dc2606525bd4279bf30062066bd223866adb7f5eee46dcf76a03",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j/2.15.0/log4j-2.15.0.pom"
+    },
+    {
+      "group": "org.apache.maven",
+      "artifact": "maven",
+      "version": "3.6.0",
+      "file": "maven-3.6.0.pom",
+      "extension": "pom",
+      "bytes": 23940,
+      "sha256": "eaa752a40e678961dfae2d3e74ebdcd0a59bdf2931e1a8595a5e708729536a7d",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven/3.6.0/maven-3.6.0.pom"
+    },
+    {
+      "group": "org.codehaus.plexus",
+      "artifact": "plexus",
+      "version": "4.0",
+      "file": "plexus-4.0.pom",
+      "extension": "pom",
+      "bytes": 21500,
+      "sha256": "0a1b692d7fcc90d6a45dae2e50f4660d48f7a44504f174aa60ef34fbe1327f6a",
+      "url": "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus/4.0/plexus-4.0.pom"
+    },
+    {
+      "group": "org.jline",
+      "artifact": "jline-parent",
+      "version": "3.9.0",
+      "file": "jline-parent-3.9.0.pom",
+      "extension": "pom",
+      "bytes": 18324,
+      "sha256": "b3023da0262df65126d8db7904c344c5e7a745262173c7716702056b9ac8b119",
+      "url": "https://repo.maven.apache.org/maven2/org/jline/jline-parent/3.9.0/jline-parent-3.9.0.pom"
+    },
+    {
+      "group": "org.ow2",
+      "artifact": "ow2",
+      "version": "1.5",
+      "file": "ow2-1.5.pom",
+      "extension": "pom",
+      "bytes": 11230,
+      "sha256": "0f8a1b116e760b8fe6389c51b84e4b07a70fc11082d4f936e453b583dd50b43b",
+      "url": "https://repo.maven.apache.org/maven2/org/ow2/ow2/1.5/ow2-1.5.pom"
+    },
+    {
+      "group": "org.slf4j",
+      "artifact": "slf4j-parent",
+      "version": "1.8.0-beta4",
+      "file": "slf4j-parent-1.8.0-beta4.pom",
+      "extension": "pom",
+      "bytes": 16976,
+      "sha256": "bafba30a83d53a94550196447562aa8cdad145615c28932c6a4bb441c3553101",
+      "url": "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-parent/1.8.0-beta4/slf4j-parent-1.8.0-beta4.pom"
+    },
+    {
+      "group": "org.sonatype.oss",
+      "artifact": "oss-parent",
+      "version": "9",
+      "file": "oss-parent-9.pom",
+      "extension": "pom",
+      "bytes": 6569,
+      "sha256": "fb40265f982548212ff82e362e59732b2187ec6f0d80182885c14ef1f982827a",
+      "url": "https://repo.maven.apache.org/maven2/org/sonatype/oss/oss-parent/9/oss-parent-9.pom"
+    },
+    {
+      "group": "org.apache",
+      "artifact": "apache",
+      "version": "19",
+      "file": "apache-19.pom",
+      "extension": "pom",
+      "bytes": 15489,
+      "sha256": "91f7a33096ea69bac2cbaf6d01feb934cac002c48d8c8cfa9c240b40f1ec21df",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/apache/19/apache-19.pom"
+    },
+    {
+      "group": "org.apache.logging",
+      "artifact": "logging-parent",
+      "version": "3",
+      "file": "logging-parent-3.pom",
+      "extension": "pom",
+      "bytes": 3136,
+      "sha256": "763a2ec2b8094d4161deb6c264b1262085b9be30bf3a31c2ce137242e57722a7",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/logging/logging-parent/3/logging-parent-3.pom"
+    },
+    {
+      "group": "org.apache.maven",
+      "artifact": "maven-parent",
+      "version": "33",
+      "file": "maven-parent-33.pom",
+      "extension": "pom",
+      "bytes": 44155,
+      "sha256": "3856e3fcd169502d5f12fe2452604ebf6c7c025f15656bfa558ea99ed29d73ea",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven-parent/33/maven-parent-33.pom"
+    },
+    {
+      "group": "org.sonatype.forge",
+      "artifact": "forge-parent",
+      "version": "10",
+      "file": "forge-parent-10.pom",
+      "extension": "pom",
+      "bytes": 13560,
+      "sha256": "c14fb9c32b59cc03251f609416db7c0cff01f811edcccb4f6a865d6e7046bd0b",
+      "url": "https://repo.maven.apache.org/maven2/org/sonatype/forge/forge-parent/10/forge-parent-10.pom"
+    },
+    {
+      "group": "org.apache",
+      "artifact": "apache",
+      "version": "23",
+      "file": "apache-23.pom",
+      "extension": "pom",
+      "bytes": 18422,
+      "sha256": "bc10624e0623f36577fac5639ca2936d3240ed152fb6d8d533ab4d270543491c",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/apache/23/apache-23.pom"
+    },
+    {
+      "group": "org.apache",
+      "artifact": "apache",
+      "version": "21",
+      "file": "apache-21.pom",
+      "extension": "pom",
+      "bytes": 17107,
+      "sha256": "af10c108da014f17cafac7b52b2b4b5a3a1c18265fa2af97a325d9143537b380",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/apache/21/apache-21.pom"
+    }
+  ],
+  "dynamicMetadata": [
+    {
+      "group": "cpw.mods",
+      "artifact": "grossjava9hacks",
+      "file": "maven-metadata.xml",
+      "bytes": 483,
+      "sha256": "ff3326177ce192ec7b353ffa176ccb0636b06a9bc2722ba1232fbac116b69008",
+      "url": "https://maven.minecraftforge.net/cpw/mods/grossjava9hacks/maven-metadata.xml",
+      "requiredSelectors": [
+        "1.1.+"
+      ],
+      "resolutions": [
+        {
+          "version": "1.1.0",
+          "selector": "1.1.+"
+        }
+      ]
+    },
+    {
+      "group": "cpw.mods",
+      "artifact": "modlauncher",
+      "file": "maven-metadata.xml",
+      "bytes": 2565,
+      "sha256": "1e382b4d75560c2cf61a39cb04e836e2a77316dff0a57197e53579773383033a",
+      "url": "https://maven.minecraftforge.net/cpw/mods/modlauncher/maven-metadata.xml",
+      "requiredSelectors": [
+        "0.10.+",
+        "1.0.+",
+        "2.1.+"
+      ],
+      "resolutions": [
+        {
+          "version": "0.10.0",
+          "selector": "0.10.+"
+        },
+        {
+          "version": "1.0.0",
+          "selector": "1.0.+"
+        },
+        {
+          "version": "2.1.5",
+          "selector": "2.1.+"
+        }
+      ]
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "forgespi",
+      "file": "maven-metadata.xml",
+      "bytes": 2209,
+      "sha256": "421a41e504319d559dfaab47ab2fc8f6180b51cd8870d392058835e60c88cce4",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/forgespi/maven-metadata.xml",
+      "requiredSelectors": [
+        "0.13.+"
+      ],
+      "resolutions": [
+        {
+          "version": "0.13.0",
+          "selector": "0.13.+"
+        }
+      ]
+    },
+    {
+      "group": "org.apache.logging.log4j",
+      "artifact": "log4j-api",
+      "file": "maven-metadata.xml",
+      "bytes": 2800,
+      "sha256": "3297b052bb53ea953cdd82f0fb5bb3205011424a67fd34982348be3c48fb8493",
+      "url": "https://maven.minecraftforge.net/org/apache/logging/log4j/log4j-api/maven-metadata.xml",
+      "requiredSelectors": [
+        "2.11.+"
+      ],
+      "resolutions": [
+        {
+          "version": "2.15.0",
+          "selector": "2.11.+"
+        }
+      ]
+    },
+    {
+      "group": "org.apache.logging.log4j",
+      "artifact": "log4j-core",
+      "file": "maven-metadata.xml",
+      "bytes": 2838,
+      "sha256": "b0ae403c2a95eeda3b9ecfc529137b85604eb57a80006ed337fb9b4ba8feba38",
+      "url": "https://maven.minecraftforge.net/org/apache/logging/log4j/log4j-core/maven-metadata.xml",
+      "requiredSelectors": [
+        "2.11.+"
+      ],
+      "resolutions": [
+        {
+          "version": "2.15.0",
+          "selector": "2.11.+"
+        }
+      ]
+    }
+  ],
+  "mojangVersionSha256": "26ddcd28289a44d4ae4179307b7193ce0227d2da57350e717ff1d8c6e27e8c95",
+  "mojangArtifacts": [
+    {
+      "group": "ca.weblite",
+      "artifact": "java-objc-bridge",
+      "version": "1.0.0",
+      "file": "java-objc-bridge-1.0.0.jar",
+      "extension": "jar",
+      "bytes": 40502,
+      "sha1": "6ef160c3133a78de015830860197602ca1c855d3",
+      "sha256": "fec83601d2da127234728a8fffb429d0c4a59587452834da203163e6a3f941db",
+      "url": "https://libraries.minecraft.net/ca/weblite/java-objc-bridge/1.0.0/java-objc-bridge-1.0.0.jar"
+    },
+    {
+      "group": "com.google.code.gson",
+      "artifact": "gson",
+      "version": "2.8.0",
+      "file": "gson-2.8.0.jar",
+      "extension": "jar",
+      "bytes": 231952,
+      "sha1": "c4ba5371a29ac9b2ad6129b1d39ea38750043eff",
+      "sha256": "c6221763bd79c4f1c3dc7f750b5f29a0bb38b367b81314c4f71896e340c40825",
+      "url": "https://libraries.minecraft.net/com/google/code/gson/gson/2.8.0/gson-2.8.0.jar"
+    },
+    {
+      "group": "com.google.guava",
+      "artifact": "guava",
+      "version": "21.0",
+      "file": "guava-21.0.jar",
+      "extension": "jar",
+      "bytes": 2521113,
+      "sha1": "3a3d111be1be1b745edfa7d91678a12d7ed38709",
+      "sha256": "972139718abc8a4893fa78cba8cf7b2c903f35c97aaf44fa3031b0669948b480",
+      "url": "https://libraries.minecraft.net/com/google/guava/guava/21.0/guava-21.0.jar"
+    },
+    {
+      "group": "com.ibm.icu",
+      "artifact": "icu4j-core-mojang",
+      "version": "51.2",
+      "file": "icu4j-core-mojang-51.2.jar",
+      "extension": "jar",
+      "bytes": 1634692,
+      "sha1": "63d216a9311cca6be337c1e458e587f99d382b84",
+      "sha256": "147592c5eb8e11fc8394125954f877acf25918bae13aa210c2825aefc3030ed8",
+      "url": "https://libraries.minecraft.net/com/ibm/icu/icu4j-core-mojang/51.2/icu4j-core-mojang-51.2.jar"
+    },
+    {
+      "group": "com.mojang",
+      "artifact": "authlib",
+      "version": "1.5.25",
+      "file": "authlib-1.5.25.jar",
+      "extension": "jar",
+      "bytes": 65621,
+      "sha1": "9834cdf236c22e84b946bba989e2f94ef5897c3c",
+      "sha256": "c8a095123be93c59d4ac29e4a0616495b3d479ac65913cb719a81ee583e9dfcd",
+      "url": "https://libraries.minecraft.net/com/mojang/authlib/1.5.25/authlib-1.5.25.jar"
+    },
+    {
+      "group": "com.mojang",
+      "artifact": "brigadier",
+      "version": "1.0.14",
+      "file": "brigadier-1.0.14.jar",
+      "extension": "jar",
+      "bytes": 73350,
+      "sha1": "a18df0522b577ca364b87019c1efa0b8faa12fe5",
+      "sha256": "76eda3aaa573b4e6aaf57a59debe90c4e9a62dc1fced5902c1991c8c863d5c0d",
+      "url": "https://libraries.minecraft.net/com/mojang/brigadier/1.0.14/brigadier-1.0.14.jar"
+    },
+    {
+      "group": "com.mojang",
+      "artifact": "datafixerupper",
+      "version": "1.0.19",
+      "file": "datafixerupper-1.0.19.jar",
+      "extension": "jar",
+      "bytes": 431014,
+      "sha1": "c0f74b1916bc141b40f7cb491b63e1898f2c99bb",
+      "sha256": "44e38a718a80cbb732ca8355d53893f1d7fdbb97064451bb7cc712f99398f622",
+      "url": "https://libraries.minecraft.net/com/mojang/datafixerupper/1.0.19/datafixerupper-1.0.19.jar"
+    },
+    {
+      "group": "com.mojang",
+      "artifact": "patchy",
+      "version": "1.3.9",
+      "file": "patchy-1.3.9.jar",
+      "extension": "jar",
+      "bytes": 23581,
+      "sha1": "eb8bb7b66fa0e2152b1b40b3856e82f7619439ee",
+      "sha256": "79f5a9d8c788489d3375cb77cc826a905e261e50d23f31b94c2d5f2b92ad3dc6",
+      "url": "https://libraries.minecraft.net/com/mojang/patchy/1.3.9/patchy-1.3.9.jar"
+    },
+    {
+      "group": "com.mojang",
+      "artifact": "realms",
+      "version": "1.13.9",
+      "file": "realms-1.13.9.jar",
+      "extension": "jar",
+      "bytes": 6385071,
+      "sha1": "88d2ecc34dba880fb4f10c7318b313e067e8b6ae",
+      "sha256": "da41c3bc89e82b7f34996b57aa397e55ab0fa50dc73e59392d37627cfd8c695f",
+      "url": "https://libraries.minecraft.net/com/mojang/realms/1.13.9/realms-1.13.9.jar"
+    },
+    {
+      "group": "com.mojang",
+      "artifact": "text2speech",
+      "version": "1.10.3",
+      "file": "text2speech-1.10.3.jar",
+      "extension": "jar",
+      "bytes": 11055,
+      "sha1": "48fd510879dff266c3815947de66e3d4809f8668",
+      "sha256": "841d2f407824a4a9c3dd872c51ecd76d50381c569b79c3ea7b06b69eec2bba53",
+      "url": "https://libraries.minecraft.net/com/mojang/text2speech/1.10.3/text2speech-1.10.3.jar"
+    },
+    {
+      "group": "com.paulscode",
+      "artifact": "codecjorbis",
+      "version": "20101023",
+      "file": "codecjorbis-20101023.jar",
+      "extension": "jar",
+      "bytes": 103871,
+      "sha1": "c73b5636faf089d9f00e8732a829577de25237ee",
+      "sha256": "6c4b4e50e608763564afa1bde2d25ece9dd715e7c9129540faa1faded4896506",
+      "url": "https://libraries.minecraft.net/com/paulscode/codecjorbis/20101023/codecjorbis-20101023.jar"
+    },
+    {
+      "group": "com.paulscode",
+      "artifact": "codecwav",
+      "version": "20101023",
+      "file": "codecwav-20101023.jar",
+      "extension": "jar",
+      "bytes": 5618,
+      "sha1": "12f031cfe88fef5c1dd36c563c0a3a69bd7261da",
+      "sha256": "bb7d17b340afe6abdfbfdaa03683bce4aef39a64887dbab0636eaff3cf2d59ba",
+      "url": "https://libraries.minecraft.net/com/paulscode/codecwav/20101023/codecwav-20101023.jar"
+    },
+    {
+      "group": "com.paulscode",
+      "artifact": "libraryjavasound",
+      "version": "20101123",
+      "file": "libraryjavasound-20101123.jar",
+      "extension": "jar",
+      "bytes": 21679,
+      "sha1": "5c5e304366f75f9eaa2e8cca546a1fb6109348b3",
+      "sha256": "333bbefeff5eb1722dc9b8d2e26c38bc69c1efa07d0ca870480f29d8858aa336",
+      "url": "https://libraries.minecraft.net/com/paulscode/libraryjavasound/20101123/libraryjavasound-20101123.jar"
+    },
+    {
+      "group": "com.paulscode",
+      "artifact": "soundsystem",
+      "version": "20120107",
+      "file": "soundsystem-20120107.jar",
+      "extension": "jar",
+      "bytes": 65020,
+      "sha1": "419c05fe9be71f792b2d76cfc9b67f1ed0fec7f6",
+      "sha256": "2882d64550240dd0c026724da664d9f97ef205c91d6a85273d10790d88608f34",
+      "url": "https://libraries.minecraft.net/com/paulscode/soundsystem/20120107/soundsystem-20120107.jar"
+    },
+    {
+      "group": "commons-codec",
+      "artifact": "commons-codec",
+      "version": "1.10",
+      "file": "commons-codec-1.10.jar",
+      "extension": "jar",
+      "bytes": 284184,
+      "sha1": "4b95f4897fa13f2cd904aee711aeafc0c5295cd8",
+      "sha256": "4241dfa94e711d435f29a4604a3e2de5c4aa3c165e23bd066be6fc1fc4309569",
+      "url": "https://libraries.minecraft.net/commons-codec/commons-codec/1.10/commons-codec-1.10.jar"
+    },
+    {
+      "group": "commons-io",
+      "artifact": "commons-io",
+      "version": "2.5",
+      "file": "commons-io-2.5.jar",
+      "extension": "jar",
+      "bytes": 208700,
+      "sha1": "2852e6e05fbb95076fc091f6d1780f1f8fe35e0f",
+      "sha256": "a10418348d234968600ccb1d988efcbbd08716e1d96936ccc1880e7d22513474",
+      "url": "https://libraries.minecraft.net/commons-io/commons-io/2.5/commons-io-2.5.jar"
+    },
+    {
+      "group": "commons-logging",
+      "artifact": "commons-logging",
+      "version": "1.1.3",
+      "file": "commons-logging-1.1.3.jar",
+      "extension": "jar",
+      "bytes": 62050,
+      "sha1": "f6f66e966c70a83ffbdb6f17a0919eaf7c8aca7f",
+      "sha256": "70903f6fc82e9908c8da9f20443f61d90f0870a312642991fe8462a0b9391784",
+      "url": "https://libraries.minecraft.net/commons-logging/commons-logging/1.1.3/commons-logging-1.1.3.jar"
+    },
+    {
+      "group": "io.netty",
+      "artifact": "netty-all",
+      "version": "4.1.25.Final",
+      "file": "netty-all-4.1.25.Final.jar",
+      "extension": "jar",
+      "bytes": 3823147,
+      "sha1": "d0626cd3108294d1d58c05859add27b4ef21f83b",
+      "sha256": "972642d0037706485747d34ce50fd67a15f0ed3d8a781882d683824c9977bc86",
+      "url": "https://libraries.minecraft.net/io/netty/netty-all/4.1.25.Final/netty-all-4.1.25.Final.jar"
+    },
+    {
+      "group": "it.unimi.dsi",
+      "artifact": "fastutil",
+      "version": "8.2.1",
+      "file": "fastutil-8.2.1.jar",
+      "extension": "jar",
+      "bytes": 18800417,
+      "sha1": "5ad88f325e424f8dbc2be5459e21ea5cab3864e9",
+      "sha256": "7d336e2b61ddf6e4193a55627b7e606bf42b7e2f652df2fb836fc343dd51ba4a",
+      "url": "https://libraries.minecraft.net/it/unimi/dsi/fastutil/8.2.1/fastutil-8.2.1.jar"
+    },
+    {
+      "group": "net.java.dev.jna",
+      "artifact": "jna",
+      "version": "4.4.0",
+      "file": "jna-4.4.0.jar",
+      "extension": "jar",
+      "bytes": 1091208,
+      "sha1": "cb208278274bf12ebdb56c61bd7407e6f774d65a",
+      "sha256": "c4dadeeecaa90c8847902082aee5eb107fcf59c5d0e63a17fcaf273c0e2d2bd1",
+      "url": "https://libraries.minecraft.net/net/java/dev/jna/jna/4.4.0/jna-4.4.0.jar"
+    },
+    {
+      "group": "net.java.dev.jna",
+      "artifact": "platform",
+      "version": "3.4.0",
+      "file": "platform-3.4.0.jar",
+      "extension": "jar",
+      "bytes": 913436,
+      "sha1": "e3f70017be8100d3d6923f50b3d2ee17714e9c13",
+      "sha256": "ea89d5090c8303ba4e9a0056e6d8a20429f3e021411e950bfd9eba3b6e6cf15c",
+      "url": "https://libraries.minecraft.net/net/java/dev/jna/platform/3.4.0/platform-3.4.0.jar"
+    },
+    {
+      "group": "net.java.jinput",
+      "artifact": "jinput",
+      "version": "2.0.5",
+      "file": "jinput-2.0.5.jar",
+      "extension": "jar",
+      "bytes": 208338,
+      "sha1": "39c7796b469a600f72380316f6b1f11db6c2c7c4",
+      "sha256": "79b5a4f5829e1a49a415711f7fb8eb5b9ad22defa72929fda2da96ec30d3f018",
+      "url": "https://libraries.minecraft.net/net/java/jinput/jinput/2.0.5/jinput-2.0.5.jar"
+    },
+    {
+      "group": "net.java.jutils",
+      "artifact": "jutils",
+      "version": "1.0.0",
+      "file": "jutils-1.0.0.jar",
+      "extension": "jar",
+      "bytes": 7508,
+      "sha1": "e12fe1fda814bd348c1579329c86943d2cd3c6a6",
+      "sha256": "c3334ff39cf0ab3b54925619101054c90098b7c733b1e7834c7b75e4c41e84a5",
+      "url": "https://libraries.minecraft.net/net/java/jutils/jutils/1.0.0/jutils-1.0.0.jar"
+    },
+    {
+      "group": "net.sf.jopt-simple",
+      "artifact": "jopt-simple",
+      "version": "5.0.3",
+      "file": "jopt-simple-5.0.3.jar",
+      "extension": "jar",
+      "bytes": 78175,
+      "sha1": "cdd846cfc4e0f7eefafc02c0f5dce32b9303aa2a",
+      "sha256": "6f45c00908265947c39221035250024f2caec9a15c1c8cf553ebeecee289f342",
+      "url": "https://libraries.minecraft.net/net/sf/jopt-simple/jopt-simple/5.0.3/jopt-simple-5.0.3.jar"
+    },
+    {
+      "group": "org.apache.commons",
+      "artifact": "commons-compress",
+      "version": "1.8.1",
+      "file": "commons-compress-1.8.1.jar",
+      "extension": "jar",
+      "bytes": 365552,
+      "sha1": "a698750c16740fd5b3871425f4cb3bbaa87f529d",
+      "sha256": "5fca136503f86ecc6cb61fbd17b137d59e56b45c7a5494e6b8fd3cabd4697fbd",
+      "url": "https://libraries.minecraft.net/org/apache/commons/commons-compress/1.8.1/commons-compress-1.8.1.jar"
+    },
+    {
+      "group": "org.apache.commons",
+      "artifact": "commons-lang3",
+      "version": "3.5",
+      "file": "commons-lang3-3.5.jar",
+      "extension": "jar",
+      "bytes": 479881,
+      "sha1": "6c6c702c89bfff3cd9e80b04d668c5e190d588c6",
+      "sha256": "8ac96fc686512d777fca85e144f196cd7cfe0c0aec23127229497d1a38ff651c",
+      "url": "https://libraries.minecraft.net/org/apache/commons/commons-lang3/3.5/commons-lang3-3.5.jar"
+    },
+    {
+      "group": "org.apache.httpcomponents",
+      "artifact": "httpclient",
+      "version": "4.3.3",
+      "file": "httpclient-4.3.3.jar",
+      "extension": "jar",
+      "bytes": 589512,
+      "sha1": "18f4247ff4572a074444572cee34647c43e7c9c7",
+      "sha256": "9844cc9b5440d65a88d28bcba9d771374d2dfdab898848cda164611091633013",
+      "url": "https://libraries.minecraft.net/org/apache/httpcomponents/httpclient/4.3.3/httpclient-4.3.3.jar"
+    },
+    {
+      "group": "org.apache.httpcomponents",
+      "artifact": "httpcore",
+      "version": "4.3.2",
+      "file": "httpcore-4.3.2.jar",
+      "extension": "jar",
+      "bytes": 282269,
+      "sha1": "31fbbff1ddbf98f3aa7377c94d33b0447c646b6e",
+      "sha256": "abd02320e2356f89d054dae4cf02306bef20a9cf7865b3ac94ec7552b4f1528b",
+      "url": "https://libraries.minecraft.net/org/apache/httpcomponents/httpcore/4.3.2/httpcore-4.3.2.jar"
+    },
+    {
+      "group": "org.apache.logging.log4j",
+      "artifact": "log4j-api",
+      "version": "2.8.1",
+      "file": "log4j-api-2.8.1.jar",
+      "extension": "jar",
+      "bytes": 228859,
+      "sha1": "e801d13612e22cad62a3f4f3fe7fdbe6334a8e72",
+      "sha256": "1205ab764b1326f7d96d99baa4a4e12614599bf3d735790947748ee116511fa2",
+      "url": "https://libraries.minecraft.net/org/apache/logging/log4j/log4j-api/2.8.1/log4j-api-2.8.1.jar"
+    },
+    {
+      "group": "org.apache.logging.log4j",
+      "artifact": "log4j-core",
+      "version": "2.8.1",
+      "file": "log4j-core-2.8.1.jar",
+      "extension": "jar",
+      "bytes": 1402925,
+      "sha1": "4ac28ff2f1ddf05dae3043a190451e8c46b73c31",
+      "sha256": "815a73e20e90a413662eefe8594414684df3d5723edcd76070e1a5aee864616e",
+      "url": "https://libraries.minecraft.net/org/apache/logging/log4j/log4j-core/2.8.1/log4j-core-2.8.1.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-glfw",
+      "version": "3.1.6",
+      "file": "lwjgl-glfw-3.1.6.jar",
+      "extension": "jar",
+      "bytes": 114101,
+      "sha1": "7fe6af9a51891c9d22ee93c4241c237b4f3a5151",
+      "sha256": "ed9c7e8d272578cc9ac384b689d6761304833c46ed3a62d4304e62d4b12486fc",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-glfw/3.1.6/lwjgl-glfw-3.1.6.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-jemalloc",
+      "version": "3.1.6",
+      "file": "lwjgl-jemalloc-3.1.6.jar",
+      "extension": "jar",
+      "bytes": 40775,
+      "sha1": "807ee19f8ce08f7a55ed4939b2f34d1ded6b39c9",
+      "sha256": "2d4c05961815583b333da488cf415d5700dac3a5baedaba3e0e1edf73f9a6ca8",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-jemalloc/3.1.6/lwjgl-jemalloc-3.1.6.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-openal",
+      "version": "3.1.6",
+      "file": "lwjgl-openal-3.1.6.jar",
+      "extension": "jar",
+      "bytes": 79062,
+      "sha1": "c03253f13fff766ec3fc2e8d0924964d0f09e886",
+      "sha256": "ecc5b3e208c67b894d4682b47d1d2206f24dfa5327d5ea4c07301ca592632a40",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-openal/3.1.6/lwjgl-openal-3.1.6.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-opengl",
+      "version": "3.1.6",
+      "file": "lwjgl-opengl-3.1.6.jar",
+      "extension": "jar",
+      "bytes": 821814,
+      "sha1": "964a2332ab3b396bcf67f12b8b93d39c79c978c2",
+      "sha256": "fa95420507b36993b84764d68b4d08538d81c52824559f47d74db9ed15511d96",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-opengl/3.1.6/lwjgl-opengl-3.1.6.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-stb",
+      "version": "3.1.6",
+      "file": "lwjgl-stb-3.1.6.jar",
+      "extension": "jar",
+      "bytes": 104583,
+      "sha1": "041e958545f64db9d46ab8e616c3020929bbaeca",
+      "sha256": "f272f0aac383cc398664f52b464030afb30927b0a14eb909236a077a7bab45fd",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-stb/3.1.6/lwjgl-stb-3.1.6.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl",
+      "version": "3.1.6",
+      "file": "lwjgl-3.1.6.jar",
+      "extension": "jar",
+      "bytes": 299086,
+      "sha1": "75a08ab96db25e3dd05a127e69e314deb0c13161",
+      "sha256": "8dc7b5d9d9778758d394875a996aa5c0115f7cbfb9bcbae731ec6c8729ecf112",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl/3.1.6/lwjgl-3.1.6.jar"
+    },
+    {
+      "group": "oshi-project",
+      "artifact": "oshi-core",
+      "version": "1.1",
+      "file": "oshi-core-1.1.jar",
+      "extension": "jar",
+      "bytes": 30973,
+      "sha1": "9ddf7b048a8d701be231c0f4f95fd986198fd2d8",
+      "sha256": "27901e5d4d60d3502571d5e6358fc89e3fcf874138b69d495d139bcc3e169404",
+      "url": "https://libraries.minecraft.net/oshi-project/oshi-core/1.1/oshi-core-1.1.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-glfw",
+      "version": "3.1.6",
+      "file": "lwjgl-glfw-3.1.6-natives-linux.jar",
+      "extension": "jar",
+      "bytes": 143599,
+      "sha1": "735c865f3ad9c064569e0e0083570e47c4814f02",
+      "sha256": "12db8dda452169a2ba675765bbf4543d55978f7d8a1425b45c4a8a4e8f1b90fe",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-glfw/3.1.6/lwjgl-glfw-3.1.6-natives-linux.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-glfw",
+      "version": "3.1.6",
+      "file": "lwjgl-glfw-3.1.6-natives-macos.jar",
+      "extension": "jar",
+      "bytes": 59991,
+      "sha1": "5f32c8924b07538c48f7854b25ac1d6bcbdec584",
+      "sha256": "695f7ece186a38c4b87f411abb43b5061aae88b29ae907226ea87e1e40914965",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-glfw/3.1.6/lwjgl-glfw-3.1.6-natives-macos.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-glfw",
+      "version": "3.1.6",
+      "file": "lwjgl-glfw-3.1.6-natives-windows.jar",
+      "extension": "jar",
+      "bytes": 253583,
+      "sha1": "7203889aebc265a9600ab4d5a8df8d03c0a1925c",
+      "sha256": "12788bb498af34264840293e979ba16dc402ab676b564c05959a2672b372c5a8",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-glfw/3.1.6/lwjgl-glfw-3.1.6-natives-windows.jar"
+    },
+    {
+      "group": "com.mojang",
+      "artifact": "text2speech",
+      "version": "1.10.3",
+      "file": "text2speech-1.10.3-natives-linux.jar",
+      "extension": "jar",
+      "bytes": 7833,
+      "sha1": "ab7896aec3b3dd272b06194357f2d98f832c0cfc",
+      "sha256": "30f85b0ff695941095f73ede14cc55c0ca1f0fdc34f15c4906c95d5e1d545209",
+      "url": "https://libraries.minecraft.net/com/mojang/text2speech/1.10.3/text2speech-1.10.3-natives-linux.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-stb",
+      "version": "3.1.6",
+      "file": "lwjgl-stb-3.1.6-natives-macos.jar",
+      "extension": "jar",
+      "bytes": 175804,
+      "sha1": "cf948e8f31649fcf528d81e0844082cf9751f138",
+      "sha256": "343cbead874dcb722b15e48d66eabcb85bb0780bd6b65c0623eada2ecf74dde2",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-stb/3.1.6/lwjgl-stb-3.1.6-natives-macos.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-stb",
+      "version": "3.1.6",
+      "file": "lwjgl-stb-3.1.6-natives-windows.jar",
+      "extension": "jar",
+      "bytes": 457272,
+      "sha1": "46e0d7bc48189e5f5007a91c5223ad199abbef0b",
+      "sha256": "4cc24250e3fdcf3caa70a3df2f44673e89c3b0b6d93d577b72ab604bd46c2bc9",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-stb/3.1.6/lwjgl-stb-3.1.6-natives-windows.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-opengl",
+      "version": "3.1.6",
+      "file": "lwjgl-opengl-3.1.6-natives-windows.jar",
+      "extension": "jar",
+      "bytes": 175961,
+      "sha1": "505ff142070375c86695445a7c593a727af47964",
+      "sha256": "910fc0977b135df165211a2f06b7a6df8d264cc0bf7af90f007d1728eab54cda",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-opengl/3.1.6/lwjgl-opengl-3.1.6-natives-windows.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-stb",
+      "version": "3.1.6",
+      "file": "lwjgl-stb-3.1.6-natives-linux.jar",
+      "extension": "jar",
+      "bytes": 202101,
+      "sha1": "1d15cc1cfc89fdf31c4d4d9ad129b31a8ef52901",
+      "sha256": "306efc40d90064dcf17e199d42af1af458a7ce2faf67b736cc64445bd897efb0",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-stb/3.1.6/lwjgl-stb-3.1.6-natives-linux.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-opengl",
+      "version": "3.1.6",
+      "file": "lwjgl-opengl-3.1.6-natives-macos.jar",
+      "extension": "jar",
+      "bytes": 46527,
+      "sha1": "179700557bc5deb8ee0c92aa0786ede206cb3dff",
+      "sha256": "ff9395a842c95fe9ca5e731593cdc75d20ed1eb7e210d999824d8a60fa8e6961",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-opengl/3.1.6/lwjgl-opengl-3.1.6-natives-macos.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-openal",
+      "version": "3.1.6",
+      "file": "lwjgl-openal-3.1.6-natives-linux.jar",
+      "extension": "jar",
+      "bytes": 490251,
+      "sha1": "aa892685b3cb606c256bfec5e359e58a15911c06",
+      "sha256": "2419eda2a3d53cc00870484ee8a510cda9566a6149bf47890b0f5705ddfda85f",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-openal/3.1.6/lwjgl-openal-3.1.6-natives-linux.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-openal",
+      "version": "3.1.6",
+      "file": "lwjgl-openal-3.1.6-natives-windows.jar",
+      "extension": "jar",
+      "bytes": 1072703,
+      "sha1": "351960d5ebb1678ef99016af9e7ca97881af9288",
+      "sha256": "74d6ee7bdf6b93c5e89315d2f4c389a7b5cf969dcbd235abc3b1b43e46f8e004",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-openal/3.1.6/lwjgl-openal-3.1.6-natives-windows.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-openal",
+      "version": "3.1.6",
+      "file": "lwjgl-openal-3.1.6-natives-macos.jar",
+      "extension": "jar",
+      "bytes": 410765,
+      "sha1": "e0fffeb51fae92ec73de96eb728155eb9ab197b9",
+      "sha256": "5f7143bb93ac32cf039765487407b48cfdba971b667c0b8dc63915765748fbd1",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-openal/3.1.6/lwjgl-openal-3.1.6-natives-macos.jar"
+    },
+    {
+      "group": "com.mojang",
+      "artifact": "text2speech",
+      "version": "1.10.3",
+      "file": "text2speech-1.10.3-natives-windows.jar",
+      "extension": "jar",
+      "bytes": 81217,
+      "sha1": "84a4b856389cc4f485275b1f63497a95a857a443",
+      "sha256": "9b63bf0912199d89b0acc8ecd2e1469201056028f3aceeb58a891fc159158c68",
+      "url": "https://libraries.minecraft.net/com/mojang/text2speech/1.10.3/text2speech-1.10.3-natives-windows.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-jemalloc",
+      "version": "3.1.6",
+      "file": "lwjgl-jemalloc-3.1.6-natives-windows.jar",
+      "extension": "jar",
+      "bytes": 198001,
+      "sha1": "f40c0b362969124a32019b3ee7191e438fdc3901",
+      "sha256": "3718e915b89b82342b3e5d4654ca8b225e75020037aa9f04e21b71d8ebe2d32b",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-jemalloc/3.1.6/lwjgl-jemalloc-3.1.6-natives-windows.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-jemalloc",
+      "version": "3.1.6",
+      "file": "lwjgl-jemalloc-3.1.6-natives-macos.jar",
+      "extension": "jar",
+      "bytes": 96831,
+      "sha1": "fbb23c5d095dfcd56a6bee2c4409c7cd37dd9a6f",
+      "sha256": "f9905177db2f5cd5a9cea59e839dd8ae7ec0988eef81e3385e8e8d365a2113e6",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-jemalloc/3.1.6/lwjgl-jemalloc-3.1.6-natives-macos.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-jemalloc",
+      "version": "3.1.6",
+      "file": "lwjgl-jemalloc-3.1.6-natives-linux.jar",
+      "extension": "jar",
+      "bytes": 131212,
+      "sha1": "796980a5c3762f80eddb5c8340f62feba168f24d",
+      "sha256": "e63f9c2032c55fea35d08127c2ada3cf1c79b3e128f0a56bd5ae30bc9f5e34df",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-jemalloc/3.1.6/lwjgl-jemalloc-3.1.6-natives-linux.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl",
+      "version": "3.1.6",
+      "file": "lwjgl-3.1.6-natives-windows.jar",
+      "extension": "jar",
+      "bytes": 237025,
+      "sha1": "a6ebe0dfde6c29836cbd928177012265ec4a8418",
+      "sha256": "1edd85972659f7992c7e4021606d6a84a0fa821d82a2f7b0a9dd7098de2ab0b5",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl/3.1.6/lwjgl-3.1.6-natives-windows.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl",
+      "version": "3.1.6",
+      "file": "lwjgl-3.1.6-natives-macos.jar",
+      "extension": "jar",
+      "bytes": 36945,
+      "sha1": "4511eb54308ec79f16bb3c762af2444da681f0de",
+      "sha256": "db65d9771f3542e39338b2a0e5320902229821294fc432c3be4b0421e9ca30bd",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl/3.1.6/lwjgl-3.1.6-natives-macos.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl",
+      "version": "3.1.6",
+      "file": "lwjgl-3.1.6-natives-linux.jar",
+      "extension": "jar",
+      "bytes": 79787,
+      "sha1": "52eca3486b0c022e68a32e054ae93ea001ec5b0f",
+      "sha256": "9b0467a665cf31216a3b7e8597a3597c49e0ebc49183bf991141546468e8e8c9",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl/3.1.6/lwjgl-3.1.6-natives-linux.jar"
+    },
+    {
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-opengl",
+      "version": "3.1.6",
+      "file": "lwjgl-opengl-3.1.6-natives-linux.jar",
+      "extension": "jar",
+      "bytes": 91985,
+      "sha1": "ab462db70f7ea7de1b6a492eeb04ba0f08a80c0e",
+      "sha256": "943283ad5ce4090bf2c9643c0c126eac97f2cb4f32b656465029b59a4eccf00b",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-opengl/3.1.6/lwjgl-opengl-3.1.6-natives-linux.jar"
+    },
+    {
+      "group": "ca.weblite",
+      "artifact": "java-objc-bridge",
+      "version": "1.0.0",
+      "file": "java-objc-bridge-1.0.0-natives-osx.jar",
+      "extension": "jar",
+      "bytes": 5629,
+      "sha1": "08befab4894d55875f33c3d300f4f71e6e828f64",
+      "sha256": "b490a92062fc482c04f50395d7bbbd3dff22c32eaab45f04478f14d1501af6fa",
+      "url": "https://libraries.minecraft.net/ca/weblite/java-objc-bridge/1.0.0/java-objc-bridge-1.0.0-natives-osx.jar"
+    }
+  ],
+  "catalogHash": "170fde03fc76a05a6ecf383a16dcd9734f845ccb60bf5160c48ce9d11c21857c"
+}

@@ -1,5 +1,27 @@
 BeforeAll { $root=Split-Path -Parent $PSScriptRoot;Import-Module (Join-Path $root 'src/Platform/Platform.psm1') -Force;Import-Module (Join-Path $root 'src/ProjectDetector.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/Fabric.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/NeoForge.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/Quilt.psm1') -Force;Import-Module (Join-Path $root 'src/Adapters/Forge.psm1') -Force }
 Describe 'Evidence based project detection' {
+    It 'detects Minecraft and the exact combined Forge version from a legacy minecraft block' {
+        $project=Join-Path $TestDrive 'legacy-forge-mdk';New-Item -ItemType Directory -Path (Join-Path $project 'gradle/wrapper') -Force|Out-Null
+        @'
+buildscript { dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT' } }
+apply plugin: 'forge'
+minecraft {
+    version = "1.7.2-10.12.2.1161-mc172"
+}
+'@|Set-Content (Join-Path $project 'build.gradle')
+        'distributionUrl=https\://services.gradle.org/distributions/gradle-1.12-bin.zip'|Set-Content (Join-Path $project 'gradle/wrapper/gradle-wrapper.properties')
+
+        $result=Get-MmtlProject -Path $project
+
+        $result.DetectionStatus | Should -BeExactly 'Resolved'
+        $result.Loader | Should -BeExactly 'Forge'
+        $result.MinecraftVersion | Should -BeExactly '1.7.2'
+        $result.LoaderVersion | Should -BeExactly '1.7.2-10.12.2.1161-mc172'
+        $result.BuildJavaRequirement.requirementKind | Should -BeExactly 'Preferred'
+        $result.BuildJavaRequirement.preferredMajor | Should -Be 8
+        $result.BuildJavaRequirement.confidence | Should -BeExactly 'Low'
+    }
+
     It 'detects a Gradle-less MCP ModLoader project from source and version configuration' {
         $project=Join-Path $TestDrive 'mcp-modloader'
         $source=Join-Path $project 'src/minecraft/net/minecraft/src'
@@ -64,6 +86,63 @@ public class mod_fixture extends BaseModMp {
             $targets.Count | Should -BeGreaterThan 0
         }
         $failures | Should -BeNullOrEmpty
+    }
+
+    It 'detects every Forge source-overlay Minecraft target from Forge API imports in MCP projects' {
+        $repositoryRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
+        $catalog=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/forge-mdk-generations.json')|ConvertFrom-Json
+        $targets=@($catalog.targets|Where-Object sourceProjectType -CEQ 'ForgeSourceOverlay'|ForEach-Object{$targetId=[string]$_.targetId;$universe.targets|Where-Object targetId -CEQ $targetId})
+        $targets.Count | Should -Be 19
+        $project=Join-Path $TestDrive 'all-forge-source-overlay-mcp-targets'
+        $source=Join-Path $project 'src/minecraft/net/minecraft/src'
+        $config=Join-Path $project 'conf'
+        New-Item -ItemType Directory -Path $source,$config -Force|Out-Null
+        @'
+package net.minecraft.src;
+import net.minecraftforge.common.MinecraftForge;
+public class mod_fixture extends BaseMod {
+    public void load() { MinecraftForge.EVENT_BUS.register(this); }
+}
+'@|Set-Content (Join-Path $source 'mod_fixture.java')
+        $failures=[Collections.Generic.List[string]]::new()
+        foreach($target in $targets){
+            "ClientVersion=$($target.minecraftId)"|Set-Content (Join-Path $config 'version.cfg')
+            $result=Get-MmtlProject -Path $project
+            if($result.Loader -cne 'Forge' -or $result.MinecraftVersion -cne [string]$target.minecraftId -or $result.LoaderVersion -or $result.DetectionStatus -cne 'Resolved' -or @($result.Evidence|Where-Object loaderId -CEQ 'ModLoader').Count){$failures.Add("$($target.targetId):MCP_FORGE_DETECTION_MISMATCH")}
+        }
+        $failures | Should -BeNullOrEmpty
+    }
+
+    It 'identifies legacy NeoGradle 1.20.4 projects with mods.toml as NeoForge rather than Forge' {
+        $project=Join-Path $TestDrive 'legacy-neogradle-neoforge';$resources=Join-Path $project 'src/main/resources/META-INF';New-Item -ItemType Directory -Path $resources -Force|Out-Null
+        "plugins { id 'net.neoforged.gradle.userdev' version '7.1.39' }"|Set-Content (Join-Path $project 'build.gradle')
+        "minecraft_version=1.20.4`nneo_version=20.4.251`nmod_id=fixture"|Set-Content (Join-Path $project 'gradle.properties')
+        'modLoader="javafml"'|Set-Content (Join-Path $resources 'mods.toml')
+
+        $result=Get-MmtlProject -Path $project
+
+        $result.DetectionStatus | Should -BeExactly 'Resolved'
+        $result.Loader | Should -BeExactly 'NeoForge'
+        $result.MinecraftVersion | Should -BeExactly '1.20.4'
+        $result.LoaderVersion | Should -BeExactly '20.4.251'
+        $result.Toolchain.id | Should -BeExactly 'NeoGradle'
+    }
+
+    It 'identifies NeoForge 1.20.1 legacy ModDevGradle fixtures from the official legacyforge plugin and exact Forge coordinate' {
+        $project=Join-Path $TestDrive 'neoforge-legacyforge-1201';$templates=Join-Path $project 'src/main/templates/META-INF';New-Item -ItemType Directory -Path $templates -Force|Out-Null
+        "plugins { id 'net.neoforged.moddev.legacyforge' version '2.0.91' }`nlegacyForge { version = project.minecraft_version + '-' + project.forge_version }"|Set-Content (Join-Path $project 'build.gradle')
+        "minecraft_version=1.20.1`nforge_version=47.1.7`nmod_id=fixture"|Set-Content (Join-Path $project 'gradle.properties')
+        'modLoader="javafml"'|Set-Content (Join-Path $templates 'mods.toml')
+        'distributionUrl=https\://services.gradle.org/distributions/gradle-8.14.5-bin.zip'|Set-Content (Join-Path $project 'gradle-wrapper.properties')
+
+        $result=Get-MmtlProject -Path $project
+
+        $result.DetectionStatus | Should -BeExactly 'Resolved'
+        $result.Loader | Should -BeExactly 'NeoForge'
+        $result.MinecraftVersion | Should -BeExactly '1.20.1'
+        $result.LoaderVersion | Should -BeExactly '1.20.1-47.1.7'
+        $result.Toolchain.id | Should -BeExactly 'ModDevGradle'
     }
 
     It 'identifies ModDevGradle before the broader NeoForge Gradle plugin marker' {
@@ -285,5 +364,29 @@ quilt_loom = { id = "org.quiltmc.loom", version = "1.7.4" }
 
         $failures | Should -BeNullOrEmpty
         $targets.Count | Should -Be 16
+    }
+
+    It 'recognizes the legacy ForgeGradle 1.2 LiteLoader plugin as the primary loader' {
+        $projectRoot=Join-Path $TestDrive 'legacy-liteloader-1710'
+        $resources=Join-Path $projectRoot 'src/main/resources'
+        $wrapper=Join-Path $projectRoot 'gradle/wrapper'
+        New-Item -ItemType Directory -Path $resources,$wrapper -Force|Out-Null
+@'
+buildscript { dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT' } }
+apply plugin: 'liteloader'
+minecraft { version = '1.7.10-10.13.4.1614-1.7.10' }
+'@|Set-Content (Join-Path $projectRoot 'build.gradle')
+        "minecraft_version=1.7.10`nliteloader_version=1.7.10"|Set-Content (Join-Path $projectRoot 'gradle.properties')
+        '{"name":"fixture","version":"1.0","revision":1,"mcversion":"1.7.10"}'|Set-Content (Join-Path $resources 'litemod.json')
+        'distributionUrl=https\://services.gradle.org/distributions/gradle-2.0-bin.zip'|Set-Content (Join-Path $wrapper 'gradle-wrapper.properties')
+
+        $project=Get-MmtlProject -Path $projectRoot
+
+        $project.DetectionStatus|Should -BeExactly 'Resolved'
+        $project.Loader|Should -BeExactly 'LiteLoader'
+        $project.LoaderVersion|Should -BeExactly '1.7.10'
+        $project.MinecraftVersion|Should -BeExactly '1.7.10'
+        $project.Toolchain.id|Should -BeExactly 'ForgeGradle'
+        @($project.LoaderStack|Where-Object{$_ -ceq 'Forge'}).Count|Should -Be 0
     }
 }

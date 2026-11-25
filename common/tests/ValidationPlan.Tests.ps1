@@ -21,10 +21,10 @@ Describe 'Validation plan selection and fixture trust' {
     }
 
     It 'selects real projects as Tier 1 targets without converting their paths into commands' {
-        $projects=@([pscustomobject]@{targetId='user-fabric';minecraftId='1.21.6';loaderId='Fabric';projectRoot='D:\mods\CarpetPlayerAddition';tier='Tier1'})
+        $projects=@([pscustomobject]@{targetId='user-fabric';minecraftId='1.21.6';loaderId='Fabric';projectRoot='D:\mods\CarpetPlayerAddition';tier='Tier1'}) # public-hygiene: allow-synthetic-path
         $plan=New-MmtlValidationPlan -Scope Portfolio -CurrentStable '26.3' -CatalogReleaseIds @('1.21.6','26.3') -ProjectTargets $projects
         $plan.targets[0].tier | Should -Be 'Tier1'
-        $plan.targets[0].projectRoot | Should -Be 'D:\mods\CarpetPlayerAddition'
+        $plan.targets[0].projectRoot | Should -Be 'D:\mods\CarpetPlayerAddition' # public-hygiene: allow-synthetic-path
     }
 
     It 'accepts only pinned trusted official owners and allowlisted Gradle tasks' {
@@ -32,6 +32,16 @@ Describe 'Validation plan selection and fixture trust' {
         (Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @('FabricMC','NeoForgeMDKs','QuiltMC','MinecraftForge')) | Should -BeTrue
         $fixture.allowedTasks=@('build','build; Remove-Item -Recurse')
         {Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @('FabricMC')} | Should -Throw '*未列入许可清单*'
+    }
+
+    It 'accepts a hash-pinned generated official fixture only when archive and overlay identities are complete' {
+        $commit='1685ed178a113092f8aa002c4f7d78181643d75b'
+        $fixture=[pscustomobject]@{type='GeneratedPinnedLoaderFixture';source='https://github.com/FabricMC/fabric-example-mod';archiveUrl="https://codeload.github.com/FabricMC/fabric-example-mod/zip/$commit";archiveSha256=('a'*64);commit=$commit;fixtureId='MMTLFabricMarkerFixtureV1';overlaySha256=('b'*64);overlayFiles=@([pscustomobject]@{path='build.gradle';sha256=('c'*64)});license='CC0-1.0';trust='TrustedOfficial';allowedTasks=@('build')}
+        (Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @('FabricMC')) | Should -BeTrue
+        $fixture.archiveSha256='not-a-sha256'
+        {Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @('FabricMC')} | Should -Throw '*归档 SHA-256*'
+        $fixture.archiveSha256=('a'*64);$fixture.overlayFiles[0].path='../build.gradle'
+        {Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @('FabricMC')} | Should -Throw '*Overlay*'
     }
 
     It 'rejects unpinned, HTTP, unknown-owner, and untrusted fixture sources' {
@@ -43,6 +53,17 @@ Describe 'Validation plan selection and fixture trust' {
         $fixture.source='https://github.com/FabricMC/fabric-example-mod'
         $fixture.trust='UnverifiedHistorical'
         {Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @('FabricMC')} | Should -Throw '*trust*'
+    }
+
+    It 'accepts pinned historical official GitHub fixtures only as VerifiedHistorical' {
+        $fixture=[pscustomobject]@{type='HistoricalOfficialFixture';source='https://github.com/DimensionalDevelopment/Rift';commit='dfc75ff7254cbbea81535c02ddc5252e384ac806';license='MIT';trust='VerifiedHistorical';allowedTasks=@('build')}
+        (Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @('DimensionalDevelopment')) | Should -BeTrue
+        $fixture.commit='main'
+        {Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @('DimensionalDevelopment')} | Should -Throw
+        $fixture.commit='dfc75ff7254cbbea81535c02ddc5252e384ac806';$fixture.trust='TrustedOfficial'
+        {Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @('DimensionalDevelopment')} | Should -Throw
+        $fixture.trust='VerifiedHistorical';$fixture.source='https://github.com/OtherOwner/Rift'
+        {Test-MmtlValidationFixture -Fixture $fixture -AllowedOwners @('DimensionalDevelopment')} | Should -Throw '*来源所有者不在许可清单中*'
     }
 
     It 'accepts only checksum-pinned official Forge archive fixtures from approved hosts' {
@@ -61,5 +82,26 @@ Describe 'Validation plan selection and fixture trust' {
         $targets[0].targetId | Should -Be 'fabric-263-windows-x64'
         $targets[0].sourceFixture.allowedTasks | Should -Contain 'build'
         $targets[0].platform.isWSL | Should -BeFalse
+    }
+
+    It 'preserves a generated official source archive hash for exact-target secure build pins' {
+        $fixture=[pscustomobject]@{fixtureId='quilt-1206';type='GeneratedOfficialFixture';source='https://github.com/QuiltMC/quilt-template-mod';commit='9a6f89cd481e3f58f128596b5b043353bee6b3f2';archiveSha256=('a'*64);license='CC0-1.0';trust='TrustedOfficial';minecraftId='1.20.6';loaderId='Quilt';loaderVersion='0.26.3';toolchain='QuiltLoom';toolchainVersion='1.7.4';buildJava=21;scopes=@('P0');currentStable=$false;allowedTasks=@('clean','build')}
+        $target=@(New-MmtlValidationFixtureTargets -Fixtures @($fixture) -Platform ([pscustomobject]@{os='Windows';arch='x64';isWSL=$false}))
+        $target | Should -HaveCount 1
+        $target[0].sourceFixture.archiveSha256 | Should -BeExactly ('a'*64)
+        (Test-MmtlValidationFixture -Fixture $target[0].sourceFixture -AllowedOwners @('QuiltMC')) | Should -BeTrue
+    }
+
+    It 'preserves every pinned generated fixture identity field in the validation target' {
+        $commit='1685ed178a113092f8aa002c4f7d78181643d75b'
+        $fixture=[pscustomobject]@{fixtureId='fabric-263-marker';type='GeneratedPinnedLoaderFixture';source='https://github.com/FabricMC/fabric-example-mod';archiveUrl="https://codeload.github.com/FabricMC/fabric-example-mod/zip/$commit";commit=$commit;archiveSha256=('a'*64);overlaySha256=('b'*64);overlayFiles=@([pscustomobject]@{path='build.gradle';sha256=('c'*64)});license='CC0-1.0';trust='TrustedOfficial';minecraftId='26.3';loaderId='Fabric';loaderVersion='0.19.5';toolchain='FabricLoom';toolchainVersion='1.18.4';buildJava=25;scopes=@('P0');currentStable=$false;allowedTasks=@('clean','build')}
+
+        $target=@(New-MmtlValidationFixtureTargets -Fixtures @($fixture) -Platform ([pscustomobject]@{os='Windows';arch='x64';isWSL=$false}))[0]
+
+        $target.sourceFixture.archiveUrl | Should -BeExactly $fixture.archiveUrl
+        $target.sourceFixture.archiveSha256 | Should -BeExactly $fixture.archiveSha256
+        $target.sourceFixture.fixtureId | Should -BeExactly $fixture.fixtureId
+        $target.sourceFixture.overlaySha256 | Should -BeExactly $fixture.overlaySha256
+        $target.sourceFixture.overlayFiles[0].path | Should -BeExactly 'build.gradle'
     }
 }

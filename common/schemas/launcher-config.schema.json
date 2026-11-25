@@ -5,7 +5,7 @@
   "type": "object",
   "required": ["defaultProfile", "javaHomes", "profiles"],
   "properties": {
-    "configVersion": {"type": "integer", "enum": [1, 2]},
+    "configVersion": {"type": "integer", "enum": [1, 2, 3]},
     "defaultProfile": {"type": "string", "minLength": 1},
     "javaHomes": {"$ref": "#/$defs/javaHomeMap"},
     "javaHomesByPlatform": {"type": "object", "propertyNames": {"enum": ["Windows", "Linux", "MacOS"]}, "additionalProperties": {"$ref": "#/$defs/javaHomeMap"}},
@@ -21,12 +21,32 @@
     },
     "profile": {
       "type": "object",
-      "required": ["project", "mode"],
+      "required": ["project"],
       "properties": {
         "project": {"type": "string"},
         "linkedProjects": {"type": "array", "items": {"type": "string"}},
         "mode": {"enum": ["Single", "IntegratedLAN", "Dedicated"]},
         "players": {"type": "integer", "minimum": 1},
+        "clientCount": {"type": "integer", "minimum": 1},
+        "identity": {
+          "type": "object",
+          "properties": {
+            "kind": {"const": "Offline"},
+            "hostName": {"type": "string", "minLength": 1, "maxLength": 16, "pattern": "^[A-Za-z0-9_]+$"},
+            "guestNamePattern": {"type": "string", "minLength": 1, "maxLength": 32, "pattern": "^[A-Za-z0-9_]*\\{index\\}[A-Za-z0-9_]*$"}
+          },
+          "additionalProperties": false
+        },
+        "multiplayer": {
+          "type": "object",
+          "properties": {
+            "transport": {"enum": ["Auto", "None", "IntegratedLAN", "Dedicated", "HistoricalDedicatedEquivalent"]},
+            "bindAddress": {"type": "string"},
+            "port": {"oneOf": [{"const": "Auto"}, {"type": "integer", "minimum": 1, "maximum": 65535}]},
+            "worldPolicy": {"enum": ["CreateOrLoadManagedWorld", "CreateManagedWorld", "LoadManagedWorld"]}
+          },
+          "additionalProperties": false
+        },
         "durationSeconds": {"type": "integer", "minimum": 1, "maximum": 600, "default": 60},
         "stopPolicy": {"const": "Always", "default": "Always"},
         "hostUsername": {"type": "string"},
@@ -53,8 +73,19 @@
         "windowLayout": {"enum": ["Auto", "Tile", "Cascade", "None"]},
         "jvmArgs": {"type": "array", "items": {"type": "string"}},
         "gameArgs": {"type": "array", "items": {"type": "string"}},
-        "runtimeJavaOverride": {"oneOf": [{"type": "null"}, {"type": "object", "required": ["major"], "properties": {"major": {"type": "integer", "minimum": 1}, "component": {"type": "string", "minLength": 1}}}]}
+        "runtimeJavaOverride": {"oneOf": [{"type": "null"}, {"type": "object", "required": ["major"], "properties": {"major": {"type": "integer", "minimum": 1}, "component": {"type": "string", "minLength": 1}}}]},
+        "buildJavaOverride": {"oneOf": [{"type": "null"}, {"type": "object", "required": ["major"], "properties": {"major": {"type": "integer", "minimum": 1}}}]}
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"configVersion": {"enum": [1, 2]}}, "required": ["configVersion"]},
+      "then": {"properties": {"profiles": {"additionalProperties": {"required": ["project", "mode", "players"]}}}}
+    },
+    {
+      "if": {"not": {"properties": {"configVersion": {"const": 3}}, "required": ["configVersion"]}},
+      "then": {"properties": {"profiles": {"additionalProperties": {"required": ["project", "mode", "players"]}}}}
+    }
+  ]
 }

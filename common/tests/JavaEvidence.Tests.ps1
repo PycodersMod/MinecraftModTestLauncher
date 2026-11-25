@@ -25,6 +25,16 @@ Describe 'Build Java requirement and observed build evidence' {
         $requirement.major | Should -Be 17
     }
 
+    It 'keeps an older Gradle wrapper below the compatibility table as unknown without throwing' {
+        $project=Join-Path $TestDrive 'gradle-one-twelve';New-Item -ItemType Directory -Path (Join-Path $project 'gradle/wrapper') -Force|Out-Null
+        'distributionUrl=https\://services.gradle.org/distributions/gradle-1.12-bin.zip'|Set-Content (Join-Path $project 'gradle/wrapper/gradle-wrapper.properties')
+        $requirement=Get-MmtlGradleWrapperRuntimeJavaRequirement -ProjectRoot $project
+        $requirement.requirementKind | Should -BeExactly 'Unknown'
+        $requirement.minimumMajor | Should -BeNullOrEmpty
+        $requirement.maximumMajor | Should -BeNullOrEmpty
+        $requirement.gradleVersion | Should -BeExactly '1.12'
+    }
+
     It 'records the documented Gradle 4.9 daemon JVM support interval separately from compiler target' {
         $project=Join-Path $TestDrive 'gradle-four-nine';New-Item -ItemType Directory -Path (Join-Path $project 'gradle/wrapper') -Force|Out-Null
         'distributionUrl=https\\://services.gradle.org/distributions/gradle-4.9-all.zip'|Set-Content (Join-Path $project 'gradle/wrapper/gradle-wrapper.properties')

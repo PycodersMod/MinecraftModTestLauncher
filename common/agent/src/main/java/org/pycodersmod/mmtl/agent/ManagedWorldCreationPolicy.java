@@ -22,7 +22,7 @@ final class ManagedWorldCreationPolicy {
     static ManagedWorldCreationPolicy fromProperties(String role, String enabled, String name,
                                                        String gameMode, String difficulty,
                                                        String seed, String allowCommands) {
-        if (!"Host".equals(role) || !"true".equalsIgnoreCase(enabled)) return null;
+        if (!("Host".equals(role) || "Client".equals(role)) || !"true".equalsIgnoreCase(enabled)) return null;
         if (name == null || !NAME.matcher(name).matches() || ".".equals(name) || "..".equals(name)) return null;
         GameType type = switch (gameMode == null ? "" : gameMode.toLowerCase(Locale.ROOT)) {
             case "survival" -> GameType.SURVIVAL;

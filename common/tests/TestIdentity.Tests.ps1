@@ -38,6 +38,48 @@ Describe '离线 Test Identity 与角色隔离目录' {
         @($first | Where-Object role -eq 'Guest').Count | Should -Be 3
     }
 
+    It '按 clientCount 生成 1、2、N 个有稳定 ID 和受管路径的离线客户端实例' {
+        foreach ($count in @(1,2,5,9)) {
+            $effective = [pscustomobject]@{
+                mode=$(if($count -eq 1){'Single'}else{'IntegratedLAN'});clientCount=$count
+                transport=$(if($count -eq 1){'None'}else{'IntegratedLAN'})
+                identity=[pscustomobject]@{kind='Offline';hostName='MMTL_Host';guestNamePattern='MMTL_G{index}'}
+                sessionPath=$script:sessionPath;runtimeJavaMajor=21;runtimeJavaPath='C:/Java/21/bin/java.exe'
+            }
+            $first = New-MmtlScenarioIdentityPlan -EffectiveConfig $effective -MinecraftVersion '1.20.1'
+            $second = New-MmtlScenarioIdentityPlan -EffectiveConfig $effective -MinecraftVersion '1.20.1'
+
+            @($first.clients).Count | Should -Be $count
+            @($first.clients | ForEach-Object identityId | Select-Object -Unique).Count | Should -Be $count
+            @($first.clients | ForEach-Object gameDir | Select-Object -Unique).Count | Should -Be $count
+            @($first.clients | ForEach-Object instanceId | Select-Object -Unique).Count | Should -Be $count
+            @($first.clients | Where-Object { [IO.Path]::IsPathRooted([IO.Path]::GetRelativePath($script:sessionPath,[string]$_.gameDir)) -or [IO.Path]::GetRelativePath($script:sessionPath,[string]$_.gameDir).StartsWith('..') }).Count | Should -Be 0
+            ($first | ConvertTo-Json -Depth 10 -Compress) | Should -BeExactly ($second | ConvertTo-Json -Depth 10 -Compress)
+            $first.clients[0].role | Should -BeExactly $(if($count -eq 1){'Client'}else{'Host'})
+            $first.server | Should -BeNullOrEmpty
+        }
+    }
+
+    It '拒绝模板碰撞、超长离线名称和无效 Minecraft 版本' {
+        $effective = [pscustomobject]@{mode='IntegratedLAN';clientCount=3;transport='IntegratedLAN';identity=[pscustomobject]@{kind='Offline';hostName='MMTL_G1';guestNamePattern='MMTL_G{index}'};sessionPath=$script:sessionPath}
+        { New-MmtlScenarioIdentityPlan -EffectiveConfig $effective -MinecraftVersion '1.20.1' } | Should -Throw '*IDENTITY_USERNAME_COLLISION*'
+        $effective.identity.hostName='H'
+        $effective.identity.guestNamePattern='1234567890123456{index}'
+        { New-MmtlScenarioIdentityPlan -EffectiveConfig $effective -MinecraftVersion '1.20.1' } | Should -Throw '*IDENTITY_USERNAME_INVALID*'
+        $effective.identity.guestNamePattern='MMTL_G{index}'
+        { New-MmtlScenarioIdentityPlan -EffectiveConfig $effective -MinecraftVersion '../outside' } | Should -Throw '*IDENTITY_MINECRAFT_VERSION_INVALID*'
+    }
+
+    It '将 Dedicated 服务端单独建模且 clientCount 只计算 GUI 客户端' {
+        $effective = [pscustomobject]@{mode='Dedicated';clientCount=2;transport='Dedicated';identity=[pscustomobject]@{kind='Offline';hostName='DedicatedHost';guestNamePattern='DedicatedGuest{index}'};sessionPath=$script:sessionPath}
+        $plan = New-MmtlScenarioIdentityPlan -EffectiveConfig $effective -MinecraftVersion '1.12.2'
+        @($plan.clients).Count | Should -Be 2
+        @($plan.clients | Where-Object role -eq 'Client').Count | Should -Be 2
+        $plan.server.role | Should -BeExactly 'Server'
+        $plan.server.instanceId | Should -BeExactly 'server-00'
+        @($plan.clients.gameDir) | Should -Not -Contain $plan.server.gameDir
+    }
+
     It '为 Host/Guest 创建唯一隔离 gameDir 与日志和存档目录' {
         $identities = Initialize-MmtlTestIdentityDirectories -SessionId 'session-a' -SessionPath $script:sessionPath -Roles $script:roles
 
@@ -98,6 +140,28 @@ Describe '离线 Test Identity 与角色隔离目录' {
         @($record.players).Count | Should -Be 3
         $record.testIdentities[0].runtimeJavaMajor | Should -Be 21
         $record.testIdentities[0].runtimeJavaPath | Should -BeExactly 'C:/Java/21/bin/java.exe'
+    }
+
+    It '从 v3 clientCount 和 Offline identity 写入 Session 身份映射及独立 Runtime Java 绑定' {
+        $runtime = Join-Path $TestDrive 'identity-session-v3-runtime'
+        $metadata = [pscustomobject]@{
+            mode='IntegratedLAN';clientCount=3;transport='IntegratedLAN';minecraft='1.20.1'
+            identity=[pscustomobject]@{kind='Offline';hostName='MMTL_Host';guestNamePattern='MMTL_G{index}'}
+            runtimeJavaMajor=21;runtimeJavaPath='C:/Java/21/bin/java.exe'
+        }
+
+        $session = New-MmtlSession -RuntimeRoot $runtime -Name 'identity_v3' -Metadata $metadata
+        $record = Get-Content -LiteralPath (Join-Path $session 'session.json') -Raw | ConvertFrom-Json
+
+        @($record.testIdentities).Count | Should -Be 3
+        @($record.testIdentities | Where-Object role -eq 'Host').Count | Should -Be 1
+        @($record.testIdentities | Where-Object role -eq 'Guest').Count | Should -Be 2
+        @($record.testIdentities | ForEach-Object identityId | Select-Object -Unique).Count | Should -Be 3
+        @($record.testIdentities | ForEach-Object gameDir | Select-Object -Unique).Count | Should -Be 3
+        @($record.testIdentities | Where-Object { $_.runtimeJavaMajor -ne 21 -or $_.runtimeJavaPath -cne 'C:/Java/21/bin/java.exe' }).Count | Should -Be 0
+        $record.testIdentities[0].username | Should -BeExactly 'MMTL_Host'
+        $record.testIdentities[0].offline | Should -BeTrue
+        ($record | ConvertTo-Json -Depth 20 -Compress) | Should -Not -Match '(?i)access.?token|refresh.?token|credential|password'
     }
 
     It '拒绝重复、非法和过长的 Minecraft 用户名且不创建角色目录' {

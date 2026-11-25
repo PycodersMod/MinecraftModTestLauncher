@@ -12,6 +12,8 @@ if (-not $SnapshotDirectory) { $SnapshotDirectory = Join-Path $RepositoryRoot 'c
 $SnapshotDirectory = [IO.Path]::GetFullPath($SnapshotDirectory)
 $sourceManifestPath = Join-Path $RepositoryRoot 'compatibility/sources.json'
 $sourceManifest = Get-Content -LiteralPath $sourceManifestPath -Raw | ConvertFrom-Json -ErrorAction Stop
+$priorSnapshotIndexPath = Join-Path $RepositoryRoot 'compatibility/source-snapshots.json'
+$priorSnapshotIndex = if (Test-Path -LiteralPath $priorSnapshotIndexPath) { Get-Content -LiteralPath $priorSnapshotIndexPath -Raw | ConvertFrom-Json -ErrorAction Stop } else { $null }
 $generatedAt = [DateTimeOffset]::UtcNow
 
 if ($ProxyUri) {
@@ -31,6 +33,7 @@ Import-Module (Join-Path $RepositoryRoot 'common/src/Catalog/Providers/Quilt.psm
 Import-Module (Join-Path $RepositoryRoot 'common/src/Catalog/Providers/HistoricalProviders.psm1') -Force
 Import-Module (Join-Path $RepositoryRoot 'common/src/Compatibility/CompatibilityUniverse.psm1') -Force
 Import-Module (Join-Path $RepositoryRoot 'common/src/Compatibility/SourceSnapshot.psm1') -Force
+Import-Module (Join-Path $RepositoryRoot 'common/src/Compatibility/CompatibilityCandidateCatalog.psm1') -Force
 
 $temporaryRoot = [IO.Path]::GetFullPath((Join-Path ([IO.Path]::GetTempPath()) "mmtl-compat-universe-$([guid]::NewGuid().ToString('N'))"))
 [IO.Directory]::CreateDirectory($temporaryRoot) | Out-Null
@@ -150,7 +153,10 @@ try {
     if ($forgeMetadata -and $forgeMetadata.providerStatus -eq 'Available') {
         foreach ($id in $minecraftIds) {
             $matches = @($forge.versions | Where-Object { ([string]$_).StartsWith("$id-", [StringComparison]::Ordinal) })
-            if ($matches.Count) { $forgeIds.Add($id); $forgeCandidates[$id] = @($matches) }
+            if ($matches.Count) {
+                $forgeIds.Add($id)
+                $forgeCandidates[$id] = [pscustomobject][ordered]@{ candidates = @($matches); sourceUrl = [string]$forgeMetadata.sourceUrl; sourceHash = [string]$forgeMetadata.localHash }
+            }
         }
     }
     $loaderSnapshots.Add((New-LoaderSourceSnapshot -LoaderId 'Forge' -ProviderStatus $(if ($forgeMetadata) { [string]$forgeMetadata.providerStatus } else { 'Unavailable' }) -SourceUrl $(if ($forgeMetadata) { [string]$forgeMetadata.sourceUrl } else { [string]$forge.sourceUrl }) -SupportedIds @($forgeIds) -SourceHash $(if ($forgeMetadata) { [string]$forgeMetadata.localHash } else { $null }) -ErrorText ([string]$forge.error) -CandidatesByMinecraft ([pscustomobject]$forgeCandidates)))
@@ -163,8 +169,15 @@ try {
                 $mapping = Resolve-MmtlNeoForgeVersionMapping -Version ([string]$version) -CatalogEntrySet $neo.catalogEntrySet -ArtifactFamily $family.artifactFamily
                 if (-not $mapping) { continue }
                 $id = [string]$mapping.minecraftId
-                if (-not $neoCandidates.Contains($id)) { $neoIds.Add($id); $neoCandidates[$id] = [Collections.Generic.List[string]]::new() }
-                $neoCandidates[$id].Add([string]$version)
+                if (-not $neoCandidates.Contains($id)) {
+                    $neoIds.Add($id)
+                    $neoCandidates[$id] = [pscustomobject][ordered]@{
+                        candidates = [Collections.Generic.List[string]]::new()
+                        sourceUrl = [string]$family.uri
+                        sourceHash = [string]$family.localHash
+                    }
+                }
+                $neoCandidates[$id].candidates.Add([string]$version)
             }
         }
     }
@@ -177,15 +190,24 @@ try {
         $definition = Get-SourceDefinition -LoaderId $loaderId
         $historyError = $null
         try {
-            $response = & $httpGet ([string]$definition.sourceUrl) @{} 30
-            if ([int]$response.StatusCode -ne 200) { throw "HTTP_$([int]$response.StatusCode)" }
-            $bytes = [byte[]]$response.Bytes
-            $html = [Text.Encoding]::UTF8.GetString($bytes)
-            $record = Save-MmtlCompatibilitySourceSnapshot -ProviderId $loaderId -SourceUrl ([string]$definition.sourceUrl) -Bytes $bytes -OutputDirectory $SnapshotDirectory -RetrievedAt $generatedAt -SourceClass ([string]$definition.sourceClass) -TrustClass ([string]$definition.trustClass)
+            $record = $null
+            try {
+                $response = & $httpGet ([string]$definition.sourceUrl) @{} 30
+                if ([int]$response.StatusCode -ne 200) { throw "HTTP_$([int]$response.StatusCode)" }
+                $bytes = [byte[]]$response.Bytes
+            } catch {
+                if ($loaderId -cne 'Rift') { throw }
+                $cachedRecord = @($priorSnapshotIndex.sources | Where-Object { [string]$_.providerId -ceq 'Rift' -and [string]$_.sourceUrl -ceq [string]$definition.sourceUrl } | Sort-Object retrievedAt -Descending | Select-Object -First 1)[0]
+                if (-not $cachedRecord) { throw "RIFT_OFFICIAL_SNAPSHOT_UNAVAILABLE: $($_.Exception.Message)" }
+                $bytes = Get-MmtlCompatibilitySourceSnapshotBytes -SnapshotDirectory $SnapshotDirectory -Record $cachedRecord
+                $record = $cachedRecord
+            }
+            $sourceContent = [Text.Encoding]::UTF8.GetString($bytes)
+            if (-not $record) { $record = Save-MmtlCompatibilitySourceSnapshot -ProviderId $loaderId -SourceUrl ([string]$definition.sourceUrl) -Bytes $bytes -OutputDirectory $SnapshotDirectory -RetrievedAt $generatedAt -SourceClass ([string]$definition.sourceClass) -TrustClass ([string]$definition.trustClass) }
             $externalHistoricalEvidence.Add($record)
             $ids = if ($loaderId -eq 'Rift') {
-                @([regex]::Matches($html, '(?i)loader and API for Minecraft\s+([0-9]+(?:\.[0-9]+){1,2})') | ForEach-Object { [string]$_.Groups[1].Value } | Sort-Object -Unique)
-            } else { @(Get-MmtlCompatibilityArchiveMinecraftIds -HtmlContent $html) }
+                @(Get-MmtlRiftMinecraftIdsFromMetadata -JsonContent $sourceContent)
+            } else { @(Get-MmtlCompatibilityArchiveMinecraftIds -HtmlContent $sourceContent) }
             if ($ids.Count -eq 0) { throw 'HISTORICAL_AVAILABILITY_PARSE_EMPTY' }
             $candidateMap = [ordered]@{}
             foreach ($id in $ids) {
@@ -233,15 +255,51 @@ try {
     }
 
     $universe = New-MmtlCompatibilityUniverse -Catalog $universeCatalog -LoaderSnapshots @($loaderSnapshots) -GeneratedAt $generatedAt
+    $candidateEvidencePath = Join-Path $RepositoryRoot 'compatibility/candidate-evidence.local.json'
+    if (-not (Test-Path -LiteralPath $candidateEvidencePath)) { throw 'CANDIDATE_EVIDENCE_INDEX_MISSING' }
+    $candidateEvidenceIndex = Get-Content -LiteralPath $candidateEvidencePath -Raw | ConvertFrom-Json -ErrorAction Stop
+    if ([int]$candidateEvidenceIndex.schemaVersion -ne 1 -or [int]$candidateEvidenceIndex.sourceCount -ne @($candidateEvidenceIndex.sources).Count) { throw 'CANDIDATE_EVIDENCE_INDEX_INVALID' }
+    foreach ($candidateSource in $candidateEvidenceIndex.sources) {
+        $null = Get-MmtlCompatibilitySourceSnapshotBytes -SnapshotDirectory $SnapshotDirectory -Record $candidateSource
+        $evidence.Add($candidateSource)
+    }
+    $candidateLoaders = @('Fabric', 'Quilt', 'LegacyFabric', 'OrnitheLoader', 'LiteLoader')
+    $candidateCatalogs = [Collections.Generic.List[object]]::new()
+    foreach ($candidateLoader in $candidateLoaders) {
+        $candidateCatalogPath = Join-Path $RepositoryRoot "compatibility/candidate-catalogs/$candidateLoader.json"
+        if (-not (Test-Path -LiteralPath $candidateCatalogPath)) { throw "CANDIDATE_CATALOG_MISSING: $candidateLoader" }
+        $candidateCatalogs.Add((Get-Content -LiteralPath $candidateCatalogPath -Raw | ConvertFrom-Json -ErrorAction Stop))
+    }
+    $universe = Join-MmtlCompatibilityCandidateCatalogs -Universe $universe -CandidateCatalogs @($candidateCatalogs) -SourceEvidence @($evidence) -RequiredLoaderIds $candidateLoaders
     $index = [pscustomobject][ordered]@{
-        schemaVersion = 1; auditStatus = 'IN_PROGRESS'; generatedAt = $generatedAt.ToUniversalTime().ToString('o')
+        schemaVersion = 1; auditStatus = [string]$universe.auditStatus; generatedAt = $generatedAt.ToUniversalTime().ToString('o')
         sourceCount = $evidence.Count; sources = @($evidence | Sort-Object providerId, sourceUrl, sha256)
     }
     $indexPath = Join-Path $RepositoryRoot 'compatibility/source-snapshots.json'
     $previewPath = Join-Path $RepositoryRoot 'compatibility/universe-preview.json'
+    $frozenPath = Join-Path $RepositoryRoot 'compatibility/compatibility-universe.json'
     [IO.Directory]::CreateDirectory((Split-Path -Parent $indexPath)) | Out-Null
     [IO.File]::WriteAllText($indexPath, (ConvertTo-Json -InputObject $index -Depth 40), [Text.UTF8Encoding]::new($false))
     [IO.File]::WriteAllText($previewPath, (ConvertTo-Json -InputObject $universe -Depth 50), [Text.UTF8Encoding]::new($false))
+    if ($universe.auditStatus -ceq 'FROZEN') {
+        $sourceManifest.auditStatus = 'FROZEN'
+        $sourceManifest.generatedAt = $universe.generatedAt
+        $sourceManifest.minecraftCatalog | Add-Member -NotePropertyName sourceHash -NotePropertyValue ([string]$mojangEvidence.sha256) -Force
+        foreach ($definition in $sourceManifest.loaders) {
+            $snapshot = $loaderSnapshots | Where-Object { [string]$_.loaderId -ceq [string]$definition.loaderId } | Select-Object -First 1
+            if ([string]$definition.coverageModel -ceq 'ManualArtifact') {
+                $definition.status = 'ManualOnly'
+                continue
+            }
+            if (-not $snapshot -or [string]$snapshot.providerStatus -cne 'Available' -or [string]::IsNullOrWhiteSpace([string]$snapshot.sourceHash)) {
+                throw "COMPATIBILITY_SOURCE_FREEZE_REJECTED: $([string]$definition.loaderId) 缺少 Available 状态或来源 SHA-256。"
+            }
+            $definition.status = 'FrozenAvailability'
+            $definition | Add-Member -NotePropertyName sourceHash -NotePropertyValue ([string]$snapshot.sourceHash) -Force
+        }
+        [IO.File]::WriteAllText((Join-Path $RepositoryRoot 'compatibility/sources.json'), (ConvertTo-Json -InputObject $sourceManifest -Depth 30), [Text.UTF8Encoding]::new($false))
+        [IO.File]::WriteAllText($frozenPath, (ConvertTo-Json -InputObject $universe -Depth 50), [Text.UTF8Encoding]::new($false))
+    }
 
     [pscustomobject][ordered]@{
         auditStatus = $universe.auditStatus; generatedAt = $universe.generatedAt; catalogHash = $universe.catalogHash

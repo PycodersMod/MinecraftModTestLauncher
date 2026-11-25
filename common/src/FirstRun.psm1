@@ -26,18 +26,18 @@ function Write-MmtlFirstRunFileIfMissing {
 
 function Get-MmtlFirstRunExampleConfig {
     $profileDefaults=[ordered]@{
-        project='';linkedProjects=@();players=1;hostUsername='MMTL_Host';clientPrefix='MMTL_G';hostCheats=$false
+        project='';linkedProjects=@();players=1;clientCount=1;identity=[ordered]@{kind='Offline';hostName='MMTL_Host';guestNamePattern='MMTL_G{index}'};multiplayer=[ordered]@{transport='Auto';bindAddress='127.0.0.1';port='Auto';worldPolicy='CreateOrLoadManagedWorld'};hostUsername='MMTL_Host';clientPrefix='MMTL_G';hostCheats=$false
         clientPermissionLevel=0;gameMode='creative';difficulty='peaceful';worldName='MMTL-Test';seed='';newWorld=$true
         resetWorld=$false;port='Auto';autoBuild=$true;cleanBuild=$false;acceptEula=$false;extraMods=@();memoryMb=4096
         hostMemoryMb=4096;clientMemoryMb=4096;serverMemoryMb=4096;resolution='1280x720';guiScale='Auto';windowLayout='None'
         jvmArgs=@();gameArgs=@();runtimeJavaOverride=$null;durationSeconds=60;stopPolicy='Always'
     }
     $single=[ordered]@{};foreach($key in $profileDefaults.Keys){$single[$key]=$profileDefaults[$key]};$single.mode='Single';$single.players=1
-    $lan=[ordered]@{};foreach($key in $profileDefaults.Keys){$lan[$key]=$profileDefaults[$key]};$lan.mode='IntegratedLAN';$lan.players=2
-    $dedicated=[ordered]@{};foreach($key in $profileDefaults.Keys){$dedicated[$key]=$profileDefaults[$key]};$dedicated.mode='Dedicated';$dedicated.players=2;$dedicated.acceptEula=$false
+    $lan=[ordered]@{};foreach($key in $profileDefaults.Keys){$lan[$key]=$profileDefaults[$key]};$lan.mode='IntegratedLAN';$lan.players=2;$lan.clientCount=2
+    $dedicated=[ordered]@{};foreach($key in $profileDefaults.Keys){$dedicated[$key]=$profileDefaults[$key]};$dedicated.mode='Dedicated';$dedicated.players=2;$dedicated.clientCount=2;$dedicated.multiplayer=[ordered]@{transport='Dedicated';bindAddress='127.0.0.1';port='Auto';worldPolicy='CreateOrLoadManagedWorld'};$dedicated.acceptEula=$false
     return [ordered]@{
-        configVersion=2
-        defaultProfile='integrated-lan-example'
+        configVersion=3
+        defaultProfile='single-example'
         runtimeRoot=''
         javaHomes=[ordered]@{}
         javaHomesByPlatform=[ordered]@{Windows=[ordered]@{};Linux=[ordered]@{};MacOS=[ordered]@{}}

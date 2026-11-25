@@ -1,5 +1,7 @@
 # MMTL 全 Loader 与 Minecraft 版本兼容实施计划
 
+> 状态更新（2026-10-09）：本文件保留原始完整规格与验收细节；当前仅执行未完成项，见 [剩余工作清单](2026-10-09-full-loader-version-compatibility-remaining.md)。已完成部分与当前证据在该清单的“当前进度”中汇总。
+
 > 执行方式：由当前主 Agent 按里程碑原生执行；每阶段验证、中文 checkpoint commit，并按任务要求推送。
 
 **Goal:** 对当前 MMTL Loader taxonomy 的每个 Loader，以权威来源确定其精确 Minecraft Target Universe；为所有真实 Available target 建立逐维兼容证据，并在结束时做到 `Unknown=0`、`PendingImplementation=0`。
@@ -101,6 +103,8 @@
 - [ ] 加入有界并行、每 target timeout、有限重试、分类结果、崩溃恢复和 artifact SHA 记录。
 - [ ] 测试中断恢复、损坏缓存、重复/并发 target、超时取消只终止本任务登记进程。
 
+**续接记录（2026-10-08）：** 已新增 `EvidenceStore.psm1` 与缓存索引 Schema：缓存键绑定 exact target、Universe/source/toolchain/spec/Agent hashes；只接受 schema-valid、成功且至少达到 `BUILD_VERIFIED` 的不可变证据；缓存索引使用 SHA-256 和原子新建，并拒绝 Runtime Root 外路径、reparse 路径和覆盖。聚焦测试 6/6 通过。尚未接入 TargetRunner，Task 4 未完成。
+
 ### Task 5：现代 Forge、Fabric、NeoForge、Quilt exact-target adapters
 
 **Files:**
@@ -170,6 +174,8 @@
 - [ ] 禁止上传 Minecraft 原发行文件或无分发许可的第三方 Loader 二进制；可上传 MMTL 自建 Agent 与脱敏证据。
 - [ ] CI 比较 frozen Universe、Ledger、Public capability、`docs/compatibility.md` 与 schema 汇总一致。
 
+**续接记录（2026-10-08）：** 已在 `ValidationMatrixChunks.psm1` 增加稳定的 round-robin shard selector；选择前校验 manifest/chunk hash、重复 target、数量和 chunk 上限。分片由 chunk 顺序与 shard 坐标确定，不运行构建或游戏。聚焦测试 9/9 通过；完整 Pester 结果 496 passed、13 failed、3 skipped，失败项另含平台 provider 初始化和当前 Pester 启动 CLI 参数问题，尚不构成 Task 9 完成。
+
 ### Task 10：公开能力文档、回归门禁与最终状态
 
 **Files:**
@@ -189,4 +195,3 @@
 - [ ] 每完成一个 Loader 或独立安全兼容族，运行其测试、更新 Ledger 与报告，提交中文 checkpoint 并推送同一 task branch。
 - [ ] 每次续跑先核验 branch、HEAD、Ledger hash、Universe hash、目标总数/完成/剩余、当前 Loader、失败和外部 blocker。
 - [ ] 上游 drift 不重写冻结 Universe；按新 snapshot 单独生成 diff，并经显式 refresh 决策建立下一 Universe。
-

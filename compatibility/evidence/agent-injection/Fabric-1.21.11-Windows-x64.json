@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "targetId": "Fabric@1.21.11",
+  "minecraftId": "1.21.11",
+  "loaderId": "Fabric",
+  "loaderVersion": "0.19.5",
+  "validationLevel": "AGENT_INJECTION_VERIFIED",
+  "result": "PASSED",
+  "agentBuildEvidenceSha256": "ce444379fb04b4f9fd9e9d7d03f18e4eda4985a11d98417f79e120684f1f63ac",
+  "provider": {
+    "providerId": "fabric-1.21.11",
+    "manifestSha256": "046a8730d3695d0e6d0bb2ba6d35d7ce666b6384efec035aab80a228fb7d8c69",
+    "artifactSha256": "24830f818d2ef21c941017511472ea76f05fd73aaef43214e52ba394186a13b7"
+  },
+  "sessionInjection": {
+    "method": "ManagedSessionModJar",
+    "sourceArtifactSha256": "24830f818d2ef21c941017511472ea76f05fd73aaef43214e52ba394186a13b7",
+    "copiedArtifactSha256": "24830f818d2ef21c941017511472ea76f05fd73aaef43214e52ba394186a13b7",
+    "copiedArtifactEvidencePath": "compatibility/evidence/agent-injection/Fabric-1.21.11-Windows-x64/session/mods/mmtl-agent-fabric-1.21.11-0.1.0.jar",
+    "sessionRelativeArtifactPath": "agent/mmtl-agent-fabric-1.21.11-0.1.0.jar",
+    "runtimeModRelativePath": "agent/mmtl-agent-fabric-1.21.11-0.1.0.jar",
+    "eventSinkRelativePath": "agent-events/client.jsonl",
+    "rawTokenInJvmArguments": false
+  },
+  "source": {
+    "sha256": "418f97b6f0a0af25a6a1db4857d3839f4e8dd044188b9c8f20073d63733c4321",
+    "files": [
+      {
+        "path": "common/src/Agent/AgentProvider.psm1",
+        "sha256": "6628fa2f09503f47c6fcbaf48e05a49d2ad635eeca0527b29dd61d1d77ebb030"
+      },
+      {
+        "path": "common/tests/AgentProvider.Tests.ps1",
+        "sha256": "75ad6b44bfaaf81d081754d51da8dc9094084f919916a334ad73543a15458b77"
+      }
+    ]
+  },
+  "tests": {
+    "result": "PASSED",
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0
+  },
+  "logs": [
+    {
+      "path": "compatibility/evidence/agent-injection/Fabric-1.21.11-Windows-x64/scenario-verification.json",
+      "sha256": "4459b3953f58ae5ad5a23103fee0398b2539f3cf1431e9fa556a15ade1076938"
+    }
+  ]
+}

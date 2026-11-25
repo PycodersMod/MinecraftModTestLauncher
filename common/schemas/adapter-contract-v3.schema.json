@@ -1,0 +1,116 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pycodersmod.github.io/minecraftmodtestlauncher/schemas/adapter-contract-v3.schema.json",
+  "title": "MMTL exact-target Adapter Contract v3 capability descriptor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "adapterId", "loaderId", "targetId", "minecraftId", "familyId", "targetSpecHash", "sourceHash", "toolchainHash", "buildJava", "runtimeJava", "operations", "isExecutablePlan"],
+  "properties": {
+    "contractVersion": {"const": 3},
+    "adapterId": {"type": "string", "minLength": 1},
+    "loaderId": {"type": "string", "minLength": 1},
+    "targetId": {"type": "string", "minLength": 1},
+    "minecraftId": {"type": "string", "minLength": 1},
+    "familyId": {"type": "string", "minLength": 1},
+    "targetSpecHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "sourceHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "toolchainHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "buildJava": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "strategy", "major", "observedMajor", "minimumMajor", "maximumMajor", "preferredMajor", "requirementKind", "source", "evidenceRefs"],
+      "properties": {
+        "status": {"enum": ["Supported", "PartiallySupported", "NotApplicable", "ExternallyBlocked", "Unsupported", "Unknown", "PendingImplementation"]},
+        "strategy": {"type": "string", "minLength": 1},
+        "major": {"oneOf": [{"type": "integer", "minimum": 1}, {"type": "null"}]},
+        "observedMajor": {"oneOf": [{"type": "integer", "minimum": 1}, {"type": "null"}]},
+        "minimumMajor": {"oneOf": [{"type": "integer", "minimum": 1}, {"type": "null"}]},
+        "maximumMajor": {"oneOf": [{"type": "integer", "minimum": 1}, {"type": "null"}]},
+        "preferredMajor": {"oneOf": [{"type": "integer", "minimum": 1}, {"type": "null"}]},
+        "requirementKind": {"type": "string", "minLength": 1},
+        "source": {"type": "string", "minLength": 1},
+        "evidenceRefs": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "Supported"}}},
+          "then": {
+            "properties": {
+              "evidenceRefs": {"minItems": 1}
+            }
+          }
+        }
+      ]
+    },
+    "runtimeJava": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "major", "component", "source", "confidence", "requirementKind", "metadataStatus", "evidenceRefs"],
+      "properties": {
+        "status": {"enum": ["Supported", "Unknown"]},
+        "major": {"oneOf": [{"type": "integer", "minimum": 1}, {"type": "null"}]},
+        "component": {"type": "string"},
+        "source": {"type": "string"},
+        "confidence": {"type": "string"},
+        "requirementKind": {"type": "string"},
+        "metadataStatus": {"type": "string"},
+        "evidenceRefs": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "Supported"}}},
+          "then": {
+            "properties": {
+              "major": {"type": "integer", "minimum": 1},
+              "evidenceRefs": {"minItems": 1}
+            }
+          }
+        }
+      ]
+    },
+    "isExecutablePlan": {"const": false},
+    "operations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["detect", "resolve", "build", "launchPlan", "launch", "agent", "single", "offlineLan", "dedicated", "historicalSafety"],
+      "properties": {
+        "detect": {"$ref": "#/$defs/capability"},
+        "resolve": {"$ref": "#/$defs/capability"},
+        "build": {"$ref": "#/$defs/capability"},
+        "launchPlan": {"$ref": "#/$defs/capability"},
+        "launch": {"$ref": "#/$defs/capability"},
+        "agent": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["build", "inject"],
+          "properties": {
+            "build": {"$ref": "#/$defs/capability"},
+            "inject": {"$ref": "#/$defs/capability"}
+          }
+        },
+        "single": {"$ref": "#/$defs/capability"},
+        "offlineLan": {"$ref": "#/$defs/capability"},
+        "dedicated": {"$ref": "#/$defs/capability"},
+        "historicalSafety": {"$ref": "#/$defs/capability"}
+      }
+    }
+  },
+  "$defs": {
+    "capability": {
+      "type": "object",
+      "required": ["status", "evidenceRefs"],
+      "properties": {
+        "status": {"enum": ["Supported", "PartiallySupported", "NotApplicable", "ExternallyBlocked", "Unsupported", "Unknown", "PendingImplementation"]},
+        "evidenceRefs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "reasonCode": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "Supported"}}},
+          "then": {"properties": {"evidenceRefs": {"minItems": 1}}}
+        }
+      ]
+    }
+  }
+}

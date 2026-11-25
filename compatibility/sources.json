@@ -1,27 +1,138 @@
 {
   "schemaVersion": 1,
-  "auditStatus": "IN_PROGRESS",
-  "generatedAt": null,
+  "auditStatus": "FROZEN",
+  "generatedAt": "2026-10-08T16:23:17.8101892+00:00",
   "minecraftCatalog": {
     "providerId": "Mojang",
     "sourceUrl": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
     "sourceClass": "ActiveOfficial",
     "trustClass": "TrustedOfficial",
     "transportSecurity": "HTTPS",
-    "requiredTypes": ["release"],
-    "additionalTypesOnlyWhenListedByLoader": ["snapshot", "pre", "rc", "old_beta", "old_alpha"]
+    "requiredTypes": [
+      "release"
+    ],
+    "additionalTypesOnlyWhenListedByLoader": [
+      "snapshot",
+      "pre",
+      "rc",
+      "old_beta",
+      "old_alpha"
+    ],
+    "sourceHash": "845dfb7f8b28ce06bf0752b597ef2d4d65df973e4b59d8d6ff429ad2d3adde04"
   },
   "loaders": [
-    {"loaderId":"Fabric","providerId":"Fabric","status":"PendingSnapshot","sourceUrl":"https://meta.fabricmc.net/v2/versions/game","sourceClass":"ActiveOfficial","trustClass":"TrustedOfficial","transportSecurity":"HTTPS"},
-    {"loaderId":"Forge","providerId":"Forge","status":"PendingSnapshot","sourceUrl":"https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml","additionalSourceUrl":"https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json","sourceClass":"ActiveOfficial","trustClass":"TrustedOfficial","transportSecurity":"HTTPS"},
-    {"loaderId":"NeoForge","providerId":"NeoForge","status":"PendingSnapshot","sourceUrl":"https://maven.neoforged.net/releases/net/neoforged/neoforge/maven-metadata.xml","additionalSourceUrl":"https://maven.neoforged.net/releases/net/neoforged/forge/maven-metadata.xml","sourceClass":"ActiveOfficial","trustClass":"TrustedOfficial","transportSecurity":"HTTPS"},
-    {"loaderId":"Quilt","providerId":"Quilt","status":"PendingSnapshot","sourceUrl":"https://meta.quiltmc.org/v3/versions/game","sourceClass":"ActiveOfficial","trustClass":"TrustedOfficial","transportSecurity":"HTTPS"},
-    {"loaderId":"LegacyFabric","providerId":"LegacyFabric","status":"PendingSnapshot","sourceUrl":"https://meta.legacyfabric.net/v2/versions/game","sourceClass":"ActiveOfficial","trustClass":"TrustedOfficial","transportSecurity":"HTTPS"},
-    {"loaderId":"OrnitheLoader","providerId":"Ornithe","status":"PendingSnapshot","sourceUrl":"https://meta.ornithemc.net/v2/versions/game","sourceClass":"ActiveOfficial","trustClass":"TrustedOfficial","transportSecurity":"HTTPS"},
-    {"loaderId":"LiteLoader","providerId":"LiteLoader","status":"PendingSnapshot","sourceUrl":"https://dl.liteloader.com/versions/versions.json","sourceClass":"HistoricalOfficial","trustClass":"TrustedOfficial","transportSecurity":"HTTPS"},
-    {"loaderId":"Rift","providerId":"Rift","status":"PendingSourceReview","sourceUrl":"https://github.com/DimensionalDevelopment/Rift","sourceClass":"HistoricalOfficial","trustClass":"TrustedOfficial","transportSecurity":"HTTPS"},
-    {"loaderId":"ModLoader","providerId":"ModLoader","status":"PendingArchiveVerification","sourceUrl":"https://mcarchive.net/mods/modloader","sourceClass":"VerifiedCommunityArchive","trustClass":"VerifiedHistorical","transportSecurity":"HTTPS"},
-    {"loaderId":"ModLoaderMP","providerId":"ModLoaderMP","status":"PendingArchiveVerification","sourceUrl":"https://mcarchive.net/mods/modloadermp","sourceClass":"VerifiedCommunityArchive","trustClass":"VerifiedHistorical","transportSecurity":"HTTPS"},
-    {"loaderId":"JarMod","providerId":"JarMod","coverageModel":"ManualArtifact","status":"ManualOnly","sourceUrl":"https://github.com/MultiMC/Launcher/wiki/Jar-Modding","sourceClass":"VerifiedCommunitySource","trustClass":"VerifiedCommunity","transportSecurity":"HTTPS","note":"MMTL compatibility method, not an upstream Loader availability catalog; requires a user-supplied local artifact."}
+    {
+      "loaderId": "Fabric",
+      "providerId": "Fabric",
+      "status": "FrozenAvailability",
+      "sourceUrl": "https://meta.fabricmc.net/v2/versions/game",
+      "sourceClass": "ActiveOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "sourceHash": "dd131c866467fce1ef6fb28594d35c04273290e6920cf72f3718da43eb19fb8c"
+    },
+    {
+      "loaderId": "Forge",
+      "providerId": "Forge",
+      "status": "FrozenAvailability",
+      "sourceUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+      "additionalSourceUrl": "https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json",
+      "sourceClass": "ActiveOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "sourceHash": "b9e6515eefd5573f9f92ff9f4b2ee85e9ee05d570300d1a08e927ae1d601fc64"
+    },
+    {
+      "loaderId": "NeoForge",
+      "providerId": "NeoForge",
+      "status": "FrozenAvailability",
+      "sourceUrl": "https://maven.neoforged.net/releases/net/neoforged/neoforge/maven-metadata.xml",
+      "additionalSourceUrl": "https://maven.neoforged.net/releases/net/neoforged/forge/maven-metadata.xml",
+      "sourceClass": "ActiveOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "sourceHash": "02e401661b295062e69e453f93b1108675e6beca9901f1bee065b471cc4c8fb1"
+    },
+    {
+      "loaderId": "Quilt",
+      "providerId": "Quilt",
+      "status": "FrozenAvailability",
+      "sourceUrl": "https://meta.quiltmc.org/v3/versions/game",
+      "sourceClass": "ActiveOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "sourceHash": "331ffb767656d9aa26e448ce239f20ee0381da4aa21fea3da7358a468c80c88a"
+    },
+    {
+      "loaderId": "LegacyFabric",
+      "providerId": "LegacyFabric",
+      "status": "FrozenAvailability",
+      "sourceUrl": "https://meta.legacyfabric.net/v2/versions/game",
+      "sourceClass": "ActiveOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "sourceHash": "c47d18c2f219227b1e143dd9f77766de9167004da464408f78150bf7b1b64475"
+    },
+    {
+      "loaderId": "OrnitheLoader",
+      "providerId": "Ornithe",
+      "status": "FrozenAvailability",
+      "sourceUrl": "https://meta.ornithemc.net/v2/versions/game",
+      "sourceClass": "ActiveOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "sourceHash": "25762c84286820c71e795d4566a223588911767bb1e0f2b7eb3d51e69ceb855d"
+    },
+    {
+      "loaderId": "LiteLoader",
+      "providerId": "LiteLoader",
+      "status": "FrozenAvailability",
+      "sourceUrl": "https://dl.liteloader.com/versions/versions.json",
+      "sourceClass": "HistoricalOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "sourceHash": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489"
+    },
+    {
+      "loaderId": "Rift",
+      "providerId": "Rift",
+      "status": "FrozenAvailability",
+      "sourceUrl": "https://api.github.com/repos/DimensionalDevelopment/Rift",
+      "sourceClass": "HistoricalOfficial",
+      "trustClass": "TrustedOfficial",
+      "transportSecurity": "HTTPS",
+      "sourceHash": "438e8b29047f0834704891b0beb18ac5820e6c0ae0f6a496dbf3ae4f8dbb1f28"
+    },
+    {
+      "loaderId": "ModLoader",
+      "providerId": "ModLoader",
+      "status": "FrozenAvailability",
+      "sourceUrl": "https://mcarchive.net/mods/modloader",
+      "sourceClass": "VerifiedCommunityArchive",
+      "trustClass": "VerifiedHistorical",
+      "transportSecurity": "HTTPS",
+      "sourceHash": "d1524e6472b34721674fc0cb1e6ec223304cbe04428fda87d6ca791ed6f03dd7"
+    },
+    {
+      "loaderId": "ModLoaderMP",
+      "providerId": "ModLoaderMP",
+      "status": "FrozenAvailability",
+      "sourceUrl": "https://mcarchive.net/mods/modloadermp",
+      "sourceClass": "VerifiedCommunityArchive",
+      "trustClass": "VerifiedHistorical",
+      "transportSecurity": "HTTPS",
+      "sourceHash": "dc85378e53a2bed669ed08f8c80d8b76b43d53c54fbc89170439aa9eeeaf358f"
+    },
+    {
+      "loaderId": "JarMod",
+      "providerId": "JarMod",
+      "coverageModel": "ManualArtifact",
+      "status": "ManualOnly",
+      "sourceUrl": "https://github.com/MultiMC/Launcher/wiki/Jar-Modding",
+      "sourceClass": "VerifiedCommunitySource",
+      "trustClass": "VerifiedCommunity",
+      "transportSecurity": "HTTPS",
+      "note": "MMTL compatibility method, not an upstream Loader availability catalog; requires a user-supplied local artifact."
+    }
   ]
 }

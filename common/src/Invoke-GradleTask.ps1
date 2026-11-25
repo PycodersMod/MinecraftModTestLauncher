@@ -15,12 +15,37 @@ try{
     if(-not(Test-Path -LiteralPath $wrapper -PathType Leaf)){throw "项目缺少 Gradle Wrapper：$wrapper"}
     Push-Location -LiteralPath $root
     try{
-        $gradleArgs=[string[]]$plan.arguments
-        if($platform.OS -eq 'Windows'){& $wrapper @gradleArgs}
+        $gradleArgs=[Collections.Generic.List[string]]::new()
+        if($plan.runtimeBindingInitScriptPath){
+            $sessionRoot=[IO.Path]::GetFullPath([string]$plan.sessionPath)
+            $initScript=[IO.Path]::GetFullPath([string]$plan.runtimeBindingInitScriptPath)
+            if(-not(Test-MmtlPlatformPathInsideRoot -Root $sessionRoot -Target $initScript)){throw 'RUNTIME_BINDING_INIT_SCRIPT_OUTSIDE_SESSION'}
+            if(-not(Test-Path -LiteralPath $initScript -PathType Leaf)){throw 'RUNTIME_BINDING_INIT_SCRIPT_MISSING'}
+            $initItem=Get-Item -LiteralPath $initScript -Force
+            if($initItem.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'RUNTIME_BINDING_INIT_SCRIPT_REPARSE'}
+            $runtimeJavaHome=[string]$env:MMTL_RUNTIME_JAVA_HOME
+            $runtimeJavaExecutable=[string]$env:MMTL_RUNTIME_JAVA_EXECUTABLE
+            $runtimeJavaMajor=0
+            if(-not [int]::TryParse([string]$env:MMTL_RUNTIME_JAVA_MAJOR,[ref]$runtimeJavaMajor) -or $runtimeJavaMajor -lt 1 -or -not(Test-Path -LiteralPath $runtimeJavaExecutable -PathType Leaf)){throw 'RUNTIME_BINDING_JAVA_ENVIRONMENT_INVALID'}
+            $gradleArgs.Add("-Dorg.gradle.java.installations.paths=$runtimeJavaHome")
+            $gradleArgs.Add('--init-script');$gradleArgs.Add($initScript)
+        }
+        if($plan.liteLoaderInitScriptPath){
+            $sessionRoot=[IO.Path]::GetFullPath([string]$plan.sessionPath)
+            $liteLoaderInitScript=[IO.Path]::GetFullPath([string]$plan.liteLoaderInitScriptPath)
+            if(-not(Test-MmtlPlatformPathInsideRoot -Root $sessionRoot -Target $liteLoaderInitScript)){throw 'LITELOADER_INIT_SCRIPT_OUTSIDE_SESSION'}
+            if(-not(Test-Path -LiteralPath $liteLoaderInitScript -PathType Leaf)){throw 'LITELOADER_INIT_SCRIPT_MISSING'}
+            $liteLoaderItem=Get-Item -LiteralPath $liteLoaderInitScript -Force
+            if($liteLoaderItem.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'LITELOADER_INIT_SCRIPT_REPARSE'}
+            $gradleArgs.Add('--init-script');$gradleArgs.Add($liteLoaderInitScript)
+        }
+        foreach($argument in [string[]]$plan.arguments){$gradleArgs.Add([string]$argument)}
+        [string[]]$gradleArguments=@($gradleArgs.ToArray())
+        if($platform.OS -eq 'Windows'){& $wrapper @gradleArguments}
         else{
             $mode=(Get-Item -LiteralPath $wrapper).UnixFileMode
-            if(($mode -band [IO.UnixFileMode]::UserExecute) -eq 0 -and ($mode -band [IO.UnixFileMode]::GroupExecute) -eq 0 -and ($mode -band [IO.UnixFileMode]::OtherExecute) -eq 0){& sh $wrapper @gradleArgs}
-            else{& (Join-Path '.' $platform.GradleWrapper) @gradleArgs}
+            if(($mode -band [IO.UnixFileMode]::UserExecute) -eq 0 -and ($mode -band [IO.UnixFileMode]::GroupExecute) -eq 0 -and ($mode -band [IO.UnixFileMode]::OtherExecute) -eq 0){& sh $wrapper @gradleArguments}
+            else{& (Join-Path '.' $platform.GradleWrapper) @gradleArguments}
         }
         $exitCode=$LASTEXITCODE
     }finally{Pop-Location}
@@ -43,7 +68,7 @@ try{
         }catch{[Console]::Error.WriteLine("无法清理 Fabric Runtime junction：$($_.Exception.Message)");if($exitCode -eq 0){$exitCode=1}}
     }
     if($plan -and $plan.sessionPath){
-        try{$sessionPath=[IO.Path]::GetFullPath([string]$plan.sessionPath);$lock=New-MmtlSessionLock -LockPath (Join-Path $sessionPath '.session.lock') -AllowedRoot $sessionPath;try{$statusPath=Join-Path $sessionPath "process-$PID.exit.json";$record=[pscustomobject]@{PID=$PID;ExitCode=$exitCode;FinishedUtc=[DateTimeOffset]::UtcNow.ToString('o');Error=$failure};Write-MmtlAtomicTextFile -Path $statusPath -Content (($record|ConvertTo-Json -Compress)+"`n")}finally{Remove-MmtlSessionLock -Lock $lock}}catch{[Console]::Error.WriteLine("无法写入 Session 退出状态：$($_.Exception.Message)")}
+        try{$sessionPath=[IO.Path]::GetFullPath([string]$plan.sessionPath);$lock=New-MmtlSessionLock -LockPath (Join-Path $sessionPath '.session.lock') -AllowedRoot $sessionPath;try{$statusPath=Join-Path $sessionPath "process-$PID.exit.json";$record=[pscustomobject]@{PID=$PID;ExitCode=$exitCode;FinishedUtc=[DateTimeOffset]::UtcNow.ToString('o');Error=$failure;StopRequested=$false};Write-MmtlAtomicTextFile -Path $statusPath -Content (($record|ConvertTo-Json -Compress)+"`n")}finally{Remove-MmtlSessionLock -Lock $lock}}catch{[Console]::Error.WriteLine("无法写入 Session 退出状态：$($_.Exception.Message)")}
     }
 }
 exit $exitCode

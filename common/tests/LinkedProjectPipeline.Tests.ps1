@@ -44,4 +44,15 @@ Describe 'linkedProjects 构建与产物流水线' {
             [pscustomobject]@{Project=$Project.Root;JarPath=$Project.Jar;JarSha256='not-the-final-hash';ExitCode=0}
         } } | Should -Throw '*LINKED_ARTIFACT_HASH_MISMATCH*'
     }
+
+    It 'accepts a verified litemod output for the LiteLoader primary project' {
+        $root=Join-Path $TestDrive 'liteloader-primary';New-Item -ItemType Directory -Path $root -Force|Out-Null
+        $artifact=Join-Path $root 'build/libs/sample.litemod';New-Item -ItemType Directory -Path (Split-Path $artifact) -Force|Out-Null;[IO.File]::WriteAllBytes($artifact,[byte[]]@(9,8,7))
+        $primary=[pscustomobject]@{Root=$root;Loader='LiteLoader'}
+        $result=Invoke-MmtlProjectBuildPipeline -Primary $primary -LinkedProjects @() -JavaPath 'fixture-java' -SessionPath 'fixture-session' -AutoBuild -BuildAction {param($Project,$JavaPath,$SessionPath,$Clean) [pscustomobject]@{Project=$Project.Root;ArtifactPath=$artifact;ArtifactExtension='.litemod';JarSha256=(Get-FileHash -LiteralPath $artifact -Algorithm SHA256).Hash;ExitCode=0}}
+
+        @($result.builds).Count | Should -Be 1
+        $result.builds[0].ArtifactPath | Should -BeExactly $artifact
+        @($result.linkedArtifacts).Count | Should -Be 0
+    }
 }

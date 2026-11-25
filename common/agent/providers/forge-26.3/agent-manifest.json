@@ -1,0 +1,33 @@
+{
+    "schemaVersion": 1,
+    "providerId": "forge-26.3",
+    "loaderId": "Forge",
+    "minecraftVersions": [
+        "26.3"
+    ],
+    "loaderVersions": [
+        "26.3-66.0.9"
+    ],
+    "agentVersion": "0.1.0",
+    "artifact": "providers/forge-26.3/mmtl-agent-forge-26.3-0.1.0.jar",
+    "sha256": "568e5585f0509b005cc74b119e017b25df9772ab34c00b1ef13fa4f5cf425f46",
+    "minJavaMajor": 25,
+    "roles": [
+        "Client",
+        "Host",
+        "Guest"
+    ],
+    "capabilities": [
+        "OfflineSessionHandshake",
+        "IntegratedServerEvents",
+        "GuestJoinObservation",
+        "OfflineIntegratedLanHost",
+        "LoopbackOnlyListener",
+        "LanDiscoverySuppressed",
+        "GuestLoopbackVerification",
+        "SignedSessionActionQueue",
+        "SessionScreenshot",
+        "ManagedClientCommand",
+        "SignedSharedBlockMarkerAssertion"
+    ]
+}

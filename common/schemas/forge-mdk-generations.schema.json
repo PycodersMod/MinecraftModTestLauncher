@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Frozen Forge canonical MDK and source archive toolchain evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "generatedAt", "auditStatus", "universeHash", "catalogHash", "targetCount", "targets"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "generatedAt": {"type": "string", "format": "date-time"},
+    "auditStatus": {"enum": ["PASS", "PARTIAL"]},
+    "universeHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "catalogHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "targetCount": {"type": "integer", "minimum": 1},
+    "targets": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["targetId", "minecraftId", "forgeCoordinate", "sourceHash", "candidateSourceHash", "mdkUrl", "httpStatus", "status", "archiveSha256", "buildGradleSha256", "forgeGradleSpec", "gradleDistributionUrl", "buildJavaMajor", "alternateSourceUrl", "alternateSourceHttpStatus", "alternateArchiveSha256", "alternateArchiveBytes", "sourceProjectType", "alternateBuildGradleSha256", "alternateForgeGradleSpec", "alternateGradleDistributionUrl", "alternateBuildJavaMajor"],
+        "properties": {
+          "targetId": {"type": "string", "minLength": 3},
+          "minecraftId": {"type": "string", "minLength": 1},
+          "forgeCoordinate": {"type": "string", "minLength": 1},
+          "sourceHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "candidateSourceHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "mdkUrl": {"type": "string", "format": "uri", "pattern": "^https://maven\\.minecraftforge\\.net/"},
+          "httpStatus": {"enum": [200, 404]},
+          "status": {"enum": ["Available", "CanonicalCandidateMdkUnavailable"]},
+          "archiveSha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+          "buildGradleSha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+          "forgeGradleSpec": {"type": ["string", "null"]},
+          "gradleDistributionUrl": {"type": ["string", "null"], "format": "uri"},
+          "buildJavaMajor": {"type": ["integer", "null"], "minimum": 1},
+          "alternateSourceUrl": {"type": ["string", "null"], "format": "uri", "pattern": "^https://maven\\.minecraftforge\\.net/"},
+          "alternateSourceHttpStatus": {"type": ["integer", "null"], "enum": [200, null]},
+          "alternateArchiveSha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+          "alternateArchiveBytes": {"type": ["integer", "null"], "minimum": 1},
+          "sourceProjectType": {"enum": ["GradleProject", "ForgeSourceOverlay", null]},
+          "alternateBuildGradleSha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+          "alternateForgeGradleSpec": {"type": ["string", "null"]},
+          "alternateGradleDistributionUrl": {"type": ["string", "null"], "format": "uri"},
+          "alternateBuildJavaMajor": {"type": ["integer", "null"], "minimum": 1}
+        },
+        "allOf": [
+          {"if": {"properties": {"status": {"const": "Available"}}, "required": ["status"]}, "then": {"properties": {"httpStatus": {"const": 200}, "archiveSha256": {"type": "string"}, "buildGradleSha256": {"type": "string"}, "forgeGradleSpec": {"type": "string", "minLength": 1}, "gradleDistributionUrl": {"type": "string"}}}},
+          {"if": {"properties": {"status": {"const": "CanonicalCandidateMdkUnavailable"}}, "required": ["status"]}, "then": {"properties": {"httpStatus": {"const": 404}, "archiveSha256": {"type": "null"}, "buildGradleSha256": {"type": "null"}, "forgeGradleSpec": {"type": "null"}, "gradleDistributionUrl": {"type": "null"}, "alternateSourceUrl": {"type": "string"}, "alternateSourceHttpStatus": {"const": 200}, "alternateArchiveSha256": {"type": "string"}, "alternateArchiveBytes": {"type": "integer", "minimum": 1}, "sourceProjectType": {"enum": ["GradleProject", "ForgeSourceOverlay"]}}}},
+          {"if": {"properties": {"status": {"const": "Available"}}, "required": ["status"]}, "then": {"properties": {"alternateSourceUrl": {"type": "null"}, "alternateSourceHttpStatus": {"type": "null"}, "alternateArchiveSha256": {"type": "null"}, "alternateArchiveBytes": {"type": "null"}, "sourceProjectType": {"type": "null"}, "alternateBuildGradleSha256": {"type": "null"}, "alternateForgeGradleSpec": {"type": "null"}, "alternateGradleDistributionUrl": {"type": "null"}, "alternateBuildJavaMajor": {"type": "null"}}}},
+          {"if": {"properties": {"sourceProjectType": {"const": "ForgeSourceOverlay"}}, "required": ["sourceProjectType"]}, "then": {"properties": {"alternateBuildGradleSha256": {"type": "null"}, "alternateForgeGradleSpec": {"type": "null"}, "alternateGradleDistributionUrl": {"type": "null"}, "alternateBuildJavaMajor": {"type": "null"}}}},
+          {"if": {"properties": {"sourceProjectType": {"const": "GradleProject"}}, "required": ["sourceProjectType"]}, "then": {"properties": {"alternateBuildGradleSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "alternateForgeGradleSpec": {"type": "string", "minLength": 1}, "alternateGradleDistributionUrl": {"type": "string"}}}}
+        ]
+      }
+    }
+  }
+}

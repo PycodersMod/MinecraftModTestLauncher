@@ -42,7 +42,7 @@ function ConvertTo-MmtlCanonicalValue {
 function ConvertTo-MmtlSemanticArgument {
     param([AllowNull()][string]$Value)
     if ($null -eq $Value) { return $null }
-    return [regex]::Replace($Value, '(?i)(?:[a-z]:[\\/][^\s";]+|\\\\[^\\\s]+\\[^\\\s]+[^\s";]*|/(?:[^\s/:";]+/)*[^\s/:";]+)', '<LOCAL_PATH>')
+    return [regex]::Replace($Value, '(?i)(?:[a-z]:[\\/][^\s";]+|\\\\[^\\\s]+\\[^\\\s]+[^\s";]*|/(?:[^\s/:";]+/)*[^\s/:";]+)', '<LOCAL_PATH>') # public-hygiene: allow-generic-platform-location
 }
 
 function Get-MmtlExecutionPlanSemanticProjection {
@@ -74,7 +74,7 @@ function Get-MmtlExecutionPlanSemanticProjection {
         if ($null -ne $value) { $runtimeSemantic[$name] = $value }
     }
     $profileSemantic = [ordered]@{}
-    foreach ($name in @('name','mode','players','hostUsername','clientPrefix','hostCheats','clientPermissionLevel','gameMode','difficulty','worldName','seed','newWorld','resetWorld','memoryMb','hostMemoryMb','clientMemoryMb','serverMemoryMb','acceptEula','resolution','guiScale','windowLayout','autoBuild','cleanBuild','port')) {
+    foreach ($name in @('name','mode','players','clientCount','transport','identity','scenarioConfiguration','hostUsername','clientPrefix','hostCheats','clientPermissionLevel','gameMode','difficulty','worldName','seed','newWorld','resetWorld','memoryMb','hostMemoryMb','clientMemoryMb','serverMemoryMb','acceptEula','resolution','guiScale','windowLayout','autoBuild','cleanBuild','port')) {
         $value = Get-MmtlPlanProperty $profile $name
         if ($null -ne $value) { $profileSemantic[$name] = $value }
     }
@@ -82,7 +82,7 @@ function Get-MmtlExecutionPlanSemanticProjection {
         $items = Get-MmtlPlanProperty $profile $name
         if ($null -ne $items) { $profileSemantic[$name] = @($items | ForEach-Object { ConvertTo-MmtlSemanticArgument ([string]$_) }) }
     }
-    $runtimeSemanticData = [ordered]@{ roles=@(Get-MmtlPlanProperty $runtime 'roles');runtimeDirectories=$runtimeDirs;memory=(Get-MmtlPlanProperty $runtime 'memory');jvmArgs=@((Get-MmtlPlanProperty $runtime 'jvmArgs') | ForEach-Object { ConvertTo-MmtlSemanticArgument ([string]$_) });gameArgs=@((Get-MmtlPlanProperty $runtime 'gameArgs') | ForEach-Object { ConvertTo-MmtlSemanticArgument ([string]$_) }) }
+    $runtimeSemanticData = [ordered]@{ roles=@(Get-MmtlPlanProperty $runtime 'roles');runtimeDirectories=$runtimeDirs;memory=(Get-MmtlPlanProperty $runtime 'memory');jvmArgs=@((Get-MmtlPlanProperty $runtime 'jvmArgs') | ForEach-Object { ConvertTo-MmtlSemanticArgument ([string]$_) });gameArgs=@((Get-MmtlPlanProperty $runtime 'gameArgs') | ForEach-Object { ConvertTo-MmtlSemanticArgument ([string]$_) });loaderLaunchPlan=(Get-MmtlPlanProperty $runtime 'loaderLaunchPlan') }
     $stack = @((Get-MmtlPlanProperty $project 'loaderStack') | ForEach-Object {
         [ordered]@{id=(Get-MmtlPlanProperty $_ 'id');version=(Get-MmtlPlanProperty $_ 'version');role=(Get-MmtlPlanProperty $_ 'role')}
     })
@@ -148,6 +148,13 @@ function Test-MmtlExecutionPlan {
     $runtimeStatus=Get-MmtlPlanProperty $runtimeResolution 'status';$runtimeActual=Get-MmtlPlanProperty $runtimeResolution 'actualMajor';$runtimeKind=Get-MmtlPlanProperty $runtimeRequirement 'requirementKind'
     if ($runtimeStatus -eq 'Resolved' -and $runtimeMajor -and $runtimeActual -and $runtimeKind -ne 'Minimum' -and [int]$runtimeActual -ne [int]$runtimeMajor) { $errors.Add('RUNTIME_JAVA_RESOLUTION_INCONSISTENT') }
     if ($runtimeStatus -eq 'Resolved' -and $runtimeMajor -and $runtimeActual -and $runtimeKind -eq 'Minimum' -and [int]$runtimeActual -lt [int]$runtimeMajor) { $errors.Add('RUNTIME_JAVA_RESOLUTION_INCONSISTENT') }
+
+    $runtimePlan=Get-MmtlPlanProperty $Plan 'runtime'
+    $loaderLaunchPlan=Get-MmtlPlanProperty $runtimePlan 'loaderLaunchPlan'
+    if ($loaderLaunchPlan) {
+        $project=Get-MmtlPlanProperty $Plan 'project';$loader=Get-MmtlPlanProperty $project 'loader'
+        if ((Get-MmtlPlanProperty $loader 'id') -cne 'LiteLoader' -or (Get-MmtlPlanProperty $loaderLaunchPlan 'targetId') -cne ("LiteLoader@"+(Get-MmtlPlanProperty $project 'minecraftId')) -or (Get-MmtlPlanProperty $loaderLaunchPlan 'minecraftId') -cne (Get-MmtlPlanProperty $project 'minecraftId') -or (Get-MmtlPlanProperty $loaderLaunchPlan 'loaderVersion') -cne (Get-MmtlPlanProperty $loader 'version')) { $errors.Add('PLAN_LOADER_LAUNCH_TARGET_MISMATCH') }
+    }
 
     $profile = Get-MmtlPlanProperty $Plan 'profile'
     $session = Get-MmtlPlanProperty $Plan 'session'

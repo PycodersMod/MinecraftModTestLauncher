@@ -40,6 +40,19 @@ Describe 'Full compatibility ledger' {
         $result.summary.unassignedFamilyCount | Should -Be 2
     }
 
+    It 'keeps preview runtime Java requirements aligned with the verified runtime catalog' {
+        $repositoryRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $preview = Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json') | ConvertFrom-Json
+        $catalog = Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/runtime-java-catalog.json') | ConvertFrom-Json
+        $requirementByVersion = @{}
+        foreach ($entry in $catalog.entries) { $requirementByVersion[[string]$entry.minecraftId] = ConvertTo-Json -InputObject $entry.requirement -Depth 30 -Compress }
+        foreach ($target in $preview.targets) {
+            $version = [string]$target.minecraftId
+            $requirementByVersion.ContainsKey($version) | Should -BeTrue -Because $version
+            (ConvertTo-Json -InputObject $target.runtimeJavaRequirement -Depth 30 -Compress) | Should -BeExactly $requirementByVersion[$version] -Because $version
+        }
+    }
+
     It 'supports Runtime Java only when an exact positive requirement has URL and hash evidence' {
         $universe = $script:universe | ConvertTo-Json -Depth 30 | ConvertFrom-Json
         $universe.targets[0] | Add-Member -NotePropertyName runtimeJavaRequirement -NotePropertyValue ([pscustomobject]@{
@@ -134,6 +147,50 @@ Describe 'Full compatibility ledger' {
         $blocked = Test-MmtlFullCompatibilityLedger -Ledger $ledger -Universe $script:universe
         $blocked.isValid | Should -BeFalse
         $blocked.errors | Should -Contain 'EXTERNAL_BLOCKER_EVIDENCE_MISSING:Fabric@1.20.1:AgentBuild'
+    }
+
+    It 'preserves structured family external blockers for non-RuntimeJava dimensions' {
+        $familyManifest = [pscustomobject]@{
+            schemaVersion = 1
+            universeHash = [string]$script:universe.catalogHash
+            families = @([pscustomobject]@{
+                familyId = 'fabric-test-family'
+                loaderId = 'Fabric'
+                minecraftIds = @('1.20.1')
+                toolchain = [pscustomobject]@{ id = 'Fabric Loom'; version = 'test' }
+                buildJava = [pscustomobject]@{ status = 'PartiallySupported' }
+                runtimeJava = [pscustomobject]@{ major = 17 }
+                projectDetectionStrategy = 'Test exact project markers.'
+                launchStrategy = 'Test launch strategy.'
+                agentBridge = 'Test agent bridge.'
+                evidence = @('test:family-evidence')
+                capabilities = [pscustomobject]@{
+                    BuildPlan = [pscustomobject]@{
+                        status = 'ExternallyBlocked'
+                        evidenceRefs = @('source:official-repository')
+                        reasonCode = 'UPSTREAM_SOURCE_UNAVAILABLE'
+                        source = 'https://example.invalid/source'
+                        evidence = 'The exact target build source is unavailable.'
+                        attemptedRemediation = 'Checked the official archive and source API.'
+                    }
+                }
+            })
+        }
+
+        $ledger = New-MmtlFullCompatibilityLedger -Universe $script:universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $familyManifest
+        $dimension = $ledger.targets | Where-Object targetId -CEQ 'Fabric@1.20.1' | Select-Object -ExpandProperty dimensions | Select-Object -ExpandProperty BuildPlan
+
+        $dimension.status | Should -BeExactly 'ExternallyBlocked'
+        $dimension.reasonCode | Should -BeExactly 'UPSTREAM_SOURCE_UNAVAILABLE'
+        $dimension.source | Should -BeExactly 'https://example.invalid/source'
+        $dimension.evidence | Should -BeExactly 'The exact target build source is unavailable.'
+        $dimension.attemptedRemediation | Should -BeExactly 'Checked the official archive and source API.'
+        $dimension.evidenceRefs | Should -Contain 'source:official-repository'
+        (Test-MmtlFullCompatibilityLedger -Ledger $ledger -Universe $script:universe -FamilyManifest $familyManifest).isValid | Should -BeTrue
+
+        $incompleteFamilyManifest = $familyManifest | ConvertTo-Json -Depth 20 | ConvertFrom-Json
+        $incompleteFamilyManifest.families[0].capabilities.BuildPlan.PSObject.Properties.Remove('attemptedRemediation')
+        { New-MmtlFullCompatibilityLedger -Universe $script:universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $incompleteFamilyManifest } | Should -Throw '*FAMILY_MANIFEST_INVALID:EXTERNAL_BLOCKER_EVIDENCE_MISSING:fabric-test-family:BuildPlan:attemptedRemediation*'
     }
 
     It 'rejects duplicate targets and hashes each exact target specification deterministically' {
@@ -248,26 +305,50 @@ Describe 'Full compatibility ledger' {
         $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
         $families=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/families.json')|ConvertFrom-Json
         $fabricTargets=@($universe.targets|Where-Object{$_.loaderId -ceq 'Fabric' -and $_.availability -ceq 'Available'})
-        $family=$families.families|Where-Object familyId -CEQ 'fabric-loom-build-launch-plan-v1'|Select-Object -First 1
+        $loomFamilies=@($families.families|Where-Object familyId -in @('fabric-loom-remap-build-launch-plan-v1','fabric-loom-unobfuscated-build-launch-plan-v1'))
         $ledger=New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $families
         $rows=@($ledger.targets|Where-Object loaderId -CEQ 'Fabric')
         $familySchema=Join-Path $repositoryRoot 'common/schemas/compatibility-families.schema.json'
         $detectorHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
         $adapterHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/Fabric.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
-        $orderedIds=[string[]]@($fabricTargets|ForEach-Object{[string]$_.minecraftId});[Array]::Sort($orderedIds,[StringComparer]::Ordinal)
-        $hashBasis="fabric-loom-build-launch-plan-v1`n$($universe.catalogHash)`n$detectorHash`n$adapterHash`n$($orderedIds -join "`n")"
-        $expectedToolchainHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($hashBasis))).ToLowerInvariant()
-
+        $buildJavaResolverHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/BuildJavaResolver.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
         (Test-Json -Json ($families|ConvertTo-Json -Depth 30 -Compress) -SchemaFile $familySchema) | Should -BeTrue
-        $family | Should -Not -BeNullOrEmpty
-        $family.toolchainHash | Should -BeExactly $expectedToolchainHash
-        @($family.minecraftIds).Count | Should -Be $fabricTargets.Count
-        @($family.minecraftIds|Sort-Object -Unique).Count | Should -Be $fabricTargets.Count
+        $loomFamilies | Should -HaveCount 2
+        foreach($family in $loomFamilies){
+            $orderedIds=[string[]]@($family.minecraftIds);[Array]::Sort($orderedIds,[StringComparer]::Ordinal)
+            $hashBasis="$($family.familyId)`n$($universe.catalogHash)`n$detectorHash`n$adapterHash`n$buildJavaResolverHash`n$($orderedIds -join "`n")"
+            $expectedToolchainHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($hashBasis))).ToLowerInvariant()
+            $family.toolchainHash | Should -BeExactly $expectedToolchainHash
+            @($family.minecraftIds|Sort-Object -Unique).Count | Should -Be @($family.minecraftIds).Count
+            $family.evidence | Should -Contain 'https://docs.fabricmc.net/develop/loom'
+        }
+        @($loomFamilies.minecraftIds|ForEach-Object{$_}).Count | Should -Be $fabricTargets.Count
+        @($loomFamilies.minecraftIds|ForEach-Object{$_}|Sort-Object -Unique).Count | Should -Be $fabricTargets.Count
         @($rows|Where-Object{$_.dimensions.ProjectDetection.status -cne 'Supported'}).Count | Should -Be 0
         @($rows|Where-Object{$_.dimensions.BuildPlan.status -ceq 'Supported'}).Count | Should -Be $fabricTargets.Count
         @($rows|Where-Object{$_.dimensions.LaunchPlan.status -ceq 'Supported'}).Count | Should -Be $fabricTargets.Count
         @($rows|Where-Object{$_.dimensions.AgentBuild.status -ceq 'PendingImplementation'}).Count | Should -Be $fabricTargets.Count
-        @($rows|Where-Object{$_.familyId -cne 'fabric-loom-build-launch-plan-v1'}).Count | Should -Be 0
+        @($rows|Where-Object{$_.familyId -notin @('fabric-loom-remap-build-launch-plan-v1','fabric-loom-unobfuscated-build-launch-plan-v1')}).Count | Should -Be 0
+    }
+
+    It 'partitions Fabric exact targets at the official Loom plugin id generation boundary' {
+        $repositoryRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
+        $families=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/families.json')|ConvertFrom-Json
+        $fabricTargets=@($universe.targets|Where-Object{$_.loaderId -ceq 'Fabric' -and $_.availability -ceq 'Available'})
+        $remap=$families.families|Where-Object familyId -CEQ 'fabric-loom-remap-build-launch-plan-v1'
+        $unobfuscated=$families.families|Where-Object familyId -CEQ 'fabric-loom-unobfuscated-build-launch-plan-v1'
+
+        $remap | Should -Not -BeNullOrEmpty
+        $unobfuscated | Should -Not -BeNullOrEmpty
+        @($remap.minecraftIds|Where-Object {$_ -match '^26\.'}).Count | Should -Be 0
+        @($unobfuscated.minecraftIds|Where-Object {$_ -notmatch '^26\.'}).Count | Should -Be 0
+        @($remap.minecraftIds).Count + @($unobfuscated.minecraftIds).Count | Should -Be $fabricTargets.Count
+        @($remap.minecraftIds + $unobfuscated.minecraftIds|Sort-Object -Unique).Count | Should -Be $fabricTargets.Count
+        $remap.evidence | Should -Contain 'https://docs.fabricmc.net/develop/loom'
+        $unobfuscated.evidence | Should -Contain 'https://docs.fabricmc.net/develop/loom'
+        $remap.toolchain.id | Should -BeExactly 'net.fabricmc.fabric-loom-remap'
+        $unobfuscated.toolchain.id | Should -BeExactly 'net.fabricmc.fabric-loom'
     }
 
     It 'assigns exact NeoForge targets to a gated Build and Launch planning family' {
@@ -281,8 +362,9 @@ Describe 'Full compatibility ledger' {
         $familySchema=Join-Path $repositoryRoot 'common/schemas/compatibility-families.schema.json'
         $detectorHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
         $adapterHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/NeoForge.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
+        $buildJavaResolverHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/BuildJavaResolver.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
         $orderedIds=[string[]]@($targets|ForEach-Object{[string]$_.minecraftId});[Array]::Sort($orderedIds,[StringComparer]::Ordinal)
-        $hashBasis="neoforge-gradle-build-launch-plan-v1`n$($universe.catalogHash)`n$detectorHash`n$adapterHash`n$($orderedIds -join "`n")"
+        $hashBasis="neoforge-gradle-build-launch-plan-v1`n$($universe.catalogHash)`n$detectorHash`n$adapterHash`n$buildJavaResolverHash`n$($orderedIds -join "`n")"
         $expectedToolchainHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($hashBasis))).ToLowerInvariant()
 
         (Test-Json -Json ($families|ConvertTo-Json -Depth 30 -Compress) -SchemaFile $familySchema) | Should -BeTrue
@@ -307,9 +389,10 @@ Describe 'Full compatibility ledger' {
         $familySchema=Join-Path $repositoryRoot 'common/schemas/compatibility-families.schema.json'
         $detectorHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
         $adapterHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/Quilt.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
+        $buildJavaResolverHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/BuildJavaResolver.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
         $orderedIds=[string[]]@($targets|ForEach-Object{[string]$_.minecraftId});[Array]::Sort($orderedIds,[StringComparer]::Ordinal)
         $lf=[string][char]10
-        $hashBasis=(@('quilt-loom-build-launch-plan-v1',[string]$universe.catalogHash,$detectorHash,$adapterHash)+$orderedIds) -join $lf
+        $hashBasis=(@('quilt-loom-build-launch-plan-v1',[string]$universe.catalogHash,$detectorHash,$adapterHash,$buildJavaResolverHash)+$orderedIds) -join $lf
         $expectedToolchainHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($hashBasis))).ToLowerInvariant()
 
         (Test-Json -Json ($families|ConvertTo-Json -Depth 30 -Compress) -SchemaFile $familySchema) | Should -BeTrue
@@ -329,29 +412,68 @@ Describe 'Full compatibility ledger' {
         $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
         $families=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/families.json')|ConvertFrom-Json
         $targets=@($universe.targets|Where-Object{$_.loaderId -ceq 'Forge' -and $_.availability -ceq 'Available'})
-        $family=$families.families|Where-Object familyId -CEQ 'forge-project-metadata-detection-v1'|Select-Object -First 1
+        $catalog=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/forge-mdk-generations.json')|ConvertFrom-Json
+        $forgeFamilies=@($families.families|Where-Object{$_.loaderId -ceq 'Forge'})
+        $availableGroups=@($catalog.targets|Where-Object status -CEQ 'Available'|Group-Object forgeGradleSpec)
+        $sourceGradleGroups=@($catalog.targets|Where-Object sourceProjectType -CEQ 'GradleProject'|Group-Object {"$($_.alternateForgeGradleSpec)|$($_.alternateGradleDistributionUrl)"})
+        $sourceOverlayRows=@($catalog.targets|Where-Object sourceProjectType -CEQ 'ForgeSourceOverlay')
         $ledger=New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $families
         $rows=@($ledger.targets|Where-Object loaderId -CEQ 'Forge')
         $familySchema=Join-Path $repositoryRoot 'common/schemas/compatibility-families.schema.json'
         $detectorHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
         $adapterHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/Forge.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
-        $orderedIds=[string[]]@($targets|ForEach-Object{[string]$_.minecraftId});[Array]::Sort($orderedIds,[StringComparer]::Ordinal)
-        $lf=[string][char]10
-        $hashBasis=(@('forge-project-metadata-detection-v1',[string]$universe.catalogHash,$detectorHash,$adapterHash)+$orderedIds) -join $lf
-        $expectedToolchainHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($hashBasis))).ToLowerInvariant()
-
+        $buildJavaResolverHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/BuildJavaResolver.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
         (Test-Json -Json ($families|ConvertTo-Json -Depth 30 -Compress) -SchemaFile $familySchema) | Should -BeTrue
-        $family | Should -Not -BeNullOrEmpty
-        $family.toolchainHash | Should -BeExactly $expectedToolchainHash
-        @($family.minecraftIds).Count | Should -Be $targets.Count
-        @($family.minecraftIds|Sort-Object -Unique).Count | Should -Be $targets.Count
-        @($rows|Where-Object{$_.dimensions.ProjectDetection.status -cne 'Supported'}).Count | Should -Be 0
-        @($rows|Where-Object{$_.dimensions.BuildPlan.status -cne 'Supported'}).Count | Should -Be 0
-        @($rows|Where-Object{$_.dimensions.LaunchPlan.status -cne 'Supported'}).Count | Should -Be 0
+        $forgeFamilies.Count | Should -Be ($availableGroups.Count + $sourceGradleGroups.Count + 1)
+        foreach($group in $availableGroups){
+            $spec=[string]$group.Name
+            $familyId='forge-gradle-spec-'+([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($spec))).ToLowerInvariant().Substring(0,12))
+            $family=@($forgeFamilies|Where-Object familyId -CEQ $familyId)
+            $family.Count | Should -Be 1
+            $expectedIds=[string[]]@($group.Group|ForEach-Object{([string]$_.targetId -split '@',2)[1]});[Array]::Sort($expectedIds,[StringComparer]::Ordinal)
+            @($family[0].minecraftIds) | Should -Be $expectedIds
+            $family[0].toolchain.id | Should -BeExactly "ForgeGradleSpec:$spec"
+            $family[0].evidence | Should -Contain "forge-mdk-catalog-sha256:$($catalog.catalogHash)"
+            $basisRows=@($group.Group|Sort-Object targetId|ForEach-Object{"$($_.targetId)|$($_.forgeCoordinate)|$($_.archiveSha256)|$($_.buildGradleSha256)|$($_.forgeGradleSpec)|$($_.gradleDistributionUrl)|$($_.buildJavaMajor)"})
+            $hashBasis=(@($familyId,[string]$universe.catalogHash,[string]$catalog.catalogHash,$detectorHash,$adapterHash,$buildJavaResolverHash)+$basisRows) -join "`n"
+            $expectedHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($hashBasis))).ToLowerInvariant()
+            $family[0].toolchainHash | Should -BeExactly $expectedHash
+        }
+        foreach($group in $sourceGradleGroups){
+            $first=$group.Group[0]
+            $sourceKey="$($first.alternateForgeGradleSpec)|$($first.alternateGradleDistributionUrl)"
+            $familyId='forge-gradle-source-'+([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($sourceKey))).ToLowerInvariant().Substring(0,12))
+            $family=@($forgeFamilies|Where-Object familyId -CEQ $familyId)
+            $family.Count | Should -Be 1
+            $expectedIds=[string[]]@($group.Group|ForEach-Object{([string]$_.targetId -split '@',2)[1]});[Array]::Sort($expectedIds,[StringComparer]::Ordinal)
+            @($family[0].minecraftIds) | Should -Be $expectedIds
+            $family[0].toolchain.id | Should -BeExactly "ForgeGradleSpec:$($first.alternateForgeGradleSpec)"
+            $family[0].toolchain.version | Should -Match ([regex]::Escape([string]$first.alternateGradleDistributionUrl))
+            $sourceBasisRows=@($group.Group|Sort-Object targetId|ForEach-Object{"$($_.targetId)|$($_.forgeCoordinate)|$($_.alternateArchiveSha256)|$($_.alternateBuildGradleSha256)|$($_.alternateForgeGradleSpec)|$($_.alternateGradleDistributionUrl)|$($_.alternateBuildJavaMajor)"})
+            $sourceBasis=(@($familyId,[string]$universe.catalogHash,[string]$catalog.catalogHash,$detectorHash,$adapterHash,$buildJavaResolverHash)+$sourceBasisRows) -join "`n"
+            $sourceExpectedHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($sourceBasis))).ToLowerInvariant()
+            $family[0].toolchainHash | Should -BeExactly $sourceExpectedHash
+        }
+        $overlayFamily=@($forgeFamilies|Where-Object familyId -CEQ 'forge-legacy-source-overlay-v1')
+        $overlayFamily.Count | Should -Be 1
+        @($overlayFamily[0].minecraftIds).Count | Should -Be $sourceOverlayRows.Count
+        $overlayFamily[0].capabilities.ProjectDetection.status | Should -BeExactly 'Supported'
+        $overlayFamily[0].capabilities.ProjectDetection.evidenceRefs | Should -Contain 'test:ProjectDetectorV2.Tests.ps1:detects-every-forge-source-overlay-minecraft-target-from-forge-api-imports-in-mcp-projects'
+        $overlayFamily[0].capabilities.BuildJava.status | Should -BeExactly 'PendingImplementation'
+        $overlayFamily[0].capabilities.BuildPlan.status | Should -BeExactly 'PendingImplementation'
+        $overlayFamily[0].capabilities.LaunchPlan.status | Should -BeExactly 'PendingImplementation'
+        @($overlayFamily[0].minecraftIds|Sort-Object -Unique).Count | Should -Be $sourceOverlayRows.Count
+        $assigned=@($forgeFamilies|ForEach-Object{@($_.minecraftIds)})
+        $assigned.Count | Should -Be $targets.Count
+        @($assigned|Sort-Object -Unique).Count | Should -Be $targets.Count
+        @($rows|Where-Object{$_.familyId -cne 'forge-legacy-source-overlay-v1' -and $_.dimensions.ProjectDetection.status -cne 'Supported'}).Count | Should -Be 0
+        @($rows|Where-Object{$_.familyId -cne 'forge-legacy-source-overlay-v1' -and $_.dimensions.BuildPlan.status -cne 'Supported'}).Count | Should -Be 0
+        @($rows|Where-Object{$_.familyId -cne 'forge-legacy-source-overlay-v1' -and $_.dimensions.LaunchPlan.status -cne 'Supported'}).Count | Should -Be 0
+        @($rows|Where-Object{$_.familyId -ceq 'forge-legacy-source-overlay-v1' -and $_.dimensions.BuildPlan.status -cne 'PendingImplementation'}).Count | Should -Be 0
         @($rows|Where-Object{$_.dimensions.BuildVerified.status -ne 'PendingImplementation'}).Count | Should -Be 0
         @($rows|Where-Object{$_.dimensions.LaunchCheck.status -ne 'PendingImplementation'}).Count | Should -Be 0
         @($rows|Where-Object{$_.dimensions.AgentBuild.status -cne 'PendingImplementation'}).Count | Should -Be 0
-        @($rows|Where-Object{$_.familyId -cne 'forge-project-metadata-detection-v1'}).Count | Should -Be 0
+        @($rows|Where-Object{$_.familyId -notin @($forgeFamilies|ForEach-Object familyId)}).Count | Should -Be 0
     }
 
     It 'assigns exact LegacyFabric targets to a BuildPlan and LaunchPlan family' {
@@ -365,9 +487,10 @@ Describe 'Full compatibility ledger' {
         $familySchema=Join-Path $repositoryRoot 'common/schemas/compatibility-families.schema.json'
         $detectorHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
         $adapterHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/LegacyFabric.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
+        $buildJavaResolverHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/BuildJavaResolver.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
         $orderedIds=[string[]]@($targets|ForEach-Object{[string]$_.minecraftId});[Array]::Sort($orderedIds,[StringComparer]::Ordinal)
         $lf=[string][char]10
-        $hashBasis=(@('legacyfabric-looming-build-launch-plan-v1',[string]$universe.catalogHash,$detectorHash,$adapterHash,'422896c188108632da97825f801719f0015b1b32','d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79')+$orderedIds) -join $lf
+        $hashBasis=(@('legacyfabric-looming-build-launch-plan-v1',[string]$universe.catalogHash,$detectorHash,$adapterHash,$buildJavaResolverHash,'422896c188108632da97825f801719f0015b1b32','d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79')+$orderedIds) -join $lf
         $expectedToolchainHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($hashBasis))).ToLowerInvariant()
 
         (Test-Json -Json ($families|ConvertTo-Json -Depth 30 -Compress) -SchemaFile $familySchema) | Should -BeTrue
@@ -397,9 +520,10 @@ Describe 'Full compatibility ledger' {
         $familySchema=Join-Path $repositoryRoot 'common/schemas/compatibility-families.schema.json'
         $detectorHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
         $adapterHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/Adapters/Ornithe.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
+        $buildJavaResolverHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/BuildJavaResolver.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
         $orderedIds=[string[]]@($targets|ForEach-Object{[string]$_.minecraftId});[Array]::Sort($orderedIds,[StringComparer]::Ordinal)
         $lf=[string][char]10
-        $hashBasis=(@('ornithemc-ploceus-project-detection-v1',[string]$universe.catalogHash,$detectorHash,$adapterHash)+$orderedIds) -join $lf
+        $hashBasis=(@('ornithemc-ploceus-project-detection-v1',[string]$universe.catalogHash,$detectorHash,$adapterHash,$buildJavaResolverHash)+$orderedIds) -join $lf
         $expectedToolchainHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($hashBasis))).ToLowerInvariant()
 
         (Test-Json -Json ($families|ConvertTo-Json -Depth 30 -Compress) -SchemaFile $familySchema) | Should -BeTrue
@@ -456,12 +580,21 @@ Describe 'Full compatibility ledger' {
         $detectorHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/ProjectDetector.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
         foreach($loaderId in @('ModLoader','ModLoaderMP')){
             $targets=@($universe.targets|Where-Object{$_.loaderId -ceq $loaderId -and $_.availability -ceq 'Available'})
+            $catalog=Get-Content -Raw (Join-Path $repositoryRoot "compatibility/candidate-catalogs/$loaderId.json")|ConvertFrom-Json
             $family=$families.families|Where-Object{$_.loaderId -ceq $loaderId}|Select-Object -First 1
             $rows=@($ledger.targets|Where-Object loaderId -CEQ $loaderId)
             $expectedFamilyId=if($loaderId -ceq 'ModLoader'){'modloader-mcp-source-project-detection-v1'}else{'modloadermp-mcp-source-project-detection-v1'}
             $hashLines=[Collections.Generic.List[string]]::new()
             foreach($part in @($expectedFamilyId,[string]$universe.catalogHash,$detectorHash)){[void]$hashLines.Add([string]$part)}
-            foreach($target in @($targets|Sort-Object targetId)){$versionLabels=@($target.loaderVersionCandidates|ForEach-Object{[string]$_.loaderVersion});[void]$hashLines.Add("$($target.targetId)|$([string]$target.candidateSourceHash)|$($versionLabels -join ',')")}
+            foreach($target in @($targets|Sort-Object targetId)){
+                $record=$catalog.results|Where-Object targetId -CEQ $target.targetId|Select-Object -First 1
+                $record | Should -Not -BeNullOrEmpty
+                $targetCandidateRows=@($target.loaderVersionCandidates|ForEach-Object{"$($_.loaderVersion)|$($_.artifactFilename)|$($_.sha256)"})
+                $catalogCandidateRows=@($record.candidates|ForEach-Object{"$($_.loaderVersion)|$($_.artifactFilename)|$($_.sha256)"})
+                ($targetCandidateRows -join "`n") | Should -BeExactly ($catalogCandidateRows -join "`n")
+                $versionLabels=@($target.loaderVersionCandidates|ForEach-Object{[string]$_.loaderVersion})
+                [void]$hashLines.Add("$($target.targetId)|$([string]$target.candidateSourceHash)|$([string]$record.sourceHash)|$($versionLabels -join ',')")
+            }
             $expectedHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($hashLines -join [string][char]10))).ToLowerInvariant()
             $family | Should -Not -BeNullOrEmpty
             $family.familyId | Should -BeExactly $expectedFamilyId
@@ -480,5 +613,140 @@ Describe 'Full compatibility ledger' {
         }
         $familySchema=Join-Path $repositoryRoot 'common/schemas/compatibility-families.schema.json'
         (Test-Json -Json ($families|ConvertTo-Json -Depth 50 -Compress) -SchemaFile $familySchema) | Should -BeTrue
+    }
+
+    It 'audits every frozen family as an exact non-overlapping target set with no future-version inheritance' {
+        $repositoryRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
+        $families=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/families.json')|ConvertFrom-Json
+        $ledger=New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-09T00:00:00Z') -FamilyManifest $families
+        $validation=Test-MmtlFullCompatibilityLedger -Ledger $ledger -Universe $universe -FamilyManifest $families -RequireFamilies
+
+        $validation.isValid | Should -BeTrue
+        $validation.summary.targetCount | Should -Be 1631
+        $validation.summary.unassignedFamilyCount | Should -Be 0
+        @($families.families|ForEach-Object{$_.familyId}|Sort-Object -Unique).Count | Should -Be $families.families.Count
+        @($ledger.targets|ForEach-Object{$_.targetId}|Sort-Object -Unique).Count | Should -Be $universe.targets.Count
+
+        foreach($family in $families.families){
+            $familyTargets=@($universe.targets|Where-Object{$_.availability -ceq 'Available' -and $_.loaderId -ceq $family.loaderId -and $_.minecraftId -in @($family.minecraftIds)})
+            $listedTargetIds=[string[]]@($family.minecraftIds|ForEach-Object{"$($family.loaderId)@$($_)"}|Sort-Object)
+            $actualTargetIds=[string[]]@($ledger.targets|Where-Object familyId -CEQ $family.familyId|ForEach-Object{$_.targetId}|Sort-Object)
+            ($listedTargetIds -join "`n") | Should -BeExactly ($actualTargetIds -join "`n")
+            $familyTargets.Count | Should -Be $actualTargetIds.Count
+            $boundaryIds=@($family.minecraftIds|Sort-Object -Unique)
+            foreach($boundaryId in @($boundaryIds[0],$boundaryIds[-1])){
+                $boundaryTargetId="$($family.loaderId)@$boundaryId"
+                @($ledger.targets|Where-Object targetId -CEQ $boundaryTargetId|Where-Object familyId -CEQ $family.familyId).Count | Should -Be 1
+            }
+
+            $futureManifest=$families|ConvertTo-Json -Depth 50|ConvertFrom-Json
+            $futureFamily=$futureManifest.families|Where-Object familyId -CEQ $family.familyId|Select-Object -First 1
+            $futureFamily.minecraftIds=@($futureFamily.minecraftIds)+@('__future_unverified__')
+            { New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-09T00:00:00Z') -FamilyManifest $futureManifest } | Should -Throw '*FAMILY_TARGET_NOT_IN_UNIVERSE*'
+        }
+    }
+
+    It 'records project-evidence BuildJava resolution as partial without promoting BuildVerified' {
+        $repositoryRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $universe=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/universe-preview.json')|ConvertFrom-Json
+        $families=Get-Content -Raw (Join-Path $repositoryRoot 'compatibility/families.json')|ConvertFrom-Json
+        $expectedFamilyIds=@('fabric-loom-remap-build-launch-plan-v1','fabric-loom-unobfuscated-build-launch-plan-v1','legacyfabric-looming-build-launch-plan-v1','neoforge-gradle-build-launch-plan-v1','ornithemc-ploceus-project-detection-v1','quilt-loom-build-launch-plan-v1')+@($families.families|Where-Object{$_.familyId -like 'forge-gradle-spec-*' -or $_.familyId -like 'forge-gradle-source-*'}|ForEach-Object familyId)
+        $resolverHash=(Get-FileHash -LiteralPath (Join-Path $repositoryRoot 'common/src/BuildJavaResolver.psm1') -Algorithm SHA256).Hash.ToLowerInvariant()
+        $ledger=New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-09T00:00:00Z') -FamilyManifest $families
+        $eligibleFamilies=@($families.families|Where-Object{$_.familyId -in $expectedFamilyIds})
+        $rows=@($ledger.targets|Where-Object{$_.familyId -in $expectedFamilyIds})
+
+        $eligibleFamilies.Count | Should -Be $expectedFamilyIds.Count
+        @($rows|Where-Object{$_.dimensions.BuildJava.status -cne 'PartiallySupported'}).Count | Should -Be 0
+        @($rows|Where-Object{$_.dimensions.BuildJava.evidenceRefs -notcontains "build-java-resolver-sha256:$resolverHash"}).Count | Should -Be 0
+        @($rows|Where-Object{$_.dimensions.BuildVerified.status -cne 'PendingImplementation'}).Count | Should -Be 0
+        foreach($family in $eligibleFamilies){
+            $family.capabilities.BuildJava.status | Should -BeExactly 'PartiallySupported'
+            $family.capabilities.BuildJava.evidenceRefs | Should -Contain "build-java-resolver-sha256:$resolverHash"
+            $family.capabilities.BuildJava.evidenceRefs | Should -Contain 'test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target'
+        }
+    }
+
+    It 'applies verified Runner evidence to one exact target without promoting its family siblings' {
+        $repoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $universe = Get-Content (Join-Path $repoRoot 'compatibility/compatibility-universe.json') -Raw | ConvertFrom-Json
+        $families = Get-Content (Join-Path $repoRoot 'compatibility/families.json') -Raw | ConvertFrom-Json
+        $sourceEvidence = Join-Path $repoRoot 'compatibility/evidence/build/Forge-1.8.9-Windows-x64.json'
+        $evidenceRoot = Join-Path $TestDrive 'target-evidence'
+        $null = New-Item -ItemType Directory -Path $evidenceRoot -Force
+        $evidencePath = Join-Path $evidenceRoot 'forge-1.8.9.json'
+        Copy-Item -LiteralPath $sourceEvidence -Destination $evidencePath
+        $baseline = New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $families
+        $row = @($baseline.targets | Where-Object targetId -CEQ 'Forge@1.8.9')[0]
+        $evidenceHash = (Get-FileHash -LiteralPath $evidencePath -Algorithm SHA256).Hash.ToLowerInvariant()
+        $index = [pscustomobject][ordered]@{
+            schemaVersion = 1
+            universeHash = [string]$universe.catalogHash
+            entries = @([pscustomobject][ordered]@{targetId='Forge@1.8.9';dimension='BuildVerified';targetSpecHash=[string]$row.targetSpecHash;evidencePath='forge-1.8.9.json';evidenceSha256=$evidenceHash})
+        }
+
+        $ledger = New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $families -TargetEvidenceIndex $index -EvidenceRoot $evidenceRoot
+        $validation = Test-MmtlFullCompatibilityLedger -Ledger $ledger -Universe $universe -FamilyManifest $families -TargetEvidenceIndex $index -EvidenceRoot $evidenceRoot
+
+        ($ledger.targets | Where-Object targetId -CEQ 'Forge@1.8.9').dimensions.BuildVerified.status | Should -BeExactly 'Supported'
+        ($ledger.targets | Where-Object targetId -CEQ 'Forge@1.8.9').dimensions.BuildJava.status | Should -BeExactly 'Supported'
+        ($ledger.targets | Where-Object targetId -CEQ 'Forge@1.8.9').dimensions.BuildJava.evidenceRefs | Should -Contain "target-runner-evidence-sha256:$evidenceHash"
+        @($ledger.targets | Where-Object targetId -in @('Forge@1.8.8','Forge@1.9') | Where-Object {$_.dimensions.BuildJava.status -cne 'PartiallySupported'}).Count | Should -Be 0
+        ($ledger.targets | Where-Object targetId -CEQ 'Forge@1.8.9').dimensions.BuildVerified.evidenceRefs | Should -Contain "target-runner-evidence-sha256:$evidenceHash"
+        @($ledger.targets | Where-Object targetId -in @('Forge@1.8.8','Forge@1.9') | Where-Object {$_.dimensions.BuildVerified.status -ne 'PendingImplementation'}).Count | Should -Be 0
+        $validation.isValid | Should -BeTrue
+    }
+
+    It 'accepts evidence when an exact loader version candidate is a structured catalog record' {
+        $repoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $universe = Get-Content (Join-Path $repoRoot 'compatibility/universe-preview.json') -Raw | ConvertFrom-Json
+        $families = Get-Content (Join-Path $repoRoot 'compatibility/families.json') -Raw | ConvertFrom-Json
+        $checkedInIndex = Get-Content (Join-Path $repoRoot 'compatibility/target-validation-evidence.json') -Raw | ConvertFrom-Json
+        $riftClaim = @($checkedInIndex.entries | Where-Object { $_.targetId -CEQ 'Rift@1.13' -and $_.dimension -CEQ 'BuildVerified' })[0]
+        $riftClaim | Should -Not -BeNullOrEmpty
+        $base = New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-14T00:00:00Z') -FamilyManifest $families
+        $riftTarget = @($universe.targets | Where-Object targetId -CEQ 'Rift@1.13')[0]
+        $riftTarget.loaderVersionCandidates[0].loaderVersion | Should -BeExactly '1.0.4'
+        $index = [pscustomobject][ordered]@{
+            schemaVersion = 1
+            universeHash = [string]$universe.catalogHash
+            entries = @([pscustomobject][ordered]@{
+                targetId = [string]$riftClaim.targetId
+                dimension = [string]$riftClaim.dimension
+                targetSpecHash = [string](@($base.targets | Where-Object targetId -CEQ 'Rift@1.13')[0].targetSpecHash)
+                evidencePath = [string]$riftClaim.evidencePath
+                evidenceSha256 = [string]$riftClaim.evidenceSha256
+            })
+        }
+
+        $ledger = New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-14T00:00:00Z') -FamilyManifest $families -TargetEvidenceIndex $index -EvidenceRoot $repoRoot
+
+        ($ledger.targets | Where-Object targetId -CEQ 'Rift@1.13').dimensions.BuildVerified.status | Should -BeExactly 'Supported'
+    }
+
+    It 'rejects stale universe claims, duplicate dimensions, tampered evidence and unsafe paths' {
+        $repoRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $universe=Get-Content (Join-Path $repoRoot 'compatibility/compatibility-universe.json') -Raw|ConvertFrom-Json
+        $families=Get-Content (Join-Path $repoRoot 'compatibility/families.json') -Raw|ConvertFrom-Json
+        $root=Join-Path $TestDrive 'invalid-target-evidence';$null=New-Item -ItemType Directory -Path $root -Force
+        $path=Join-Path $root 'forge.json';Copy-Item (Join-Path $repoRoot 'compatibility/evidence/build/Forge-1.8.9-Windows-x64.json') $path
+        $base=New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $families
+        $row=@($base.targets|Where-Object targetId -CEQ 'Forge@1.8.9')[0]
+        $hash=(Get-FileHash $path -Algorithm SHA256).Hash.ToLowerInvariant()
+        $entry=[pscustomobject][ordered]@{targetId='Forge@1.8.9';dimension='BuildVerified';targetSpecHash=[string]$row.targetSpecHash;evidencePath='forge.json';evidenceSha256=$hash}
+        $index=[pscustomobject][ordered]@{schemaVersion=1;universeHash=[string]$universe.catalogHash;entries=@($entry)}
+
+        $stale=$index|ConvertTo-Json -Depth 10|ConvertFrom-Json;$stale.universeHash='0'*64
+        { New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $families -TargetEvidenceIndex $stale -EvidenceRoot $root } | Should -Throw '*TARGET_EVIDENCE_UNIVERSE_MISMATCH*'
+        $duplicate=$index|ConvertTo-Json -Depth 10|ConvertFrom-Json;$duplicate.entries=@($entry,$entry)
+        { New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $families -TargetEvidenceIndex $duplicate -EvidenceRoot $root } | Should -Throw '*TARGET_EVIDENCE_DUPLICATE_CLAIM*'
+        $unsafe=$index|ConvertTo-Json -Depth 10|ConvertFrom-Json;$unsafe.entries[0].evidencePath='../forge.json'
+        { New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $families -TargetEvidenceIndex $unsafe -EvidenceRoot $root } | Should -Throw '*TARGET_EVIDENCE_INDEX_SCHEMA_INVALID*'
+        $tampered=$index|ConvertTo-Json -Depth 10|ConvertFrom-Json;$tampered.entries[0].evidenceSha256=('0'*64)
+        { New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $families -TargetEvidenceIndex $tampered -EvidenceRoot $root } | Should -Throw '*TARGET_EVIDENCE_HASH_MISMATCH:Forge@1.8.9*'
+        $wrongEvidence=Get-Content $path -Raw|ConvertFrom-Json;$wrongEvidence.targetId='Forge@1.8.8';[IO.File]::WriteAllText($path,($wrongEvidence|ConvertTo-Json -Depth 30),[Text.UTF8Encoding]::new($false))
+        $mismatch=$index|ConvertTo-Json -Depth 10|ConvertFrom-Json;$mismatch.entries[0].evidenceSha256=(Get-FileHash $path -Algorithm SHA256).Hash.ToLowerInvariant()
+        { New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt ([DateTimeOffset]'2026-10-07T12:00:00Z') -FamilyManifest $families -TargetEvidenceIndex $mismatch -EvidenceRoot $root } | Should -Throw '*TARGET_EVIDENCE_IDENTITY_MISMATCH:Forge@1.8.9*'
     }
 }

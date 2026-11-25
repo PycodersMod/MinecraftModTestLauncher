@@ -59,8 +59,16 @@
       "required": ["status", "evidenceRefs"],
       "properties": {
         "status": { "enum": ["Supported", "PartiallySupported", "NotApplicable", "ExternallyBlocked", "Unsupported", "Unknown", "PendingImplementation"] },
-        "evidenceRefs": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+        "evidenceRefs": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "reasonCode": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "evidence": { "type": "string", "minLength": 1 },
+        "attemptedRemediation": { "type": "string", "minLength": 1 }
       },
+      "allOf": [{
+        "if": { "properties": { "status": { "const": "ExternallyBlocked" } }, "required": ["status"] },
+        "then": { "required": ["reasonCode", "source", "evidence", "attemptedRemediation"] }
+      }],
       "additionalProperties": false
     }
   },

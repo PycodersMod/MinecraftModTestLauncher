@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pinned ForgeGradle Plugins DSL artifact closure",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "targetId", "pluginId", "pluginVersion", "implementationCoordinate", "sourceRepository", "resolver", "javaMajor", "artifactStatus", "targetBuildStatus", "mcpVersions", "mcpMapping", "forgeVersionMetadataFallback", "artifacts", "catalogHash"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "targetId": {"const": "Forge@1.8"},
+    "pluginId": {"const": "net.minecraftforge.gradle.forge"},
+    "pluginVersion": {"const": "2.0.2"},
+    "implementationCoordinate": {"const": "gradle.plugin.net.minecraftforge.gradle:ForgeGradle:2.0.2"},
+    "sourceRepository": {"const": "https://plugins.gradle.org/m2"},
+    "resolver": {"const": "Gradle 2.7"},
+    "javaMajor": {"const": 8},
+    "artifactStatus": {"enum": ["HashesVerified"]},
+    "targetBuildStatus": {"enum": ["PendingRunnerValidation", "BuildVerified"]},
+    "mcpVersions": {
+      "type": "object", "additionalProperties": false,
+      "required": ["url", "bytes", "sha256"],
+      "properties": {
+        "url": {"const": "https://maven.minecraftforge.net/de/oceanlabs/mcp/versions.json"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "mcpMapping": {"const": "snapshot_20141130"},
+    "forgeVersionMetadataFallback": {"const": "ExactPinnedTargetOnly"},
+    "catalogHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "artifacts": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["group", "artifact", "version", "file", "extension", "bytes", "sha256", "url"],
+        "properties": {
+          "group": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+$"},
+          "artifact": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+$"},
+          "version": {"type": "string", "pattern": "^[A-Za-z0-9_.+-]+$"},
+          "file": {"type": "string", "pattern": "^[A-Za-z0-9_.+-]+\\.(jar|pom)$"},
+          "extension": {"enum": ["jar", "pom"]},
+          "bytes": {"type": "integer", "minimum": 1},
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "url": {"type": "string", "format": "uri", "pattern": "^https://plugins\\.gradle\\.org/m2/.+\\.(jar|pom)$"}
+        }
+      }
+    }
+  }
+}

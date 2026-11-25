@@ -13,7 +13,7 @@ Describe 'Session 并发创建与排序' {
         $runtime=Join-Path $TestDrive 'runtime';$module=Join-Path $script:root 'src/SessionManager.psm1'
         $jobs=1..4|ForEach-Object { Start-Job -ArgumentList $runtime,$module -ScriptBlock { param($root,$path);$source=Join-Path (Split-Path -Parent $path) 'Platform/Platform.psm1';Import-Module $source -Force;Set-MmtlPlatformProvider ([pscustomobject]@{OS='Windows';Arch='x64';PathComparison='OrdinalIgnoreCase';DefaultRuntimeRoot='';JavaExecutable='java.exe';JavacExecutable='javac.exe';GradleWrapper='gradlew.bat';WindowManagement='Native';ProcessManagement='Native';FabricRuntimeLink='Native';IsWSL=$false});Import-Module $path -Force;New-MmtlSession -RuntimeRoot $root -Name 'parallel' -Metadata ([pscustomobject]@{players=1}) } }
         try {
-            $paths=@(Receive-Job -Job $jobs -Wait -AutoRemoveJob -ErrorAction Stop)
+            $paths=@(Receive-Job -Job $jobs -Wait -ErrorAction Stop)
             $paths.Count | Should -Be 4
             @($paths|Select-Object -Unique).Count | Should -Be 4
             foreach($path in $paths){Test-Path (Join-Path $path 'session.json')|Should -BeTrue;Test-Path (Join-Path $path 'pids.json')|Should -BeTrue}

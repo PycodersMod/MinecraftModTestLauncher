@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-15T12:02:20.0000000+00:00",
+  "targetId": "Quilt@1.20.6",
+  "targetSpecHash": "d43dbdae74f3264b50f2eda0e1246c1e490cfdacfbd937f0e14ffdc0f1136aa4",
+  "loaderId": "Quilt",
+  "minecraftId": "1.20.6",
+  "loaderVersion": "0.26.3",
+  "status": "Observed",
+  "probeStrategy": "GradleJavaExecTaskInspection",
+  "evidenceSource": "GradleInitScriptJavaExecInspection",
+  "confidence": "High",
+  "mode": "SameAsBuildJvm",
+  "runtimeJavaControllable": false,
+  "requiresBuildJvmMatch": true,
+  "runtimeJavaMajor": 21,
+  "observedBuildJavaMajor": 21,
+  "observedBuildJavaVersion": "21.0.9",
+  "buildSystem": {
+    "id": "GradleWrapper",
+    "version": "8.9"
+  },
+  "toolchain": {
+    "id": "QuiltLoom",
+    "version": "1.7.4"
+  },
+  "tasks": [
+    {
+      "task": "runClient",
+      "taskType": "JavaExec",
+      "isJavaExec": true,
+      "launcherSource": "javaLauncher",
+      "executable": "<BUILD_JAVA_HOME>/bin/java.exe"
+    },
+    {
+      "task": "runServer",
+      "taskType": "JavaExec",
+      "isJavaExec": true,
+      "launcherSource": "javaLauncher",
+      "executable": "<BUILD_JAVA_HOME>/bin/java.exe"
+    }
+  ],
+  "probeSourceSha256": "03daeb4d46ed96e557cc198eabde086eab28d424bf4ee8bf483eb0d4715326d8",
+  "buildEvidenceSha256": "d80c5b216c6b9fe167675b6b36b1eeba88e5270ae2340ae00dde7ef18b8dcd75",
+  "rawProbeEvidenceSha256": "2bd80b3f3609ea78c9b83e8d3b18ae29be8f13802a580f66ff350d850de1be2e",
+  "platform": {
+    "os": "Windows",
+    "arch": "x64"
+  }
+}

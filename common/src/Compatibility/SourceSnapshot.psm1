@@ -62,4 +62,48 @@ function Get-MmtlCompatibilityArchiveMinecraftIds {
     @($ids)
 }
 
-Export-ModuleMember -Function Save-MmtlCompatibilitySourceSnapshot,Get-MmtlCompatibilityArchiveMinecraftIds
+function Get-MmtlRiftMinecraftIdsFromMetadata {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][string]$JsonContent)
+
+    try { $metadata = ConvertFrom-Json -InputObject $JsonContent -ErrorAction Stop }
+    catch { throw 'RIFT_METADATA_INVALID: 官方仓库元数据不是有效 JSON。' }
+    if ([string]$metadata.full_name -cne 'DimensionalDevelopment/Rift') {
+        throw 'RIFT_METADATA_SOURCE_MISMATCH: 仓库元数据与固定来源不匹配。'
+    }
+    $description = [string]$metadata.description
+    $ids = @([regex]::Matches($description, '(?i)loader and API for Minecraft\s+([0-9]+(?:\.[0-9]+){1,2})') | ForEach-Object { [string]$_.Groups[1].Value } | Sort-Object -Unique)
+    if ($ids.Count -eq 0) { throw 'RIFT_METADATA_VERSION_MISSING: 官方仓库描述没有 Minecraft 版本。' }
+    $ids
+}
+
+function Get-MmtlCompatibilitySourceSnapshotBytes {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)][string]$SnapshotDirectory,
+        [Parameter(Mandatory)]$Record
+    )
+
+    $providerId = [string]$Record.providerId
+    $relativePath = [string]$Record.relativePath
+    $expectedHash = [string]$Record.sha256
+    $relativeMatch = [regex]::Match($relativePath, '^' + [regex]::Escape($providerId) + '/([a-f0-9]{64})\.bin$')
+    if ($providerId -notmatch '^[A-Za-z][A-Za-z0-9-]{1,31}$' -or -not $relativeMatch.Success -or $expectedHash -notmatch '^[a-f0-9]{64}$') {
+        throw 'COMPATIBILITY_SOURCE_RECORD_INVALID: Provider、相对路径或 SHA-256 无效。'
+    }
+    if ($relativeMatch.Groups[1].Value -cne $expectedHash) { throw 'COMPATIBILITY_SOURCE_RECORD_INVALID: 路径摘要与记录摘要不一致。' }
+    if ([int64]$Record.byteLength -lt 1) { throw 'COMPATIBILITY_SOURCE_RECORD_INVALID: byteLength 无效。' }
+
+    $root = [IO.Path]::GetFullPath($SnapshotDirectory).TrimEnd([IO.Path]::DirectorySeparatorChar) + [IO.Path]::DirectorySeparatorChar
+    $path = [IO.Path]::GetFullPath((Join-Path $root ($relativePath.Replace('/', [IO.Path]::DirectorySeparatorChar))))
+    if (-not $path.StartsWith($root, [StringComparison]::OrdinalIgnoreCase)) { throw 'COMPATIBILITY_SOURCE_PATH_INVALID: 来源快照路径越界。' }
+    if (-not [IO.File]::Exists($path)) { throw 'COMPATIBILITY_SOURCE_SNAPSHOT_MISSING: 快照文件不存在。' }
+
+    $bytes = [IO.File]::ReadAllBytes($path)
+    if ($bytes.LongLength -ne [int64]$Record.byteLength) { throw 'COMPATIBILITY_SOURCE_LENGTH_MISMATCH: 快照长度与记录不一致。' }
+    $actualHash = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
+    if ($actualHash -cne $expectedHash) { throw 'COMPATIBILITY_SOURCE_HASH_MISMATCH: 快照内容与记录摘要不一致。' }
+    ,$bytes
+}
+
+Export-ModuleMember -Function Save-MmtlCompatibilitySourceSnapshot,Get-MmtlCompatibilityArchiveMinecraftIds,Get-MmtlRiftMinecraftIdsFromMetadata,Get-MmtlCompatibilitySourceSnapshotBytes

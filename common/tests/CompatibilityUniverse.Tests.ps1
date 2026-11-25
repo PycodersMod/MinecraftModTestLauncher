@@ -27,8 +27,39 @@ Describe 'Compatibility Universe exact target generation' {
         $universe.targets[0].status | Should -Be 'Unknown'
         $universe.targets[0].sourceHash | Should -Be ('f' * 64)
         $universe.targets[0].loaderVersionCandidates | Should -Contain 'fabric-loader-0.1'
-        $universe.auditStatus | Should -Be 'IN_PROGRESS'
+        $universe.auditStatus | Should -Be 'FROZEN'
         $universe.catalogHash | Should -Match '^[a-f0-9]{64}$'
+    }
+
+    It 'freezes the exact availability universe even while per-target Loader candidates remain pending' {
+        $catalog = [pscustomobject]@{ manifestHash = 'a' * 64; entries = @([pscustomobject]@{ id = '1.20.1'; type = 'release'; releaseTime = '2023-06-12T00:00:00Z' }) }
+        $snapshot = [pscustomobject]@{
+            loaderId = 'CandidatePendingLoader'; providerStatus = 'Available'; sourceUrl = 'https://example.invalid/versions'
+            sourceClass = 'ActiveOfficial'; trustClass = 'TrustedOfficial'; transportSecurity = 'HTTPS'; maintenanceState = 'Active'
+            sourceHash = 'f' * 64; supportedVersions = @('1.20.1')
+        }
+
+        $universe = New-MmtlCompatibilityUniverse -Catalog $catalog -LoaderSnapshots @($snapshot) -GeneratedAt ([DateTimeOffset]'2026-10-07T00:00:00Z')
+
+        $universe.auditStatus | Should -Be 'FROZEN'
+        $universe.targets[0].availability | Should -Be 'Available'
+        $universe.targets[0].candidateStatus | Should -Be 'Pending'
+    }
+
+    It 'emits complete but explicitly unknown Java requirement records for Ledger consumers' {
+        $catalog = [pscustomobject]@{ manifestHash = 'a' * 64; entries = @([pscustomobject]@{ id = '1.20.1'; type = 'release'; releaseTime = '2023-06-12T00:00:00Z' }) }
+        $snapshot = [pscustomobject]@{ loaderId='JavaContractLoader';providerStatus='Available';sourceUrl='https://example.invalid/versions';sourceClass='ActiveOfficial';trustClass='TrustedOfficial';transportSecurity='HTTPS';maintenanceState='Active';sourceHash='f'*64;supportedVersions=@('1.20.1') }
+
+        $universe = New-MmtlCompatibilityUniverse -Catalog $catalog -LoaderSnapshots @($snapshot) -GeneratedAt ([DateTimeOffset]'2026-10-07T00:00:00Z')
+
+        foreach ($requirement in @($universe.targets[0].runtimeJavaRequirement, $universe.targets[0].buildJavaRequirement)) {
+            $requirement.PSObject.Properties.Name | Should -Contain 'requirementKind'
+            $requirement.PSObject.Properties.Name | Should -Contain 'provenance'
+            $requirement.requirementKind | Should -Be 'Unknown'
+            $requirement.source | Should -Be 'Unknown'
+            $requirement.major | Should -BeNullOrEmpty
+            $requirement.provenance | Should -BeNullOrEmpty
+        }
     }
 
     It 'retains unknown provider snapshots as audit issues instead of inferring no support' {

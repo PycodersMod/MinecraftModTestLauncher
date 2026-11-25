@@ -48,7 +48,7 @@
   ],
   "validationEvidence": {
     "file": "compatibility/rift-build-validation.json",
-    "sha256": "4f54adb38894fb9ea6ac5d5b90c7974d902f2602eaa4409e4ca08bb12f2da7cc",
+    "sha256": "c5a38367233a290d64ed57947286bc9f6a9fdba66944e7915ff7d55c82ef19c1",
     "buildStatus": "BuildVerifiedForPinnedFixture",
     "launchPlanStatus": "DefinedButUnverified",
     "automaticArbitraryProjectExecution": "Denied"

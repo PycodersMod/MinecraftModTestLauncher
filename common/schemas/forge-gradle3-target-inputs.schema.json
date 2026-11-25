@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pinned ForgeGradle 3 target inputs",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "targetId", "forgeVersion", "resolver", "artifactStatus", "artifacts", "mcpConfig", "mojangVersion", "catalogHash"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "targetId": { "enum": ["Forge@1.12.2", "Forge@1.13.2", "Forge@1.14.2", "Forge@1.14.3", "Forge@1.14.4", "Forge@1.15", "Forge@1.15.1", "Forge@1.15.2", "Forge@1.16.1", "Forge@1.16.2", "Forge@1.16.3", "Forge@1.16.4"] },
+    "forgeVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+(\\.[0-9]+)?-[A-Za-z0-9_.+-]+$" },
+    "resolver": { "type": "string", "minLength": 20, "maxLength": 200 },
+    "artifactStatus": { "const": "HashesVerified" },
+    "artifacts": {
+      "type": "array", "minItems": 2, "maxItems": 8,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["kind", "group", "artifact", "version", "file", "bytes", "sha256", "url"],
+        "properties": {
+          "kind": { "enum": ["userdev3", "userdev", "mcpConfig", "mcpSnapshot", "forgeSources", "forgeUniversal", "launcher", "binarypatcher"] },
+          "group": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+$" },
+          "artifact": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+$" },
+          "version": { "type": "string", "pattern": "^[A-Za-z0-9_.+-]+$" },
+          "file": { "type": "string", "pattern": "^[A-Za-z0-9_.+-]+\\.(jar|zip)$" },
+          "bytes": { "type": "integer", "minimum": 1 },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "url": { "type": "string", "format": "uri", "pattern": "^https://maven\\.minecraftforge\\.net/[A-Za-z0-9_./+-]+\\.(jar|zip)$" }
+        }
+      }
+    },
+    "mcpConfig": {
+      "type": "object", "additionalProperties": false,
+      "required": ["coordinate", "configEntry", "configBytes", "configSha256", "mappingsEntry", "mappingsBytes", "mappingsSha256"],
+      "properties": {
+        "coordinate": { "type": "string", "pattern": "^de\\.oceanlabs\\.mcp:mcp_config:[A-Za-z0-9_.+-]+@zip$" },
+        "configEntry": { "const": "config.json" },
+        "configBytes": { "type": "integer", "minimum": 1 },
+        "configSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "mappingsEntry": { "type": "string", "pattern": "^config/[A-Za-z0-9_.-]+\\.(tsrg|srg)$" },
+        "mappingsBytes": { "type": "integer", "minimum": 1 },
+        "mappingsSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "mcpSnapshot": {
+      "type": "object", "additionalProperties": false,
+      "required": ["channel", "version", "coordinate"],
+      "properties": {
+        "channel": { "const": "snapshot" },
+        "version": { "const": "20190719-1.14.3" },
+        "coordinate": { "const": "de.oceanlabs.mcp:mcp_snapshot:20190719-1.14.3" }
+      }
+    },
+    "userdev3": {
+      "type": "object", "additionalProperties": false,
+      "required": ["configEntry", "configBytes", "configSha256", "mcpCoordinate", "libraries", "processors"],
+      "properties": {
+        "configEntry": { "const": "config.json" },
+        "configBytes": { "type": "integer", "minimum": 1 },
+        "configSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "mcpCoordinate": { "type": "string", "pattern": "^de\\.oceanlabs\\.mcp:mcp_config:[A-Za-z0-9_.+-]+@zip$" },
+        "libraries": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 3 } },
+        "processors": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 3 } }
+      }
+    },
+    "userdev": {
+      "type": "object", "additionalProperties": false,
+      "required": ["configEntry", "configBytes", "configSha256", "mcpCoordinate", "libraries", "processors"],
+      "properties": {
+        "configEntry": { "const": "config.json" },
+        "configBytes": { "type": "integer", "minimum": 1 },
+        "configSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "mcpCoordinate": { "type": "string", "pattern": "^de\\.oceanlabs\\.mcp:mcp_config:[A-Za-z0-9_.+-]+@zip$" },
+        "libraries": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 3 } },
+        "processors": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 3 } }
+      }
+    },
+    "mojangVersion": {
+      "type": "object", "additionalProperties": false,
+      "required": ["url", "sha1", "bytes", "sha256"],
+      "properties": {
+        "url": { "type": "string", "format": "uri", "pattern": "^https://piston-meta\\.mojang\\.com/v1/packages/[a-f0-9]{40}/[0-9]+\\.[0-9]+(\\.[0-9]+)?\\.json$" },
+        "sha1": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+        "bytes": { "type": "integer", "minimum": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "catalogHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  },
+  "oneOf": [
+    { "required": ["userdev3"], "not": { "required": ["userdev"] } },
+    { "required": ["userdev"], "not": { "required": ["userdev3"] } }
+  ],
+  "allOf": [
+    { "if": { "properties": { "targetId": { "const": "Forge@1.15" } }, "required": ["targetId"] }, "then": { "required": ["mcpSnapshot"] } }
+  ]
+}

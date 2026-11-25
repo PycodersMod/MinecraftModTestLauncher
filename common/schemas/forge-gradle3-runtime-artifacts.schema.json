@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pinned ForgeGradle 3 userdev runtime artifact closure",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "targetId", "resolver", "artifactStatus", "userdevLibraries", "components", "artifacts", "supportArtifacts", "dynamicMetadata", "mojangVersionSha256", "mojangArtifacts", "catalogHash"],
+  "allOf": [
+    {"if": {"properties": {"targetId": {"const": "Forge@1.13.2"}}, "required": ["targetId"]}, "then": {"properties": {"userdevLibraries": {"minItems": 23, "maxItems": 23}, "components": {"minItems": 35, "maxItems": 35}, "artifacts": {"minItems": 71, "maxItems": 71}, "supportArtifacts": {"minItems": 16, "maxItems": 16}, "dynamicMetadata": {"minItems": 5, "maxItems": 5}, "mojangArtifacts": {"minItems": 58, "maxItems": 58}}}},
+    {"if": {"properties": {"targetId": {"const": "Forge@1.14.2"}}, "required": ["targetId"]}, "then": {"properties": {"userdevLibraries": {"minItems": 21, "maxItems": 21}, "components": {"minItems": 37, "maxItems": 37}, "artifacts": {"minItems": 77, "maxItems": 77}, "supportArtifacts": {"minItems": 18, "maxItems": 18}, "dynamicMetadata": {"minItems": 5, "maxItems": 5}, "mojangArtifacts": {"minItems": 55, "maxItems": 55}}}},
+    {"if": {"properties": {"targetId": {"const": "Forge@1.14.3"}}, "required": ["targetId"]}, "then": {"properties": {"userdevLibraries": {"minItems": 21, "maxItems": 21}, "components": {"minItems": 37, "maxItems": 37}, "artifacts": {"minItems": 77, "maxItems": 77}, "supportArtifacts": {"minItems": 18, "maxItems": 18}, "dynamicMetadata": {"minItems": 5, "maxItems": 5}, "mojangArtifacts": {"minItems": 55, "maxItems": 55}}}},
+    {"if": {"properties": {"targetId": {"const": "Forge@1.14.4"}}, "required": ["targetId"]}, "then": {"properties": {"userdevLibraries": {"minItems": 22, "maxItems": 22}, "components": {"minItems": 33, "maxItems": 33}, "artifacts": {"minItems": 69, "maxItems": 69}, "supportArtifacts": {"minItems": 16, "maxItems": 16}, "dynamicMetadata": {"minItems": 5, "maxItems": 5}, "mojangArtifacts": {"minItems": 60, "maxItems": 60}}}},
+    {"if": {"properties": {"targetId": {"const": "Forge@1.15.1"}}, "required": ["targetId"]}, "then": {"required": ["componentSelections"], "properties": {"userdevLibraries": {"minItems": 20, "maxItems": 20}, "components": {"minItems": 30, "maxItems": 30}, "artifacts": {"minItems": 63, "maxItems": 63}, "supportArtifacts": {"minItems": 12, "maxItems": 12}, "dynamicMetadata": {"minItems": 5, "maxItems": 5}, "mojangArtifacts": {"minItems": 65, "maxItems": 65}, "componentSelections": {"minItems": 3, "maxItems": 3}}}},
+    {"if": {"properties": {"targetId": {"const": "Forge@1.15.2"}}, "required": ["targetId"]}, "then": {"required": ["componentSelections"], "properties": {"userdevLibraries": {"minItems": 24, "maxItems": 24}, "components": {"minItems": 33, "maxItems": 33}, "artifacts": {"minItems": 69, "maxItems": 69}, "supportArtifacts": {"minItems": 15, "maxItems": 15}, "dynamicMetadata": {"minItems": 6, "maxItems": 6}, "mojangArtifacts": {"minItems": 65, "maxItems": 65}, "componentSelections": {"minItems": 1, "maxItems": 1}}}},
+    {"if": {"properties": {"targetId": {"const": "Forge@1.16.1"}}, "required": ["targetId"]}, "then": {"required": ["componentSelections"], "properties": {"userdevLibraries": {"minItems": 23, "maxItems": 23}, "components": {"minItems": 30, "maxItems": 30}, "artifacts": {"minItems": 63, "maxItems": 63}, "supportArtifacts": {"minItems": 12, "maxItems": 12}, "dynamicMetadata": {"minItems": 6, "maxItems": 6}, "mojangArtifacts": {"minItems": 65, "maxItems": 65}, "componentSelections": {"minItems": 4, "maxItems": 4}}}},
+    {"if": {"properties": {"targetId": {"const": "Forge@1.16.2"}}, "required": ["targetId"]}, "then": {"required": ["componentSelections"], "properties": {"userdevLibraries": {"minItems": 23, "maxItems": 23}, "components": {"minItems": 30, "maxItems": 30}, "artifacts": {"minItems": 63, "maxItems": 63}, "supportArtifacts": {"minItems": 12, "maxItems": 12}, "dynamicMetadata": {"minItems": 6, "maxItems": 6}, "mojangArtifacts": {"minItems": 65, "maxItems": 65}, "componentSelections": {"minItems": 4, "maxItems": 4}}}},
+    {"if": {"properties": {"targetId": {"const": "Forge@1.16.3"}}, "required": ["targetId"]}, "then": {"required": ["componentSelections"], "properties": {"userdevLibraries": {"minItems": 23, "maxItems": 23}, "components": {"minItems": 30, "maxItems": 30}, "artifacts": {"minItems": 63, "maxItems": 63}, "supportArtifacts": {"minItems": 12, "maxItems": 12}, "dynamicMetadata": {"minItems": 6, "maxItems": 6}, "mojangArtifacts": {"minItems": 65, "maxItems": 65}, "componentSelections": {"minItems": 5, "maxItems": 5}}}},
+    {"if": {"properties": {"targetId": {"const": "Forge@1.16.4"}}, "required": ["targetId"]}, "then": {"required": ["componentSelections"], "properties": {"userdevLibraries": {"minItems": 25, "maxItems": 25}, "components": {"minItems": 31, "maxItems": 31}, "artifacts": {"minItems": 65, "maxItems": 65}, "supportArtifacts": {"minItems": 12, "maxItems": 12}, "dynamicMetadata": {"minItems": 6, "maxItems": 6}, "mojangArtifacts": {"minItems": 65, "maxItems": 65}, "componentSelections": {"minItems": 5, "maxItems": 5}}}}
+  ],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "targetId": {"enum": ["Forge@1.13.2", "Forge@1.14.2", "Forge@1.14.3", "Forge@1.14.4", "Forge@1.15", "Forge@1.15.1", "Forge@1.15.2", "Forge@1.16.1", "Forge@1.16.2", "Forge@1.16.3", "Forge@1.16.4"]},
+    "resolver": {"type": "string", "minLength": 20, "maxLength": 200},
+    "artifactStatus": {"const": "HashesVerified"},
+    "userdevLibraries": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 3}},
+    "components": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.+-]+$"}},
+    "componentSelections": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["requested", "selected", "reason"], "properties": {"requested": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.+-]+$"}, "selected": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.+-]+$"}, "reason": {"type": "string", "minLength": 1, "maxLength": 200}}}},
+    "artifacts": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["group", "artifact", "version", "file", "extension", "bytes", "sha256", "url"],
+        "properties": {
+          "group": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+$"},
+          "artifact": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+$"},
+          "version": {"type": "string", "pattern": "^[A-Za-z0-9_.+-]+$"},
+          "file": {"type": "string", "pattern": "^[A-Za-z0-9_.+-]+\\.(jar|pom)$"},
+          "extension": {"enum": ["jar", "pom"]},
+          "bytes": {"type": "integer", "minimum": 1},
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "url": {"type": "string", "format": "uri", "pattern": "^https://(maven\\.minecraftforge\\.net|libraries\\.minecraft\\.net|repo\\.maven\\.apache\\.org)/[A-Za-z0-9_./+-]+\\.(jar|pom)$"}
+        }
+      }
+    },
+    "supportArtifacts": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["group", "artifact", "version", "file", "extension", "bytes", "sha256", "url"],
+        "properties": {
+          "group": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+$"},
+          "artifact": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+$"},
+          "version": {"type": "string", "pattern": "^[A-Za-z0-9_.+-]+$"},
+          "file": {"type": "string", "pattern": "^[A-Za-z0-9_.+-]+\\.pom$"},
+          "extension": {"const": "pom"},
+          "bytes": {"type": "integer", "minimum": 1},
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "url": {"type": "string", "format": "uri", "pattern": "^https://repo\\.maven\\.apache\\.org/maven2/[A-Za-z0-9_./+-]+\\.pom$"}
+        }
+      }
+    },
+    "dynamicMetadata": {
+      "type": "array", "minItems": 5,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["group", "artifact", "file", "bytes", "sha256", "url", "requiredSelectors", "resolutions"],
+        "properties": {
+          "group": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+$"},
+          "artifact": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+$"},
+          "file": {"const": "maven-metadata.xml"},
+          "bytes": {"type": "integer", "minimum": 1},
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "url": {"type": "string", "format": "uri", "pattern": "^https://maven\\.minecraftforge\\.net/[A-Za-z0-9_./+-]+/maven-metadata\\.xml$"},
+          "requiredSelectors": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[0-9]+(\\.[0-9]+)*\\.\\+$"}},
+          "resolutions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "object", "additionalProperties": false, "required": ["selector", "version"], "properties": {"selector": {"type": "string", "pattern": "^[0-9]+(\\.[0-9]+)*\\.\\+$"}, "version": {"type": "string", "pattern": "^[0-9]+(\\.[0-9]+)*(?:[-+][A-Za-z0-9_.+-]+)?$"}}}}
+        }
+      }
+    },
+    "mojangVersionSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "mojangArtifacts": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["group", "artifact", "version", "file", "extension", "bytes", "sha1", "sha256", "url"],
+        "properties": {
+          "group": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+$"},
+          "artifact": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+$"},
+          "version": {"type": "string", "pattern": "^[A-Za-z0-9_.+-]+$"},
+          "file": {"type": "string", "pattern": "^[A-Za-z0-9_.+-]+\\.jar$"},
+          "extension": {"const": "jar"},
+          "bytes": {"type": "integer", "minimum": 1},
+          "sha1": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "url": {"type": "string", "format": "uri", "pattern": "^https://libraries\\.minecraft\\.net/[A-Za-z0-9_./+-]+\\.jar$"}
+        }
+      }
+    },
+    "catalogHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

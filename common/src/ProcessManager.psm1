@@ -44,11 +44,19 @@ function Start-MmtlTrackedProcess {
     try{
         $manifestPath=Join-Path $session 'session.v2.json'
         if(Test-Path -LiteralPath $manifestPath -PathType Leaf){$validation=Test-MmtlSessionV2 -SessionPath $session;if(-not $validation.valid -or $validation.state -in @('Abandoned','Completed','Failed','Stopped')){throw 'SESSION_NOT_LAUNCHABLE'}}
+        $identityBinding=$null;$sessionStatePath=Join-Path $session 'session.json'
+        if(Test-Path -LiteralPath $sessionStatePath -PathType Leaf){
+            try{$sessionState=Get-Content -LiteralPath $sessionStatePath -Raw|ConvertFrom-Json -ErrorAction Stop;$identityMatches=@($sessionState.testIdentities|Where-Object{[string]$_.role -ceq $Role -and ($Role -ceq 'Server' -or [string]$_.username -ceq $Username)})}catch{throw 'SESSION_IDENTITY_BINDING_INVALID'}
+            if($identityMatches.Count -gt 1){throw 'SESSION_IDENTITY_BINDING_AMBIGUOUS'}
+            if($identityMatches.Count -eq 1){$identityBinding=$identityMatches[0]}
+            $identityRequired=($sessionState.PSObject.Properties['scenarioIdentityPlan'] -and $sessionState.scenarioIdentityPlan)
+            if($identityRequired -and $Role -in @('Client','Host','Guest','Server') -and -not $identityBinding){throw 'SESSION_IDENTITY_BINDING_MISSING'}
+        }
         $proc=Start-Process -FilePath $FilePath -ArgumentList $ArgumentList -WorkingDirectory $WorkingDirectory -RedirectStandardOutput $LogPath -RedirectStandardError ($LogPath+'.err') -PassThru
         $proc.Refresh();$current=& $api.GetRecord $proc.Id
         if(-not $current){throw '无法取得新进程的身份快照。'}
         $trackedIdentity=$current
-        $entry=[pscustomobject]@{PID=$proc.Id;Role=$Role;Username=$Username;StartIdentity=[string]$current.StartIdentity;StartTimeUtc=[string]$current.StartTimeUtc;StartTimeToken=[string]$current.StartTimeToken;Executable=[string]$current.Executable;ParentPID=[int]$current.ParentPID;CommandLine=[string]$current.CommandLine;SessionID=$current.SessionID;Command=$FilePath;WorkingDirectory=$WorkingDirectory;Arguments=@($ArgumentList);LogPath=$LogPath;RuntimeDirectory=if($RuntimeDirectory){[IO.Path]::GetFullPath($RuntimeDirectory)}else{$null};StatePath=(Join-Path $session "process-$($proc.Id).exit.json");ProcessTree=@();RuntimeLinkPath=$RuntimeLinkPath;RuntimeTargetPath=$RuntimeTargetPath;Rehearsal=[bool]$Rehearsal.IsPresent}
+        $entry=[pscustomobject]@{PID=$proc.Id;Role=$Role;Username=$Username;IdentityId=$(if($identityBinding){[string]$identityBinding.identityId}else{$null});InstanceId=$(if($identityBinding){[string]$identityBinding.instanceId}else{$null});GameDir=$(if($identityBinding){[string]$identityBinding.gameDir}else{$null});RuntimeJavaMajor=$(if($identityBinding){$identityBinding.runtimeJavaMajor}else{$null});RuntimeJavaPath=$(if($identityBinding){[string]$identityBinding.runtimeJavaPath}else{$null});StartIdentity=[string]$current.StartIdentity;StartTimeUtc=[string]$current.StartTimeUtc;StartTimeToken=[string]$current.StartTimeToken;Executable=[string]$current.Executable;ParentPID=[int]$current.ParentPID;CommandLine=[string]$current.CommandLine;SessionID=$current.SessionID;Command=$FilePath;WorkingDirectory=$WorkingDirectory;Arguments=@($ArgumentList);LogPath=$LogPath;RuntimeDirectory=if($RuntimeDirectory){[IO.Path]::GetFullPath($RuntimeDirectory)}else{$null};StatePath=(Join-Path $session "process-$($proc.Id).exit.json");ProcessTree=@();RuntimeLinkPath=$RuntimeLinkPath;RuntimeTargetPath=$RuntimeTargetPath;Rehearsal=[bool]$Rehearsal.IsPresent}
         $items=@(Get-Content -LiteralPath $registry -Raw|ConvertFrom-Json);$items+= $entry;Write-MmtlPidRegistry -Path $registry -Entries $items -Lock $lock
         if($PassThru){return [pscustomobject]@{ProcessId=[int]$proc.Id;Process=$proc;StartIdentity=[string]$current.StartIdentity;StatePath=[string]$entry.StatePath;Rehearsal=[bool]$Rehearsal.IsPresent}}
         return $proc.Id

@@ -10,7 +10,7 @@ $script:MmtlRuntimeEventCodes = @(
     'JAVA_RUNTIME_OBSERVED','HUMAN_OBSERVATION_CONFIRMED','AGENT_WORLD_JOINED','INTEGRATED_SERVER_DETECTED',
     'LAN_PUBLISH_REQUESTED','LAN_PUBLISH_FAILED','AGENT_GUEST_CONNECTED','AGENT_ERROR','ACTION_RECEIVED','ACTION_COMPLETED','ACTION_FAILED','REHEARSAL_STARTED',
     'AGENT_STARTED','AGENT_CLIENT_READY','WORLD_CREATE_REQUESTED','WORLD_CREATE_SUBMITTED','INTEGRATED_SERVER_READY','OFFLINE_AUTH_ENABLED','GUEST_CONNECTING',
-    'WORLD_JOIN_TIMEOUT','LAN_PUBLISH_TIMEOUT','GUEST_JOIN_TIMEOUT',
+    'WORLD_JOIN_TIMEOUT','LAN_PUBLISH_TIMEOUT','GUEST_JOIN_TIMEOUT','AGENT_SHARED_STATE_WRITTEN','AGENT_SHARED_STATE_OBSERVED',
     'REHEARSAL_COMPLETED','REHEARSAL_FAILED','REHEARSAL_GUEST_CONNECTED','REHEARSAL_PORT_RETRY','BUILD_FAILED','PROCESS_START_FAILED'
 )
 
@@ -22,8 +22,8 @@ function ConvertTo-MmtlSafeObservationSummary {
     $value = [regex]::Replace($value, '(?i)\b(token|password|client_secret|access_token|authorization)\s*([:=])\s*[^\s,;]+', '$1$2[REDACTED]')
     $value = [regex]::Replace($value, '(?i)\bBearer\s+[^\s,;]+', 'Bearer [REDACTED]')
     $value = [regex]::Replace($value, '(?i)[A-Z]:\\Users\\[^\\\s]+', '[LOCAL_PATH]')
-    $value = [regex]::Replace($value, '(?i)/home/[^/\s]+', '[LOCAL_PATH]')
-    $value = [regex]::Replace($value, '(?i)/Users/[^/\s]+', '[LOCAL_PATH]')
+    $value = [regex]::Replace($value, '(?i)/home/[^/\s]+', '[LOCAL_PATH]') # public-hygiene: allow-generic-platform-location
+    $value = [regex]::Replace($value, '(?i)/Users/[^/\s]+', '[LOCAL_PATH]') # public-hygiene: allow-generic-platform-location
     if ($value.Length -gt 240) { $value = $value.Substring(0, 240) }
     return $value
 }

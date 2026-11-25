@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-14T10:24:48.0000000+00:00",
+  "targetId": "Rift@1.13",
+  "targetSpecHash": "19d5fd79b8a59b6aba2f117cda1f5a4c9d4ed85f66548c242a6b959b016806cf",
+  "loaderId": "Rift",
+  "minecraftId": "1.13",
+  "loaderVersion": "1.0.4",
+  "status": "Observed",
+  "probeStrategy": "GradleJavaExecTaskInspection",
+  "evidenceSource": "GradleInitScriptJavaExecInspection",
+  "confidence": "High",
+  "mode": "SameAsBuildJvm",
+  "runtimeJavaControllable": false,
+  "requiresBuildJvmMatch": true,
+  "runtimeJavaMajor": 8,
+  "observedBuildJavaMajor": 8,
+  "observedBuildJavaVersion": "1.8.0_503",
+  "buildSystem": {
+    "id": "GradleWrapper",
+    "version": "4.9"
+  },
+  "toolchain": {
+    "id": "ForgeGradle",
+    "version": "2.3-SNAPSHOT"
+  },
+  "tasks": [
+    {
+      "task": "runClient",
+      "taskType": "JavaExec",
+      "isJavaExec": true,
+      "launcherSource": "executable",
+      "executable": "<BUILD_JAVA_HOME>/bin/java.exe"
+    }
+  ],
+  "probeSourceSha256": "29dcde87f28db0b00941f9e14168688b181d45099e708d739fdc41d1e2f1db2f",
+  "buildEvidenceSha256": "2e7f6f4151682e3f9c8ad40df19374582459d59a9b755ec30e481c3d0e85b5a0",
+  "rawProbeEvidenceSha256": "9180bdcfa6d15e589897d9a7d39e461a1870397782db79f49c4d4de663581cb5",
+  "platform": {
+    "os": "Windows",
+    "arch": "x64"
+  }
+}

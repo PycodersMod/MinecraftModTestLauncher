@@ -13,6 +13,7 @@
   "properties": {
     "identityId": { "type": "string", "minLength": 1 },
     "offlineUuid": { "type": ["string", "null"], "format": "uuid" },
+    "minecraftVersion": { "type": ["string", "null"], "maxLength": 64 },
     "username": { "type": ["string", "null"], "pattern": "^[A-Za-z0-9_]{1,16}$" },
     "role": { "enum": ["Client", "Host", "Guest", "Server"] },
     "sessionId": { "type": "string", "pattern": "^[A-Za-z0-9_-]{1,80}$" },

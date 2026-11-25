@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-11T06:57:37.0000000+00:00",
+  "targetId": "Forge@1.16.3",
+  "targetSpecHash": "319390085306053247846ba01d173078159d0be4ef7f9d9dbb745dc821ee215e",
+  "loaderId": "Forge",
+  "minecraftId": "1.16.3",
+  "loaderVersion": "1.16.3-34.1.42",
+  "status": "Observed",
+  "probeStrategy": "GradleJavaExecTaskInspection",
+  "evidenceSource": "GradleInitScriptJavaExecInspection",
+  "confidence": "High",
+  "mode": "SameAsBuildJvm",
+  "runtimeJavaControllable": false,
+  "requiresBuildJvmMatch": true,
+  "runtimeJavaMajor": 8,
+  "observedBuildJavaMajor": 8,
+  "observedBuildJavaVersion": "1.8.0_503",
+  "buildSystem": {
+    "id": "GradleWrapper",
+    "version": "4.10.3"
+  },
+  "toolchain": {
+    "id": "ForgeGradle",
+    "version": "3.+"
+  },
+  "tasks": [
+    {
+      "task": "runClient",
+      "taskType": "org.gradle.api.tasks.JavaExec_Decorated",
+      "isJavaExec": true,
+      "launcherSource": "executable",
+      "executable": "<BUILD_JAVA_HOME>/bin/java.exe"
+    },
+    {
+      "task": "runServer",
+      "taskType": "org.gradle.api.tasks.JavaExec_Decorated",
+      "isJavaExec": true,
+      "launcherSource": "executable",
+      "executable": "<BUILD_JAVA_HOME>/bin/java.exe"
+    }
+  ],
+  "probeSourceSha256": "208115e733a69e2db09f6c29966474d33d52e6c44b33e8ae35f6506871619ab6",
+  "buildEvidenceSha256": "92d5db48f1435480f3d39468afb6f01d5fb2da39795c65ebf8370d3c9d0e0307",
+  "rawProbeEvidenceSha256": "1b68a672a3eb4c1cdc680d28e4e8d9798e361e47e31595850ebf3ccc308e785e",
+  "platform": {
+    "os": "Windows",
+    "arch": "x64"
+  }
+}

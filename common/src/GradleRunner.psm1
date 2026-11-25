@@ -17,6 +17,23 @@ function ConvertTo-MmtlArgumentPayload {
     param([string[]]$Values=@())
     return (@($Values|ForEach-Object{if([string]::IsNullOrEmpty([string]$_)){'_'}else{[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes([string]$_))}})-join '.')
 }
+function Get-MmtlGradleRunCompatibilityArguments {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)]$Project)
+    $versionText=[string]$Project.BuildSystem.version
+    if([string]::IsNullOrWhiteSpace($versionText)){
+        $propertiesPath=Join-Path ([string]$Project.Root) 'gradle/wrapper/gradle-wrapper.properties'
+        if(Test-Path -LiteralPath $propertiesPath -PathType Leaf){
+            $content=Get-Content -LiteralPath $propertiesPath -Raw
+            $match=[regex]::Match($content,'(?i)distributionUrl\s*=\s*.*?gradle-(?<version>\d+\.\d+(?:\.\d+)?)-(?:bin|all)\.zip')
+            if($match.Success){$versionText=$match.Groups['version'].Value}
+        }
+    }
+    $versionMatch=[regex]::Match($versionText,'(?<!\d)(?<major>\d+)\.(?<minor>\d+)(?:\.\d+)?')
+    if(-not $versionMatch.Success){return @()}
+    $version=[version]::new([int]$versionMatch.Groups['major'].Value,[int]$versionMatch.Groups['minor'].Value)
+    if($version -ge [version]'6.6'){@('--no-configuration-cache')}else{@()}
+}
 function New-MmtlGradleRunPlan {
     [CmdletBinding()]
     param([Parameter(Mandatory)]$Project,[Parameter(Mandatory)][ValidateSet('Single','IntegratedLAN','Dedicated')][string]$Mode,[Parameter(Mandatory)][string]$RuntimeRoot,[Parameter(Mandatory)][ValidateSet('Host','Client','Server')][string]$Role,[string]$Username,[int]$Port=0,[Parameter(Mandatory)]$Profile,[string[]]$AgentJvmArguments=@())
@@ -28,6 +45,10 @@ function New-MmtlGradleRunPlan {
     $safeName=if($Role -eq 'Server'){'Server'}else{$Username}
     $runtimeDirectory=[IO.Path]::GetFullPath((Join-Path $RuntimeRoot $safeName))
     $gameArgs=@($Profile.gameArgs|Where-Object{$null -ne $_}|ForEach-Object{[string]$_})
+    $reservedIdentityArguments=@('--username','--uuid','--accessToken','--userType')
+    foreach($gameArgument in $gameArgs){
+        if($gameArgument -in $reservedIdentityArguments -or @($reservedIdentityArguments|Where-Object{$gameArgument.StartsWith($_+'=',[StringComparison]::OrdinalIgnoreCase)}).Count){throw 'GAME_ARGUMENT_IDENTITY_OVERRIDE_REJECTED'}
+    }
     if($Mode -eq 'IntegratedLAN' -and $Role -eq 'Client'){
         $externalTargetOptions=@('--server','--port','--quickPlayMultiplayer','--quickPlayRealms','--quickPlaySingleplayer','--quickPlayPath')
         if(@($gameArgs|Where-Object{$_ -in $externalTargetOptions}).Count){throw 'INTEGRATED_LAN_EXTERNAL_ENDPOINT_OVERRIDE_REJECTED'}
@@ -43,7 +64,7 @@ function New-MmtlGradleRunPlan {
     $instanceMemory=if($Profile.$memoryProperty){[int]$Profile.$memoryProperty}elseif($Profile.memoryMb){[int]$Profile.memoryMb}else{0}
     if($instanceMemory -gt 0){$jvmArgs+=('-Xmx{0}M' -f $instanceMemory)}
     $task=if($Role -eq 'Server'){'runServer'}else{'runClient'}
-    $arguments=@('--no-daemon','--console=plain',"-PpycodersRuntimeDir=$runtimeDirectory")
+    $arguments=@('--no-daemon')+@(Get-MmtlGradleRunCompatibilityArguments -Project $Project)+@("-PpycodersRuntimeDir=$runtimeDirectory")
     if($Role -ne 'Server'){$arguments+="-PpycodersUsername=$Username"}
     $gamePayload=ConvertTo-MmtlArgumentPayload $gameArgs
     $jvmPayload=ConvertTo-MmtlArgumentPayload $jvmArgs
@@ -53,4 +74,4 @@ function New-MmtlGradleRunPlan {
     $guiScale=if($Profile.PSObject.Properties['guiScale']){$Profile.guiScale}else{$null}
     return [pscustomobject]@{Project=$Project.Root;Mode=$Mode;Role=$Role;Username=$Username;Task=$task;RuntimeDirectory=$runtimeDirectory;GameArguments=$gameArgs;JvmArguments=$jvmArgs;GuiScale=$guiScale;Arguments=$arguments}
 }
-Export-ModuleMember -Function Get-MmtlGradleCommand,ConvertTo-MmtlArgumentPayload,New-MmtlGradleRunPlan
+Export-ModuleMember -Function Get-MmtlGradleCommand,ConvertTo-MmtlArgumentPayload,Get-MmtlGradleRunCompatibilityArguments,New-MmtlGradleRunPlan

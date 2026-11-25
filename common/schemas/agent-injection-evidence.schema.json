@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pycodersmod.github.io/minecraftmodtestlauncher/schemas/agent-injection-evidence.schema.json",
+  "title": "MMTL exact-target managed Session Agent injection evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "targetId", "minecraftId", "loaderId", "loaderVersion", "validationLevel", "result", "agentBuildEvidenceSha256", "provider", "sessionInjection", "source", "tests", "logs"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "targetId": {"type": "string", "minLength": 1},
+    "minecraftId": {"type": "string", "minLength": 1},
+    "loaderId": {"type": "string", "minLength": 1},
+    "loaderVersion": {"type": "string", "minLength": 1},
+    "validationLevel": {"const": "AGENT_INJECTION_VERIFIED"},
+    "result": {"const": "PASSED"},
+    "agentBuildEvidenceSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "provider": {
+      "type": "object", "additionalProperties": false,
+      "required": ["providerId", "manifestSha256", "artifactSha256"],
+      "properties": {
+        "providerId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{1,63}$"},
+        "manifestSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "artifactSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "sessionInjection": {
+      "type": "object", "additionalProperties": false,
+      "required": ["method", "sourceArtifactSha256", "copiedArtifactSha256", "copiedArtifactEvidencePath", "sessionRelativeArtifactPath", "runtimeModRelativePath", "eventSinkRelativePath", "rawTokenInJvmArguments"],
+      "properties": {
+        "method": {"const": "ManagedSessionModJar"},
+        "sourceArtifactSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "copiedArtifactSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "copiedArtifactEvidencePath": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))[^:]+$"},
+        "sessionRelativeArtifactPath": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))[^:]+$"},
+        "runtimeModRelativePath": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))[^:]+$"},
+        "eventSinkRelativePath": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))[^:]+$"},
+        "rawTokenInJvmArguments": {"const": false}
+      }
+    },
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["sha256", "files"],
+      "properties": {
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "files": {
+          "type": "array", "minItems": 2, "maxItems": 2,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["path", "sha256"],
+            "properties": {
+              "path": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))[^:]+$"},
+              "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+            }
+          }
+        }
+      }
+    },
+    "tests": {
+      "type": "object", "additionalProperties": false,
+      "required": ["result", "passed", "failed", "skipped"],
+      "properties": {
+        "result": {"const": "PASSED"},
+        "passed": {"type": "integer", "minimum": 1},
+        "failed": {"const": 0},
+        "skipped": {"type": "integer", "minimum": 0}
+      }
+    },
+    "logs": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["path", "sha256"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))[^:]+$"},
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        }
+      }
+    }
+  }
+}

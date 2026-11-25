@@ -6,7 +6,7 @@
 
 ## 已核实事实
 
-- 冻结 Universe hash 为 `0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606`，包含 1,631 个 Available exact targets，其中 ModLoader 42 个、ModLoaderMP 20 个。
+- 冻结 Universe hash 为 `c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c`，包含 1,631 个 Available exact targets，其中 ModLoader 42 个、ModLoaderMP 20 个。
 - RetroMCP-Java v1.2 上游源码 tag 固定到 `ec16b2a8c5907429ac59f7ebe13f28c4cf8052bd`。官方 README 描述版本 setup/decompile、recompile/reobfuscation、自动下载游戏 JAR 和库；Wiki 描述 `recompile`、`start client`、`start server` 与 side-specific libraries。
 - `https://mcphackers.org/versionsV3/versions.json` 的只读快照含 132 条，SHA-256 `0513d84d885acbfcca81e820410bac8c8dbca90aa73e1b7434bd3c9ddd3a61fa`。它与上述 62 个精确目标按 Loader ID 与 Minecraft ID 匹配后，列出 39 个候选 target pairs：ModLoader 23/42、ModLoaderMP 16/20。
 - 版本元数据的 JAR 下载字段含 URL、size 和 SHA-1；客户端/服务端可来自不同主机。SHA-1 用于完整性比对，不代表来源可信。RetroMCP 会自动下载文件，因此此候选目录本身不能开放下载或执行。

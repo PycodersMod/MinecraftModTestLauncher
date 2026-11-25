@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "fixtureId": "MMTLFabricMarkerFixtureV1",
+  "targetId": "Fabric@1.21.11",
+  "sourceRepository": "https://github.com/FabricMC/fabric-example-mod",
+  "sourceCommit": "e92cc90e7fc8e130c042ea1cdc7c7bb748194d81",
+  "sourceArchiveUrl": "https://codeload.github.com/FabricMC/fabric-example-mod/zip/e92cc90e7fc8e130c042ea1cdc7c7bb748194d81",
+  "sourceArchiveSha256": "3f0fd639a96cae7744bd75a304546b0358e883ccd24bf53be2afd1760e347c6f",
+  "sourceWrapperJarSha256": "7a9ce74cff467ca1bf60a4fcd9f05185acceda4d0f382434d393e17864262c5d",
+  "verificationMetadataSha256": "4bd6e9df53c8d12485c80b92bc11e9be7781290ee4e0d692322683b2bbea15a8",
+  "verificationComponentCount": 238,
+  "verificationArtifactCount": 547,
+  "trustedArtifactCount": 69,
+  "loomVersion": "1.18.4",
+  "gradleVersion": "9.7.1",
+  "buildJavaMajor": 25,
+  "runtimeJavaMajor": 21,
+  "verificationStatus": "PinnedInputsVerified",
+  "overlaySha256": "e22f1527d7a7570aa254bd1390ce99c58d49c7b1d53aacf799bc776c2b441236",
+  "overlayFiles": [
+    {
+      "path": "build.gradle",
+      "sha256": "abaef2f3b4b191421c5c60ac72f26c74c59abe1ece64920546ea0318c9b80137"
+    },
+    {
+      "path": "settings.gradle",
+      "sha256": "750f7a20dcff68332f0d5cb9cc5ee2eda9893b221409d666a2b9753cbed8a1b9"
+    },
+    {
+      "path": "gradle.properties",
+      "sha256": "eeb0fc2208442e3d272b7eda75f71ebe31b442d7c23980f7cfe5074e0a052231"
+    },
+    {
+      "path": "gradle/wrapper/gradle-wrapper.properties",
+      "sha256": "78d0d4a2d0d35132ce8f7d86849af45477f6095860d311ec5cc6f617202b61b4"
+    },
+    {
+      "path": "gradle/verification-metadata.xml",
+      "sha256": "4bd6e9df53c8d12485c80b92bc11e9be7781290ee4e0d692322683b2bbea15a8"
+    },
+    {
+      "path": "src/main/java/org/pycodersmod/mmtlfixture/MmtlMarkerMod.java",
+      "sha256": "4501f4c457f12f9f7d9b0bf108cd24cf75600e4b6c01ec0b5fe9bbd5910a4ac8"
+    },
+    {
+      "path": "src/main/resources/fabric.mod.json",
+      "sha256": "14baf9e6812e37397bc0da689d26b3cecfe70c9c5b00197263cdc0d772c6a1ee"
+    }
+  ]
+}

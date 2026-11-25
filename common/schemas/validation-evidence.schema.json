@@ -2,25 +2,994 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://pycodersmod.github.io/minecraftmodtestlauncher/schemas/validation-evidence.schema.json",
   "title": "MMTL 不可变验证运行证据",
-  "type": "object", "additionalProperties": false,
-  "required": ["schemaVersion", "targetId", "runId", "startedAt", "endedAt", "durationSeconds", "validationLevel", "result", "failureCode", "platform", "java", "toolchain", "buildSystem", "sourceFixture", "logs", "artifact", "process", "marker", "stopMethod", "scenario", "notes"],
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "targetId",
+    "runId",
+    "startedAt",
+    "endedAt",
+    "durationSeconds",
+    "validationLevel",
+    "result",
+    "failureCode",
+    "platform",
+    "java",
+    "toolchain",
+    "buildSystem",
+    "sourceFixture",
+    "logs",
+    "artifact",
+    "process",
+    "marker",
+    "stopMethod",
+    "scenario",
+    "notes"
+  ],
   "properties": {
-    "schemaVersion": {"const": 1}, "targetId": {"type": "string", "minLength": 3}, "minecraftId": {"type": "string", "minLength": 1}, "loaderId": {"type": "string", "minLength": 1}, "loaderVersion": {"type": "string", "minLength": 1}, "runId": {"type": "string", "pattern": "^[A-Za-z0-9._-]{1,80}$"},
-    "startedAt": {"type": "string", "format": "date-time"}, "endedAt": {"type": "string", "format": "date-time"}, "durationSeconds": {"type": "number", "minimum": 0},
-    "validationLevel": {"enum": ["RESOLVED", "BUILD_VERIFIED", "SERVER_VERIFIED", "CLIENT_LAUNCH_VERIFIED", "INTEGRATION_VERIFIED"]},
-    "result": {"enum": ["PASSED", "FAILED", "BLOCKED", "SKIPPED"]}, "failureCode": {"type": "string", "enum": ["NONE", "RESOLVE_FAILED", "BUILD_FAILED_PROJECT_SOURCE", "BUILD_FAILED_MMTL", "BUILD_FAILED_TOOLCHAIN", "BUILD_FAILED_NETWORK", "BUILD_TIMEOUT", "BUILD_JAVA_UNAVAILABLE", "RUNTIME_JAVA_UNAVAILABLE", "SERVER_EULA_REQUIRED", "SERVER_READY_TIMEOUT", "CLIENT_AUTH_REQUIRED", "CLIENT_LAUNCH_TIMEOUT", "CLIENT_CRASH", "UPSTREAM_UNAVAILABLE", "PLATFORM_UNSUPPORTED", "UNTRUSTED_FIXTURE_REJECTED", "ARTIFACT_MISSING", "ARTIFACT_STALE", "BUILD_SOURCE_CHANGED_DURING_RUN", "EVIDENCE_INVALID"]},
-    "platform": {"type": "object", "additionalProperties": false, "required": ["os", "arch", "isWSL"], "properties": {"os": {"enum": ["Windows", "Linux", "MacOS"]}, "arch": {"enum": ["x64", "ARM64"]}, "isWSL": {"type": "boolean"}}},
-    "java": {"type": "object", "additionalProperties": false, "required": ["buildRequirement", "observedBuildJava", "compilerTarget", "runtimeRequirement", "observedRuntimeJava"], "properties": {"buildRequirement": {"type": ["object", "null"]}, "observedBuildJava": {"type": ["object", "null"]}, "compilerTarget": {"type": ["integer", "null"], "minimum": 1}, "runtimeRequirement": {"type": ["object", "null"]}, "observedRuntimeJava": {"type": ["object", "null"]}}},
-    "toolchain": {"type": "object", "additionalProperties": false, "required": ["id", "version"], "properties": {"id": {"type": "string", "minLength": 1}, "version": {"type": ["string", "null"]}}},
-    "buildSystem": {"type": "object", "additionalProperties": false, "required": ["id", "version"], "properties": {"id": {"type": "string", "minLength": 1}, "version": {"type": ["string", "null"]}}},
-    "source": {"type": "object", "additionalProperties": false, "required": ["fingerprint", "unchangedDuringBuild", "artifactFresh"], "properties": {"fingerprint": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"}, "unchangedDuringBuild": {"type": "boolean"}, "artifactFresh": {"type": "boolean"}}},
-    "sourceFixture": {"type": "object", "additionalProperties": false, "required": ["type", "source", "commit", "license", "trust"], "properties": {"type": {"enum": ["UserProject", "OfficialFixture", "OfficialArtifactFixture", "GeneratedOfficialFixture", "HistoricalOfficialFixture", "CIHosted", "LocalPhysical", "WSL", "ImportedHistoricalEvidence"]}, "source": {"type": "string", "minLength": 1}, "commit": {"type": "string", "minLength": 1}, "archiveSha256": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"}, "officialChecksum": {"type": "string", "pattern": "^[a-fA-F0-9]{32,64}$"}, "officialChecksumAlgorithm": {"enum": ["MD5", "SHA1", "SHA256"]}, "license": {"type": "string", "minLength": 1}, "trust": {"enum": ["UserOwned", "TrustedOfficial", "VerifiedHistorical", "UnverifiedHistorical", "Unknown"]}}},
-    "logs": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["path", "sha256"], "properties": {"path": {"type": "string", "pattern": "^(?![A-Za-z]:|/|\\\\\\\\)"}, "sha256": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"}}}},
-    "artifact": {"type": ["object", "null"], "additionalProperties": false, "required": ["path", "filename", "sizeBytes", "sha256"], "properties": {"path": {"type": "string", "minLength": 1}, "filename": {"type": "string", "minLength": 1}, "sizeBytes": {"type": "integer", "minimum": 0}, "sha256": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"}}},
-    "process": {"type": ["object", "null"], "additionalProperties": false, "required": ["identityMatched", "liveAtMarker", "exited", "exitCode", "portListening", "portReleased"], "properties": {"identityMatched": {"type": "boolean"}, "liveAtMarker": {"type": "boolean"}, "exited": {"type": "boolean"}, "exitCode": {"type": ["integer", "null"]}, "portListening": {"type": ["boolean", "null"]}, "portReleased": {"type": ["boolean", "null"]}}},
-    "marker": {"type": ["object", "null"], "additionalProperties": false, "required": ["kind", "text", "matched", "elapsedSeconds"], "properties": {"kind": {"enum": ["serverReady", "clientInitialized", "integration"]}, "text": {"type": "string", "minLength": 1}, "matched": {"type": "boolean"}, "elapsedSeconds": {"type": ["number", "null"], "minimum": 0}}},
-    "stopMethod": {"type": ["string", "null"], "enum": ["ConsoleStop", "Terminate", "CloseWindow", "NotApplicable", null]},
-    "scenario": {"type": ["object", "null"], "additionalProperties": false, "required": ["name", "completed", "assertionsPassed"], "properties": {"name": {"type": "string", "minLength": 1}, "completed": {"type": "boolean"}, "assertionsPassed": {"type": "integer", "minimum": 0}}},
-    "notes": {"type": "array", "items": {"type": "string"}}
+    "schemaVersion": {
+      "const": 1
+    },
+    "targetId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._@+() -]{1,179}$"
+    },
+    "minecraftId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "loaderId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "loaderVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._-]{1,80}$"
+    },
+    "compatibilityIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "targetId",
+        "universeHash",
+        "sourceHash",
+        "toolchainHash",
+        "targetSpecHash",
+        "agentHash"
+      ],
+      "properties": {
+        "targetId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._@+() -]{1,179}$"
+        },
+        "universeHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "sourceHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "toolchainHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "targetSpecHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "agentHash": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "endedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "durationSeconds": {
+      "type": "number",
+      "minimum": 0
+    },
+    "validationLevel": {
+      "enum": [
+        "RESOLVED",
+        "BUILD_VERIFIED",
+        "SERVER_VERIFIED",
+        "CLIENT_LAUNCH_VERIFIED",
+        "INTEGRATION_VERIFIED"
+      ]
+    },
+    "result": {
+      "enum": [
+        "PASSED",
+        "FAILED",
+        "BLOCKED",
+        "SKIPPED"
+      ]
+    },
+    "failureCode": {
+      "type": "string",
+      "enum": [
+        "NONE",
+        "RESOLVE_FAILED",
+        "BUILD_FAILED_PROJECT_SOURCE",
+        "BUILD_FAILED_MMTL",
+        "BUILD_FAILED_TOOLCHAIN",
+        "BUILD_FAILED_NETWORK",
+        "BUILD_TIMEOUT",
+        "BUILD_JAVA_UNAVAILABLE",
+        "RUNTIME_JAVA_UNAVAILABLE",
+        "SERVER_EULA_REQUIRED",
+        "SERVER_READY_TIMEOUT",
+        "CLIENT_AUTH_REQUIRED",
+        "CLIENT_LAUNCH_TIMEOUT",
+        "CLIENT_CRASH",
+        "UPSTREAM_UNAVAILABLE",
+        "PLATFORM_UNSUPPORTED",
+        "UNTRUSTED_FIXTURE_REJECTED",
+        "ARTIFACT_MISSING",
+        "ARTIFACT_STALE",
+        "BUILD_SOURCE_CHANGED_DURING_RUN",
+        "EVIDENCE_INVALID"
+      ]
+    },
+    "platform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "os",
+        "arch",
+        "isWSL"
+      ],
+      "properties": {
+        "os": {
+          "enum": [
+            "Windows",
+            "Linux",
+            "MacOS"
+          ]
+        },
+        "arch": {
+          "enum": [
+            "x64",
+            "ARM64"
+          ]
+        },
+        "isWSL": {
+          "type": "boolean"
+        }
+      }
+    },
+    "java": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "buildRequirement",
+        "observedBuildJava",
+        "compilerTarget",
+        "runtimeRequirement",
+        "observedRuntimeJava"
+      ],
+      "properties": {
+        "buildRequirement": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "observedBuildJava": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "compilerTarget": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "runtimeRequirement": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "observedRuntimeJava": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      }
+    },
+    "toolchain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "buildSystem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fingerprint",
+        "unchangedDuringBuild",
+        "artifactFresh"
+      ],
+      "properties": {
+        "fingerprint": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "unchangedDuringBuild": {
+          "type": "boolean"
+        },
+        "artifactFresh": {
+          "type": "boolean"
+        }
+      }
+    },
+    "sourceFixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "source",
+        "commit",
+        "license",
+        "trust"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "UserProject",
+            "OfficialFixture",
+            "OfficialArtifactFixture",
+            "GeneratedOfficialFixture",
+            "GeneratedPinnedLoaderFixture",
+            "HistoricalOfficialFixture",
+            "CIHosted",
+            "LocalPhysical",
+            "WSL",
+            "ImportedHistoricalEvidence"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "commit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "archiveSha256": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "archiveUrl": {
+          "type": "string",
+          "minLength": 1
+        },
+        "officialChecksum": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{32,64}$"
+        },
+        "officialChecksumAlgorithm": {
+          "enum": [
+            "MD5",
+            "SHA1",
+            "SHA256"
+          ]
+        },
+        "fixtureId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "overlaySha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "overlayFiles": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "sha256"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "pattern": "^(?![A-Za-z]:|/|\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
+        },
+        "license": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trust": {
+          "enum": [
+            "UserOwned",
+            "TrustedOfficial",
+            "VerifiedHistorical",
+            "UnverifiedHistorical",
+            "Unknown"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "GeneratedPinnedLoaderFixture"
+              }
+            },
+            "required": ["type"]
+          },
+          "then": {
+            "required": ["archiveUrl", "archiveSha256", "fixtureId", "overlaySha256", "overlayFiles"],
+            "properties": {
+              "archiveUrl": {
+                "pattern": "^https://codeload\\.github\\.com/[^/]+/[^/]+/zip/[a-fA-F0-9]{40}$"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "fabricSecurity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pinId", "pinHash", "sourceArchiveSha256", "sourceBuildGradleSha256", "sourceSettingsGradleSha256", "sourceWrapperJarSha256",
+        "gradleDistributionUrl", "gradleDistributionSha256", "gradleVersion", "loomPluginId", "loomVersion", "loaderVersion", "fabricApiVersion",
+        "verificationMetadataSha256", "verificationComponentCount", "verificationArtifactCount", "trustedArtifactCount", "overlaySha256",
+        "buildJavaMajor", "runtimeJavaMajor", "verificationMode"
+      ],
+      "properties": {
+        "pinId": {"type": "string", "pattern": "^Fabric@.+$"},
+        "pinHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "sourceArchiveSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "sourceBuildGradleSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "sourceSettingsGradleSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "sourceWrapperJarSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "gradleDistributionUrl": {"type": "string", "pattern": "^https://services\\.gradle\\.org/distributions/gradle-[0-9.]+-bin\\.zip$"},
+        "gradleDistributionSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "gradleVersion": {"type": "string", "pattern": "^[0-9]+(?:\\.[0-9]+){1,2}$"},
+        "loomPluginId": {"enum": ["net.fabricmc.fabric-loom-remap", "net.fabricmc.fabric-loom"]},
+        "loomVersion": {"type": "string", "pattern": "^[0-9]+(?:\\.[0-9]+){1,3}$"},
+        "loaderVersion": {"type": "string", "minLength": 1},
+        "fabricApiVersion": {"type": "string", "minLength": 1},
+        "verificationMetadataSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "verificationComponentCount": {"type": "integer", "minimum": 0},
+        "verificationArtifactCount": {"type": "integer", "minimum": 0},
+        "trustedArtifactCount": {"type": "integer", "minimum": 0},
+        "overlaySha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "buildJavaMajor": {"type": "integer", "minimum": 8, "maximum": 25},
+        "runtimeJavaMajor": {"type": "integer", "minimum": 8, "maximum": 25},
+        "verificationMode": {"const": "strict"}
+      }
+    },
+    "quiltSecurity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pinId", "pinHash", "sourceArchiveSha256", "sourceBuildGradleSha256", "sourceSettingsGradleSha256", "sourceWrapperJarSha256", "sourceVersionsTomlSha256",
+        "gradleDistributionUrl", "gradleDistributionSha256", "gradleVersion", "quiltLoomVersion", "loaderVersion", "mappingsVersion", "quiltedFabricApiVersion",
+        "overlaySha256", "buildJavaMajor", "runtimeJavaMajor"
+      ],
+      "properties": {
+        "pinId": {"type": "string"},
+        "pinHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "sourceArchiveSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "sourceBuildGradleSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "sourceSettingsGradleSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "sourceWrapperJarSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "sourceVersionsTomlSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "gradleDistributionUrl": {"type": "string", "format": "uri"},
+        "gradleDistributionSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "gradleVersion": {"type": "string"},
+        "quiltLoomVersion": {"type": "string"},
+        "loaderVersion": {"type": "string"},
+        "mappingsVersion": {"type": "string"},
+        "quiltedFabricApiVersion": {"type": "string"},
+        "overlaySha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "buildJavaMajor": {"type": "integer", "minimum": 8, "maximum": 25},
+        "runtimeJavaMajor": {"type": "integer", "minimum": 8, "maximum": 25}
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "pinId": {"const": "Quilt@1.20.6"},
+            "gradleDistributionUrl": {"const": "https://services.gradle.org/distributions/gradle-8.9-bin.zip"},
+            "gradleVersion": {"const": "8.9"},
+            "quiltLoomVersion": {"const": "1.7.4"},
+            "loaderVersion": {"const": "0.26.3"},
+            "mappingsVersion": {"const": "1.20.6+build.6"},
+            "quiltedFabricApiVersion": {"const": "10.0.0-alpha.3+0.100.4-1.20.6"},
+            "buildJavaMajor": {"const": 21},
+            "runtimeJavaMajor": {"const": 21}
+          }
+        },
+        {
+          "properties": {
+            "pinId": {"const": "Quilt@1.20.4"},
+            "gradleDistributionUrl": {"const": "https://services.gradle.org/distributions/gradle-8.8-bin.zip"},
+            "gradleVersion": {"const": "8.8"},
+            "quiltLoomVersion": {"const": "1.6.5"},
+            "loaderVersion": {"const": "0.25.0"},
+            "mappingsVersion": {"const": "1.20.4+build.3"},
+            "quiltedFabricApiVersion": {"const": "9.0.0-alpha.8+0.97.0-1.20.4"},
+            "buildJavaMajor": {"const": 17},
+            "runtimeJavaMajor": {"const": 17}
+          }
+        },
+        {
+          "properties": {
+            "pinId": {"const": "Quilt@1.20.5"},
+            "gradleDistributionUrl": {"const": "https://services.gradle.org/distributions/gradle-8.9-bin.zip"},
+            "gradleVersion": {"const": "8.9"},
+            "quiltLoomVersion": {"const": "1.7.4"},
+            "loaderVersion": {"const": "0.20.0-beta.9"},
+            "mappingsVersion": {"const": "1.20.5+build.1"},
+            "quiltedFabricApiVersion": {"const": ""},
+            "buildJavaMajor": {"const": 21},
+            "runtimeJavaMajor": {"const": 21}
+          }
+        }
+      ]
+    },
+    "forgeSecurity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pinId",
+        "pinHash",
+        "sourceBuildGradleSha256",
+        "gradleDistributionUrl",
+        "gradleDistributionSha256",
+        "gradleVersion",
+        "mojangArtifacts",
+        "integrityFailure"
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "forgeGradleSpec",
+            "forgeGradleResolvedVersion",
+            "forgeGradleJarSha256",
+            "forgeGradlePomSha256",
+            "buildClasspathArtifactCatalogHash",
+            "buildClasspathArtifactCount",
+            "targetInputCatalogHash",
+            "targetInputArtifactCount",
+            "mcpMappingSha256"
+          ]
+        },
+        {
+          "required": [
+            "forgeGradleSpec",
+            "forgeGradleResolvedVersion",
+            "forgeGradleJarSha256",
+            "forgeGradlePomSha256",
+            "buildClasspathArtifactCatalogHash",
+            "buildClasspathArtifactCount",
+            "targetInputCatalogHash",
+            "targetInputArtifactCount",
+            "runtimeArtifactCatalogHash",
+            "runtimeArtifactCount",
+            "mojangVersionHash"
+          ]
+        },
+        {
+          "required": [
+            "forgeGradleSpec",
+            "forgeGradleTimestamp",
+            "forgeGradleJarSha256",
+            "forgeGradlePomSha256",
+            "buildClasspathArtifactCatalogHash",
+            "buildClasspathArtifactCount",
+            "buildClasspathMcpVersionsSha256",
+            "buildClasspathMcpMapping",
+            "buildClasspathMojangVersionSha256"
+          ]
+        },
+        {
+          "required": [
+            "forgeGradleSpec",
+            "forgeGradleTimestamp",
+            "forgeGradleJarSha256",
+            "forgeGradlePomSha256"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "buildClasspathArtifactCatalogHash"
+                ]
+              },
+              {
+                "required": [
+                  "buildClasspathArtifactCount"
+                ]
+              },
+              {
+                "required": [
+                  "buildClasspathMcpVersionsSha256"
+                ]
+              },
+              {
+                "required": [
+                  "buildClasspathMcpMapping"
+                ]
+              },
+              {
+                "required": [
+                  "buildClasspathMojangVersionSha256"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "required": [
+            "pluginId",
+            "pluginVersion",
+            "pluginArtifactCatalogHash",
+            "pluginArtifactCount",
+            "buildArtifactCatalogHash",
+            "buildArtifactCount",
+            "fernflowerArchiveSha256",
+            "fernflowerJarSha256",
+            "mcpMapping"
+          ]
+        }
+      ],
+      "allOf": [
+        {
+          "if": {"properties": {"pinId": {"const": "Forge@1.13.2"}}, "required": ["pinId"]},
+          "then": {
+            "required": ["runtimeArtifactCatalogHash", "runtimeArtifactCount"],
+            "properties": {"mcpMappingSha256": {"const": "ec7e91e860a6e1ad6b7337cfc517f469afbf3deb109dec483267a86be7fc07d0"}}
+          }
+        },
+        {
+          "if": {"properties": {"pinId": {"const": "Forge@1.16.5"}}, "required": ["pinId"]},
+          "then": {
+            "properties": {
+              "forgeGradleSpec": {"const": "[6.0,6.2)"},
+              "forgeGradleResolvedVersion": {"const": "6.0.54"},
+              "buildClasspathArtifactCatalogHash": {"const": "ade87d84a2d6710442caa962ade4b65a353621a5a3ec581aa9c71ebe7f6ca193"},
+              "targetInputCatalogHash": {"const": "a32ecc9b98e434ee0ea5eda4d641e4a15dfd5fe9a544651dbe12c4f67a820b3e"},
+              "runtimeArtifactCatalogHash": {"const": "8829d0392640c83cc2139d91d53039ee0e32c6a496e462d04721d2fdeeabcebe"},
+              "mojangVersionHash": {"const": "3eeeab7b3165cc5263dc26ff8fe114fdb718b75a0244efead9d19635d090ba72"}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"pinId": {"const": "Forge@1.12.2"}}, "required": ["pinId"]},
+          "then": {"properties": {"mcpMappingSha256": {"const": "57527913c5bea02e110aa0d1fa929da6f995f1a7836b0e46d891014b94779f4e"}}}
+        }
+      ],
+      "properties": {
+        "pinId": {
+          "type": "string",
+          "minLength": 3
+        },
+        "pinHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "forgeGradleSpec": {
+          "type": "string",
+          "minLength": 1
+        },
+        "forgeGradleResolvedVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "forgeGradleTimestamp": {
+          "type": "string",
+          "minLength": 1
+        },
+        "forgeGradleJarSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "forgeGradlePomSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "buildClasspathArtifactCatalogHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "buildClasspathArtifactCount": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "targetInputCatalogHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "targetInputArtifactCount": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "mcpMappingSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "runtimeArtifactCatalogHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "runtimeArtifactCount": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "mojangVersionHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "buildClasspathMcpVersionsSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "buildClasspathMcpMapping": {
+          "enum": [
+            "stable_20",
+            "stable_22",
+            "stable_24",
+            "stable_29",
+            "snapshot_20160518",
+            "snapshot_20161220",
+            "snapshot_20170624"
+          ]
+        },
+        "buildClasspathMojangVersionSha256": {
+          "enum": [
+            "341af5f47a6b5bc137bfe681f4f3533e081041290aabbf9d7ebeae9881de768f",
+            "7f002c1dca74cc51ce995e7fdb465ab4984c940e77a1b1c4f2b09bed8702e558",
+            "8d6f1e7f3a99f1236914b61e64eeade955ba21e8150563457142d3981aeee688",
+            "d0624badea6367233d47c830341952126cdb0f99b1e11fb60428dd530a0d4db5",
+            "462441ee38c35c6ad52ffe2ab668b217eb2b29b51de25f1774a454560bc3a261",
+            "a77e2568ef2f6733064c394eb40a7f1d8ca8ed48c56ee17cb6c720aeaf0118f4",
+            "c98508dfc20ed365e6666c8f44879582df033bbde0e3499782381130f3dbaa1c",
+            "33cc40a05466b4e34e04e65def732094388e9149eb6bd37e5daa227c06cbde4b",
+          "a83e8ab7e3e78fd8dfa8fdbd0216b090ef7298fb44637b79093fe663bf2d6814",
+          "56dac2e1caa872d7e37a7b5523056cd812dca94f912ad2bd652817bee60edca4"
+          ]
+        },
+        "pluginId": {
+          "const": "net.minecraftforge.gradle.forge"
+        },
+        "pluginVersion": {
+          "const": "2.0.2"
+        },
+        "pluginArtifactCatalogHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "pluginArtifactCount": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "buildArtifactCatalogHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "buildArtifactCount": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "mcpMapping": {
+          "type": "string",
+          "pattern": "^snapshot_[0-9]{8}$"
+        },
+        "fernflowerArchiveSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "fernflowerJarSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "sourceBuildGradleSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "gradleDistributionUrl": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://services\\.gradle\\.org/distributions/gradle-[0-9.]+-(?:bin|all)\\.zip$"
+        },
+        "gradleDistributionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "gradleVersion": {
+          "type": "string",
+          "pattern": "^[0-9]+(?:\\.[0-9]+)*$"
+        },
+        "mojangArtifacts": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "path",
+              "sha1",
+              "sizeBytes"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "client",
+                  "server"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^(?![A-Za-z]:|/|\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+\\.jar$"
+              },
+              "sha1": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{40}$"
+              },
+              "sizeBytes": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        },
+        "integrityFailure": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "logs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "sha256"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "^(?![A-Za-z]:|/|\\\\\\\\)"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-fA-F0-9]{64}$"
+          }
+        }
+      }
+    },
+    "artifact": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "filename",
+        "sizeBytes",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "filename": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        }
+      }
+    },
+    "process": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "identityMatched",
+        "liveAtMarker",
+        "exited",
+        "exitCode",
+        "portListening",
+        "portReleased"
+      ],
+      "properties": {
+        "identityMatched": {
+          "type": "boolean"
+        },
+        "liveAtMarker": {
+          "type": "boolean"
+        },
+        "exited": {
+          "type": "boolean"
+        },
+        "exitCode": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "portListening": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "portReleased": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      }
+    },
+    "marker": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "text",
+        "matched",
+        "elapsedSeconds"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "serverReady",
+            "clientInitialized",
+            "integration"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "matched": {
+          "type": "boolean"
+        },
+        "elapsedSeconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "stopMethod": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "ConsoleStop",
+        "Terminate",
+        "CloseWindow",
+        "NotApplicable",
+        null
+      ]
+    },
+    "scenario": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "completed",
+        "assertionsPassed"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "completed": {
+          "type": "boolean"
+        },
+        "assertionsPassed": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
   }
 }

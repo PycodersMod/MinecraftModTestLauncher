@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "targetId": "Forge@1.16.2",
+  "forgeVersion": "1.16.2-33.0.61",
+  "resolver": "ForgeGradle 3.0.197 target inputs captured from the official MDK build",
+  "artifactStatus": "HashesVerified",
+  "artifacts": [
+    {
+      "kind": "userdev",
+      "group": "net.minecraftforge",
+      "artifact": "forge",
+      "version": "1.16.2-33.0.61",
+      "file": "forge-1.16.2-33.0.61-userdev.jar",
+      "bytes": 2632572,
+      "sha256": "b7ae11579ec40b27ced060568136558b938c822c4022cbe34a8eb470cca395d7",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.16.2-33.0.61/forge-1.16.2-33.0.61-userdev.jar"
+    },
+    {
+      "kind": "mcpConfig",
+      "group": "de.oceanlabs.mcp",
+      "artifact": "mcp_config",
+      "version": "1.16.2-20200812.004259",
+      "file": "mcp_config-1.16.2-20200812.004259.zip",
+      "bytes": 773087,
+      "sha256": "ca1afc393660a82dbb8dd19f508b0049b5dadcf912f71be7eabc3002492e9542",
+      "url": "https://maven.minecraftforge.net/de/oceanlabs/mcp/mcp_config/1.16.2-20200812.004259/mcp_config-1.16.2-20200812.004259.zip"
+    },
+    {
+      "kind": "forgeSources",
+      "group": "net.minecraftforge",
+      "artifact": "forge",
+      "version": "1.16.2-33.0.61",
+      "file": "forge-1.16.2-33.0.61-sources.jar",
+      "bytes": 1498023,
+      "sha256": "bfdbfff02ca4cd125745464452cb0d85e8f264e49c9ef666903e55d38755ef40",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.16.2-33.0.61/forge-1.16.2-33.0.61-sources.jar"
+    },
+    {
+      "kind": "forgeUniversal",
+      "group": "net.minecraftforge",
+      "artifact": "forge",
+      "version": "1.16.2-33.0.61",
+      "file": "forge-1.16.2-33.0.61-universal.jar",
+      "bytes": 2223643,
+      "sha256": "3349cdba3a0d8dbb81af033624580a0970ee000165f67a21e5c62099f3525342",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.16.2-33.0.61/forge-1.16.2-33.0.61-universal.jar"
+    },
+    {
+      "kind": "launcher",
+      "group": "net.minecraftforge",
+      "artifact": "forge",
+      "version": "1.16.2-33.0.61",
+      "file": "forge-1.16.2-33.0.61-launcher.jar",
+      "bytes": 197261,
+      "sha256": "beb6eb4812ca0b3ee619d51f94b1115ecfe10b80adf9b0bea13847e4967d909c",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.16.2-33.0.61/forge-1.16.2-33.0.61-launcher.jar"
+    },
+    {
+      "kind": "binarypatcher",
+      "group": "net.minecraftforge",
+      "artifact": "binarypatcher",
+      "version": "1.0.12",
+      "file": "binarypatcher-1.0.12-fatjar.jar",
+      "bytes": 3809410,
+      "sha256": "16454ff27db627d408d58d267e64fc9c48bcf9f691a71c2e65bbd65a61f0a627",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/binarypatcher/1.0.12/binarypatcher-1.0.12-fatjar.jar"
+    }
+  ],
+  "mcpConfig": {
+    "coordinate": "de.oceanlabs.mcp:mcp_config:1.16.2-20200812.004259@zip",
+    "configEntry": "config.json",
+    "configBytes": 6492,
+    "configSha256": "35a254de89eadef23cb76d16e4414ab072f8c37eac6a0e7855dcc61b55f3decb",
+    "mappingsEntry": "config/joined.tsrg",
+    "mappingsBytes": 2171590,
+    "mappingsSha256": "a7ee8661e854ce086fa82c531715eda1416de9218cdc3c34bda6a32f466cbcca"
+  },
+  "userdev": {
+    "configEntry": "config.json",
+    "configBytes": 2988,
+    "configSha256": "b14290e2a877c7d07790b973eae487346815565d8c09f8eb8c09590ea1fce3a7",
+    "mcpCoordinate": "de.oceanlabs.mcp:mcp_config:1.16.2-20200812.004259@zip",
+    "libraries": [
+      "org.ow2.asm:asm:7.2",
+      "org.ow2.asm:asm-commons:7.2",
+      "org.ow2.asm:asm-tree:7.2",
+      "org.ow2.asm:asm-util:7.2",
+      "org.ow2.asm:asm-analysis:7.2",
+      "cpw.mods:modlauncher:7.0.1",
+      "cpw.mods:grossjava9hacks:1.3.0",
+      "net.minecraftforge:accesstransformers:2.2.0:shadowed",
+      "net.minecraftforge:eventbus:3.0.3:service",
+      "net.minecraftforge:forgespi:3.1.1",
+      "net.minecraftforge:coremods:3.0.0",
+      "net.minecraftforge:unsafe:0.2.0",
+      "com.electronwill.night-config:core:3.6.2",
+      "com.electronwill.night-config:toml:3.6.2",
+      "org.jline:jline:3.12.1",
+      "org.apache.maven:maven-artifact:3.6.0",
+      "net.jodah:typetools:0.8.1",
+      "org.apache.logging.log4j:log4j-api:2.11.2",
+      "org.apache.logging.log4j:log4j-core:2.11.2",
+      "net.minecrell:terminalconsoleappender:1.2.0",
+      "net.sf.jopt-simple:jopt-simple:5.0.4",
+      "org.spongepowered:mixin:0.8",
+      "net.minecraftforge:forge:1.16.2-33.0.61:launcher"
+    ],
+    "processors": [
+      "net.minecraftforge:binarypatcher:1.0.12:fatjar"
+    ]
+  },
+  "mojangVersion": {
+    "url": "https://piston-meta.mojang.com/v1/packages/998d9ef5770d05c20d760dc16cf85151f35009f2/1.16.2.json",
+    "sha1": "998d9ef5770d05c20d760dc16cf85151f35009f2",
+    "bytes": 29287,
+    "sha256": "f696986f4c07cd12dede183c86266d5cd34def6846eb0f014e1a84c2a76688d4"
+  },
+  "catalogHash": "27e21b11eef98356196ca4170421cdfd68ac73e07454221a38bb8ba4a7a812e7"
+}

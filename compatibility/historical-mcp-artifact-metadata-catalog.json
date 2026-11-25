@@ -1,0 +1,399 @@
+{
+  "schemaVersion": 1,
+  "universeHash": "c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+  "automaticDownloadAllowed": false,
+  "automaticExecutionAllowed": false,
+  "entries": [
+    {
+      "minecraftId": "1.0.0",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/1.0.0.json",
+      "snapshotPath": "1.0.0.json",
+      "snapshotSha256": "04c0ebbf1d687541027ceea92af93bb1b7ec28519bc3c13ff88bc7621875802c",
+      "snapshotByteLength": 12848,
+      "officialMetadataUrl": null,
+      "officialMetadataSha256": null,
+      "clientComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      },
+      "serverComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      }
+    },
+    {
+      "minecraftId": "1.1",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/1.1.json",
+      "snapshotPath": "1.1.json",
+      "snapshotSha256": "dfc722cef502666a5680a5286794eb6ccd6aec79afa6abcedbf83ad796fe37d3",
+      "snapshotByteLength": 12840,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/c0cb9368dbdbb1e8dbcb9363a28d8da74cf6fc5e/1.1.json",
+      "officialMetadataSha256": "e7b1807e3906bbfb537a88ba5814fce788d651a99df0d75ffbaf148cc6a13121",
+      "clientComparison": {
+        "status": "Match",
+        "officialSha1": "f690d4136b0026d452163538495b9b0e8513d718"
+      },
+      "serverComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      }
+    },
+    {
+      "minecraftId": "1.2.3",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/1.2.3.json",
+      "snapshotPath": "1.2.3.json",
+      "snapshotSha256": "6c2f4621166bfff223779bc9094e88ffc31877723da876bf26b482239b77861e",
+      "snapshotByteLength": 12828,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/2f7eaec33e3017a413c677eefa59df2e5919e536/1.2.3.json",
+      "officialMetadataSha256": "8bd07e845e17e36b87bf76fa5117ae645a62b374d2816b8358721255488ef887",
+      "clientComparison": {
+        "status": "Match",
+        "officialSha1": "5134e433afeba375c00bbdcd8aead1d3222813ee"
+      },
+      "serverComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      }
+    },
+    {
+      "minecraftId": "1.2.4",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/1.2.4.json",
+      "snapshotPath": "1.2.4.json",
+      "snapshotSha256": "01d21e21baf5992af3468e8d64794dde06556a64a7311dc75b900b8642951606",
+      "snapshotByteLength": 12828,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/69a67fcf11ed1298c6b43a00d64461908a318749/1.2.4.json",
+      "officialMetadataSha256": "965e8843859bfb447a9ddb9f32a825ac750397889a02b8c9def571402529e988",
+      "clientComparison": {
+        "status": "Match",
+        "officialSha1": "ad6d1fe7455857269d4185cb8f24e62cc0241aaf"
+      },
+      "serverComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      }
+    },
+    {
+      "minecraftId": "1.2.5",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/1.2.5.json",
+      "snapshotPath": "1.2.5.json",
+      "snapshotSha256": "a08bea1b0197e599438a0ee9bbc6c2d0c867f7137f48a35f5a2125dd3e9985a1",
+      "snapshotByteLength": 12876,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/5158765caf1ca14958cb6c45d52c8e09ed9b046c/1.2.5.json",
+      "officialMetadataSha256": "7792a0085648b8cd37f71f863ddca2c413cde3a288420fbedd3a0b3456acc307",
+      "clientComparison": {
+        "status": "Match",
+        "officialSha1": "4a2fac7504182a97dcbcd7560c6392d7c8139928"
+      },
+      "serverComparison": {
+        "status": "Match",
+        "officialSha1": "d8321edc9470e56b8ad5c67bbd16beba25843336"
+      }
+    },
+    {
+      "minecraftId": "1.5.2",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/1.5.2.json",
+      "snapshotPath": "1.5.2.json",
+      "snapshotSha256": "506ff2b01b90e96789aeee8e0b0590b6a72e8ec2e3a8c1c3a86f7a2b45e458ea",
+      "snapshotByteLength": 12877,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/924a2dcd8bdc31f8e9d36229811c298b3537bbc7/1.5.2.json",
+      "officialMetadataSha256": "489822b36c8fddb4dc597b0a1bf94b6a0f15a7608d874c93e0937d49915c6462",
+      "clientComparison": {
+        "status": "Match",
+        "officialSha1": "465378c9dc2f779ae1d6e8046ebc46fb53a57968"
+      },
+      "serverComparison": {
+        "status": "Match",
+        "officialSha1": "f9ae3f651319151ce99a0bfad6b34fa16eb6775f"
+      }
+    },
+    {
+      "minecraftId": "a1.1.2_01",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/a1.1.2_01.json",
+      "snapshotPath": "a1.1.2_01.json",
+      "snapshotSha256": "c2390d916e40ffd89538b89bc23484274cc87d61f7942dd103c9514f69ea92a3",
+      "snapshotByteLength": 12834,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/8730e3503e352fc03cca8a6c6ee614a17d66d8c6/a1.1.2_01.json",
+      "officialMetadataSha256": "a3193633274f2181136d2ab94ae9a41600d8375fdc0b7da68ea977dacd9c8b8d",
+      "clientComparison": {
+        "status": "Match",
+        "officialSha1": "daa4b9f192d2c260837d3b98c39432324da28e86"
+      },
+      "serverComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      }
+    },
+    {
+      "minecraftId": "a1.2.3_04",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/a1.2.3_04.json",
+      "snapshotPath": "a1.2.3_04.json",
+      "snapshotSha256": "3917b3bca9b6b5df8541663b8b0bc700cf4effb452b2e1515769624054715c59",
+      "snapshotByteLength": 12838,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/59c7719b82023e5b71e334a69d3c13137014a2bc/a1.2.3_04.json",
+      "officialMetadataSha256": "c7031caa3046b5ed4a163659ca0c2d7b9ade4e8533e49f191399a2e218265cdb",
+      "clientComparison": {
+        "status": "Match",
+        "officialSha1": "7f60cb9d0d40af20001d15287b78aa26a217a910"
+      },
+      "serverComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      }
+    },
+    {
+      "minecraftId": "a1.2.5",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/a1.2.5.json",
+      "snapshotPath": "a1.2.5.json",
+      "snapshotSha256": "e45c401f56b8826ae963acc8474540e8039f1b3942677bac3811af4352dd81bf",
+      "snapshotByteLength": 12829,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/a925f00e3f7f1bde95240152bef4d15f36971394/a1.2.5.json",
+      "officialMetadataSha256": "0c58864069e7d1640b366dcbba3ffe73de1666e760ddf1305aaedbd07ca178fa",
+      "clientComparison": {
+        "status": "Match",
+        "officialSha1": "f48c7b6442ad8d01099ecee1c7c7332f1b1a80da"
+      },
+      "serverComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      }
+    },
+    {
+      "minecraftId": "a1.2.6",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/a1.2.6.json",
+      "snapshotPath": "a1.2.6.json",
+      "snapshotSha256": "257b304d87d4eaa2f6199beca225393d5599da96042a855c8a6c6ff06026f088",
+      "snapshotByteLength": 12829,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/1c888e4d8aed380db25aeb3835f5918297bb5e3a/a1.2.6.json",
+      "officialMetadataSha256": "8b26f498a33ef3083426c4a1cd8245883b03cbea2479b2338d73d294223cf0c2",
+      "clientComparison": {
+        "status": "Match",
+        "officialSha1": "a68c817afd6c05c253ba5462287c2c19bbb57935"
+      },
+      "serverComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      }
+    },
+    {
+      "minecraftId": "b1.1_02",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/b1.1_02.json",
+      "snapshotPath": "b1.1_02.json",
+      "snapshotSha256": "aa9d1ec144400690a07d11bcbf6224dbdb2c38aa95195129d428ba9869bf2f5d",
+      "snapshotByteLength": 12839,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/01042e0ecdd894894ebc6f45300ae306010c154f/b1.1_02.json",
+      "officialMetadataSha256": "e81306f186202e04ebe562ecacc50cfc6f8431844eb935254e8341cef7414ad0",
+      "clientComparison": {
+        "status": "Match",
+        "officialSha1": "e1c682219df45ebda589a557aadadd6ed093c86c"
+      },
+      "serverComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      }
+    },
+    {
+      "minecraftId": "b1.2",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/b1.2.json",
+      "snapshotPath": "b1.2.json",
+      "snapshotSha256": "b571c10fa4091e72cc165bd46d112ecb8285a638a47c4126948bf8331c11323f",
+      "snapshotByteLength": 12824,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/67bcdada56d272e4508ecb8e35827ffa4a4c18d1/b1.2.json",
+      "officialMetadataSha256": "4d12e46363369c08fbbb266e853257c86e92654720276995ca294372e98c8d81",
+      "clientComparison": {
+        "status": "Match",
+        "officialSha1": "ba05d7a97926c61c03cf956f7ae92f3bede9474e"
+      },
+      "serverComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      }
+    },
+    {
+      "minecraftId": "b1.2_01",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/b1.2_01.json",
+      "snapshotPath": "b1.2_01.json",
+      "snapshotSha256": "f5e2a3a680d2851c2c95729552e565b8067690aabfb8bebc921b24e549a68954",
+      "snapshotByteLength": 12833,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/0fea71dc8c4199581753d8ecb3ae69039a302340/b1.2_01.json",
+      "officialMetadataSha256": "7e32aceb20415dd349b7d6132997bc3c223ddef72c2a519309507233085abcd4",
+      "clientComparison": {
+        "status": "Match",
+        "officialSha1": "f71a5b58c9bd0e458878d78a34c9fb35e97d5222"
+      },
+      "serverComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      }
+    },
+    {
+      "minecraftId": "b1.2_02",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/b1.2_02.json",
+      "snapshotPath": "b1.2_02.json",
+      "snapshotSha256": "e97db05b05a9f9e21665dadd70d23421576b481f3bda35f2810f476b53e84ec6",
+      "snapshotByteLength": 12813,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/5352763f0a944e7940e718fd66aae03bc57dc2ef/b1.2_02.json",
+      "officialMetadataSha256": "b29457f9b690f53d4dd9fb1dde070073edad5a94b1d982cbe32135c67e5a83ca",
+      "clientComparison": {
+        "status": "Mismatch",
+        "officialSha1": "093f371e1a05d89664cfb8068d607953687d5d94"
+      },
+      "serverComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      }
+    },
+    {
+      "minecraftId": "b1.3_01",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/b1.3_01.json",
+      "snapshotPath": "b1.3_01.json",
+      "snapshotSha256": "d56fcd43ab650b0a853d46ee299ca714c06ad8494f2a3ab48451789dd132d8fe",
+      "snapshotByteLength": 12837,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/a0e0a27d8f7d4c23b6441e473a3e44b45a958284/b1.3_01.json",
+      "officialMetadataSha256": "1b393547fdd869dfa040733026c04d4eaf5740580f42b7edfa6da44c251bb946",
+      "clientComparison": {
+        "status": "Match",
+        "officialSha1": "add3809d2c075e985d4b583632dac3d9c3872945"
+      },
+      "serverComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      }
+    },
+    {
+      "minecraftId": "b1.4_01",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/b1.4_01.json",
+      "snapshotPath": "b1.4_01.json",
+      "snapshotSha256": "001c18879d8d134ed1acc877c012a197764c783627f57c368662a09416a8b47c",
+      "snapshotByteLength": 12833,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/d47fcb0e4d9b7169fbb26c0bce56ed2082c3bb1d/b1.4_01.json",
+      "officialMetadataSha256": "68f93cd918fb92ca1d68beed5e2d2e59145433014d5079d812979f3f659d78d5",
+      "clientComparison": {
+        "status": "Match",
+        "officialSha1": "6f157f26955c35006c1afa8b0479e0ce785fb864"
+      },
+      "serverComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      }
+    },
+    {
+      "minecraftId": "b1.5_01",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/b1.5_01.json",
+      "snapshotPath": "b1.5_01.json",
+      "snapshotSha256": "9eaa949a93f11f960eb780448fc33f8ee0b66cc7db0bf29a7cbfeb96808a03d8",
+      "snapshotByteLength": 12833,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/0f0b24408e6ca445e9c4a3ea2a676f71f96f5d35/b1.5_01.json",
+      "officialMetadataSha256": "b582397aea1087192e33ed0e897ccc1184890935ae8f28bee1baadcee233d4a9",
+      "clientComparison": {
+        "status": "Match",
+        "officialSha1": "e2a692e5e8160c84b29c834ecbf398618db9749c"
+      },
+      "serverComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      }
+    },
+    {
+      "minecraftId": "b1.6.4",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/b1.6.4.json",
+      "snapshotPath": "b1.6.4.json",
+      "snapshotSha256": "8f12ed2ab5dbd3cb766e4e2a0fe854a253e8a7582fa0dffa194bb1b4bd40b728",
+      "snapshotByteLength": 12830,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/ac98b5e9e44038f3a311736111c16fc30006e1fd/b1.6.4.json",
+      "officialMetadataSha256": "1fb9bc85723ba8ae49fcf3612535a06385c6979f25c294737e8d0b3676ff5bfb",
+      "clientComparison": {
+        "status": "Match",
+        "officialSha1": "b5d3bdb8a7b12d163651f4787ac6ca14689aab9e"
+      },
+      "serverComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      }
+    },
+    {
+      "minecraftId": "b1.6.5",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/b1.6.5.json",
+      "snapshotPath": "b1.6.5.json",
+      "snapshotSha256": "2437703b6c0826a005cc072ee5424bf044b4061f77c6655f3f28bd0f77afcfb9",
+      "snapshotByteLength": 12830,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/eae37053bb49092ce93d40e762f4c3a573ee2880/b1.6.5.json",
+      "officialMetadataSha256": "00a4aded80cdde4838faa3779f883dcacb98c466104cfb624f58f3db8c2c040a",
+      "clientComparison": {
+        "status": "Match",
+        "officialSha1": "90ed9854b43c4d031ed07381ea3ae3071a8bba6f"
+      },
+      "serverComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      }
+    },
+    {
+      "minecraftId": "b1.6.6",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/b1.6.6.json",
+      "snapshotPath": "b1.6.6.json",
+      "snapshotSha256": "ca428761f54cf3f3d7b7ce728949ab11d7b94545bf70960cdc02b49f199b9bb2",
+      "snapshotByteLength": 12830,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/16cb1aa6f7c9c3953fa2f53abd8f57558efd3e71/b1.6.6.json",
+      "officialMetadataSha256": "1a4c5fd0e27980610f21484e48b75c071f6068cad9920ab00dfb7bada2939319",
+      "clientComparison": {
+        "status": "Match",
+        "officialSha1": "f95fe05711d09553ca2a9089f981741c13d6b8c4"
+      },
+      "serverComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      }
+    },
+    {
+      "minecraftId": "b1.7.2",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/b1.7.2.json",
+      "snapshotPath": "b1.7.2.json",
+      "snapshotSha256": "2956fa9b13ed499459efeb6cbdb144efcd1ebe6900b23bb602a516b11d446472",
+      "snapshotByteLength": 12830,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/00f5aff7cbf6ce109ecf2c8e1a5dc1bcbadb5680/b1.7.2.json",
+      "officialMetadataSha256": "1c0c2926d65959eff40907b94adc6206653a5a97aa0ba200dbfc7d6773b533dc",
+      "clientComparison": {
+        "status": "Match",
+        "officialSha1": "7dc50cc5e2ff204a7283f0c7d38cd0370b49875b"
+      },
+      "serverComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      }
+    },
+    {
+      "minecraftId": "b1.7.3",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/b1.7.3.json",
+      "snapshotPath": "b1.7.3.json",
+      "snapshotSha256": "ea94bfddff9bc1c18f332d9d307fd4ed60b4ec2188f636ac4972cbdfdeb7de16",
+      "snapshotByteLength": 12830,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/44f6969326bd45aa00dcd3c4ca3a7c05ebb24c04/b1.7.3.json",
+      "officialMetadataSha256": "aaeb1750ea74598c05b0e4287fd315e5730ab940368367dd3963e8905b02e345",
+      "clientComparison": {
+        "status": "Match",
+        "officialSha1": "43db9b498cb67058d2e12d394e6507722e71bb45"
+      },
+      "serverComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      }
+    },
+    {
+      "minecraftId": "b1.8.1",
+      "sourceUrl": "https://mcphackers.org/BetterJSONs/jsons/b1.8.1.json",
+      "snapshotPath": "b1.8.1.json",
+      "snapshotSha256": "5e09ca0a09afe3843e6a16c40e1d81d7560db22e4ac9dfaca46d2c40b4fa789f",
+      "snapshotByteLength": 12830,
+      "officialMetadataUrl": "https://piston-meta.mojang.com/v1/packages/440e3b845c3991492a3d0c5f0ccfda78ab90d9b6/b1.8.1.json",
+      "officialMetadataSha256": "88581cffacb202c736222c853ef099ad1b3d6c55e80785e855311f4d3156c471",
+      "clientComparison": {
+        "status": "Match",
+        "officialSha1": "6b562463ccc2c7ff12ff350a2b04a67b3adcd37b"
+      },
+      "serverComparison": {
+        "status": "OfficialEntryAbsent",
+        "officialSha1": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MMTL 可恢复验证矩阵分片状态",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "universeHash", "manifestHash", "shardIndex", "shardCount", "targetCount", "maxAttempts", "revision", "createdAt", "updatedAt", "targets"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "universeHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "manifestHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "shardIndex": {"type": "integer", "minimum": 0},
+    "shardCount": {"type": "integer", "minimum": 1},
+    "targetCount": {"type": "integer", "minimum": 1},
+    "maxAttempts": {"type": "integer", "minimum": 1, "maximum": 10},
+    "revision": {"type": "integer", "minimum": 0},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"},
+    "targets": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["targetId", "targetSpecHash", "sourceHash", "toolchainHash", "loaderId", "familyId", "status", "attempts", "interruptedPreviousAttempt", "failureCode", "evidencePath", "evidenceSha256", "startedAt", "endedAt"],
+        "properties": {
+          "targetId": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._@+() -]{1,179}$"},
+          "targetSpecHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "sourceHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "toolchainHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "loaderId": {"type": "string", "minLength": 1},
+          "familyId": {"type": "string", "minLength": 1},
+          "status": {"enum": ["Pending", "Running", "Passed", "Failed", "Blocked"]},
+          "attempts": {"type": "integer", "minimum": 0},
+          "interruptedPreviousAttempt": {"type": "boolean"},
+          "failureCode": {"type": ["string", "null"]},
+          "evidencePath": {"type": ["string", "null"], "pattern": "^(?![A-Za-z]:|/|\\\\)(?!.*(?:^|[\\\\/])\\.\\.(?:[\\\\/]|$))"},
+          "evidenceSha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+          "cached": {"type": "boolean"},
+          "startedAt": {"type": ["string", "null"], "format": "date-time"},
+          "endedAt": {"type": ["string", "null"], "format": "date-time"}
+        }
+      }
+    }
+  }
+}

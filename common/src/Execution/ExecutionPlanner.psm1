@@ -31,6 +31,25 @@ function ConvertTo-MmtlJavaRequirementForPlan {
     return [pscustomobject]$result
 }
 
+function Get-MmtlPlannerBuildJavaRequirement {
+    param($Project,$Profile)
+    $requirement=ConvertTo-MmtlJavaRequirementForPlan -Requirement (Get-MmtlPlannerProperty $Project 'BuildJavaRequirement') -Purpose BuildJava
+    $override=Get-MmtlPlannerProperty $Profile 'buildJavaOverride'
+    if(-not $override){return $requirement}
+    $major=0
+    if(-not[int]::TryParse([string](Get-MmtlPlannerProperty $override 'major'),[ref]$major) -or $major -lt 1){throw 'BUILD_JAVA_OVERRIDE_INVALID: major 必须为正整数。'}
+    $minimum=Get-MmtlPlannerProperty $requirement 'minimumMajor';$maximum=Get-MmtlPlannerProperty $requirement 'maximumMajor'
+    if(($minimum -and $major -lt [int]$minimum) -or ($maximum -and $major -gt [int]$maximum)){throw 'BUILD_JAVA_OVERRIDE_INCOMPATIBLE: major 超出项目已知的 Build Java 兼容范围。'}
+    $requirement.major=$major
+    $requirement.preferredMajor=$null
+    $requirement.exactMajor=$major
+    $requirement.requirementKind='Exact'
+    $requirement.source='ProfileBuildJavaOverride'
+    $requirement.confidence='High'
+    $requirement.provenance='launcher profile buildJavaOverride'
+    return $requirement
+}
+
 function Get-MmtlPlannerRuntimeJavaRequirement {
     param($Project, $Profile, $RuntimeJavaRequirement, $CatalogEntry, $VersionMetadata)
     $override = Get-MmtlPlannerProperty $Profile 'runtimeJavaOverride'
@@ -109,6 +128,7 @@ function New-MmtlExecutionPlan {
         $VersionMetadata,
         $RuntimeJavaRequirement,
         $AdapterEvidence,
+        $LoaderLaunchPlan,
         [string]$MetadataWarning,
         [long]$PhysicalMemoryMb=0,
         [switch]$BuildRequired,
@@ -134,7 +154,7 @@ function New-MmtlExecutionPlan {
         $warnings.Add((New-MmtlPlannerDiagnostic 'WORLD_RESET_SCOPED_TO_SESSION' 'Plan' 'resetWorld 只作用于本次隔离 Session 的世界目录；新建 Session 不会清理或修改其他 Session 的世界。' 'resetWorld'))
     }
     $players=0;$playersValid=[int]::TryParse([string](Get-MmtlPlannerProperty $Profile 'players' ''),[ref]$players)
-    if (-not $playersValid -or $mode -notin @('Single','IntegratedLAN','Dedicated') -or $players -lt 1 -or $players -gt 8 -or ($mode -eq 'Single' -and $players -ne 1)) {
+    if (-not $playersValid -or $mode -notin @('Single','IntegratedLAN','Dedicated') -or $players -lt 1 -or ($mode -eq 'Single' -and $players -ne 1)) {
         $diagnostics.Add((New-MmtlPlannerDiagnostic 'INVALID_PROFILE' 'Launch' 'Profile 的 mode 或 players 不符合配置规范。'))
     }
     $projectRoot=[IO.Path]::GetFullPath([string](Get-MmtlPlannerProperty $Project 'Root' (Get-MmtlPlannerProperty $Project 'ProjectRoot' '')))
@@ -152,7 +172,7 @@ function New-MmtlExecutionPlan {
     if ($loader -eq 'Unknown' -or -not $minecraft -or -not $loaderVersion) { $diagnostics.Add((New-MmtlPlannerDiagnostic 'PROJECT_TARGET_UNRESOLVED' 'Build' 'Loader、Loader 版本或 Minecraft 目标无法确认。')) }
     if (-not $hasWrapper) { $diagnostics.Add((New-MmtlPlannerDiagnostic 'GRADLE_WRAPPER_UNAVAILABLE' 'Build' '项目缺少可用的 Gradle Wrapper。')) }
 
-    $buildRequirement=ConvertTo-MmtlJavaRequirementForPlan -Requirement (Get-MmtlPlannerProperty $Project 'BuildJavaRequirement') -Purpose BuildJava
+    $buildRequirement=Get-MmtlPlannerBuildJavaRequirement -Project $Project -Profile $Profile
     $javaHomes=Get-MmtlJavaHomesForPlatform -Config $Config -Platform $Platform
     $buildResolution=Resolve-MmtlJavaCandidate -Requirement $buildRequirement -JavaHomes $javaHomes -Platform $Platform
     if ($buildResolution.status -ne 'Resolved') { $diagnostics.Add((New-MmtlPlannerDiagnostic $buildResolution.reasonCode 'Build' '找不到符合构建 Java 要求且与当前平台匹配的 JDK。' $buildRequirement.source)) }
@@ -229,6 +249,10 @@ function New-MmtlExecutionPlan {
     if ($primaryStack) { $stack+=@([pscustomobject]@{id=[string]$primaryStack.id;version=$primaryStack.version;role='Primary'}) }
     else { $stack+=@([pscustomobject]@{id=$loader;version=$loaderVersion;role='Primary'}) }
     foreach ($overlay in $overlayStack) { $stack+=@([pscustomobject]@{id=[string]$overlay.id;version=$overlay.version;role='Overlay'}) }
+    if ($LoaderLaunchPlan) {
+        $launchTargetId="LiteLoader@$minecraft"
+        if ($loader -cne 'LiteLoader' -or [string](Get-MmtlPlannerProperty $LoaderLaunchPlan 'targetId') -cne $launchTargetId -or [string](Get-MmtlPlannerProperty $LoaderLaunchPlan 'minecraftId') -cne $minecraft -or [string](Get-MmtlPlannerProperty $LoaderLaunchPlan 'loaderVersion') -cne $loaderVersion) { throw 'LOADER_LAUNCH_PLAN_PROJECT_MISMATCH' }
+    }
     $buildSystem=Get-MmtlPlannerProperty $Project 'BuildSystem'
     $toolchain=Get-MmtlPlannerProperty $Project 'Toolchain'
     $projectModId=Get-MmtlPlannerProperty $Project 'ModId'
@@ -239,6 +263,12 @@ function New-MmtlExecutionPlan {
     $runtimeProfiles=[ordered]@{}
     foreach ($name in @('hostCheats','clientPermissionLevel','gameMode','difficulty','worldName','seed','newWorld','resetWorld','memoryMb','hostMemoryMb','clientMemoryMb','serverMemoryMb','resolution','guiScale','windowLayout','acceptEula','port','autoBuild','cleanBuild')) { $value=Get-MmtlPlannerProperty $Profile $name; if ($null -ne $value) { $runtimeProfiles[$name]=$value } }
     $profileRecord=[ordered]@{name=$profileNameValue;mode=$mode;players=$players;hostUsername=(Get-MmtlPlannerProperty $Profile 'hostUsername' 'Dev');clientPrefix=(Get-MmtlPlannerProperty $Profile 'clientPrefix' 'Dev_');jvmArgs=$jvmArgs;gameArgs=$gameArgs}
+    $plannedClientCount=Get-MmtlPlannerProperty $Profile 'clientCount' $(if($playersValid -and $players -ge 1){$players}else{$null})
+    if($plannedClientCount -and [int]$plannedClientCount -ge 1){$profileRecord.clientCount=[int]$plannedClientCount}
+    foreach($scenarioField in @('transport','identity','scenarioConfiguration')){
+        $value=if($scenarioField -eq 'transport'){Get-MmtlPlannerProperty (Get-MmtlPlannerProperty $Profile 'multiplayer') 'transport'}else{Get-MmtlPlannerProperty $Profile $scenarioField}
+        if($null -ne $value){$profileRecord[$scenarioField]=$value}
+    }
     foreach ($name in $runtimeProfiles.Keys) { $profileRecord[$name]=$runtimeProfiles[$name] }
     $plan=[pscustomobject][ordered]@{
         schemaVersion=1;status=$planStatus;planId='pending';semanticDigest='';createdAt=[DateTimeOffset]::UtcNow.ToString('o')
@@ -249,7 +279,7 @@ function New-MmtlExecutionPlan {
         runtimeJava=[pscustomobject][ordered]@{requirement=$runtimeRequirement;resolution=$runtimeResolution;bindingMode=$binding;bindingEvidence=$bindingEvidence}
         profile=[pscustomobject]$profileRecord
         build=[pscustomobject][ordered]@{required=$buildProfileRequired;clean=$clean;task=[string](Get-MmtlPlannerProperty $Project 'BuildTask' 'build');wrapper=[IO.Path]::GetFileName([string](Get-MmtlPlannerProperty $Project 'WrapperPath' 'gradlew'));artifactExpectation='one-mod-jar'}
-        runtime=[pscustomobject][ordered]@{roles=@($roleRecords);runtimeDirectories=$runtimeDirectories;memory=$memory;jvmArgs=$jvmArgs;gameArgs=$gameArgs}
+        runtime=[pscustomobject][ordered]@{roles=@($roleRecords);runtimeDirectories=$runtimeDirectories;memory=$memory;jvmArgs=$jvmArgs;gameArgs=$gameArgs;loaderLaunchPlan=$LoaderLaunchPlan}
         network=[pscustomobject][ordered]@{portPolicy=$portPolicy;fixedPort=$fixedPort;bindPolicy='Loopback'}
         session=[pscustomobject][ordered]@{intendedMode=$mode}
         capabilityGates=[pscustomobject][ordered]@{buildReady=$buildReady;launchReady=$launchReady;buildReasons=@($buildReasons);launchReasons=@($launchReasons)}

@@ -39,7 +39,6 @@ public final class MmtlForgeAgent {
         MinecraftServer server = event.getEntity().getServer();
         if ("Host".equals(context.role) && !server.isDedicatedServer()) {
             events.emit("INTEGRATED_SERVER_READY", "Integrated server is active for the MMTL Host role");
-            events.emit("WORLD_JOINED", "Host player joined the integrated world");
         }
     }
 

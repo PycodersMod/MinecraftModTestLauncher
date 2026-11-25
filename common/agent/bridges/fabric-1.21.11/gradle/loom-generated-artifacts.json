@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "canonicalization": "SHA-256 of the entry count followed by entries sorted by ordinal ZIP path; each entry contributes UTF-8 path length/path, uncompressed byte length, and SHA-256 of uncompressed content. ZIP timestamps, ordering, and compression are excluded.",
+  "artifacts": [
+    {
+      "minecraftVersion": "1.21.11",
+      "group": "net.minecraft",
+      "name": "minecraft-common",
+      "configuration": "compileClasspath",
+      "version": "1.21.11-loom.mappings.1_21_11.layered+hash.2198-v2",
+      "file": "minecraft-common-1.21.11-loom.mappings.1_21_11.layered+hash.2198-v2.jar",
+      "contentSha256": "cef30f6779c0280cec163900c1f29f8d1ab884e158b86cbaab21e023720f66e8",
+      "provenance": "Computed from the same 15404 ZIP entry paths and uncompressed contents in two isolated Gradle homes; the archive SHA-256 differs only because all ZIP timestamps differ."
+    },
+    {
+      "minecraftVersion": "1.21.11",
+      "group": "net.minecraft",
+      "name": "minecraft-clientonly",
+      "configuration": "clientCompileClasspath",
+      "version": "1.21.11-loom.mappings.1_21_11.layered+hash.2198-v2",
+      "file": "minecraft-clientonly-1.21.11-loom.mappings.1_21_11.layered+hash.2198-v2.jar",
+      "contentSha256": "29b68048a0ef44ce2a84babe0d3981bdc0b86e4ac18042e05a69c670eaac09ab",
+      "provenance": "Computed from the same 13838 ZIP entry paths and uncompressed contents in two isolated Gradle homes; the archive SHA-256 differs only because all ZIP timestamps differ."
+    },
+    {
+      "minecraftVersion": "1.21.8",
+      "group": "net.minecraft",
+      "name": "minecraft-common",
+      "configuration": "compileClasspath",
+      "version": "1.21.8-loom.mappings.1_21_8.layered+hash.2198-v2",
+      "file": "minecraft-common-1.21.8-loom.mappings.1_21_8.layered+hash.2198-v2.jar",
+      "contentSha256": "0c0c0a6a862b20cbd8bb54a58200e8298507fe6e9d11a81430f5120075e3981d",
+      "provenance": "Computed from the same 14666 ZIP entry paths and uncompressed contents in isolated Gradle homes; the archive SHA-256 differs only because all ZIP timestamps differ."
+    },
+    {
+      "minecraftVersion": "1.21.8",
+      "group": "net.minecraft",
+      "name": "minecraft-clientonly",
+      "configuration": "clientCompileClasspath",
+      "version": "1.21.8-loom.mappings.1_21_8.layered+hash.2198-v2",
+      "file": "minecraft-clientonly-1.21.8-loom.mappings.1_21_8.layered+hash.2198-v2.jar",
+      "contentSha256": "919ac1c5e60efa746bf58ab2aaee83abdbc270e78845389e054f5bfabdec842c",
+      "provenance": "Computed from the same 12803 ZIP entry paths and uncompressed contents in isolated Gradle homes; the archive SHA-256 differs only because all ZIP timestamps differ."
+    }
+  ]
+}

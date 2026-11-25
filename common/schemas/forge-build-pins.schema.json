@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pinned Forge historical build inputs",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "status", "targets"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "status": {"enum": ["PARTIAL", "PASS"]},
+    "targets": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["targetId", "minecraftId", "forgeVersion", "sourceArchiveUrl", "sourceArchiveSha256", "buildGradleSha256", "gradleDistributionUrl", "gradleDistributionSha256", "buildJavaMajor", "forgeGradleSpec", "forgeGradleJarUrl", "forgeGradleJarSha256", "forgeGradlePomUrl", "forgeGradlePomSha256", "mojangMetadataSnapshot", "client", "server", "status"],
+        "properties": {
+          "targetId": {"type": "string", "minLength": 3},
+          "minecraftId": {"type": "string", "minLength": 1},
+          "forgeVersion": {"type": "string", "minLength": 1},
+          "sourceArchiveUrl": {"type": "string", "format": "uri", "pattern": "^https://maven\\.minecraftforge\\.net/.+-(src|mdk)\\.zip$"},
+          "sourceArchiveSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "buildGradleSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "gradleDistributionUrl": {"type": "string", "format": "uri", "pattern": "^https://services\\.gradle\\.org/distributions/gradle-[0-9.]+-(bin|all)\\.zip$"},
+          "gradleDistributionSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "buildJavaMajor": {"type": "integer", "minimum": 1},
+          "forgeGradleSpec": {"type": "string", "pattern": "^(?:[0-9]+(?:\\.[0-9]+)*(?:-SNAPSHOT|\\.\\+)?|\\[[0-9]+(?:\\.[0-9]+)*,[0-9]+(?:\\.[0-9]+)*\\))$"},
+          "forgeGradleTimestamp": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+-[0-9]{8}\\.[0-9]{6}-[0-9]+$"},
+          "forgeGradleResolvedVersion": {"type": "string", "pattern": "^[0-9]+(?:\\.[0-9]+)+$"},
+          "buildClasspathCatalogHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "targetInputCatalogHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "runtimeArtifactCatalogHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "forgeGradleJarUrl": {"type": "string", "format": "uri", "pattern": "^https://maven\\.minecraftforge\\.net/.+\\.jar$"},
+          "forgeGradleJarSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "forgeGradlePomUrl": {"type": "string", "format": "uri", "pattern": "^https://maven\\.minecraftforge\\.net/.+\\.pom$"},
+          "forgeGradlePomSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "mojangMetadataSnapshot": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "client": {"$ref": "#/$defs/mojangDownload"},
+          "server": {"$ref": "#/$defs/mojangDownload"},
+          "status": {"enum": ["PinnedInputsVerified", "PendingVerification"]}
+        },
+        "allOf": [
+          {
+            "if": {"properties": {"forgeGradleSpec": {"pattern": "-SNAPSHOT$"}}, "required": ["forgeGradleSpec"]},
+            "then": {"required": ["forgeGradleTimestamp"], "not": {"required": ["forgeGradleResolvedVersion"]}}
+          },
+          {
+            "if": {"properties": {"forgeGradleSpec": {"pattern": "\\.\\+$"}}, "required": ["forgeGradleSpec"]},
+            "then": {"required": ["forgeGradleResolvedVersion"], "not": {"required": ["forgeGradleTimestamp"]}}
+          },
+          {
+            "if": {"properties": {"forgeGradleSpec": {"pattern": "^\\[[0-9]+(?:\\.[0-9]+)*,[0-9]+(?:\\.[0-9]+)*\\)$"}}, "required": ["forgeGradleSpec"]},
+            "then": {"required": ["forgeGradleResolvedVersion", "buildClasspathCatalogHash", "targetInputCatalogHash", "runtimeArtifactCatalogHash"], "not": {"required": ["forgeGradleTimestamp"]}}
+          }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "mojangDownload": {
+      "type": "object", "additionalProperties": false,
+      "required": ["url", "sha1", "sizeBytes"],
+      "properties": {
+      "url": {"type": "string", "format": "uri", "pattern": "^https://(launcher|piston-data)\\.mojang\\.com/v1/objects/[a-f0-9]{40}/(client|server)\\.jar$"},
+        "sha1": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+        "sizeBytes": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

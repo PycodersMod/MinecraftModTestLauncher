@@ -1,0 +1,1097 @@
+{
+  "schemaVersion": 2,
+  "targetId": "Forge@1.19.4",
+  "forgeVersion": "1.19.4-45.4.1",
+  "forgeGradleSpec": "[6.0,6.2)",
+  "forgeGradleResolvedVersion": "6.0.54",
+  "gradleVersion": "8.8",
+  "buildJavaMajor": 17,
+  "artifactStatus": "HashesVerified",
+  "dependencies": [
+    {
+      "scope": "project-plugin",
+      "group": "com.google.code.findbugs",
+      "artifact": "jsr305",
+      "version": "3.0.2"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "com.google.code.gson",
+      "artifact": "gson",
+      "version": "2.10.1"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "com.google.errorprone",
+      "artifact": "error_prone_annotations",
+      "version": "2.11.0"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "com.google.guava",
+      "artifact": "failureaccess",
+      "version": "1.0.1"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "com.google.guava",
+      "artifact": "guava",
+      "version": "31.1-jre"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "com.google.guava",
+      "artifact": "listenablefuture",
+      "version": "9999.0-empty-to-avoid-conflict-with-guava"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "com.google.j2objc",
+      "artifact": "j2objc-annotations",
+      "version": "1.3"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "com.machinezoo.noexception",
+      "artifact": "noexception",
+      "version": "1.7.1"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "commons-codec",
+      "artifact": "commons-codec",
+      "version": "1.11"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "commons-io",
+      "artifact": "commons-io",
+      "version": "2.11.0"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "commons-logging",
+      "artifact": "commons-logging",
+      "version": "1.2"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "de.siegmar",
+      "artifact": "fastcsv",
+      "version": "2.2.1"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "it.unimi.dsi",
+      "artifact": "fastutil",
+      "version": "8.3.1"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "net.minecraftforge.gradle",
+      "artifact": "ForgeGradle",
+      "version": "6.0.54"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "net.minecraftforge",
+      "artifact": "DiffPatch",
+      "version": "2.0.12"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "net.minecraftforge",
+      "artifact": "JarJarMetadata",
+      "version": "0.3.19"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "net.minecraftforge",
+      "artifact": "JarJarSelector",
+      "version": "0.3.19"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "net.minecraftforge",
+      "artifact": "artifactural",
+      "version": "3.0.21"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "net.minecraftforge",
+      "artifact": "srgutils",
+      "version": "0.6.2"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "net.minecraftforge",
+      "artifact": "unsafe",
+      "version": "0.2.0"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "net.sf.jopt-simple",
+      "artifact": "jopt-simple",
+      "version": "5.0.4"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "org.apache.commons",
+      "artifact": "commons-compress",
+      "version": "1.18"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "org.apache.commons",
+      "artifact": "commons-lang3",
+      "version": "3.9"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "org.apache.httpcomponents",
+      "artifact": "httpclient",
+      "version": "4.5.14"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "org.apache.httpcomponents",
+      "artifact": "httpcore",
+      "version": "4.4.16"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "org.apache.maven",
+      "artifact": "maven-artifact",
+      "version": "3.9.1"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "org.checkerframework",
+      "artifact": "checker-qual",
+      "version": "3.12.0"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "org.codehaus.plexus",
+      "artifact": "plexus-utils",
+      "version": "3.5.1"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "org.slf4j",
+      "artifact": "slf4j-api",
+      "version": "1.7.30"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "org.slf4j",
+      "artifact": "slf4j-simple",
+      "version": "1.7.30"
+    },
+    {
+      "scope": "project-plugin",
+      "group": "org.tukaani",
+      "artifact": "xz",
+      "version": "1.8"
+    },
+    {
+      "scope": "settings-plugin",
+      "group": "org.gradle.toolchains",
+      "artifact": "foojay-resolver",
+      "version": "0.7.0"
+    },
+    {
+      "scope": "settings-plugin",
+      "group": "com.google.code.gson",
+      "artifact": "gson",
+      "version": "2.9.1"
+    }
+  ],
+  "artifacts": [
+    {
+      "group": "com.google.code.findbugs",
+      "artifact": "jsr305",
+      "version": "3.0.2",
+      "file": "jsr305-3.0.2.jar",
+      "extension": "jar",
+      "bytes": 19936,
+      "sha256": "766ad2a0783f2687962c8ad74ceecc38a28b9f72a2d085ee438b7813e928d0c7",
+      "url": "https://repo.maven.apache.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar"
+    },
+    {
+      "group": "com.google.code.findbugs",
+      "artifact": "jsr305",
+      "version": "3.0.2",
+      "file": "jsr305-3.0.2.pom",
+      "extension": "pom",
+      "bytes": 4286,
+      "sha256": "19889dbdf1b254b2601a5ee645b8147a974644882297684c798afe5d63d78dfe",
+      "url": "https://repo.maven.apache.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.pom"
+    },
+    {
+      "group": "com.google.code.gson",
+      "artifact": "gson",
+      "version": "2.10.1",
+      "file": "gson-2.10.1.jar",
+      "extension": "jar",
+      "bytes": 283367,
+      "sha256": "4241c14a7727c34feea6507ec801318a3d4a90f070e4525681079fb94ee4c593",
+      "url": "https://repo.maven.apache.org/maven2/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar"
+    },
+    {
+      "group": "com.google.code.gson",
+      "artifact": "gson",
+      "version": "2.10.1",
+      "file": "gson-2.10.1.pom",
+      "extension": "pom",
+      "bytes": 9365,
+      "sha256": "d2b115634f5c085db4b9c9ffc2658e89e231fdbfbe2242121a1cd95d4d948dd7",
+      "url": "https://repo.maven.apache.org/maven2/com/google/code/gson/gson/2.10.1/gson-2.10.1.pom"
+    },
+    {
+      "group": "com.google.errorprone",
+      "artifact": "error_prone_annotations",
+      "version": "2.11.0",
+      "file": "error_prone_annotations-2.11.0.jar",
+      "extension": "jar",
+      "bytes": 15979,
+      "sha256": "721cb91842b46fa056847d104d5225c8b8e1e8b62263b993051e1e5a0137b7ec",
+      "url": "https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_annotations/2.11.0/error_prone_annotations-2.11.0.jar"
+    },
+    {
+      "group": "com.google.errorprone",
+      "artifact": "error_prone_annotations",
+      "version": "2.11.0",
+      "file": "error_prone_annotations-2.11.0.pom",
+      "extension": "pom",
+      "bytes": 2163,
+      "sha256": "0261ca01f2d2e9ac2ae2ece75d42c56323b385fb294b6bc943f62ef4e92ddf08",
+      "url": "https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_annotations/2.11.0/error_prone_annotations-2.11.0.pom"
+    },
+    {
+      "group": "com.google.guava",
+      "artifact": "failureaccess",
+      "version": "1.0.1",
+      "file": "failureaccess-1.0.1.jar",
+      "extension": "jar",
+      "bytes": 4617,
+      "sha256": "a171ee4c734dd2da837e4b16be9df4661afab72a41adaf31eb84dfdaf936ca26",
+      "url": "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1.jar"
+    },
+    {
+      "group": "com.google.guava",
+      "artifact": "failureaccess",
+      "version": "1.0.1",
+      "file": "failureaccess-1.0.1.pom",
+      "extension": "pom",
+      "bytes": 2413,
+      "sha256": "e96042ce78fecba0da2be964522947c87b40a291b5fd3cd672a434924103c4b9",
+      "url": "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1.pom"
+    },
+    {
+      "group": "com.google.guava",
+      "artifact": "guava",
+      "version": "31.1-jre",
+      "file": "guava-31.1-jre.jar",
+      "extension": "jar",
+      "bytes": 2959479,
+      "sha256": "a42edc9cab792e39fe39bb94f3fca655ed157ff87a8af78e1d6ba5b07c4a00ab",
+      "url": "https://repo.maven.apache.org/maven2/com/google/guava/guava/31.1-jre/guava-31.1-jre.jar"
+    },
+    {
+      "group": "com.google.guava",
+      "artifact": "guava",
+      "version": "31.1-jre",
+      "file": "guava-31.1-jre.pom",
+      "extension": "pom",
+      "bytes": 10981,
+      "sha256": "9193d07bf4f660108d7358e58b27d21b44e34e80d6734e98e21916376f270de2",
+      "url": "https://repo.maven.apache.org/maven2/com/google/guava/guava/31.1-jre/guava-31.1-jre.pom"
+    },
+    {
+      "group": "com.google.guava",
+      "artifact": "listenablefuture",
+      "version": "9999.0-empty-to-avoid-conflict-with-guava",
+      "file": "listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar",
+      "extension": "jar",
+      "bytes": 2199,
+      "sha256": "b372a037d4230aa57fbeffdef30fd6123f9c0c2db85d0aced00c91b974f33f99",
+      "url": "https://repo.maven.apache.org/maven2/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar"
+    },
+    {
+      "group": "com.google.guava",
+      "artifact": "listenablefuture",
+      "version": "9999.0-empty-to-avoid-conflict-with-guava",
+      "file": "listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.pom",
+      "extension": "pom",
+      "bytes": 2278,
+      "sha256": "18d4b1db26153d4e55079ce1f76bb1fe05cdb862ef9954a88cbcc4ff38b8679b",
+      "url": "https://repo.maven.apache.org/maven2/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.pom"
+    },
+    {
+      "group": "com.google.j2objc",
+      "artifact": "j2objc-annotations",
+      "version": "1.3",
+      "file": "j2objc-annotations-1.3.jar",
+      "extension": "jar",
+      "bytes": 8781,
+      "sha256": "21af30c92267bd6122c0e0b4d20cccb6641a37eaf956c6540ec471d584e64a7b",
+      "url": "https://repo.maven.apache.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3.jar"
+    },
+    {
+      "group": "com.google.j2objc",
+      "artifact": "j2objc-annotations",
+      "version": "1.3",
+      "file": "j2objc-annotations-1.3.pom",
+      "extension": "pom",
+      "bytes": 2762,
+      "sha256": "5faca824ba115bee458730337dfdb2fcea46ba2fd774d4304edbf30fa6a3f055",
+      "url": "https://repo.maven.apache.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3.pom"
+    },
+    {
+      "group": "com.machinezoo.noexception",
+      "artifact": "noexception",
+      "version": "1.7.1",
+      "file": "noexception-1.7.1.jar",
+      "extension": "jar",
+      "bytes": 250861,
+      "sha256": "3d70aaea3904918587a21bdf99ab6ade9ab1dd0eaf6119344ba513f60f575816",
+      "url": "https://repo.maven.apache.org/maven2/com/machinezoo/noexception/noexception/1.7.1/noexception-1.7.1.jar"
+    },
+    {
+      "group": "com.machinezoo.noexception",
+      "artifact": "noexception",
+      "version": "1.7.1",
+      "file": "noexception-1.7.1.pom",
+      "extension": "pom",
+      "bytes": 5153,
+      "sha256": "54929708377b26d83271a38e91f9c07d4a992e0c83c1b567f1a2d2599795029d",
+      "url": "https://repo.maven.apache.org/maven2/com/machinezoo/noexception/noexception/1.7.1/noexception-1.7.1.pom"
+    },
+    {
+      "group": "commons-codec",
+      "artifact": "commons-codec",
+      "version": "1.11",
+      "file": "commons-codec-1.11.jar",
+      "extension": "jar",
+      "bytes": 335042,
+      "sha256": "e599d5318e97aa48f42136a2927e6dfa4e8881dff0e6c8e3109ddbbff51d7b7d",
+      "url": "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.11/commons-codec-1.11.jar"
+    },
+    {
+      "group": "commons-codec",
+      "artifact": "commons-codec",
+      "version": "1.11",
+      "file": "commons-codec-1.11.pom",
+      "extension": "pom",
+      "bytes": 13966,
+      "sha256": "c1e7140d1dea8fdf3528bc1e3c5444ac0b541297311f45f9806c213ec3ee9a10",
+      "url": "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.11/commons-codec-1.11.pom"
+    },
+    {
+      "group": "commons-io",
+      "artifact": "commons-io",
+      "version": "2.11.0",
+      "file": "commons-io-2.11.0.jar",
+      "extension": "jar",
+      "bytes": 327135,
+      "sha256": "961b2f6d87dbacc5d54abf45ab7a6e2495f89b75598962d8c723cea9bc210908",
+      "url": "https://repo.maven.apache.org/maven2/commons-io/commons-io/2.11.0/commons-io-2.11.0.jar"
+    },
+    {
+      "group": "commons-io",
+      "artifact": "commons-io",
+      "version": "2.11.0",
+      "file": "commons-io-2.11.0.pom",
+      "extension": "pom",
+      "bytes": 19729,
+      "sha256": "2e016fd7e3244b5f2c20acad834d93aa4790486ee1e4564641361a3e831eef59",
+      "url": "https://repo.maven.apache.org/maven2/commons-io/commons-io/2.11.0/commons-io-2.11.0.pom"
+    },
+    {
+      "group": "commons-logging",
+      "artifact": "commons-logging",
+      "version": "1.2",
+      "file": "commons-logging-1.2.jar",
+      "extension": "jar",
+      "bytes": 61829,
+      "sha256": "daddea1ea0be0f56978ab3006b8ac92834afeefbd9b7e4e6316fca57df0fa636",
+      "url": "https://repo.maven.apache.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar"
+    },
+    {
+      "group": "commons-logging",
+      "artifact": "commons-logging",
+      "version": "1.2",
+      "file": "commons-logging-1.2.pom",
+      "extension": "pom",
+      "bytes": 19206,
+      "sha256": "c91ab5aa570d86f6fd07cc158ec6bc2c50080402972ee9179fe24100739fbb20",
+      "url": "https://repo.maven.apache.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.pom"
+    },
+    {
+      "group": "de.siegmar",
+      "artifact": "fastcsv",
+      "version": "2.2.1",
+      "file": "fastcsv-2.2.1.jar",
+      "extension": "jar",
+      "bytes": 32009,
+      "sha256": "8a2ffdeff6a8134befef3fa9aa0e7d4506626826434d6bc45d0c3d7b6330c0f7",
+      "url": "https://repo.maven.apache.org/maven2/de/siegmar/fastcsv/2.2.1/fastcsv-2.2.1.jar"
+    },
+    {
+      "group": "de.siegmar",
+      "artifact": "fastcsv",
+      "version": "2.2.1",
+      "file": "fastcsv-2.2.1.pom",
+      "extension": "pom",
+      "bytes": 1348,
+      "sha256": "d4150522ed9d864273091ed0aad35150f78d136a0920e53e694f1984e4870832",
+      "url": "https://repo.maven.apache.org/maven2/de/siegmar/fastcsv/2.2.1/fastcsv-2.2.1.pom"
+    },
+    {
+      "group": "it.unimi.dsi",
+      "artifact": "fastutil",
+      "version": "8.3.1",
+      "file": "fastutil-8.3.1.jar",
+      "extension": "jar",
+      "bytes": 19011744,
+      "sha256": "1ee5da1ebfdc86ab9574be3cc290769f319df901ae95932a118889b7c63636b9",
+      "url": "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/8.3.1/fastutil-8.3.1.jar"
+    },
+    {
+      "group": "it.unimi.dsi",
+      "artifact": "fastutil",
+      "version": "8.3.1",
+      "file": "fastutil-8.3.1.pom",
+      "extension": "pom",
+      "bytes": 1401,
+      "sha256": "7d795db0ceb8fe69f8acbfef65353e8530dcda52b52fb61080e40c98677f0db4",
+      "url": "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/8.3.1/fastutil-8.3.1.pom"
+    },
+    {
+      "group": "net.minecraftforge.gradle",
+      "artifact": "ForgeGradle",
+      "version": "6.0.54",
+      "file": "ForgeGradle-6.0.54.jar",
+      "extension": "jar",
+      "bytes": 508115,
+      "sha256": "1d54a97a225ed5180300e8070a1c818597d98ec45a11fedecb425254b7982da2",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/6.0.54/ForgeGradle-6.0.54.jar"
+    },
+    {
+      "group": "net.minecraftforge.gradle",
+      "artifact": "ForgeGradle",
+      "version": "6.0.54",
+      "file": "ForgeGradle-6.0.54.pom",
+      "extension": "pom",
+      "bytes": 4104,
+      "sha256": "4bba725a86422bef59342db927cd5ab53baea7ffab9d74d23b6cdd1cb462d4c1",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/6.0.54/ForgeGradle-6.0.54.pom"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "DiffPatch",
+      "version": "2.0.12",
+      "file": "DiffPatch-2.0.12-all.jar",
+      "extension": "jar",
+      "bytes": 1362400,
+      "sha256": "3749059d529d69534b068679d9c1bd4b40ef4f974a189ff1bb8931215d7ce10a",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/DiffPatch/2.0.12/DiffPatch-2.0.12-all.jar"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "DiffPatch",
+      "version": "2.0.12",
+      "file": "DiffPatch-2.0.12.pom",
+      "extension": "pom",
+      "bytes": 2512,
+      "sha256": "09f52438826910bcffd1e4a793087268bff445f62f6f98833f8bd9da03c976c3",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/DiffPatch/2.0.12/DiffPatch-2.0.12.pom"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "JarJarMetadata",
+      "version": "0.3.19",
+      "file": "JarJarMetadata-0.3.19.jar",
+      "extension": "jar",
+      "bytes": 15895,
+      "sha256": "6141c710b5b7b673bd544740a31339f0754d7a794cc46b952b7ef7897b7ce265",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/JarJarMetadata/0.3.19/JarJarMetadata-0.3.19.jar"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "JarJarMetadata",
+      "version": "0.3.19",
+      "file": "JarJarMetadata-0.3.19.pom",
+      "extension": "pom",
+      "bytes": 2656,
+      "sha256": "fbdad98cbcd35923e67b267d5fa05893baac9fe94d5bd0490d3ebbb7bee0f765",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/JarJarMetadata/0.3.19/JarJarMetadata-0.3.19.pom"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "JarJarSelector",
+      "version": "0.3.19",
+      "file": "JarJarSelector-0.3.19.jar",
+      "extension": "jar",
+      "bytes": 17374,
+      "sha256": "f7acfbafc9a715ee7d7ce2d539815b3ebccebc5064e0a7252c4a6a1c71d1e740",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/JarJarSelector/0.3.19/JarJarSelector-0.3.19.jar"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "JarJarSelector",
+      "version": "0.3.19",
+      "file": "JarJarSelector-0.3.19.pom",
+      "extension": "pom",
+      "bytes": 2842,
+      "sha256": "77d82f6fe5a7a5245550103bc87b511a490c2a4596eba09002e3783e77a84f3c",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/JarJarSelector/0.3.19/JarJarSelector-0.3.19.pom"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "artifactural",
+      "version": "3.0.21",
+      "file": "artifactural-3.0.21.jar",
+      "extension": "jar",
+      "bytes": 63223,
+      "sha256": "e0948101562515212e4f7bd0c7d0789f240e6a01372ff432817e38f48cb34a50",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/artifactural/3.0.21/artifactural-3.0.21.jar"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "artifactural",
+      "version": "3.0.21",
+      "file": "artifactural-3.0.21.pom",
+      "extension": "pom",
+      "bytes": 2057,
+      "sha256": "afa2da678864330a0e79f94ad50755797d60e19129c657844661c55c6bf3899e",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/artifactural/3.0.21/artifactural-3.0.21.pom"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "srgutils",
+      "version": "0.6.2",
+      "file": "srgutils-0.6.2.jar",
+      "extension": "jar",
+      "bytes": 74235,
+      "sha256": "f10b366cdc4df20de8a50511f49fded5ea0fe8f7a476ff984a12f65a1602533e",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/srgutils/0.6.2/srgutils-0.6.2.jar"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "srgutils",
+      "version": "0.6.2",
+      "file": "srgutils-0.6.2.pom",
+      "extension": "pom",
+      "bytes": 1898,
+      "sha256": "555bbf1341a92c1679c3118d7d5be3cbdfdaa4eb590735ccffff7b9e4194e068",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/srgutils/0.6.2/srgutils-0.6.2.pom"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "unsafe",
+      "version": "0.2.0",
+      "file": "unsafe-0.2.0.jar",
+      "extension": "jar",
+      "bytes": 2834,
+      "sha256": "946937e182ab3b518b5b88264f367e1f35ac12bc83abed220490c60c717be239",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/unsafe/0.2.0/unsafe-0.2.0.jar"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "unsafe",
+      "version": "0.2.0",
+      "file": "unsafe-0.2.0.pom",
+      "extension": "pom",
+      "bytes": 1506,
+      "sha256": "c4b8ce2d2649dc0bfe03f581a0611b72db98ee7b62edaa08fd8439e1d22ed065",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/unsafe/0.2.0/unsafe-0.2.0.pom"
+    },
+    {
+      "group": "net.sf.jopt-simple",
+      "artifact": "jopt-simple",
+      "version": "5.0.4",
+      "file": "jopt-simple-5.0.4.jar",
+      "extension": "jar",
+      "bytes": 78146,
+      "sha256": "df26cc58f235f477db07f753ba5a3ab243ebe5789d9f89ecf68dd62ea9a66c28",
+      "url": "https://repo.maven.apache.org/maven2/net/sf/jopt-simple/jopt-simple/5.0.4/jopt-simple-5.0.4.jar"
+    },
+    {
+      "group": "net.sf.jopt-simple",
+      "artifact": "jopt-simple",
+      "version": "5.0.4",
+      "file": "jopt-simple-5.0.4.pom",
+      "extension": "pom",
+      "bytes": 13968,
+      "sha256": "6a67763b76afcd9c80b95e5c5e24782d18cc1b0e3d9b454ad3f8754c76b76815",
+      "url": "https://repo.maven.apache.org/maven2/net/sf/jopt-simple/jopt-simple/5.0.4/jopt-simple-5.0.4.pom"
+    },
+    {
+      "group": "org.apache.commons",
+      "artifact": "commons-compress",
+      "version": "1.18",
+      "file": "commons-compress-1.18.jar",
+      "extension": "jar",
+      "bytes": 591748,
+      "sha256": "5f2df1e467825e4cac5996d44890c4201c000b43c0b23cffc0782d28a0beb9b0",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.18/commons-compress-1.18.jar"
+    },
+    {
+      "group": "org.apache.commons",
+      "artifact": "commons-compress",
+      "version": "1.18",
+      "file": "commons-compress-1.18.pom",
+      "extension": "pom",
+      "bytes": 18228,
+      "sha256": "672c5fe92bd3eab43e8d53338cad5ca073b6529de4eb2b38859a3eaa6c9e8119",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.18/commons-compress-1.18.pom"
+    },
+    {
+      "group": "org.apache.commons",
+      "artifact": "commons-lang3",
+      "version": "3.9",
+      "file": "commons-lang3-3.9.jar",
+      "extension": "jar",
+      "bytes": 503880,
+      "sha256": "de2e1dcdcf3ef917a8ce858661a06726a9a944f28e33ad7f9e08bea44dc3c230",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar"
+    },
+    {
+      "group": "org.apache.commons",
+      "artifact": "commons-lang3",
+      "version": "3.9",
+      "file": "commons-lang3-3.9.pom",
+      "extension": "pom",
+      "bytes": 28379,
+      "sha256": "a4022429b98425b430181915721279a52f610f34648bdac487d4cacbbe8dfeb5",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.pom"
+    },
+    {
+      "group": "org.apache.httpcomponents",
+      "artifact": "httpclient",
+      "version": "4.5.14",
+      "file": "httpclient-4.5.14.jar",
+      "extension": "jar",
+      "bytes": 785639,
+      "sha256": "c8bc7e1c51a6d4ce72f40d2ebbabf1c4b68bfe76e732104b04381b493478e9d6",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14.jar"
+    },
+    {
+      "group": "org.apache.httpcomponents",
+      "artifact": "httpclient",
+      "version": "4.5.14",
+      "file": "httpclient-4.5.14.pom",
+      "extension": "pom",
+      "bytes": 6623,
+      "sha256": "f18355af4cf80a8a4ef04ebd742a47e90a7eaf080c725b2095dbc4fc5dbdefb7",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14.pom"
+    },
+    {
+      "group": "org.apache.httpcomponents",
+      "artifact": "httpcore",
+      "version": "4.4.16",
+      "file": "httpcore-4.4.16.jar",
+      "extension": "jar",
+      "bytes": 327891,
+      "sha256": "6c9b3dd142a09dc468e23ad39aad6f75a0f2b85125104469f026e52a474e464f",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.16/httpcore-4.4.16.jar"
+    },
+    {
+      "group": "org.apache.httpcomponents",
+      "artifact": "httpcore",
+      "version": "4.4.16",
+      "file": "httpcore-4.4.16.pom",
+      "extension": "pom",
+      "bytes": 4967,
+      "sha256": "3cbad849b35dacfe6cec31adada2c623c026c3261141b0d26eec7e399c6cd7fa",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.16/httpcore-4.4.16.pom"
+    },
+    {
+      "group": "org.apache.maven",
+      "artifact": "maven-artifact",
+      "version": "3.9.1",
+      "file": "maven-artifact-3.9.1.jar",
+      "extension": "jar",
+      "bytes": 58589,
+      "sha256": "1b673d76cf8777344c6350d588533ea394dd93fe9a1b2bff319d96cb0dde74f2",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/3.9.1/maven-artifact-3.9.1.jar"
+    },
+    {
+      "group": "org.apache.maven",
+      "artifact": "maven-artifact",
+      "version": "3.9.1",
+      "file": "maven-artifact-3.9.1.pom",
+      "extension": "pom",
+      "bytes": 2319,
+      "sha256": "53aa5f80f6664b7bb2b4a11f63cb96b9331dc64d20fbc2603958acec6573cd58",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/3.9.1/maven-artifact-3.9.1.pom"
+    },
+    {
+      "group": "org.checkerframework",
+      "artifact": "checker-qual",
+      "version": "3.12.0",
+      "file": "checker-qual-3.12.0.jar",
+      "extension": "jar",
+      "bytes": 208835,
+      "sha256": "ff10785ac2a357ec5de9c293cb982a2cbb605c0309ea4cc1cb9b9bc6dbe7f3cb",
+      "url": "https://repo.maven.apache.org/maven2/org/checkerframework/checker-qual/3.12.0/checker-qual-3.12.0.jar"
+    },
+    {
+      "group": "org.checkerframework",
+      "artifact": "checker-qual",
+      "version": "3.12.0",
+      "file": "checker-qual-3.12.0.pom",
+      "extension": "pom",
+      "bytes": 2092,
+      "sha256": "775b7ae36e62820b3b86dc1aa39af37c0ac4b85ff48f7fe485a922a2790f46b9",
+      "url": "https://repo.maven.apache.org/maven2/org/checkerframework/checker-qual/3.12.0/checker-qual-3.12.0.pom"
+    },
+    {
+      "group": "org.codehaus.plexus",
+      "artifact": "plexus-utils",
+      "version": "3.5.1",
+      "file": "plexus-utils-3.5.1.jar",
+      "extension": "jar",
+      "bytes": 269335,
+      "sha256": "86e0255d4c879c61b4833ed7f13124e8bb679df47debb127326e7db7dd49a07b",
+      "url": "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/3.5.1/plexus-utils-3.5.1.jar"
+    },
+    {
+      "group": "org.codehaus.plexus",
+      "artifact": "plexus-utils",
+      "version": "3.5.1",
+      "file": "plexus-utils-3.5.1.pom",
+      "extension": "pom",
+      "bytes": 8768,
+      "sha256": "94ff68edeb48204d12c99189c767164d3a9f778a1372d1dce11a41462e6236f2",
+      "url": "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/3.5.1/plexus-utils-3.5.1.pom"
+    },
+    {
+      "group": "org.slf4j",
+      "artifact": "slf4j-api",
+      "version": "1.7.30",
+      "file": "slf4j-api-1.7.30.jar",
+      "extension": "jar",
+      "bytes": 41472,
+      "sha256": "cdba07964d1bb40a0761485c6b1e8c2f8fd9eb1d19c53928ac0d7f9510105c57",
+      "url": "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar"
+    },
+    {
+      "group": "org.slf4j",
+      "artifact": "slf4j-api",
+      "version": "1.7.30",
+      "file": "slf4j-api-1.7.30.pom",
+      "extension": "pom",
+      "bytes": 3835,
+      "sha256": "7e0747751e9b67e19dcb5206f04ea22cc03d250c422426402eadd03513f2c314",
+      "url": "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.pom"
+    },
+    {
+      "group": "org.slf4j",
+      "artifact": "slf4j-simple",
+      "version": "1.7.30",
+      "file": "slf4j-simple-1.7.30.jar",
+      "extension": "jar",
+      "bytes": 15239,
+      "sha256": "8b9279cbff6b9f88594efae3cf02039b6995030eec023ed43928748c41670fee",
+      "url": "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/1.7.30/slf4j-simple-1.7.30.jar"
+    },
+    {
+      "group": "org.slf4j",
+      "artifact": "slf4j-simple",
+      "version": "1.7.30",
+      "file": "slf4j-simple-1.7.30.pom",
+      "extension": "pom",
+      "bytes": 1021,
+      "sha256": "471316b19d6769ec96b835d62ccaaea1f71a8f2ee5124f544615d577a0f0070d",
+      "url": "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/1.7.30/slf4j-simple-1.7.30.pom"
+    },
+    {
+      "group": "org.tukaani",
+      "artifact": "xz",
+      "version": "1.8",
+      "file": "xz-1.8.jar",
+      "extension": "jar",
+      "bytes": 108555,
+      "sha256": "8c7964b36fe3f0cbe644b04fcbff84e491ce81917db2f5bfa0cba8e9548aff5d",
+      "url": "https://repo.maven.apache.org/maven2/org/tukaani/xz/1.8/xz-1.8.jar"
+    },
+    {
+      "group": "org.tukaani",
+      "artifact": "xz",
+      "version": "1.8",
+      "file": "xz-1.8.pom",
+      "extension": "pom",
+      "bytes": 1907,
+      "sha256": "f29e75cb88eb4acbf7e5aa5c09ed55eac2cbae601d63a9f375231f45452c1013",
+      "url": "https://repo.maven.apache.org/maven2/org/tukaani/xz/1.8/xz-1.8.pom"
+    },
+    {
+      "group": "net.minecraftforge.gradle",
+      "artifact": "net.minecraftforge.gradle.gradle.plugin",
+      "version": "6.0.54",
+      "file": "net.minecraftforge.gradle.gradle.plugin-6.0.54.pom",
+      "extension": "pom",
+      "bytes": 758,
+      "sha256": "491dfd88dc9d4150775c9eb7f9aa8fb803b86503c3f064e0a0c70685c1af9f19",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/gradle/net.minecraftforge.gradle.gradle.plugin/6.0.54/net.minecraftforge.gradle.gradle.plugin-6.0.54.pom"
+    },
+    {
+      "group": "org.gradle.toolchains.foojay-resolver-convention",
+      "artifact": "org.gradle.toolchains.foojay-resolver-convention.gradle.plugin",
+      "version": "0.7.0",
+      "file": "org.gradle.toolchains.foojay-resolver-convention.gradle.plugin-0.7.0.pom",
+      "extension": "pom",
+      "bytes": 715,
+      "sha256": "c8a443e2faef876f338a391233c20a91ad5b83f69c1c6ba20d39a7b39106240a",
+      "url": "https://plugins.gradle.org/m2/org/gradle/toolchains/foojay-resolver-convention/org.gradle.toolchains.foojay-resolver-convention.gradle.plugin/0.7.0/org.gradle.toolchains.foojay-resolver-convention.gradle.plugin-0.7.0.pom"
+    },
+    {
+      "group": "org.gradle.toolchains",
+      "artifact": "foojay-resolver",
+      "version": "0.7.0",
+      "file": "foojay-resolver-0.7.0.jar",
+      "extension": "jar",
+      "bytes": 42276,
+      "sha256": "93672b4740a0fdbfbb5baf08353db8ae9a9bb25f6b10a93c078126c717db3ac0",
+      "url": "https://plugins.gradle.org/m2/org/gradle/toolchains/foojay-resolver/0.7.0/foojay-resolver-0.7.0.jar"
+    },
+    {
+      "group": "org.gradle.toolchains",
+      "artifact": "foojay-resolver",
+      "version": "0.7.0",
+      "file": "foojay-resolver-0.7.0.pom",
+      "extension": "pom",
+      "bytes": 975,
+      "sha256": "8826bcfb922af0c211e413d39b08165913c083066413e0730cd82b2e0b0a89ee",
+      "url": "https://plugins.gradle.org/m2/org/gradle/toolchains/foojay-resolver/0.7.0/foojay-resolver-0.7.0.pom"
+    },
+    {
+      "group": "com.google.code.gson",
+      "artifact": "gson",
+      "version": "2.9.1",
+      "file": "gson-2.9.1.jar",
+      "extension": "jar",
+      "bytes": 265030,
+      "sha256": "378534e339e6e6d50b1736fb3abb76f1c15d1be3f4c13cec6d536412e23da603",
+      "url": "https://repo.maven.apache.org/maven2/com/google/code/gson/gson/2.9.1/gson-2.9.1.jar"
+    },
+    {
+      "group": "com.google.code.gson",
+      "artifact": "gson",
+      "version": "2.9.1",
+      "file": "gson-2.9.1.pom",
+      "extension": "pom",
+      "bytes": 8208,
+      "sha256": "e5966323d7142570b37a4be979e21bc2dae848107e4dc416d8f44d9aa3f02903",
+      "url": "https://repo.maven.apache.org/maven2/com/google/code/gson/gson/2.9.1/gson-2.9.1.pom"
+    },
+    {
+      "group": "com.google.code.gson",
+      "artifact": "gson-parent",
+      "version": "2.10.1",
+      "file": "gson-parent-2.10.1.pom",
+      "extension": "pom",
+      "bytes": 12522,
+      "sha256": "4248e0882426c615182385d6086c3ef3262e769957189e29306280b85482b833",
+      "url": "https://repo.maven.apache.org/maven2/com/google/code/gson/gson-parent/2.10.1/gson-parent-2.10.1.pom"
+    },
+    {
+      "group": "com.google.errorprone",
+      "artifact": "error_prone_parent",
+      "version": "2.11.0",
+      "file": "error_prone_parent-2.11.0.pom",
+      "extension": "pom",
+      "bytes": 10734,
+      "sha256": "8283f0cb44c624a79d330b6fd80b8b8a715a68b3685c9a951c3de837d4540551",
+      "url": "https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_parent/2.11.0/error_prone_parent-2.11.0.pom"
+    },
+    {
+      "group": "com.google.guava",
+      "artifact": "guava-parent",
+      "version": "26.0-android",
+      "file": "guava-parent-26.0-android.pom",
+      "extension": "pom",
+      "bytes": 10180,
+      "sha256": "f8698ab46ca996ce889c1afc8ca4f25eb8ac6b034dc898d4583742360016cc04",
+      "url": "https://repo.maven.apache.org/maven2/com/google/guava/guava-parent/26.0-android/guava-parent-26.0-android.pom"
+    },
+    {
+      "group": "com.google.guava",
+      "artifact": "guava-parent",
+      "version": "31.1-jre",
+      "file": "guava-parent-31.1-jre.pom",
+      "extension": "pom",
+      "bytes": 14736,
+      "sha256": "4439626783b44ad25ef05ff07621dd4bb796cc4eb4f2966a4a461fea4130e0fc",
+      "url": "https://repo.maven.apache.org/maven2/com/google/guava/guava-parent/31.1-jre/guava-parent-31.1-jre.pom"
+    },
+    {
+      "group": "org.apache.commons",
+      "artifact": "commons-parent",
+      "version": "42",
+      "file": "commons-parent-42.pom",
+      "extension": "pom",
+      "bytes": 67956,
+      "sha256": "cd313494c670b483ec256972af1698b330e598f807002354eb765479f604b09c",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-parent/42/commons-parent-42.pom"
+    },
+    {
+      "group": "org.apache.commons",
+      "artifact": "commons-parent",
+      "version": "52",
+      "file": "commons-parent-52.pom",
+      "extension": "pom",
+      "bytes": 79273,
+      "sha256": "75dbe8f34e98e4c3ff42daae4a2f9eb4cbcd3b5f1047d54460ace906dbb4502e",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-parent/52/commons-parent-52.pom"
+    },
+    {
+      "group": "org.junit",
+      "artifact": "junit-bom",
+      "version": "5.7.2",
+      "file": "junit-bom-5.7.2.pom",
+      "extension": "pom",
+      "bytes": 5098,
+      "sha256": "cd14aaa869991f82021c585d570d31ff342bcba58bb44233b70193771b96487b",
+      "url": "https://repo.maven.apache.org/maven2/org/junit/junit-bom/5.7.2/junit-bom-5.7.2.pom"
+    },
+    {
+      "group": "org.apache.commons",
+      "artifact": "commons-parent",
+      "version": "34",
+      "file": "commons-parent-34.pom",
+      "extension": "pom",
+      "bytes": 55943,
+      "sha256": "3a2e69d06d641d1f3b293126dc9e2e4ea6563bf8c36c87e0ab6fa4292d04b79c",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-parent/34/commons-parent-34.pom"
+    },
+    {
+      "group": "org.apache.commons",
+      "artifact": "commons-parent",
+      "version": "48",
+      "file": "commons-parent-48.pom",
+      "extension": "pom",
+      "bytes": 72034,
+      "sha256": "1e1f7de9370a7b7901f128f1dacd1422be74e3f47f9558b0f79e04c0637ca0b4",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-parent/48/commons-parent-48.pom"
+    },
+    {
+      "group": "org.apache.httpcomponents",
+      "artifact": "httpcomponents-client",
+      "version": "4.5.14",
+      "file": "httpcomponents-client-4.5.14.pom",
+      "extension": "pom",
+      "bytes": 15277,
+      "sha256": "5bad1de4f101447659f89d089868ccbad64a68cc503d2d65410b51f6904aa061",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcomponents-client/4.5.14/httpcomponents-client-4.5.14.pom"
+    },
+    {
+      "group": "org.apache.httpcomponents",
+      "artifact": "httpcomponents-core",
+      "version": "4.4.16",
+      "file": "httpcomponents-core-4.4.16.pom",
+      "extension": "pom",
+      "bytes": 11949,
+      "sha256": "f2d75a2c2d423ad18539bf21656d56f88a4091944a662fcaf159d5ae283db7f7",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcomponents-core/4.4.16/httpcomponents-core-4.4.16.pom"
+    },
+    {
+      "group": "org.apache.maven",
+      "artifact": "maven",
+      "version": "3.9.1",
+      "file": "maven-3.9.1.pom",
+      "extension": "pom",
+      "bytes": 28045,
+      "sha256": "06e2e4db63f9105a0b64ddf34747550f73c8004fe54df0a4b7b196df43c7f6c3",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven/3.9.1/maven-3.9.1.pom"
+    },
+    {
+      "group": "org.codehaus.plexus",
+      "artifact": "plexus",
+      "version": "10",
+      "file": "plexus-10.pom",
+      "extension": "pom",
+      "bytes": 25398,
+      "sha256": "bba9c521064b9ca132ce97cc1cc7eb4afc2dbe32bc88cb872c88e99f6162301f",
+      "url": "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus/10/plexus-10.pom"
+    },
+    {
+      "group": "org.slf4j",
+      "artifact": "slf4j-parent",
+      "version": "1.7.30",
+      "file": "slf4j-parent-1.7.30.pom",
+      "extension": "pom",
+      "bytes": 13806,
+      "sha256": "11647956e48a0c5bfb3ac33f6da7e83f341002b6857efd335a505b687be34b75",
+      "url": "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-parent/1.7.30/slf4j-parent-1.7.30.pom"
+    },
+    {
+      "group": "com.google.code.gson",
+      "artifact": "gson-parent",
+      "version": "2.9.1",
+      "file": "gson-parent-2.9.1.pom",
+      "extension": "pom",
+      "bytes": 4488,
+      "sha256": "7ca0845e73685618de3e46bd3434d03a4a373d520fab93a680318ad6c8cb2a79",
+      "url": "https://repo.maven.apache.org/maven2/com/google/code/gson/gson-parent/2.9.1/gson-parent-2.9.1.pom"
+    },
+    {
+      "group": "org.apache",
+      "artifact": "apache",
+      "version": "18",
+      "file": "apache-18.pom",
+      "extension": "pom",
+      "bytes": 15667,
+      "sha256": "7831307285fd475bbc36b20ae38e7882f11c3153b1d5930f852d44eda8f33c17",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/apache/18/apache-18.pom"
+    },
+    {
+      "group": "org.apache",
+      "artifact": "apache",
+      "version": "13",
+      "file": "apache-13.pom",
+      "extension": "pom",
+      "bytes": 13974,
+      "sha256": "ff513db0361fd41237bef4784968bc15aae478d4ec0a9496f811072ccaf3841d",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/apache/13/apache-13.pom"
+    },
+    {
+      "group": "org.apache.httpcomponents",
+      "artifact": "httpcomponents-parent",
+      "version": "11",
+      "file": "httpcomponents-parent-11.pom",
+      "extension": "pom",
+      "bytes": 34695,
+      "sha256": "a901f87b115c55070c7ee43efff63e20e7b02d30af2443ae292bf1f4e532d3aa",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcomponents-parent/11/httpcomponents-parent-11.pom"
+    },
+    {
+      "group": "org.apache.maven",
+      "artifact": "maven-parent",
+      "version": "39",
+      "file": "maven-parent-39.pom",
+      "extension": "pom",
+      "bytes": 47971,
+      "sha256": "cfe4820aa1d96ae51d1dc5b0e2a9dc582c42478c24c95ca8238f547e60bef721",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven-parent/39/maven-parent-39.pom"
+    },
+    {
+      "group": "org.apache",
+      "artifact": "apache",
+      "version": "29",
+      "file": "apache-29.pom",
+      "extension": "pom",
+      "bytes": 20721,
+      "sha256": "3e49037174820bbd0df63420a977255886398954c2a06291fa61f727ac35b377",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/apache/29/apache-29.pom"
+    }
+  ],
+  "catalogHash": "6f0c6924fe70e907becabc5eb86c4482a9d90199d270f71c907344135e12bac1",
+  "mdkSha256": "9af67ea5ac56c0113dce53d879cbe4f38a0b1b45542e7488c8757b3509b963ae",
+  "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-8.8-bin.zip",
+  "gradleDistributionSha256": "a4b4158601f8636cdeeab09bd76afb640030bb5b144aafe261a5e8af027dc612",
+  "foojayResolverVersion": "0.7.0"
+}

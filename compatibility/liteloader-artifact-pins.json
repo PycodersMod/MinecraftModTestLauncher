@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "status": "PARTIAL",
+  "generatedAt": "2026-10-12T00:00:00Z",
+  "universeHash": "c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+  "sourceUrl": "https://dl.liteloader.com/versions/versions.json",
+  "sourceSha256": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+  "verifiedArtifactCount": 6,
+  "pins": [
+    {
+      "targetId": "LiteLoader@1.5.2",
+      "minecraftId": "1.5.2",
+      "loaderVersion": "1.5.2_01",
+      "artifactUrl": "https://dl.liteloader.com/versions/com/mumfrey/liteloader/1.5.2_01/liteloader-1.5.2_01.jar",
+      "officialMd5": "53639d52340479ccf206a04f5e16606f",
+      "sha256": "e983307c3dc0a58480a508fd8afde78429d280af701b473d012a989ad89715e8",
+      "bytes": 47065,
+      "sourceSha256": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489"
+    },
+    {
+      "targetId": "LiteLoader@1.6.2",
+      "minecraftId": "1.6.2",
+      "loaderVersion": "1.6.2_04",
+      "artifactUrl": "https://dl.liteloader.com/versions/com/mumfrey/liteloader/1.6.2_04/liteloader-1.6.2_04.jar",
+      "officialMd5": "b52f90f08303edd3d4c374e268a5acf1",
+      "sha256": "7e3f1dd102fba27f82efed7acf63fcde160cbac4ea9014beba7c7cab5d076acd",
+      "bytes": 75151,
+      "sourceSha256": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489"
+    },
+    {
+      "targetId": "LiteLoader@1.6.4",
+      "minecraftId": "1.6.4",
+      "loaderVersion": "1.6.4_01",
+      "artifactUrl": "https://dl.liteloader.com/versions/com/mumfrey/liteloader/1.6.4_01/liteloader-1.6.4_01.jar",
+      "officialMd5": "531c116f71ae2b11033f9a11a0f8e668",
+      "sha256": "64a85150c0bff4ca59da691ec989f0364b856b1ab9fb450864e13b254e69161b",
+      "bytes": 86442,
+      "sourceSha256": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489"
+    },
+    {
+      "targetId": "LiteLoader@1.7.10",
+      "minecraftId": "1.7.10",
+      "loaderVersion": "1.7.10_04",
+      "artifactUrl": "https://dl.liteloader.com/versions/com/mumfrey/liteloader/1.7.10_04/liteloader-1.7.10_04.jar",
+      "officialMd5": "63ada46e033d0cb6782bada09ad5ca4e",
+      "sha256": "a30e91e7abfcf482fd740893a207e2e00eb6a24d3909bfa2939a13b3c1703b7b",
+      "bytes": 533903,
+      "sourceSha256": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489"
+    },
+    {
+      "targetId": "LiteLoader@1.7.2",
+      "minecraftId": "1.7.2",
+      "loaderVersion": "1.7.2_05",
+      "artifactUrl": "https://dl.liteloader.com/versions/com/mumfrey/liteloader/1.7.2_05/liteloader-1.7.2_05.jar",
+      "officialMd5": "ab554c21f28fbc4ae9b098bcb5f4cceb",
+      "sha256": "a0bc8eab102951f6166eaf983a259e3ef637bbf465cc3e77deb41fbaa6f3e060",
+      "bytes": 279127,
+      "sourceSha256": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489"
+    },
+    {
+      "targetId": "LiteLoader@1.8",
+      "minecraftId": "1.8",
+      "loaderVersion": "1.8",
+      "artifactUrl": "https://dl.liteloader.com/versions/com/mumfrey/liteloader/1.8/liteloader-1.8.jar",
+      "officialMd5": "6e9028816027f53957bd8fcdfabae064",
+      "sha256": "686efce04e1288d98f54ed6d21a4d78396a3d55b6a9517bdded39d3602d33dc3",
+      "bytes": 666286,
+      "sourceSha256": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489"
+    }
+  ],
+  "unresolvedTargets": [
+    {
+      "targetId": "LiteLoader@1.10",
+      "loaderVersion": "1.10-SNAPSHOT",
+      "artifactUrl": "https://repo.mumfrey.com/content/repositories/snapshots/com/mumfrey/liteloader/1.10-SNAPSHOT/liteloader-1.10-20160728.094226-5.jar",
+      "officialMd5": "5e732dc446f9fe2abe5f9decaec40cde",
+      "observedMd5": "2b05cf3c392ec97de9ce51e707e353d2",
+      "observedSha256": "8912ad6e3f01c302fa0ad2931efa1c692ca676a3cd3e110e30b4bb6b6fc4e28f",
+      "reasonCode": "FROZEN_OFFICIAL_MD5_MISMATCH"
+    },
+    {
+      "targetId": "LiteLoader@1.10.2",
+      "loaderVersion": "1.10.2",
+      "artifactUrl": "https://repo.mumfrey.com/content/repositories/liteloader/com/mumfrey/liteloader/1.10.2/liteloader-1.10.2.jar",
+      "officialMd5": "8a7c21f32d77ee08b393dd3921ced8eb",
+      "observedMd5": "d9c3f8d09f661d8a881af107ded08abd",
+      "observedSha256": "ead0bab3d48e2ada8d61549d32a51510731b4d76f86b6e0d97f86aebdb6d32e5",
+      "reasonCode": "FROZEN_OFFICIAL_MD5_MISMATCH"
+    },
+    {
+      "targetId": "LiteLoader@1.11",
+      "loaderVersion": "1.11-SNAPSHOT",
+      "artifactUrl": "https://repo.mumfrey.com/content/repositories/snapshots/com/mumfrey/liteloader/1.11-SNAPSHOT/liteloader-1.11-20170814.110841-8.jar",
+      "officialMd5": "8524af3ac3325a82444cc75ae6e9112f",
+      "observedMd5": "fde2aee8b4cee20147c6865c21f755ae",
+      "observedSha256": "88646eb75d3a81a1f6dcb240ef3448b2c0a7a010580dc49529da8dd87547f66b",
+      "reasonCode": "FROZEN_OFFICIAL_MD5_MISMATCH"
+    },
+    {
+      "targetId": "LiteLoader@1.11.2",
+      "loaderVersion": "1.11.2-SNAPSHOT",
+      "artifactUrl": "https://repo.mumfrey.com/content/repositories/snapshots/com/mumfrey/liteloader/1.11.2-SNAPSHOT/liteloader-1.11.2-20170904.174310-11.jar",
+      "officialMd5": "3a98b5ed95810bf164e71c1a53be568d",
+      "observedMd5": "db8bd75069c41d76e85d83fb677a8545",
+      "observedSha256": "de16a6da478ad572007a3116021bdd81ab435d126f328e28134a3339c935e2a5",
+      "reasonCode": "FROZEN_OFFICIAL_MD5_MISMATCH"
+    },
+    {
+      "targetId": "LiteLoader@1.12",
+      "loaderVersion": "1.12-SNAPSHOT",
+      "artifactUrl": "https://repo.mumfrey.com/content/repositories/snapshots/com/mumfrey/liteloader/1.12-SNAPSHOT/liteloader-1.12-20170904.174625-9.jar",
+      "officialMd5": "61179803bcd5fb7790789b790908663d",
+      "observedMd5": "0a04f9a286e8448bbceee48266c58dd3",
+      "observedSha256": "b319854c1886b430b602f074113e9ffd6a8e2d451419a705727651ab4701b5d8",
+      "reasonCode": "FROZEN_OFFICIAL_MD5_MISMATCH"
+    },
+    {
+      "targetId": "LiteLoader@1.12.1",
+      "loaderVersion": "1.12.1-SNAPSHOT",
+      "artifactUrl": "https://repo.mumfrey.com/content/repositories/snapshots/com/mumfrey/liteloader/1.12.1-SNAPSHOT/liteloader-1.12.1-20170904.174937-3.jar",
+      "officialMd5": "b9bef8abc8dc309069aeba6fbbe58980",
+      "observedMd5": "ee6baae393e8c2b3ea86bb2a7e9ce4ca",
+      "observedSha256": "213e4df8f6f671960972e5a1d2212059b7e2f5c74976b287dc6a793e4b35b401",
+      "reasonCode": "FROZEN_OFFICIAL_MD5_MISMATCH"
+    },
+    {
+      "targetId": "LiteLoader@1.12.2",
+      "loaderVersion": "1.12.2-SNAPSHOT",
+      "artifactUrl": "https://repo.mumfrey.com/content/repositories/snapshots/com/mumfrey/liteloader/1.12.2-SNAPSHOT/liteloader-1.12.2-20171128.144431-4.jar",
+      "officialMd5": "1420785ecbfed5aff4a586c5c9dd97eb",
+      "observedMd5": "bcd03d63639555ae7cca454f52d33fa2",
+      "observedSha256": "5ccc893904732fca7534eecd36916cac582a47c899f98092581881d704ebaf15",
+      "reasonCode": "FROZEN_OFFICIAL_MD5_MISMATCH"
+    },
+    {
+      "targetId": "LiteLoader@1.8.9",
+      "loaderVersion": "1.8.9-SNAPSHOT",
+      "artifactUrl": "https://repo.mumfrey.com/content/repositories/snapshots/com/mumfrey/liteloader/1.8.9-SNAPSHOT/liteloader-1.8.9-20260727.184607-11.jar",
+      "officialMd5": "ba8e6285966d7d988a96496f48cbddaa",
+      "observedMd5": "b358e4cbae0d13224132d753386e874f",
+      "observedSha256": "e75cc526ef7e2c35f10590f18246274fcc774996a63b31a98c59d466784d7efa",
+      "reasonCode": "FROZEN_OFFICIAL_MD5_MISMATCH"
+    },
+    {
+      "targetId": "LiteLoader@1.9",
+      "loaderVersion": "1.9-SNAPSHOT",
+      "artifactUrl": "https://repo.mumfrey.com/content/repositories/snapshots/com/mumfrey/liteloader/1.9-SNAPSHOT/liteloader-1.9-20160522.202455-18.jar",
+      "officialMd5": "00318cb0c787934d523f63cdfe8ddde4",
+      "observedMd5": "8f83e73b5f21ecbf3ac32683a6d5d6bd",
+      "observedSha256": "5ccfbdf21e356ed30df81ac4dc57007a702130022e81838ea6637c705ea1a382",
+      "reasonCode": "FROZEN_OFFICIAL_MD5_MISMATCH"
+    },
+    {
+      "targetId": "LiteLoader@1.9.4",
+      "loaderVersion": "1.9.4",
+      "artifactUrl": "https://repo.mumfrey.com/content/repositories/liteloader/com/mumfrey/liteloader/1.9.4/liteloader-1.9.4.jar",
+      "officialMd5": "571ad5e6edd5ff40259570c9be588bb5",
+      "observedMd5": "48818bcd5000a2fe2b7bfe4f6db22803",
+      "observedSha256": "68f527c7c464a88d7ccc367be511398262d32411adcb9aa5e0ee7dd70ec71157",
+      "reasonCode": "FROZEN_OFFICIAL_MD5_MISMATCH"
+    }
+  ]
+}

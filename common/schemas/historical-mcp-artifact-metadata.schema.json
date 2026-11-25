@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pycodersmod.github.io/MinecraftModTestLauncher/schemas/historical-mcp-artifact-metadata.schema.json",
+  "title": "MMTL Historical MCP Artifact Metadata Catalog",
+  "type": "object",
+  "required": ["schemaVersion", "universeHash", "automaticDownloadAllowed", "automaticExecutionAllowed", "entries"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "universeHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "automaticDownloadAllowed": { "const": false },
+    "automaticExecutionAllowed": { "const": false },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["minecraftId", "sourceUrl", "snapshotPath", "snapshotSha256", "snapshotByteLength", "officialMetadataUrl", "officialMetadataSha256", "clientComparison", "serverComparison"],
+        "properties": {
+          "minecraftId": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" },
+          "sourceUrl": { "type": "string", "format": "uri", "pattern": "^https://mcphackers\\.org/BetterJSONs/jsons/" },
+          "snapshotPath": { "type": "string", "pattern": "^[A-Za-z0-9._-]+\\.json$" },
+          "snapshotSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "snapshotByteLength": { "type": "integer", "minimum": 1 },
+          "officialMetadataUrl": { "type": ["string", "null"], "format": "uri", "pattern": "^https://piston-meta\\.mojang\\.com/v1/packages/" },
+          "officialMetadataSha256": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+          "clientComparison": { "$ref": "#/definitions/comparison" },
+          "serverComparison": { "$ref": "#/definitions/comparison" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "definitions": {
+    "comparison": {
+      "type": "object",
+      "required": ["status", "officialSha1"],
+      "properties": {
+        "status": { "enum": ["Match", "Mismatch", "OfficialEntryAbsent", "RetroEntryAbsent"] },
+        "officialSha1": { "type": ["string", "null"], "pattern": "^[a-f0-9]{40}$" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

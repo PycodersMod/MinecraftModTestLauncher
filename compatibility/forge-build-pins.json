@@ -1,0 +1,798 @@
+{
+  "schemaVersion": 1,
+  "status": "PARTIAL",
+  "targets": [
+    {
+      "targetId": "Forge@1.7.10",
+      "minecraftId": "1.7.10",
+      "forgeVersion": "1.7.10-10.13.4.1614-1.7.10",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.7.10-10.13.4.1614-1.7.10/forge-1.7.10-10.13.4.1614-1.7.10-src.zip",
+      "sourceArchiveSha256": "42acb31587d37ee2c87afef38a74e4ca6704bcdc609c68bd26e6216b204e4f71",
+      "buildGradleSha256": "5ee93bf2d4886c36fe117333da07ec55e04e1b505a5c0ce87c13978bb404ae7c",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-2.0-bin.zip",
+      "gradleDistributionSha256": "a1eb880c8755333c4d33c4351b269bebe517002532d3142c0b6164c9e8c081c3",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "1.2-SNAPSHOT",
+      "forgeGradleTimestamp": "1.2-20211118.175523-305",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/1.2-SNAPSHOT/ForgeGradle-1.2-20211118.175523-305.jar",
+      "forgeGradleJarSha256": "6731f62c0b93e67038e20227248f2f935337e16f84bdeee557f31a4dfacbf74a",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/1.2-SNAPSHOT/ForgeGradle-1.2-20211118.175523-305.pom",
+      "forgeGradlePomSha256": "d8185e0522277ef7f47ad914d2be40d29f667696fd5ab99e810e0288db29fb84",
+      "mojangMetadataSnapshot": "265c7e47aad4c74f6085a49667d3a828f48d63f484def2ae70b5e426e5b7cba6",
+      "client": {
+        "url": "https://launcher.mojang.com/v1/objects/e80d9b3bf5085002218d4be59e668bac718abbc6/client.jar",
+        "sha1": "e80d9b3bf5085002218d4be59e668bac718abbc6",
+        "sizeBytes": 5256245
+      },
+      "server": {
+        "url": "https://launcher.mojang.com/v1/objects/952438ac4e01b4d115c5fc38f891710c4941df29/server.jar",
+        "sha1": "952438ac4e01b4d115c5fc38f891710c4941df29",
+        "sizeBytes": 9605030
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.7.2",
+      "minecraftId": "1.7.2",
+      "forgeVersion": "1.7.2-10.12.2.1161-mc172",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.7.2-10.12.2.1161-mc172/forge-1.7.2-10.12.2.1161-mc172-src.zip",
+      "sourceArchiveSha256": "7c05fc6eaf3520b97248203e2ae2eeeb372eb8fb9d65db7f9ad0f71aacd1ea33",
+      "buildGradleSha256": "7bbc6bc7973fe2422effcce8c904531084a47d1d252284f5a16489bcc403aabc",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-1.12-bin.zip",
+      "gradleDistributionSha256": "8734b13a401f4311ee418173ed6ca8662d2b0a535be8ff2a43ecb1c13cd406ea",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "1.2-SNAPSHOT",
+      "forgeGradleTimestamp": "1.2-20211118.175523-305",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/1.2-SNAPSHOT/ForgeGradle-1.2-20211118.175523-305.jar",
+      "forgeGradleJarSha256": "6731f62c0b93e67038e20227248f2f935337e16f84bdeee557f31a4dfacbf74a",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/1.2-SNAPSHOT/ForgeGradle-1.2-20211118.175523-305.pom",
+      "forgeGradlePomSha256": "d8185e0522277ef7f47ad914d2be40d29f667696fd5ab99e810e0288db29fb84",
+      "mojangMetadataSnapshot": "36a312cc1647359b7737d791228111dd2036faff3f9ab37e9f11a5db215cb537",
+      "client": {
+        "url": "https://launcher.mojang.com/v1/objects/0c8689f904922af71c7144dcfb81bce976cadd49/client.jar",
+        "sha1": "0c8689f904922af71c7144dcfb81bce976cadd49",
+        "sizeBytes": 5117607
+      },
+      "server": {
+        "url": "https://launcher.mojang.com/v1/objects/3716cac82982e7c2eb09f83028b555e9ea606002/server.jar",
+        "sha1": "3716cac82982e7c2eb09f83028b555e9ea606002",
+        "sizeBytes": 9163955
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.8.8",
+      "minecraftId": "1.8.8",
+      "forgeVersion": "1.8.8-11.15.0.1655",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.8.8-11.15.0.1655/forge-1.8.8-11.15.0.1655-mdk.zip",
+      "sourceArchiveSha256": "17515602a2bd628cf328c9587178262908f49804b6ee9325d31c39fd342c42f5",
+      "buildGradleSha256": "cd14ec564dca1d938148e212ac8eee049997b0c98aeaf7ec55585992a06584b7",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-2.7-bin.zip",
+      "gradleDistributionSha256": "cde43b90945b5304c43ee36e58aab4cc6fb3a3d5f9bd9449bb1709a68371cb06",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "2.1-SNAPSHOT",
+      "forgeGradleTimestamp": "2.1-20211118.174922-42",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/2.1-SNAPSHOT/ForgeGradle-2.1-20211118.174922-42.jar",
+      "forgeGradleJarSha256": "29f4f9a4b7ad917937d6ca761404ed4c56ee2a716cbfdd190b9aa99f25eb4695",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/2.1-SNAPSHOT/ForgeGradle-2.1-20211118.174922-42.pom",
+      "forgeGradlePomSha256": "9715509dfa5cb66ffae953149ea705ef9ad2bacede46f1847b395eebfed742c8",
+      "mojangMetadataSnapshot": "7f002c1dca74cc51ce995e7fdb465ab4984c940e77a1b1c4f2b09bed8702e558",
+      "client": {
+        "url": "https://launcher.mojang.com/v1/objects/0983f08be6a4e624f5d85689d1aca869ed99c738/client.jar",
+        "sha1": "0983f08be6a4e624f5d85689d1aca869ed99c738",
+        "sizeBytes": 8465313
+      },
+      "server": {
+        "url": "https://launcher.mojang.com/v1/objects/5fafba3f58c40dc51b5c3ca72a98f62dfdae1db7/server.jar",
+        "sha1": "5fafba3f58c40dc51b5c3ca72a98f62dfdae1db7",
+        "sizeBytes": 8322852
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.8.9",
+      "minecraftId": "1.8.9",
+      "forgeVersion": "1.8.9-11.15.1.2318-1.8.9",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.8.9-11.15.1.2318-1.8.9/forge-1.8.9-11.15.1.2318-1.8.9-mdk.zip",
+      "sourceArchiveSha256": "5a9a798b14676f9f8a5782aced4bbbca30f6ab5bca545fd2d320c356c1a9afae",
+      "buildGradleSha256": "ae40e3643066998808a20099c0f7b08e575eaefd0d44822079403100b16caf62",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-2.7-bin.zip",
+      "gradleDistributionSha256": "cde43b90945b5304c43ee36e58aab4cc6fb3a3d5f9bd9449bb1709a68371cb06",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "2.1-SNAPSHOT",
+      "forgeGradleTimestamp": "2.1-20211118.174922-42",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/2.1-SNAPSHOT/ForgeGradle-2.1-20211118.174922-42.jar",
+      "forgeGradleJarSha256": "29f4f9a4b7ad917937d6ca761404ed4c56ee2a716cbfdd190b9aa99f25eb4695",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/2.1-SNAPSHOT/ForgeGradle-2.1-20211118.174922-42.pom",
+      "forgeGradlePomSha256": "9715509dfa5cb66ffae953149ea705ef9ad2bacede46f1847b395eebfed742c8",
+      "mojangMetadataSnapshot": "341af5f47a6b5bc137bfe681f4f3533e081041290aabbf9d7ebeae9881de768f",
+      "client": {
+        "url": "https://launcher.mojang.com/v1/objects/3870888a6c3d349d3771a3e9d16c9bf5e076b908/client.jar",
+        "sha1": "3870888a6c3d349d3771a3e9d16c9bf5e076b908",
+        "sizeBytes": 8461484
+      },
+      "server": {
+        "url": "https://launcher.mojang.com/v1/objects/b58b2ceb36e01bcd8dbf49c8fb66c55a9f0676cd/server.jar",
+        "sha1": "b58b2ceb36e01bcd8dbf49c8fb66c55a9f0676cd",
+        "sizeBytes": 8320755
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.9",
+      "minecraftId": "1.9",
+      "forgeVersion": "1.9-12.16.1.1938-1.9.0",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.9-12.16.1.1938-1.9.0/forge-1.9-12.16.1.1938-1.9.0-mdk.zip",
+      "sourceArchiveSha256": "46edffa6b28b79ce99eee0b40665701b78fd5c882a331fd0255c18b9164f23cd",
+      "buildGradleSha256": "91f956211994d01f63f06acbbaaf01611526f942614d0912a84188eb7ccc3572",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-2.7-bin.zip",
+      "gradleDistributionSha256": "cde43b90945b5304c43ee36e58aab4cc6fb3a3d5f9bd9449bb1709a68371cb06",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "2.1-SNAPSHOT",
+      "forgeGradleTimestamp": "2.1-20211118.174922-42",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/2.1-SNAPSHOT/ForgeGradle-2.1-20211118.174922-42.jar",
+      "forgeGradleJarSha256": "29f4f9a4b7ad917937d6ca761404ed4c56ee2a716cbfdd190b9aa99f25eb4695",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/2.1-SNAPSHOT/ForgeGradle-2.1-20211118.174922-42.pom",
+      "forgeGradlePomSha256": "9715509dfa5cb66ffae953149ea705ef9ad2bacede46f1847b395eebfed742c8",
+      "mojangMetadataSnapshot": "8d6f1e7f3a99f1236914b61e64eeade955ba21e8150563457142d3981aeee688",
+      "client": {
+        "url": "https://piston-data.mojang.com/v1/objects/2f67dfe8953299440d1902f9124f0f2c3a2c940f/client.jar",
+        "sha1": "2f67dfe8953299440d1902f9124f0f2c3a2c940f",
+        "sizeBytes": 8697592
+      },
+      "server": {
+        "url": "https://piston-data.mojang.com/v1/objects/b4d449cf2918e0f3bd8aa18954b916a4d1880f0d/server.jar",
+        "sha1": "b4d449cf2918e0f3bd8aa18954b916a4d1880f0d",
+        "sizeBytes": 8848015
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.10.2",
+      "minecraftId": "1.10.2",
+      "forgeVersion": "1.10.2-12.18.3.2511",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.10.2-12.18.3.2511/forge-1.10.2-12.18.3.2511-mdk.zip",
+      "sourceArchiveSha256": "0c39f46ec23598bd0078bfe9ba53c4d29a2123d9d7996bae9ecacadb5553629c",
+      "buildGradleSha256": "4db831d38a3fd7660a24094c9e1c539884592a45e4da66dea3ec56b8bd101fe9",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-2.14-bin.zip",
+      "gradleDistributionSha256": "993b4f33b652c689e9721917d8e021cab6bbd3eae81b39ab2fd46fdb19a928d5",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "2.2-SNAPSHOT",
+      "forgeGradleTimestamp": "2.2-20210802.021822-44",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/2.2-SNAPSHOT/ForgeGradle-2.2-20210802.021822-44.jar",
+      "forgeGradleJarSha256": "1c2d39615c2510db45b4bc1b5daf234783f3c5b98962a5def5f34a072b002813",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/2.2-SNAPSHOT/ForgeGradle-2.2-20210802.021822-44.pom",
+      "forgeGradlePomSha256": "80a66bf4ce415b6ca5400de3fc32b464a51e35c7ed5ab0d51f45ff30c86eb51c",
+      "mojangMetadataSnapshot": "d0624badea6367233d47c830341952126cdb0f99b1e11fb60428dd530a0d4db5",
+      "client": {
+        "url": "https://piston-data.mojang.com/v1/objects/dc8e75ac7274ff6af462b0dcec43c307de668e40/client.jar",
+        "sha1": "dc8e75ac7274ff6af462b0dcec43c307de668e40",
+        "sizeBytes": 8857653
+      },
+      "server": {
+        "url": "https://piston-data.mojang.com/v1/objects/3d501b23df53c548254f5e3f66492d178a48db63/server.jar",
+        "sha1": "3d501b23df53c548254f5e3f66492d178a48db63",
+        "sizeBytes": 9459897
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.10",
+      "minecraftId": "1.10",
+      "forgeVersion": "1.10-12.18.0.2000-1.10.0",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.10-12.18.0.2000-1.10.0/forge-1.10-12.18.0.2000-1.10.0-mdk.zip",
+      "sourceArchiveSha256": "4d74922bf13a7bc954d94324bf57bbed3d9d8beb00ed188b2c167de78bc40b69",
+      "buildGradleSha256": "dd640159ff4b5b7592cddb93ffe18e6b2ebf40083b3c0bc09f35c9d63ca759d5",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-2.7-bin.zip",
+      "gradleDistributionSha256": "cde43b90945b5304c43ee36e58aab4cc6fb3a3d5f9bd9449bb1709a68371cb06",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "2.2-SNAPSHOT",
+      "forgeGradleTimestamp": "2.2-20210802.021822-44",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/2.2-SNAPSHOT/ForgeGradle-2.2-20210802.021822-44.jar",
+      "forgeGradleJarSha256": "1c2d39615c2510db45b4bc1b5daf234783f3c5b98962a5def5f34a072b002813",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/2.2-SNAPSHOT/ForgeGradle-2.2-20210802.021822-44.pom",
+      "forgeGradlePomSha256": "80a66bf4ce415b6ca5400de3fc32b464a51e35c7ed5ab0d51f45ff30c86eb51c",
+      "mojangMetadataSnapshot": "462441ee38c35c6ad52ffe2ab668b217eb2b29b51de25f1774a454560bc3a261",
+      "client": {
+        "url": "https://piston-data.mojang.com/v1/objects/ba038efbc6d9e4a046927a7658413d0276895739/client.jar",
+        "sha1": "ba038efbc6d9e4a046927a7658413d0276895739",
+        "sizeBytes": 8856992
+      },
+      "server": {
+        "url": "https://piston-data.mojang.com/v1/objects/a96617ffdf5dabbb718ab11a9a68e50545fc5bee/server.jar",
+        "sha1": "a96617ffdf5dabbb718ab11a9a68e50545fc5bee",
+        "sizeBytes": 9459395
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.11",
+      "minecraftId": "1.11",
+      "forgeVersion": "1.11-13.19.1.2199",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.11-13.19.1.2199/forge-1.11-13.19.1.2199-mdk.zip",
+      "sourceArchiveSha256": "dd66abacca35ac0d8598a577db20eb5d47951597901aba9cdbb9ca54b005f050",
+      "buildGradleSha256": "946d11ab2973d3072ce60708382051ff77b098f0511b551671b35c29d453caa4",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-2.14-bin.zip",
+      "gradleDistributionSha256": "993b4f33b652c689e9721917d8e021cab6bbd3eae81b39ab2fd46fdb19a928d5",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "2.2-SNAPSHOT",
+      "forgeGradleTimestamp": "2.2-20210802.021822-44",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/2.2-SNAPSHOT/ForgeGradle-2.2-20210802.021822-44.jar",
+      "forgeGradleJarSha256": "1c2d39615c2510db45b4bc1b5daf234783f3c5b98962a5def5f34a072b002813",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/2.2-SNAPSHOT/ForgeGradle-2.2-20210802.021822-44.pom",
+      "forgeGradlePomSha256": "80a66bf4ce415b6ca5400de3fc32b464a51e35c7ed5ab0d51f45ff30c86eb51c",
+      "mojangMetadataSnapshot": "a77e2568ef2f6733064c394eb40a7f1d8ca8ed48c56ee17cb6c720aeaf0118f4",
+      "client": {
+        "sha1": "780e46b3a96091a7f42c028c615af45974629072",
+        "sizeBytes": 9183701,
+        "url": "https://piston-data.mojang.com/v1/objects/780e46b3a96091a7f42c028c615af45974629072/client.jar"
+      },
+      "server": {
+        "sha1": "48820c84cb1ed502cb5b2fe23b8153d5e4fa61c0",
+        "sizeBytes": 9713666,
+        "url": "https://piston-data.mojang.com/v1/objects/48820c84cb1ed502cb5b2fe23b8153d5e4fa61c0/server.jar"
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.11.2",
+      "minecraftId": "1.11.2",
+      "forgeVersion": "1.11.2-13.20.1.2588",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.11.2-13.20.1.2588/forge-1.11.2-13.20.1.2588-mdk.zip",
+      "sourceArchiveSha256": "ec0f197e6d2f7eecdeaac29756609aa3dbce7a2aa805db0f9ce7dce103d3b32b",
+      "buildGradleSha256": "170da72ab1bc8cacc149f9ab3015f74c7799b105a674464e94e64e3ce8dbc00c",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-2.14-bin.zip",
+      "gradleDistributionSha256": "993b4f33b652c689e9721917d8e021cab6bbd3eae81b39ab2fd46fdb19a928d5",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "2.2-SNAPSHOT",
+      "forgeGradleTimestamp": "2.2-20210802.021822-44",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/2.2-SNAPSHOT/ForgeGradle-2.2-20210802.021822-44.jar",
+      "forgeGradleJarSha256": "1c2d39615c2510db45b4bc1b5daf234783f3c5b98962a5def5f34a072b002813",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/2.2-SNAPSHOT/ForgeGradle-2.2-20210802.021822-44.pom",
+      "forgeGradlePomSha256": "80a66bf4ce415b6ca5400de3fc32b464a51e35c7ed5ab0d51f45ff30c86eb51c",
+      "mojangMetadataSnapshot": "c98508dfc20ed365e6666c8f44879582df033bbde0e3499782381130f3dbaa1c",
+      "client": {
+        "sizeBytes": 9198097,
+        "url": "https://piston-data.mojang.com/v1/objects/db5aa600f0b0bf508aaf579509b345c4e34087be/client.jar",
+        "sha1": "db5aa600f0b0bf508aaf579509b345c4e34087be"
+      },
+      "server": {
+        "sizeBytes": 9720835,
+        "url": "https://piston-data.mojang.com/v1/objects/f00c294a1576e03fddcac777c3cf4c7d404c4ba4/server.jar",
+        "sha1": "f00c294a1576e03fddcac777c3cf4c7d404c4ba4"
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.12",
+      "minecraftId": "1.12",
+      "forgeVersion": "1.12-14.21.1.2443",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.12-14.21.1.2443/forge-1.12-14.21.1.2443-mdk.zip",
+      "sourceArchiveSha256": "cd7f0fabc103a78e762184af487073d9289fc29a2d2120430dc067c6ccf48fe9",
+      "buildGradleSha256": "befe03ffd96d6a8ae47d8e730056849bacacb337ac1cdf1d8d4e110ee9c219fe",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-2.14-bin.zip",
+      "gradleDistributionSha256": "993b4f33b652c689e9721917d8e021cab6bbd3eae81b39ab2fd46fdb19a928d5",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "2.3-SNAPSHOT",
+      "forgeGradleTimestamp": "2.3-20210802.170449-48",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/2.3-SNAPSHOT/ForgeGradle-2.3-20210802.170449-48.jar",
+      "forgeGradleJarSha256": "5e8d1af585b0936a40ccc6489fa9871da008a41b4f481e462d1dc61279f0274e",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/2.3-SNAPSHOT/ForgeGradle-2.3-20210802.170449-48.pom",
+      "forgeGradlePomSha256": "d9833a85abd8112528f5c1e456f6924a596f3740d45276cd86a570286afc8734",
+      "mojangMetadataSnapshot": "33cc40a05466b4e34e04e65def732094388e9149eb6bd37e5daa227c06cbde4b",
+      "client": {
+        "url": "https://piston-data.mojang.com/v1/objects/909823f9c467f9934687f136bc95a667a0d19d7f/client.jar",
+        "sha1": "909823f9c467f9934687f136bc95a667a0d19d7f",
+        "sizeBytes": 10177098
+      },
+      "server": {
+        "url": "https://piston-data.mojang.com/v1/objects/8494e844e911ea0d63878f64da9dcc21f53a3463/server.jar",
+        "sha1": "8494e844e911ea0d63878f64da9dcc21f53a3463",
+        "sizeBytes": 30202458
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.12.1",
+      "minecraftId": "1.12.1",
+      "forgeVersion": "1.12.1-14.22.1.2485",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.12.1-14.22.1.2485/forge-1.12.1-14.22.1.2485-mdk.zip",
+      "sourceArchiveSha256": "efaf4baff6b7b26907dd222ec21c234e775efd07cbd01ebc338e007e73897233",
+      "buildGradleSha256": "4199c886f58b9e4d195081bd8aba30a618e3d2a851479654e29ca5ca0c805601",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-2.14-bin.zip",
+      "gradleDistributionSha256": "993b4f33b652c689e9721917d8e021cab6bbd3eae81b39ab2fd46fdb19a928d5",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "2.3-SNAPSHOT",
+      "forgeGradleTimestamp": "2.3-20210802.170449-48",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/2.3-SNAPSHOT/ForgeGradle-2.3-20210802.170449-48.jar",
+      "forgeGradleJarSha256": "5e8d1af585b0936a40ccc6489fa9871da008a41b4f481e462d1dc61279f0274e",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/2.3-SNAPSHOT/ForgeGradle-2.3-20210802.170449-48.pom",
+      "forgeGradlePomSha256": "d9833a85abd8112528f5c1e456f6924a596f3740d45276cd86a570286afc8734",
+      "mojangMetadataSnapshot": "a83e8ab7e3e78fd8dfa8fdbd0216b090ef7298fb44637b79093fe663bf2d6814",
+      "client": {
+        "url": "https://piston-data.mojang.com/v1/objects/83385d346cf7f97d1e447b888750fb88e9928b93/client.jar",
+        "sha1": "83385d346cf7f97d1e447b888750fb88e9928b93",
+        "sizeBytes": 10178558
+      },
+      "server": {
+        "url": "https://piston-data.mojang.com/v1/objects/561c7b2d54bae80cc06b05d950633a9ac95da816/server.jar",
+        "sha1": "561c7b2d54bae80cc06b05d950633a9ac95da816",
+        "sizeBytes": 30221337
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.12.2",
+      "minecraftId": "1.12.2",
+      "forgeVersion": "1.12.2-14.23.5.2860",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.12.2-14.23.5.2860/forge-1.12.2-14.23.5.2860-mdk.zip",
+      "sourceArchiveSha256": "d0de63c4109becaacff68308720ff99edb2534877853d3e34165c04341826461",
+      "buildGradleSha256": "bd0c50d7b4042a64049665070b872a7015c81307d9e81fee7f1d4f910f8563f9",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-4.9-bin.zip",
+      "gradleDistributionSha256": "e66e69dce8173dd2004b39ba93586a184628bc6c28461bc771d6835f7f9b0d28",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "3.+",
+      "forgeGradleResolvedVersion": "3.0.197",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.jar",
+      "forgeGradleJarSha256": "52370df87d9dfa19d3be56a9a7af7b4ac31f811d0cdac1ed2a9ada9de5ae4dfb",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.pom",
+      "forgeGradlePomSha256": "d12c1d61d2472101720a08a73439dbb9c47209201f731f55d657bad1c7233d4d",
+      "mojangMetadataSnapshot": "56dac2e1caa872d7e37a7b5523056cd812dca94f912ad2bd652817bee60edca4",
+      "client": {
+        "url": "https://piston-data.mojang.com/v1/objects/0f275bc1547d01fa5f56ba34bdc87d981ee12daf/client.jar",
+        "sha1": "0f275bc1547d01fa5f56ba34bdc87d981ee12daf",
+        "sizeBytes": 10180113
+      },
+      "server": {
+        "url": "https://piston-data.mojang.com/v1/objects/886945bfb2b978778c3a0288fd7fab09d315b25f/server.jar",
+        "sha1": "886945bfb2b978778c3a0288fd7fab09d315b25f",
+        "sizeBytes": 30222121
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.13.2",
+      "minecraftId": "1.13.2",
+      "forgeVersion": "1.13.2-25.0.223",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.13.2-25.0.223/forge-1.13.2-25.0.223-mdk.zip",
+      "sourceArchiveSha256": "d13ab7a7a3fad9a64dc9a58a2dde4e57fdeab028feadfd25b210e5a8076abfbe",
+      "buildGradleSha256": "9f435a45331d8b265c660ba1ff0fba747ff3977e3506b0309960af5707f486da",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-4.9-bin.zip",
+      "gradleDistributionSha256": "e66e69dce8173dd2004b39ba93586a184628bc6c28461bc771d6835f7f9b0d28",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "3.+",
+      "forgeGradleResolvedVersion": "3.0.197",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.jar",
+      "forgeGradleJarSha256": "52370df87d9dfa19d3be56a9a7af7b4ac31f811d0cdac1ed2a9ada9de5ae4dfb",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.pom",
+      "forgeGradlePomSha256": "d12c1d61d2472101720a08a73439dbb9c47209201f731f55d657bad1c7233d4d",
+      "mojangMetadataSnapshot": "26ddcd28289a44d4ae4179307b7193ce0227d2da57350e717ff1d8c6e27e8c95",
+      "client": {
+        "url": "https://piston-data.mojang.com/v1/objects/30bfe37a8db404db11c7edf02cb5165817afb4d9/client.jar",
+        "sha1": "30bfe37a8db404db11c7edf02cb5165817afb4d9",
+        "sizeBytes": 16089640
+      },
+      "server": {
+        "url": "https://piston-data.mojang.com/v1/objects/3737db93722a9e39eeada7c27e7aca28b144ffa7/server.jar",
+        "sha1": "3737db93722a9e39eeada7c27e7aca28b144ffa7",
+        "sizeBytes": 33835116
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.14.2",
+      "minecraftId": "1.14.2",
+      "forgeVersion": "1.14.2-26.0.63",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.14.2-26.0.63/forge-1.14.2-26.0.63-mdk.zip",
+      "sourceArchiveSha256": "fcd167ff0c959b518941c06afb349700ec120c3308578d46c608fe86868e93e2",
+      "buildGradleSha256": "6bd53205a06829185ec76a08c340fab84a897c4afcbd9de399da75539643f23c",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-4.9-bin.zip",
+      "gradleDistributionSha256": "e66e69dce8173dd2004b39ba93586a184628bc6c28461bc771d6835f7f9b0d28",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "3.+",
+      "forgeGradleResolvedVersion": "3.0.197",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.jar",
+      "forgeGradleJarSha256": "52370df87d9dfa19d3be56a9a7af7b4ac31f811d0cdac1ed2a9ada9de5ae4dfb",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.pom",
+      "forgeGradlePomSha256": "d12c1d61d2472101720a08a73439dbb9c47209201f731f55d657bad1c7233d4d",
+      "mojangMetadataSnapshot": "237aa8d499b71bb17122cbee40b8748efcd5ac9d8362c68c89e99ab0703e66b8",
+      "client": {
+        "url": "https://piston-data.mojang.com/v1/objects/ca6c5a139045967229975c0c0b7f93e78b4314c2/client.jar",
+        "sha1": "ca6c5a139045967229975c0c0b7f93e78b4314c2",
+        "sizeBytes": 18794327
+      },
+      "server": {
+        "url": "https://piston-data.mojang.com/v1/objects/808be3869e2ca6b62378f9f4b33c946621620019/server.jar",
+        "sha1": "808be3869e2ca6b62378f9f4b33c946621620019",
+        "sizeBytes": 35932967
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.14.3",
+      "minecraftId": "1.14.3",
+      "forgeVersion": "1.14.3-27.0.60",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.14.3-27.0.60/forge-1.14.3-27.0.60-mdk.zip",
+      "sourceArchiveSha256": "868d2fe31d14807e6e53e7c83c304ea4c07f18a5ea9b9186e86c15ffb59b7a2e",
+      "buildGradleSha256": "cbfb3df0cd83b5415ba05dc41a90fe61bafa4f9ca023eea647af1e3a1e44795a",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-4.9-bin.zip",
+      "gradleDistributionSha256": "e66e69dce8173dd2004b39ba93586a184628bc6c28461bc771d6835f7f9b0d28",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "3.+",
+      "forgeGradleResolvedVersion": "3.0.197",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.jar",
+      "forgeGradleJarSha256": "52370df87d9dfa19d3be56a9a7af7b4ac31f811d0cdac1ed2a9ada9de5ae4dfb",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.pom",
+      "forgeGradlePomSha256": "d12c1d61d2472101720a08a73439dbb9c47209201f731f55d657bad1c7233d4d",
+      "mojangMetadataSnapshot": "ebf2df95d9bd83c6687f287d5a6f5f41f74bc1b39159fcbb74ff6d1d19d8464c",
+      "client": {
+        "url": "https://piston-data.mojang.com/v1/objects/af100b34ec7ef2b8b9cf7775b544d21d690dddec/client.jar",
+        "sha1": "af100b34ec7ef2b8b9cf7775b544d21d690dddec",
+        "sizeBytes": 18813147
+      },
+      "server": {
+        "url": "https://piston-data.mojang.com/v1/objects/d0d0fe2b1dc6ab4c65554cb734270872b72dadd6/server.jar",
+        "sha1": "d0d0fe2b1dc6ab4c65554cb734270872b72dadd6",
+        "sizeBytes": 35952401
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.14.4",
+      "minecraftId": "1.14.4",
+      "forgeVersion": "1.14.4-28.2.26",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.14.4-28.2.26/forge-1.14.4-28.2.26-mdk.zip",
+      "sourceArchiveSha256": "0fd8553d9fd72a37949708cdc6c208ffea955a0b4854e0725e7416d09a001948",
+      "buildGradleSha256": "beb661aee58bcb6fadac4869e5a3e34b3b18496a15a37a098d075178f55a3dc8",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-4.9-bin.zip",
+      "gradleDistributionSha256": "e66e69dce8173dd2004b39ba93586a184628bc6c28461bc771d6835f7f9b0d28",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "3.+",
+      "forgeGradleResolvedVersion": "3.0.197",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.jar",
+      "forgeGradleJarSha256": "52370df87d9dfa19d3be56a9a7af7b4ac31f811d0cdac1ed2a9ada9de5ae4dfb",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.pom",
+      "forgeGradlePomSha256": "d12c1d61d2472101720a08a73439dbb9c47209201f731f55d657bad1c7233d4d",
+      "mojangMetadataSnapshot": "615f466a39d2c19ae9b6e2401aa7bd07dbda337f976bcce383326b8d6ba4e532",
+      "client": {
+        "url": "https://piston-data.mojang.com/v1/objects/8c325a0c5bd674dd747d6ebaa4c791fd363ad8a9/client.jar",
+        "sha1": "8c325a0c5bd674dd747d6ebaa4c791fd363ad8a9",
+        "sizeBytes": 25191691
+      },
+      "server": {
+        "url": "https://piston-data.mojang.com/v1/objects/3dc3d84a581f14691199cf6831b71ed1296a9fdf/server.jar",
+        "sha1": "3dc3d84a581f14691199cf6831b71ed1296a9fdf",
+        "sizeBytes": 35958734
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.15.2",
+      "minecraftId": "1.15.2",
+      "forgeVersion": "1.15.2-31.2.57",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.15.2-31.2.57/forge-1.15.2-31.2.57-mdk.zip",
+      "sourceArchiveSha256": "383b1ce2a8512591ec292549b1cb620f00e2a2dd97b3b4b44e195c9b8ab73be2",
+      "buildGradleSha256": "dc2cdf204d71e51d626dbc7e0134328022c10d3f408dec12eca2888cd7e5d75a",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-4.10.3-bin.zip",
+      "gradleDistributionSha256": "8626cbf206b4e201ade7b87779090690447054bc93f052954c78480fa6ed186e",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "3.+",
+      "forgeGradleResolvedVersion": "3.0.197",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.jar",
+      "forgeGradleJarSha256": "52370df87d9dfa19d3be56a9a7af7b4ac31f811d0cdac1ed2a9ada9de5ae4dfb",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.pom",
+      "forgeGradlePomSha256": "d12c1d61d2472101720a08a73439dbb9c47209201f731f55d657bad1c7233d4d",
+      "mojangMetadataSnapshot": "e974511243e845b2427ab635eba5612481cb420a70c0630aa041eab3eeb590c5",
+      "client": {
+        "url": "https://piston-data.mojang.com/v1/objects/e3f78cd16f9eb9a52307ed96ebec64241cc5b32d/client.jar",
+        "sha1": "e3f78cd16f9eb9a52307ed96ebec64241cc5b32d",
+        "sizeBytes": 15531492
+      },
+      "server": {
+        "url": "https://piston-data.mojang.com/v1/objects/bb2b6b1aefcd70dfd1892149ac3a215f6c636b07/server.jar",
+        "sha1": "bb2b6b1aefcd70dfd1892149ac3a215f6c636b07",
+        "sizeBytes": 36175593
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.15.1",
+      "minecraftId": "1.15.1",
+      "forgeVersion": "1.15.1-30.0.51",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.15.1-30.0.51/forge-1.15.1-30.0.51-mdk.zip",
+      "sourceArchiveSha256": "4008c52d7e99d902138f8d187ce53c4858995cb02959992a0d376a3fa9a4b436",
+      "buildGradleSha256": "14b15519201cf87f08652d1aa424eba6b37998b4d548f606818619217e35f2be",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-4.9-bin.zip",
+      "gradleDistributionSha256": "e66e69dce8173dd2004b39ba93586a184628bc6c28461bc771d6835f7f9b0d28",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "3.+",
+      "forgeGradleResolvedVersion": "3.0.197",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.jar",
+      "forgeGradleJarSha256": "52370df87d9dfa19d3be56a9a7af7b4ac31f811d0cdac1ed2a9ada9de5ae4dfb",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.pom",
+      "forgeGradlePomSha256": "d12c1d61d2472101720a08a73439dbb9c47209201f731f55d657bad1c7233d4d",
+      "mojangMetadataSnapshot": "dda0859bca7447ff5f071643006b35a51f54e2fbef851a6665b424cf5743c598",
+      "client": {
+        "url": "https://piston-data.mojang.com/v1/objects/8b11614bea9293592a947ea8f4fd72981ea66677/client.jar",
+        "sha1": "8b11614bea9293592a947ea8f4fd72981ea66677",
+        "sizeBytes": 15518397
+      },
+      "server": {
+        "url": "https://piston-data.mojang.com/v1/objects/4d1826eebac84847c71a77f9349cc22afd0cf0a1/server.jar",
+        "sha1": "4d1826eebac84847c71a77f9349cc22afd0cf0a1",
+        "sizeBytes": 36164938
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.16.1",
+      "minecraftId": "1.16.1",
+      "forgeVersion": "1.16.1-32.0.108",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.16.1-32.0.108/forge-1.16.1-32.0.108-mdk.zip",
+      "sourceArchiveSha256": "8201ae624f6efe8b21b80cf64a526bcea1a9a98091ea65987fcafbc9180cb81e",
+      "buildGradleSha256": "02e38c4d52b55621c67718a4f1080680c4e699cd484b556d4df5d03b9be37a0f",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-4.10.3-bin.zip",
+      "gradleDistributionSha256": "8626cbf206b4e201ade7b87779090690447054bc93f052954c78480fa6ed186e",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "3.+",
+      "forgeGradleResolvedVersion": "3.0.197",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.jar",
+      "forgeGradleJarSha256": "52370df87d9dfa19d3be56a9a7af7b4ac31f811d0cdac1ed2a9ada9de5ae4dfb",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.pom",
+      "forgeGradlePomSha256": "d12c1d61d2472101720a08a73439dbb9c47209201f731f55d657bad1c7233d4d",
+      "mojangMetadataSnapshot": "9688ec094a807c45513733388f7c8426d80a58cee96ed86be5380cb6a45f4a73",
+      "client": {
+        "url": "https://piston-data.mojang.com/v1/objects/c9abbe8ee4fa490751ca70635340b7cf00db83ff/client.jar",
+        "sha1": "c9abbe8ee4fa490751ca70635340b7cf00db83ff",
+        "sizeBytes": 17492432
+      },
+      "server": {
+        "url": "https://piston-data.mojang.com/v1/objects/a412fd69db1f81db3f511c1463fd304675244077/server.jar",
+        "sha1": "a412fd69db1f81db3f511c1463fd304675244077",
+        "sizeBytes": 37968964
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.16.2",
+      "minecraftId": "1.16.2",
+      "forgeVersion": "1.16.2-33.0.61",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.16.2-33.0.61/forge-1.16.2-33.0.61-mdk.zip",
+      "sourceArchiveSha256": "05db470f79304f6aecc705407cfdc1b6c41d37eed4679a0cd6acf88f470c08ca",
+      "buildGradleSha256": "38c0f5b4c4d97ae39297b6a1c17099d9b5a0686cc61388da705738f0833c7e13",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-4.10.3-bin.zip",
+      "gradleDistributionSha256": "8626cbf206b4e201ade7b87779090690447054bc93f052954c78480fa6ed186e",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "3.+",
+      "forgeGradleResolvedVersion": "3.0.197",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.jar",
+      "forgeGradleJarSha256": "52370df87d9dfa19d3be56a9a7af7b4ac31f811d0cdac1ed2a9ada9de5ae4dfb",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.pom",
+      "forgeGradlePomSha256": "d12c1d61d2472101720a08a73439dbb9c47209201f731f55d657bad1c7233d4d",
+      "mojangMetadataSnapshot": "f696986f4c07cd12dede183c86266d5cd34def6846eb0f014e1a84c2a76688d4",
+      "client": {
+        "url": "https://piston-data.mojang.com/v1/objects/653e97a2d1d76f87653f02242d243cdee48a5144/client.jar",
+        "sha1": "653e97a2d1d76f87653f02242d243cdee48a5144",
+        "sizeBytes": 17505439
+      },
+      "server": {
+        "url": "https://piston-data.mojang.com/v1/objects/c5f6fb23c3876461d46ec380421e42b289789530/server.jar",
+        "sha1": "c5f6fb23c3876461d46ec380421e42b289789530",
+        "sizeBytes": 37942337
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.16.3",
+      "minecraftId": "1.16.3",
+      "forgeVersion": "1.16.3-34.1.42",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.16.3-34.1.42/forge-1.16.3-34.1.42-mdk.zip",
+      "sourceArchiveSha256": "48e0bfe7360a51c28850d04d7be76275eca9b28abeca9bcfca9c7f6574815a9b",
+      "buildGradleSha256": "cefd57214cf840ee4f67f3f4fc4779afd6cfea10d38a216591570b24cbebcb3a",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-4.10.3-bin.zip",
+      "gradleDistributionSha256": "8626cbf206b4e201ade7b87779090690447054bc93f052954c78480fa6ed186e",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "3.+",
+      "forgeGradleResolvedVersion": "3.0.197",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.jar",
+      "forgeGradleJarSha256": "52370df87d9dfa19d3be56a9a7af7b4ac31f811d0cdac1ed2a9ada9de5ae4dfb",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.pom",
+      "forgeGradlePomSha256": "d12c1d61d2472101720a08a73439dbb9c47209201f731f55d657bad1c7233d4d",
+      "mojangMetadataSnapshot": "193c5226095ce9e8a317f1e35ddbe4d976f176f6df7ac649ecfa669e17160ead",
+      "client": {
+        "url": "https://piston-data.mojang.com/v1/objects/1321521b2caf934f7fc9665aab7e059a7b2bfcdf/client.jar",
+        "sha1": "1321521b2caf934f7fc9665aab7e059a7b2bfcdf",
+        "sizeBytes": 17505781
+      },
+      "server": {
+        "url": "https://piston-data.mojang.com/v1/objects/f02f4473dbf152c23d7d484952121db0b36698cb/server.jar",
+        "sha1": "f02f4473dbf152c23d7d484952121db0b36698cb",
+        "sizeBytes": 37942656
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.16.4",
+      "minecraftId": "1.16.4",
+      "forgeVersion": "1.16.4-35.1.37",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.16.4-35.1.37/forge-1.16.4-35.1.37-mdk.zip",
+      "sourceArchiveSha256": "af49356944240ccab58f942a5cba9211153f8f04e3643718b3a3d6abada92b5a",
+      "buildGradleSha256": "2ec97238ae147881b6dec058c9eb1994c16182beb7676ed19f225b140b20f5bd",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-4.10.3-bin.zip",
+      "gradleDistributionSha256": "8626cbf206b4e201ade7b87779090690447054bc93f052954c78480fa6ed186e",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "3.+",
+      "forgeGradleResolvedVersion": "3.0.197",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.jar",
+      "forgeGradleJarSha256": "52370df87d9dfa19d3be56a9a7af7b4ac31f811d0cdac1ed2a9ada9de5ae4dfb",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.pom",
+      "forgeGradlePomSha256": "d12c1d61d2472101720a08a73439dbb9c47209201f731f55d657bad1c7233d4d",
+      "mojangMetadataSnapshot": "667fff4ca7fd0f56ab78b757224515e8e64375868e8d1ce6040091d7b63a0cb5",
+      "client": {
+        "url": "https://piston-data.mojang.com/v1/objects/1952d94a0784e7abda230aae6a1e8fc0522dba99/client.jar",
+        "sha1": "1952d94a0784e7abda230aae6a1e8fc0522dba99",
+        "sizeBytes": 17546582
+      },
+      "server": {
+        "url": "https://piston-data.mojang.com/v1/objects/35139deedbd5182953cf1caa23835da59ca3d7cd/server.jar",
+        "sha1": "35139deedbd5182953cf1caa23835da59ca3d7cd",
+        "sizeBytes": 37961464
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.16.5",
+      "minecraftId": "1.16.5",
+      "forgeVersion": "1.16.5-36.2.42",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.16.5-36.2.42/forge-1.16.5-36.2.42-mdk.zip",
+      "sourceArchiveSha256": "02774cc07855111ee58936319bc39416c31df899b649748f089afd7ec51d5568",
+      "buildGradleSha256": "7d70ec0b3ed89dc4c66babcbb720f25afbd8d98343b783e2a41c06ab24f1ef54",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-8.4-all.zip",
+      "gradleDistributionSha256": "f2b9ed0faf8472cbe469255ae6c86eddb77076c75191741b4a462f33128dd419",
+      "buildJavaMajor": 17,
+      "forgeGradleSpec": "[6.0,6.2)",
+      "forgeGradleResolvedVersion": "6.0.54",
+      "buildClasspathCatalogHash": "ade87d84a2d6710442caa962ade4b65a353621a5a3ec581aa9c71ebe7f6ca193",
+      "targetInputCatalogHash": "a32ecc9b98e434ee0ea5eda4d641e4a15dfd5fe9a544651dbe12c4f67a820b3e",
+      "runtimeArtifactCatalogHash": "8829d0392640c83cc2139d91d53039ee0e32c6a496e462d04721d2fdeeabcebe",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/6.0.54/ForgeGradle-6.0.54.jar",
+      "forgeGradleJarSha256": "1d54a97a225ed5180300e8070a1c818597d98ec45a11fedecb425254b7982da2",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/6.0.54/ForgeGradle-6.0.54.pom",
+      "forgeGradlePomSha256": "4bba725a86422bef59342db927cd5ab53baea7ffab9d74d23b6cdd1cb462d4c1",
+      "mojangMetadataSnapshot": "3eeeab7b3165cc5263dc26ff8fe114fdb718b75a0244efead9d19635d090ba72",
+      "client": {
+        "url": "https://piston-data.mojang.com/v1/objects/37fd3c903861eeff3bc24b71eed48f828b5269c8/client.jar",
+        "sha1": "37fd3c903861eeff3bc24b71eed48f828b5269c8",
+        "sizeBytes": 17547153
+      },
+      "server": {
+        "url": "https://piston-data.mojang.com/v1/objects/1b557e7b033b583cd9f66746b7a9ab1ec1673ced/server.jar",
+        "sha1": "1b557e7b033b583cd9f66746b7a9ab1ec1673ced",
+        "sizeBytes": 37962360
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.15",
+      "minecraftId": "1.15",
+      "forgeVersion": "1.15-29.0.4",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.15-29.0.4/forge-1.15-29.0.4-mdk.zip",
+      "sourceArchiveSha256": "b90cd94af798bc078a5b2ae8eb3df10aba50476fd716926990ab30c8c23cd556",
+      "buildGradleSha256": "7f1d02f7a662bf3ff7ff80b026891ddaa2910aa78ae8206ffd0f7c71653ac638",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-4.9-bin.zip",
+      "gradleDistributionSha256": "e66e69dce8173dd2004b39ba93586a184628bc6c28461bc771d6835f7f9b0d28",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "3.+",
+      "forgeGradleResolvedVersion": "3.0.197",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.jar",
+      "forgeGradleJarSha256": "52370df87d9dfa19d3be56a9a7af7b4ac31f811d0cdac1ed2a9ada9de5ae4dfb",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/3.0.197/ForgeGradle-3.0.197.pom",
+      "forgeGradlePomSha256": "d12c1d61d2472101720a08a73439dbb9c47209201f731f55d657bad1c7233d4d",
+      "mojangMetadataSnapshot": "d154eaf07885a7fd6dfc6014bb9caf08fecc19ccd9a0862b31b1c7d1639e7785",
+      "client": {
+        "url": "https://piston-data.mojang.com/v1/objects/7b07fd09d1e3aae1bc7a1304fedc73bfe5d81800/client.jar",
+        "sha1": "7b07fd09d1e3aae1bc7a1304fedc73bfe5d81800",
+        "sizeBytes": 15517346
+      },
+      "server": {
+        "url": "https://piston-data.mojang.com/v1/objects/e9f105b3c5c7e85c7b445249a93362a22f62442d/server.jar",
+        "sha1": "e9f105b3c5c7e85c7b445249a93362a22f62442d",
+        "sizeBytes": 36164465
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.9.4",
+      "minecraftId": "1.9.4",
+      "forgeVersion": "1.9.4-12.17.0.2317-1.9.4",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.9.4-12.17.0.2317-1.9.4/forge-1.9.4-12.17.0.2317-1.9.4-mdk.zip",
+      "sourceArchiveSha256": "f67f96e2ccd98f32987c0fb515f53ac51eac3235aff90ef97b2f9a6e0dd9132b",
+      "buildGradleSha256": "ffc486107444d5964d6c175e8b7bcdaa460bb64f01349d1acb7dccf758ac3299",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-2.7-bin.zip",
+      "gradleDistributionSha256": "cde43b90945b5304c43ee36e58aab4cc6fb3a3d5f9bd9449bb1709a68371cb06",
+      "buildJavaMajor": 8,
+      "forgeGradleSpec": "2.2-SNAPSHOT",
+      "forgeGradleTimestamp": "2.2-20210802.021822-44",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/2.2-SNAPSHOT/ForgeGradle-2.2-20210802.021822-44.jar",
+      "forgeGradleJarSha256": "1c2d39615c2510db45b4bc1b5daf234783f3c5b98962a5def5f34a072b002813",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/2.2-SNAPSHOT/ForgeGradle-2.2-20210802.021822-44.pom",
+      "forgeGradlePomSha256": "80a66bf4ce415b6ca5400de3fc32b464a51e35c7ed5ab0d51f45ff30c86eb51c",
+      "mojangMetadataSnapshot": "4b21379203f0d87df8cc2ab4dd3c3689f139772f1cdb37b40688252547e2d5be",
+      "client": {
+        "url": "https://piston-data.mojang.com/v1/objects/4a61c873be90bb1196d68dac7b29870408c56969/client.jar",
+        "sha1": "4a61c873be90bb1196d68dac7b29870408c56969",
+        "sizeBytes": 8736083
+      },
+      "server": {
+        "url": "https://piston-data.mojang.com/v1/objects/edbb7b1758af33d365bf835eb9d13de005b1e274/server.jar",
+        "sha1": "edbb7b1758af33d365bf835eb9d13de005b1e274",
+        "sizeBytes": 9399053
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.18.2",
+      "minecraftId": "1.18.2",
+      "forgeVersion": "1.18.2-40.3.11",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.18.2-40.3.11/forge-1.18.2-40.3.11-mdk.zip",
+      "sourceArchiveSha256": "06dc30e30b148d33e36e1c24f47c985e46ae669556f2060d750a141264bcdc26",
+      "buildGradleSha256": "7e62af868e3859bf02282f63cc6015bff09232f66de3e4af7a6bc0487bdbdcec",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-8.8-bin.zip",
+      "gradleDistributionSha256": "a4b4158601f8636cdeeab09bd76afb640030bb5b144aafe261a5e8af027dc612",
+      "buildJavaMajor": 17,
+      "forgeGradleSpec": "[6.0,6.2)",
+      "forgeGradleResolvedVersion": "6.0.54",
+      "buildClasspathCatalogHash": "f13500f38a41c5c4a7c9e877c39d7ae22ad1f612b667753b4346766ef5c1633d",
+      "targetInputCatalogHash": "47ca7d6499e7c7a2675d17041b4f3e168d12ced9aca45161011115ae4af09a53",
+      "runtimeArtifactCatalogHash": "be4c190691ef8fb40a9ab43fd1ed6da1569e0a39f1af2ee683497790414fb2c5",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/6.0.54/ForgeGradle-6.0.54.jar",
+      "forgeGradleJarSha256": "1d54a97a225ed5180300e8070a1c818597d98ec45a11fedecb425254b7982da2",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/6.0.54/ForgeGradle-6.0.54.pom",
+      "forgeGradlePomSha256": "4bba725a86422bef59342db927cd5ab53baea7ffab9d74d23b6cdd1cb462d4c1",
+      "mojangMetadataSnapshot": "3df8f7b5e0ae5ccfd73adc9e00daf407a7274b138daab5793e58d14f2ab74144",
+      "client": {
+        "url": "https://piston-data.mojang.com/v1/objects/2e9a3e3107cca00d6bc9c97bf7d149cae163ef21/client.jar",
+        "sha1": "2e9a3e3107cca00d6bc9c97bf7d149cae163ef21",
+        "sizeBytes": 20259661
+      },
+      "server": {
+        "url": "https://piston-data.mojang.com/v1/objects/c8f83c5655308435b3dcf03c06d9fe8740a77469/server.jar",
+        "sha1": "c8f83c5655308435b3dcf03c06d9fe8740a77469",
+        "sizeBytes": 46592587
+      },
+      "status": "PinnedInputsVerified"
+    },
+    {
+      "targetId": "Forge@1.20.1",
+      "minecraftId": "1.20.1",
+      "forgeVersion": "1.20.1-47.4.5",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.20.1-47.4.5/forge-1.20.1-47.4.5-mdk.zip",
+      "sourceArchiveSha256": "3a55c4c6cb66420d69f5d99858da222272fea19592077cd60652143c188360fc",
+      "buildGradleSha256": "f50947b2af27e834f58860360a084825951fe987d9dd8ea180e7eee261629d77",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-8.8-bin.zip",
+      "gradleDistributionSha256": "a4b4158601f8636cdeeab09bd76afb640030bb5b144aafe261a5e8af027dc612",
+      "buildJavaMajor": 17,
+      "forgeGradleSpec": "[6.0,6.2)",
+      "forgeGradleResolvedVersion": "6.0.54",
+      "buildClasspathCatalogHash": "5ae4397e2d7e691666b5182204afa6276f54e9d321c7e9f1bdf8459ed09662d9",
+      "targetInputCatalogHash": "7a4c224ed57a505f3d7a3e2f13359ad2fd1eb2ac95690de623025d2a38368186",
+      "runtimeArtifactCatalogHash": "5ae4397e2d7e691666b5182204afa6276f54e9d321c7e9f1bdf8459ed09662d9",
+      "forgeGradleJarUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/6.0.54/ForgeGradle-6.0.54.jar",
+      "forgeGradleJarSha256": "1d54a97a225ed5180300e8070a1c818597d98ec45a11fedecb425254b7982da2",
+      "forgeGradlePomUrl": "https://maven.minecraftforge.net/net/minecraftforge/gradle/ForgeGradle/6.0.54/ForgeGradle-6.0.54.pom",
+      "forgeGradlePomSha256": "4bba725a86422bef59342db927cd5ab53baea7ffab9d74d23b6cdd1cb462d4c1",
+      "mojangMetadataSnapshot": "990c243ea1c716b6617839d1db1d2f2f378e8666c1a9a742b136e45d6c3039ea",
+      "client": {
+        "url": "https://piston-data.mojang.com/v1/objects/0c3ec587af28e5a785c0b4a7b8a30f9a8f78f838/client.jar",
+        "sha1": "0c3ec587af28e5a785c0b4a7b8a30f9a8f78f838",
+        "sizeBytes": 23028853
+      },
+      "server": {
+        "url": "https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14ed7ce0090dba59902951553/server.jar",
+        "sha1": "84194a2f286ef7c14ed7ce0090dba59902951553",
+        "sizeBytes": 47791053
+      },
+      "status": "PinnedInputsVerified"
+    }
+  ]
+}

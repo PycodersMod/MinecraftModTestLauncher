@@ -3,6 +3,7 @@ param(
     [string]$UniversePath,
     [string]$FamilyManifestPath,
     [string]$OutputPath,
+    [string]$TargetEvidenceIndexPath,
     [DateTimeOffset]$GeneratedAt = [DateTimeOffset]::UtcNow
 )
 
@@ -19,8 +20,20 @@ if (-not (Test-Path -LiteralPath $FamilyManifestPath -PathType Leaf)) { throw "F
 Import-Module $modulePath -Force
 $universe = Get-Content -LiteralPath $UniversePath -Raw | ConvertFrom-Json
 $familyManifest = Get-Content -LiteralPath $FamilyManifestPath -Raw | ConvertFrom-Json
-$ledger = New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt $GeneratedAt -FamilyManifest $familyManifest
-$validation = Test-MmtlFullCompatibilityLedger -Ledger $ledger -Universe $universe -FamilyManifest $familyManifest
+$targetEvidenceIndex = $null
+if(-not $TargetEvidenceIndexPath){
+    $defaultEvidenceIndex=Join-Path $repositoryRoot 'compatibility/target-validation-evidence.json'
+    if(Test-Path -LiteralPath $defaultEvidenceIndex -PathType Leaf){
+        $candidateIndex=Get-Content -LiteralPath $defaultEvidenceIndex -Raw|ConvertFrom-Json
+        if([string]$candidateIndex.universeHash -ceq [string]$universe.catalogHash){$TargetEvidenceIndexPath=$defaultEvidenceIndex}
+    }
+}
+if($TargetEvidenceIndexPath){
+    if(-not(Test-Path -LiteralPath $TargetEvidenceIndexPath -PathType Leaf)){throw "TARGET_EVIDENCE_INDEX_NOT_FOUND:$TargetEvidenceIndexPath"}
+    $targetEvidenceIndex=Get-Content -LiteralPath $TargetEvidenceIndexPath -Raw|ConvertFrom-Json -ErrorAction Stop
+}
+$ledger = New-MmtlFullCompatibilityLedger -Universe $universe -GeneratedAt $GeneratedAt -FamilyManifest $familyManifest -TargetEvidenceIndex $targetEvidenceIndex -EvidenceRoot $repositoryRoot
+$validation = Test-MmtlFullCompatibilityLedger -Ledger $ledger -Universe $universe -FamilyManifest $familyManifest -TargetEvidenceIndex $targetEvidenceIndex -EvidenceRoot $repositoryRoot
 if (-not $validation.isValid) { throw "LEDGER_CONSISTENCY_VALIDATION_FAILED:$($validation.errors -join ';')" }
 $json = ConvertTo-Json -InputObject $ledger -Depth 50
 if (-not (Test-Json -Json $json -SchemaFile $schemaPath)) { throw 'LEDGER_SCHEMA_VALIDATION_FAILED' }

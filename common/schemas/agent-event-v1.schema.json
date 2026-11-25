@@ -10,11 +10,36 @@
     "sessionId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" },
     "role": { "enum": ["Client", "Host", "Guest", "Server"] },
     "eventId": { "type": "string", "pattern": "^[A-Za-z0-9._-]{1,80}$" },
-    "eventType": { "enum": ["AGENT_STARTED", "CLIENT_READY", "WORLD_JOINED", "WORLD_CREATE_REQUESTED", "WORLD_CREATE_SUBMITTED", "INTEGRATED_SERVER_READY", "OFFLINE_AUTH_ENABLED", "LAN_PUBLISH_REQUESTED", "LAN_PUBLISHED", "LAN_PUBLISH_FAILED", "GUEST_CONNECTING", "GUEST_CONNECTED", "WORLD_JOIN_TIMEOUT", "LAN_PUBLISH_TIMEOUT", "GUEST_JOIN_TIMEOUT", "ACTION_RECEIVED", "ACTION_COMPLETED", "ACTION_FAILED", "AGENT_ERROR"] },
+    "eventType": { "enum": ["AGENT_STARTED", "CLIENT_READY", "WORLD_JOINED", "WORLD_CREATE_REQUESTED", "WORLD_CREATE_SUBMITTED", "INTEGRATED_SERVER_READY", "OFFLINE_AUTH_ENABLED", "LAN_PUBLISH_REQUESTED", "LAN_PUBLISHED", "LAN_PUBLISH_FAILED", "GUEST_CONNECTING", "GUEST_CONNECTED", "WORLD_JOIN_TIMEOUT", "LAN_PUBLISH_TIMEOUT", "GUEST_JOIN_TIMEOUT", "ACTION_RECEIVED", "ACTION_COMPLETED", "ACTION_FAILED", "SHARED_STATE_WRITTEN", "SHARED_STATE_OBSERVED", "AGENT_ERROR"] },
     "timestampUtc": { "type": "string", "format": "date-time" },
     "sessionNonceHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
     "summary": { "type": "string", "maxLength": 240 },
     "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
-    "actionId": { "type": "string", "pattern": "^[a-f0-9]{32}$" }
-  }
+    "actionId": { "type": "string", "pattern": "^[a-f0-9]{32}$" },
+    "actorActionId": { "type": "string", "pattern": "^[a-f0-9]{32}$" },
+    "worldKey": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,127}$" },
+    "dimensionKey": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,127}$" },
+    "playerIdentity": { "type": "string", "pattern": "^[A-Za-z0-9._:-]{1,80}$" },
+    "markerId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$" },
+    "stateSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "protocolId": { "const": "mmtl-block-marker-v1" },
+    "operationCode": { "const": "PLACE_BLOCK_MARKER" },
+    "observationCode": { "const": "OBSERVE_BLOCK_MARKER" },
+    "observed": { "type": "boolean" },
+    "bindAddress": { "const": "127.0.0.1" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "eventType": { "const": "WORLD_JOINED" } }, "required": ["eventType"] },
+      "then": { "required": ["worldKey", "dimensionKey", "playerIdentity"] }
+    },
+    {
+      "if": { "properties": { "eventType": { "const": "LAN_PUBLISHED" } }, "required": ["eventType"] },
+      "then": { "properties": { "role": { "const": "Host" } }, "required": ["role", "port", "bindAddress", "worldKey", "dimensionKey", "playerIdentity"] }
+    },
+    {
+      "if": { "properties": { "eventType": { "const": "WORLD_JOINED" }, "role": { "const": "Guest" } }, "required": ["eventType", "role"] },
+      "then": { "required": ["port"] }
+    }
+  ]
 }

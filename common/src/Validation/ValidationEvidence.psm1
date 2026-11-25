@@ -1,4 +1,5 @@
 Set-StrictMode -Version Latest
+Import-Module (Join-Path $PSScriptRoot 'TargetIdentity.psm1') -Force
 
 function ConvertTo-MmtlRedactedValidationText {
     [CmdletBinding()]
@@ -17,14 +18,15 @@ function Write-MmtlValidationRunEvidence {
 
     $targetId = [string]$Evidence.targetId
     $runId = [string]$Evidence.runId
-    if ($targetId -notmatch '^[a-z0-9][a-z0-9._-]{2,127}$' -or $runId -notmatch '^[A-Za-z0-9._-]{1,80}$') {
+    if (-not(Test-MmtlExactTargetId -TargetId $targetId) -or $runId -notmatch '^[A-Za-z0-9._-]{1,80}$') {
         throw '证据目标或运行标识不安全。'
     }
 
     $root = [IO.Path]::GetFullPath($RuntimeRoot)
     $validationRoot = [IO.Path]::GetFullPath((Join-Path $root 'validation'))
     $prefix = $validationRoot.TrimEnd([IO.Path]::DirectorySeparatorChar, [IO.Path]::AltDirectorySeparatorChar) + [IO.Path]::DirectorySeparatorChar
-    $runDirectory = [IO.Path]::GetFullPath((Join-Path $validationRoot (Join-Path $targetId $runId)))
+    $storageKey=Get-MmtlValidationTargetStorageKey -TargetId $targetId
+    $runDirectory = [IO.Path]::GetFullPath((Join-Path $validationRoot (Join-Path $storageKey $runId)))
     if (-not $runDirectory.StartsWith($prefix, [StringComparison]::OrdinalIgnoreCase)) { throw '证据目标目录越出了 Runtime Root。' }
 
     $evidencePath = Join-Path $runDirectory 'result.json'

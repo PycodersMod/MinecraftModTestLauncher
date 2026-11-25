@@ -60,4 +60,14 @@ Describe 'Runtime Mod JAR 隔离与完整性' {
         { Copy-MmtlRuntimeMods -SessionPath $script:session -RuntimeDirectory $script:runtime -ModJars @($script:jar) -Role Client -Username Dev -ExpectedHashes $expected } | Should -Throw '*MOD_JAR_EXPECTED_HASH_MISMATCH*'
         Test-Path -LiteralPath (Join-Path $script:runtime 'mods/fixture-mod.jar') | Should -BeFalse
     }
+
+    It '仅在调用方明确允许时隔离并登记 LiteLoader litemod 产物' {
+        $litemod=Join-Path $script:sourceRoot 'fixture-mod.litemod';Copy-Item -LiteralPath $script:jar -Destination $litemod
+        $records=Copy-MmtlRuntimeMods -SessionPath $script:session -RuntimeDirectory $script:runtime -ModJars @($litemod) -Role Client -Username Dev -AllowedExtensions @('.litemod')
+        Test-Path -LiteralPath (Join-Path $script:runtime 'mods/fixture-mod.litemod') | Should -BeTrue
+        $records[0].extension | Should -BeExactly '.litemod'
+        $manifest=Get-Content -LiteralPath (Join-Path $script:session 'artifacts/mods-Client-Dev.json') -Raw|ConvertFrom-Json
+        $manifest.artifacts[0].filename | Should -BeExactly 'fixture-mod.litemod'
+        $manifest.artifacts[0].extension | Should -BeExactly '.litemod'
+    }
 }

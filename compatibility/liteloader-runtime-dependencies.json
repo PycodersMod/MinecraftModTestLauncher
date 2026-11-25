@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "status": "PARTIAL",
+  "universeHash": "c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+  "sourceUrl": "https://dl.liteloader.com/versions/versions.json",
+  "sourceSha256": "778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
+  "mainClass": "net.minecraft.launchwrapper.Launch",
+  "tweakClass": "com.mumfrey.liteloader.launch.LiteLoaderTweaker",
+  "targets": [
+    {"targetId":"LiteLoader@1.5.2","minecraftId":"1.5.2","loaderVersion":"1.5.2_01","loaderArtifactSha256":"e983307c3dc0a58480a508fd8afde78429d280af701b473d012a989ad89715e8","libraries":["net.minecraft:launchwrapper:1.5","net.sf.jopt-simple:jopt-simple:4.5","org.ow2.asm:asm-all:4.1"]},
+    {"targetId":"LiteLoader@1.6.2","minecraftId":"1.6.2","loaderVersion":"1.6.2_04","loaderArtifactSha256":"7e3f1dd102fba27f82efed7acf63fcde160cbac4ea9014beba7c7cab5d076acd","libraries":["net.minecraft:launchwrapper:1.3"]},
+    {"targetId":"LiteLoader@1.6.4","minecraftId":"1.6.4","loaderVersion":"1.6.4_01","loaderArtifactSha256":"64a85150c0bff4ca59da691ec989f0364b856b1ab9fb450864e13b254e69161b","libraries":["net.minecraft:launchwrapper:1.8"]},
+    {"targetId":"LiteLoader@1.7.2","minecraftId":"1.7.2","loaderVersion":"1.7.2_05","loaderArtifactSha256":"a0bc8eab102951f6166eaf983a259e3ef637bbf465cc3e77deb41fbaa6f3e060","libraries":["net.minecraft:launchwrapper:1.9","org.ow2.asm:asm-all:4.1"]},
+    {"targetId":"LiteLoader@1.7.10","minecraftId":"1.7.10","loaderVersion":"1.7.10_04","loaderArtifactSha256":"a30e91e7abfcf482fd740893a207e2e00eb6a24d3909bfa2939a13b3c1703b7b","libraries":["net.minecraft:launchwrapper:1.11","org.ow2.asm:asm-all:5.0.3","com.google.guava:guava:16.0"]},
+    {"targetId":"LiteLoader@1.8","minecraftId":"1.8","loaderVersion":"1.8","loaderArtifactSha256":"686efce04e1288d98f54ed6d21a4d78396a3d55b6a9517bdded39d3602d33dc3","libraries":["net.minecraft:launchwrapper:1.11","org.ow2.asm:asm-all:5.0.3"]}
+  ],
+  "libraries": [
+    {"name":"net.minecraft:launchwrapper:1.3","url":"https://libraries.minecraft.net/net/minecraft/launchwrapper/1.3/launchwrapper-1.3.jar","bytes":17357,"sha1":"78049b4cc4611e812a8d2e27c08a295d15df1fba","sha256":"7fd3f32e6ec379a45213d636666e51cb93fa19ad148c63044546c3bf778e9c16","hashEvidence":"HTTPS_DOWNLOAD_OBSERVATION"},
+    {"name":"net.minecraft:launchwrapper:1.5","url":"https://libraries.minecraft.net/net/minecraft/launchwrapper/1.5/launchwrapper-1.5.jar","bytes":27787,"sha1":"5150b9c2951f0fde987ce9c33496e26add1de224","sha256":"c9fa09f5815f1d8ce5b7d59a53168b9a1b0ab9663e43b2440311391df7a78d52","hashEvidence":"MOJANG_SHA1_SIZE_PLUS_HTTPS_SHA256"},
+    {"name":"net.minecraft:launchwrapper:1.8","url":"https://libraries.minecraft.net/net/minecraft/launchwrapper/1.8/launchwrapper-1.8.jar","bytes":28927,"sha1":"d4c0895977dd7f0b3f56281cee53a64d4c0c0322","sha256":"f4b9f75b1d7db46da3e6ab773e11fcab723a5998680c685aea04e3efde39f8c4","hashEvidence":"HTTPS_DOWNLOAD_OBSERVATION"},
+    {"name":"net.minecraft:launchwrapper:1.9","url":"https://libraries.minecraft.net/net/minecraft/launchwrapper/1.9/launchwrapper-1.9.jar","bytes":33162,"sha1":"116f2aad5b0c68353ebed66cd463517db6522f7e","sha256":"8bb37fe90579df168a1d4d950cca87ea4299038045470ac0efe61bc4e6873ede","hashEvidence":"HTTPS_DOWNLOAD_OBSERVATION"},
+    {"name":"net.minecraft:launchwrapper:1.11","url":"https://libraries.minecraft.net/net/minecraft/launchwrapper/1.11/launchwrapper-1.11.jar","bytes":33143,"sha1":"9c0592c6e1e9ea296a70948081bd4cc84dda1289","sha256":"e74b65b8948446982a506a96176dd8baf4688237ba4903f56ca6f667b6c7ee42","hashEvidence":"HTTPS_DOWNLOAD_OBSERVATION"},
+    {"name":"net.sf.jopt-simple:jopt-simple:4.5","url":"https://libraries.minecraft.net/net/sf/jopt-simple/jopt-simple/4.5/jopt-simple-4.5.jar","bytes":61311,"sha1":"6065cc95c661255349c1d0756657be17c29a4fd3","sha256":"64335a48be6b142a7d0c13ec5c82a707857aa58c0234e6eda3eaca0e96eea51b","hashEvidence":"HTTPS_DOWNLOAD_OBSERVATION"},
+    {"name":"org.ow2.asm:asm-all:4.1","url":"https://libraries.minecraft.net/org/ow2/asm/asm-all/4.1/asm-all-4.1.jar","bytes":214592,"sha1":"054986e962b88d8660ae4566475658469595ef58","sha256":"165b583b0b548405dd97019666f94a86ee1d1e3af227ae4dc82c6e27d6885bb1","hashEvidence":"MOJANG_SHA1_SIZE_PLUS_HTTPS_SHA256"},
+    {"name":"org.ow2.asm:asm-all:5.0.3","url":"https://libraries.minecraft.net/org/ow2/asm/asm-all/5.0.3/asm-all-5.0.3.jar","bytes":241639,"sha1":"4333508b8dd8ee72aa4e39afa713b3a74579b773","sha256":"09d44e6adddaab9fd89ea3164c439f71c755769fa8d3a940352ab3d2003b98ff","hashEvidence":"HTTPS_DOWNLOAD_OBSERVATION"},
+    {"name":"com.google.guava:guava:16.0","url":"https://libraries.minecraft.net/com/google/guava/guava/16.0/guava-16.0.jar","bytes":2225441,"sha1":"aca09d2e5e8416bf91550e72281958e35460be52","sha256":"fa917f4f3f6a76375134ba89a40d3a1ce807945a91bbdbe39c31f76e03030868","hashEvidence":"HTTPS_DOWNLOAD_OBSERVATION","dependencySourceUrl":"https://www.liteloader.com/explore/docs/user:install:manual:1.7.10?do=export_raw","dependencySourceSha256":"4bd57f6775688e83f41cb66d670a735eff365954517deb9c837e8bfc58a899ec"}
+  ]
+}

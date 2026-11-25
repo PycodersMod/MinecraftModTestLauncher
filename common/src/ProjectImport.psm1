@@ -211,7 +211,7 @@ function Get-MmtlProjectModMetadata {
     $artifactNames = [Collections.Generic.List[string]]::new()
     if (Test-Path -LiteralPath $artifactRoot -PathType Container) {
         Add-Type -AssemblyName System.IO.Compression.FileSystem
-        foreach ($artifact in @(Get-ChildItem -LiteralPath $artifactRoot -Filter '*.jar' -File -ErrorAction SilentlyContinue)) {
+        foreach ($artifact in @((Get-ChildItem -LiteralPath $artifactRoot -Filter '*.jar' -File -ErrorAction SilentlyContinue)+(Get-ChildItem -LiteralPath $artifactRoot -Filter '*.litemod' -File -ErrorAction SilentlyContinue))) {
             if($artifact.BaseName -notmatch '(?i)-(sources|javadoc)$' -and -not $artifactNames.Contains($artifact.Name)){$artifactNames.Add($artifact.Name)}
             try {
                 $archive = [IO.Compression.ZipFile]::OpenRead($artifact.FullName)

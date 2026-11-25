@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pycodersmod.github.io/MinecraftModTestLauncher/schemas/historical-dedicated-server-catalog.schema.json",
+  "title": "MMTL Historical Dedicated Server Artifact Catalog",
+  "type": "object",
+  "required": ["schemaVersion", "automaticDownloadAllowed", "automaticExecutionAllowed", "entries"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "automaticDownloadAllowed": { "const": false },
+    "automaticExecutionAllowed": { "const": false },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["minecraftId", "minecraftType", "artifactRole", "metadataUrl", "metadataSnapshotPath", "metadataSha1", "metadataSha256", "metadataByteLength", "artifactUrl", "sha1", "sha256", "byteLength", "sourceType", "exactLoaderServerReady"],
+        "properties": {
+          "minecraftId": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+          "minecraftType": { "const": "release" },
+          "artifactRole": { "enum": ["VanillaBase", "LoaderReadyServer"] },
+          "loaderId": { "type": ["string", "null"], "pattern": "^[A-Za-z][A-Za-z0-9_-]*$" },
+          "metadataUrl": { "type": "string", "format": "uri", "pattern": "^https://piston-meta\\.mojang\\.com/v1/packages/[a-f0-9]{40}/" },
+          "metadataSnapshotPath": { "type": "string", "pattern": "^[A-Za-z0-9._-]+\\.json$" },
+          "metadataSha1": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+          "metadataSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "metadataByteLength": { "type": "integer", "minimum": 1 },
+          "artifactUrl": { "type": "string", "format": "uri", "pattern": "^https://launcher\\.mojang\\.com/v1/objects/[a-f0-9]{40}/server\\.jar$" },
+          "sha1": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "byteLength": { "type": "integer", "minimum": 1 },
+          "sourceType": { "const": "OfficialManifest" },
+          "exactLoaderServerReady": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

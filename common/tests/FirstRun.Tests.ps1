@@ -22,7 +22,9 @@ Describe '首次运行初始化' {
         @($config.profiles.PSObject.Properties.Name) | Should -Contain 'single-example'
         @($config.profiles.PSObject.Properties.Name) | Should -Contain 'integrated-lan-example'
         @($config.profiles.PSObject.Properties.Name) | Should -Contain 'dedicated-example'
-        $config.defaultProfile | Should -BeExactly 'integrated-lan-example'
+        $config.defaultProfile | Should -BeExactly 'single-example'
+        $config.profiles.'single-example'.mode | Should -BeExactly 'Single'
+        $config.profiles.'single-example'.players | Should -Be 1
         $config.profiles.'integrated-lan-example'.mode | Should -BeExactly 'IntegratedLAN'
         $config.profiles.'integrated-lan-example'.acceptEula | Should -BeFalse
         $config.profiles.'dedicated-example'.acceptEula | Should -BeFalse

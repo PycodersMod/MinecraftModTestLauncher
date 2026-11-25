@@ -1,0 +1,2175 @@
+{
+  "schemaVersion": 1,
+  "targetId": "Forge@1.16.5",
+  "forgeVersion": "1.16.5-36.2.42",
+  "resolver": "Gradle 8.4 official MDK offline resolved configuration capture",
+  "platform": {
+    "os": "Windows",
+    "architecture": "x64"
+  },
+  "artifactStatus": "HashesVerified",
+  "resolvedConfigurationCount": 12,
+  "resolvedArtifactObservations": 434,
+  "configurations": [
+    {
+      "project": ":",
+      "name": "__obfuscated",
+      "artifactCount": 0
+    },
+    {
+      "project": ":",
+      "name": "_compileJava_1",
+      "artifactCount": 75
+    },
+    {
+      "project": ":",
+      "name": "annotationProcessor",
+      "artifactCount": 0
+    },
+    {
+      "project": ":",
+      "name": "compileClasspath",
+      "artifactCount": 64
+    },
+    {
+      "project": ":",
+      "name": "jarJar",
+      "artifactCount": 0
+    },
+    {
+      "project": ":",
+      "name": "minecraft",
+      "artifactCount": 77
+    },
+    {
+      "project": ":",
+      "name": "minecraftEmbed",
+      "artifactCount": 0
+    },
+    {
+      "project": ":",
+      "name": "minecraftLibrary",
+      "artifactCount": 0
+    },
+    {
+      "project": ":",
+      "name": "runtimeClasspath",
+      "artifactCount": 77
+    },
+    {
+      "project": ":",
+      "name": "testAnnotationProcessor",
+      "artifactCount": 0
+    },
+    {
+      "project": ":",
+      "name": "testCompileClasspath",
+      "artifactCount": 64
+    },
+    {
+      "project": ":",
+      "name": "testRuntimeClasspath",
+      "artifactCount": 77
+    }
+  ],
+  "mavenArtifacts": [
+    {
+      "group": "com.electronwill.night-config",
+      "artifact": "core",
+      "version": "3.6.3",
+      "file": "core-3.6.3.jar",
+      "bytes": 199091,
+      "sha256": "14e9554e9c48abfe7449e4451e597bfc0d85074fc6c80a377488c067c313fd7c",
+      "sha1": "c601bfeaeb2c0abe7aaa901b0bbe6d1beff49281",
+      "url": "https://repo.maven.apache.org/maven2/com/electronwill/night-config/core/3.6.3/core-3.6.3.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "core-3.6.3.pom",
+        "bytes": 1227,
+        "sha256": "d0add11be0dd1db48a8da85c4f169d5ae7a32eda0456881e8204ec09526189e1",
+        "url": "https://repo.maven.apache.org/maven2/com/electronwill/night-config/core/3.6.3/core-3.6.3.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "com.electronwill.night-config",
+      "artifact": "toml",
+      "version": "3.6.3",
+      "file": "toml-3.6.3.jar",
+      "bytes": 31288,
+      "sha256": "721b9484f2c35e1a051d5d72254b76ab98ae799858bd5daa8217a7124ef728df",
+      "sha1": "2b05b4d606c517da4d1a7b6d2b97d751c92887d7",
+      "url": "https://repo.maven.apache.org/maven2/com/electronwill/night-config/toml/3.6.3/toml-3.6.3.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "toml-3.6.3.pom",
+        "bytes": 1448,
+        "sha256": "797ee0f174d6872597e0a1db7250bec2711d993945cf9b34452aefbaf074b24e",
+        "url": "https://repo.maven.apache.org/maven2/com/electronwill/night-config/toml/3.6.3/toml-3.6.3.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "com.google.code.findbugs",
+      "artifact": "jsr305",
+      "version": "3.0.1",
+      "file": "jsr305-3.0.1.jar",
+      "bytes": 19943,
+      "sha256": "c885ce34249682bc0236b4a7d56efcc12048e6135a5baf7a9cde8ad8cda13fcd",
+      "sha1": "f7be08ec23c21485b9b5a1cf1654c2ec8c58168d",
+      "url": "https://repo.maven.apache.org/maven2/com/google/code/findbugs/jsr305/3.0.1/jsr305-3.0.1.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "jsr305-3.0.1.pom",
+        "bytes": 4286,
+        "sha256": "4170a761dc5bfd3981a8e6f7aab9e2acdce82d34fd5aa9bb11e3c090d25314ce",
+        "url": "https://repo.maven.apache.org/maven2/com/google/code/findbugs/jsr305/3.0.1/jsr305-3.0.1.pom"
+      },
+      "configurations": [
+        "compileClasspath",
+        "testCompileClasspath"
+      ]
+    },
+    {
+      "group": "com.google.code.findbugs",
+      "artifact": "jsr305",
+      "version": "3.0.2",
+      "file": "jsr305-3.0.2.jar",
+      "bytes": 19936,
+      "sha256": "766ad2a0783f2687962c8ad74ceecc38a28b9f72a2d085ee438b7813e928d0c7",
+      "sha1": "25ea2e8b0c338a877313bd4672d3fe056ea78f0d",
+      "url": "https://repo.maven.apache.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "jsr305-3.0.2.pom",
+        "bytes": 4286,
+        "sha256": "19889dbdf1b254b2601a5ee645b8147a974644882297684c798afe5d63d78dfe",
+        "url": "https://repo.maven.apache.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "minecraft",
+        "runtimeClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "cpw.mods",
+      "artifact": "grossjava9hacks",
+      "version": "1.3.3",
+      "file": "grossjava9hacks-1.3.3.jar",
+      "bytes": 2113,
+      "sha256": "0d26519cff297a911951836cf91f6c9fc831b047330e9a0f331a111f38e18bb4",
+      "sha1": "e49222512ea6cabdd8b49761cef1d5a207b1f0d9",
+      "url": "https://maven.minecraftforge.net/cpw/mods/grossjava9hacks/1.3.3/grossjava9hacks-1.3.3.jar",
+      "repository": "forgeMaven",
+      "pom": {
+        "file": "grossjava9hacks-1.3.3.pom",
+        "bytes": 1862,
+        "sha256": "b0e8f18e01e9d35d90d75541a0725a04833d4057af172d2dbf9d157f428aa99e",
+        "url": "https://maven.minecraftforge.net/cpw/mods/grossjava9hacks/1.3.3/grossjava9hacks-1.3.3.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "cpw.mods",
+      "artifact": "modlauncher",
+      "version": "8.1.3",
+      "file": "modlauncher-8.1.3-api.jar",
+      "bytes": 4417,
+      "sha256": "7a1cfc0b93d0f59ccb829fefc45399cc404899b92af0a8782bbaa1a3a36c4161",
+      "sha1": "9b48bef0af2f3e379bbe5915f5cf23bf366d8ddf",
+      "url": "https://maven.minecraftforge.net/cpw/mods/modlauncher/8.1.3/modlauncher-8.1.3-api.jar",
+      "repository": "forgeMaven",
+      "pom": {
+        "file": "modlauncher-8.1.3.pom",
+        "bytes": 2806,
+        "sha256": "bed7f4877fdf1ece3fb5e92c706e4cf52ec8aa47ab3108091929233bc8770698",
+        "url": "https://maven.minecraftforge.net/cpw/mods/modlauncher/8.1.3/modlauncher-8.1.3.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "minecraft",
+        "runtimeClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "cpw.mods",
+      "artifact": "modlauncher",
+      "version": "8.1.3",
+      "file": "modlauncher-8.1.3.jar",
+      "bytes": 126747,
+      "sha256": "4e0d846f75ffd0dd5042c9b1aa86b8fcc758acd27a004c259d26aebc100ffdf2",
+      "sha1": "6d0bfd78e025a87d43985e30907aa9ecbc51b2d6",
+      "url": "https://maven.minecraftforge.net/cpw/mods/modlauncher/8.1.3/modlauncher-8.1.3.jar",
+      "repository": "forgeMaven",
+      "pom": {
+        "file": "modlauncher-8.1.3.pom",
+        "bytes": 2806,
+        "sha256": "bed7f4877fdf1ece3fb5e92c706e4cf52ec8aa47ab3108091929233bc8770698",
+        "url": "https://maven.minecraftforge.net/cpw/mods/modlauncher/8.1.3/modlauncher-8.1.3.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "net.java.jinput",
+      "artifact": "jinput-platform",
+      "version": "2.0.5",
+      "file": "jinput-platform-2.0.5-natives-linux.jar",
+      "bytes": 10362,
+      "sha256": "1ab4d194277816b6105253d224c8c69f1b6d720690efe7c85f3ce884f0ea273d",
+      "sha1": "7ff832a6eb9ab6a767f1ade2b548092d0fa64795",
+      "url": "https://repo.maven.apache.org/maven2/net/java/jinput/jinput-platform/2.0.5/jinput-platform-2.0.5-natives-linux.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "jinput-platform-2.0.5.pom",
+        "bytes": 989,
+        "sha256": "ba27597365ae85a836c1f51819903668b4a1a7490e39e530633cc8a7b40b5500",
+        "url": "https://repo.maven.apache.org/maven2/net/java/jinput/jinput-platform/2.0.5/jinput-platform-2.0.5.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "minecraft",
+        "runtimeClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "net.java.jinput",
+      "artifact": "jinput-platform",
+      "version": "2.0.5",
+      "file": "jinput-platform-2.0.5-natives-osx.jar",
+      "bytes": 12186,
+      "sha256": "171024b00f9a743b92388b48733dc30fd3f6d3a7da4f66f9821531fbcf1aa074",
+      "sha1": "53f9c919f34d2ca9de8c51fc4e1e8282029a9232",
+      "url": "https://repo.maven.apache.org/maven2/net/java/jinput/jinput-platform/2.0.5/jinput-platform-2.0.5-natives-osx.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "jinput-platform-2.0.5.pom",
+        "bytes": 989,
+        "sha256": "ba27597365ae85a836c1f51819903668b4a1a7490e39e530633cc8a7b40b5500",
+        "url": "https://repo.maven.apache.org/maven2/net/java/jinput/jinput-platform/2.0.5/jinput-platform-2.0.5.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "minecraft",
+        "runtimeClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "net.java.jinput",
+      "artifact": "jinput-platform",
+      "version": "2.0.5",
+      "file": "jinput-platform-2.0.5-natives-windows.jar",
+      "bytes": 155179,
+      "sha256": "24afbd5e1fab17da57d16a4d3f19d53f36155ef46a9976484201a4bb9722287f",
+      "sha1": "385ee093e01f587f30ee1c8a2ee7d408fd732e16",
+      "url": "https://repo.maven.apache.org/maven2/net/java/jinput/jinput-platform/2.0.5/jinput-platform-2.0.5-natives-windows.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "jinput-platform-2.0.5.pom",
+        "bytes": 989,
+        "sha256": "ba27597365ae85a836c1f51819903668b4a1a7490e39e530633cc8a7b40b5500",
+        "url": "https://repo.maven.apache.org/maven2/net/java/jinput/jinput-platform/2.0.5/jinput-platform-2.0.5.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "minecraft",
+        "runtimeClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "net.jodah",
+      "artifact": "typetools",
+      "version": "0.8.3",
+      "file": "typetools-0.8.3.jar",
+      "bytes": 15425,
+      "sha256": "f853e21f7de6bd192f0ce09e64a6c8b0e154c9cf9f34e62f08d5e26f73ce3b19",
+      "sha1": "98f84f353457629e81cc6827224871b1a8faa7af",
+      "url": "https://maven.minecraftforge.net/net/jodah/typetools/0.8.3/typetools-0.8.3.jar",
+      "repository": "forgeMaven",
+      "pom": {
+        "file": "typetools-0.8.3.pom",
+        "bytes": 1410,
+        "sha256": "86de7f0197fa656d4a7723a0113afccd9f3e8307f07e944e336e3bc6b128cb71",
+        "url": "https://maven.minecraftforge.net/net/jodah/typetools/0.8.3/typetools-0.8.3.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "accesstransformers",
+      "version": "3.0.1",
+      "file": "accesstransformers-3.0.1.jar",
+      "bytes": 76586,
+      "sha256": "dcbbf5490aa2eb434870e7ebbd1eaa251a1e1c58e95f73cf01acb030d2a0be63",
+      "sha1": "6d23c1b9cb0607fddc38d09730796f68db96f546",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/accesstransformers/3.0.1/accesstransformers-3.0.1.jar",
+      "repository": "forgeMaven",
+      "pom": {
+        "file": "accesstransformers-3.0.1.pom",
+        "bytes": 3363,
+        "sha256": "9be80a545feefd2573a0e1bca7b6fb403050085d891a950d50f968d61af77131",
+        "url": "https://maven.minecraftforge.net/net/minecraftforge/accesstransformers/3.0.1/accesstransformers-3.0.1.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "coremods",
+      "version": "4.0.6",
+      "file": "coremods-4.0.6.jar",
+      "bytes": 25453,
+      "sha256": "45e109ccbfab004f70e0bee211b056ce4cf12f27a08853730f654ad1d286b872",
+      "sha1": "d6d761379c841e2610abebcbf70ed20b65f728f0",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/coremods/4.0.6/coremods-4.0.6.jar",
+      "repository": "forgeMaven",
+      "pom": {
+        "file": "coremods-4.0.6.pom",
+        "bytes": 2993,
+        "sha256": "129f9f37e3814798cb7dc839de93b25317a6e62a083f50bdecfffd98b2de0436",
+        "url": "https://maven.minecraftforge.net/net/minecraftforge/coremods/4.0.6/coremods-4.0.6.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "eventbus",
+      "version": "4.0.0",
+      "file": "eventbus-4.0.0.jar",
+      "bytes": 42873,
+      "sha256": "8754a57ff4d15dffcab15f50b691f4a9c1108b057fbcfff5c915ce928c41f84e",
+      "sha1": "260e34800723e4c098c4e247cf2b900535e01b6d",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/eventbus/4.0.0/eventbus-4.0.0.jar",
+      "repository": "forgeMaven",
+      "pom": {
+        "file": "eventbus-4.0.0.pom",
+        "bytes": 2928,
+        "sha256": "229f4a76c27b2a09862b2d8c207f448919477caef8ff8904c445627cc534c669",
+        "url": "https://maven.minecraftforge.net/net/minecraftforge/eventbus/4.0.0/eventbus-4.0.0.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "forge",
+      "version": "1.16.5-36.2.42",
+      "file": "forge-1.16.5-36.2.42-launcher.jar",
+      "bytes": 212563,
+      "sha256": "dfeab9c7d582fce5b1112e9d3038fa0e7075296e467031ce1e2c0ba9fdcf441f",
+      "sha1": "caca08d22543cbe101d64d171738e1ff6eef4de3",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.16.5-36.2.42/forge-1.16.5-36.2.42-launcher.jar",
+      "repository": "forgeMaven",
+      "pom": {
+        "file": "forge-1.16.5-36.2.42.pom",
+        "bytes": 1228,
+        "sha256": "d79dc0d49d350fdd809590ec2a7ed074a31206dd4db59576695a462ca898883c",
+        "url": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.16.5-36.2.42/forge-1.16.5-36.2.42.pom"
+      },
+      "configurations": [
+        "_compileJava_1"
+      ]
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "forgespi",
+      "version": "3.2.0",
+      "file": "forgespi-3.2.0.jar",
+      "bytes": 20172,
+      "sha256": "a2ea0e7a525de8f060da1f89e34406cc1f401e0c95cc58a9992dab8866534e21",
+      "sha1": "0c6ca4e4e4a0343701407c760e642537b613b543",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/forgespi/3.2.0/forgespi-3.2.0.jar",
+      "repository": "forgeMaven",
+      "pom": {
+        "file": "forgespi-3.2.0.pom",
+        "bytes": 2895,
+        "sha256": "3c6aa1ffd17866a162b5bec63b1bdc990e277e88f0f295b1719d12b33f119af6",
+        "url": "https://maven.minecraftforge.net/net/minecraftforge/forgespi/3.2.0/forgespi-3.2.0.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "mergetool",
+      "version": "1.0.9",
+      "file": "mergetool-1.0.9-api.jar",
+      "bytes": 2548,
+      "sha256": "46d9d0b4a42ab220a2baa25807bc7a076c2cb51594fa6c013c595f43b92956b3",
+      "sha1": "d1e1ba354a40b5703340b5cb02fdca489cff3646",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/mergetool/1.0.9/mergetool-1.0.9-api.jar",
+      "repository": "forgeMaven",
+      "pom": {
+        "file": "mergetool-1.0.9.pom",
+        "bytes": 2078,
+        "sha256": "12c3ef0bb3730a05fe8532db6e3e4c842a7d8d9cfca5a6d040390b00d83c394c",
+        "url": "https://maven.minecraftforge.net/net/minecraftforge/mergetool/1.0.9/mergetool-1.0.9.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "nashorn-core-compat",
+      "version": "15.1.1.1",
+      "file": "nashorn-core-compat-15.1.1.1.jar",
+      "bytes": 2194057,
+      "sha256": "244453e27ea4709223c1418723c6be1c1e47437fa06ececf2981c939f6c3cd50",
+      "sha1": "1817deb38a5a8811148dca0d23161d92bdbd6184",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/nashorn-core-compat/15.1.1.1/nashorn-core-compat-15.1.1.1.jar",
+      "repository": "forgeMaven",
+      "pom": {
+        "file": "nashorn-core-compat-15.1.1.1.pom",
+        "bytes": 421,
+        "sha256": "da88e3661d0211247c52003b623a8fb3f3b596837687a8079479ae9fd255fd37",
+        "url": "https://maven.minecraftforge.net/net/minecraftforge/nashorn-core-compat/15.1.1.1/nashorn-core-compat-15.1.1.1.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "unsafe",
+      "version": "0.2.0",
+      "file": "unsafe-0.2.0.jar",
+      "bytes": 2834,
+      "sha256": "946937e182ab3b518b5b88264f367e1f35ac12bc83abed220490c60c717be239",
+      "sha1": "54d7a0a5e8fdb71b973025caa46f341ae5904f39",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/unsafe/0.2.0/unsafe-0.2.0.jar",
+      "repository": "forgeMaven",
+      "pom": {
+        "file": "unsafe-0.2.0.pom",
+        "bytes": 1506,
+        "sha256": "c4b8ce2d2649dc0bfe03f581a0611b72db98ee7b62edaa08fd8439e1d22ed065",
+        "url": "https://maven.minecraftforge.net/net/minecraftforge/unsafe/0.2.0/unsafe-0.2.0.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "net.minecrell",
+      "artifact": "terminalconsoleappender",
+      "version": "1.2.0",
+      "file": "terminalconsoleappender-1.2.0.jar",
+      "bytes": 15977,
+      "sha256": "912e432c9355c4b2025d788ed87fd72bb95542e2fc967ad6875fbbeb6e1c7a1c",
+      "sha1": "96d02cd3b384ff015a8fef4223bcb4ccf1717c95",
+      "url": "https://repo.maven.apache.org/maven2/net/minecrell/terminalconsoleappender/1.2.0/terminalconsoleappender-1.2.0.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "terminalconsoleappender-1.2.0.pom",
+        "bytes": 1825,
+        "sha256": "4b185cc626af5bd5219a5f7d73b0a68cd174ebc8d382b88afa17cdc19a9a1b9d",
+        "url": "https://repo.maven.apache.org/maven2/net/minecrell/terminalconsoleappender/1.2.0/terminalconsoleappender-1.2.0.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "net.sf.jopt-simple",
+      "artifact": "jopt-simple",
+      "version": "5.0.4",
+      "file": "jopt-simple-5.0.4.jar",
+      "bytes": 78146,
+      "sha256": "df26cc58f235f477db07f753ba5a3ab243ebe5789d9f89ecf68dd62ea9a66c28",
+      "sha1": "4fdac2fbe92dfad86aa6e9301736f6b4342a3f5c",
+      "url": "https://repo.maven.apache.org/maven2/net/sf/jopt-simple/jopt-simple/5.0.4/jopt-simple-5.0.4.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "jopt-simple-5.0.4.pom",
+        "bytes": 13968,
+        "sha256": "6a67763b76afcd9c80b95e5c5e24782d18cc1b0e3d9b454ad3f8754c76b76815",
+        "url": "https://repo.maven.apache.org/maven2/net/sf/jopt-simple/jopt-simple/5.0.4/jopt-simple-5.0.4.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "org.antlr",
+      "artifact": "antlr4-runtime",
+      "version": "4.9.1",
+      "file": "antlr4-runtime-4.9.1.jar",
+      "bytes": 337868,
+      "sha256": "a80502c3140ae7acfbb1f57847c8eb1c101461a969215ec38c3f1ebdff61ac29",
+      "sha1": "428664f05d2b7f7b7610204b5aa7c1763f62011a",
+      "url": "https://repo.maven.apache.org/maven2/org/antlr/antlr4-runtime/4.9.1/antlr4-runtime-4.9.1.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "antlr4-runtime-4.9.1.pom",
+        "bytes": 3617,
+        "sha256": "93f0142f7a26a799196220eea37f7e1f1a23e994f7617f2006e2804dfba9b3c4",
+        "url": "https://repo.maven.apache.org/maven2/org/antlr/antlr4-runtime/4.9.1/antlr4-runtime-4.9.1.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "org.apache.commons",
+      "artifact": "commons-lang3",
+      "version": "3.8.1",
+      "file": "commons-lang3-3.8.1.jar",
+      "bytes": 501879,
+      "sha256": "dac807f65b07698ff39b1b07bfef3d87ae3fd46d91bbf8a2bc02b2a831616f68",
+      "sha1": "6505a72a097d9270f7a9e7bf42c4238283247755",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.8.1/commons-lang3-3.8.1.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "commons-lang3-3.8.1.pom",
+        "bytes": 27888,
+        "sha256": "ec8e09f75411685205bd0d9d7872cc3622e67c76df44a0a227b278bea04458d5",
+        "url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.8.1/commons-lang3-3.8.1.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "org.apache.logging.log4j",
+      "artifact": "log4j-api",
+      "version": "2.15.0",
+      "file": "log4j-api-2.15.0.jar",
+      "bytes": 301804,
+      "sha256": "c8c33e7e8e05496dae69cf0caac8c3092cffd937a164526e92922d2d566d0a55",
+      "sha1": "4a5aa7e55a29391c6f66e0b259d5189aa11e45d0",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-api/2.15.0/log4j-api-2.15.0.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "log4j-api-2.15.0.pom",
+        "bytes": 14045,
+        "sha256": "cc75a1281e48700547a81336b564f512a7226e995800bf88ab849ab5adbffa47",
+        "url": "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-api/2.15.0/log4j-api-2.15.0.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "org.apache.logging.log4j",
+      "artifact": "log4j-core",
+      "version": "2.15.0",
+      "file": "log4j-core-2.15.0.jar",
+      "bytes": 1789769,
+      "sha256": "419a8512895971b7b4f4f33e620d361254e5c9552b904b0474b09ddd4a6a220b",
+      "sha1": "ba55c13d7ac2fd44df9cc8074455719a33f375b9",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/2.15.0/log4j-core-2.15.0.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "log4j-core-2.15.0.pom",
+        "bytes": 23502,
+        "sha256": "7c74c42fd7abae9ba61068ea11fb2a65f13407704994bb65fb57916c96cdc75c",
+        "url": "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/2.15.0/log4j-core-2.15.0.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "org.apache.logging.log4j",
+      "artifact": "log4j-slf4j18-impl",
+      "version": "2.15.0",
+      "file": "log4j-slf4j18-impl-2.15.0.jar",
+      "bytes": 21223,
+      "sha256": "59fe1bae704100690335039688ce1edcd483201ba84d3cfeded1d49c155b8862",
+      "sha1": "88f72ad364bfc3a7cf43186fc17212f2b4bb8d97",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-slf4j18-impl/2.15.0/log4j-slf4j18-impl-2.15.0.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "log4j-slf4j18-impl-2.15.0.pom",
+        "bytes": 9231,
+        "sha256": "db1cf970e999fbf49e2da3af75d85f37bbb7e2a4d19ae355dd31e8e66c65f91b",
+        "url": "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-slf4j18-impl/2.15.0/log4j-slf4j18-impl-2.15.0.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "org.apache.maven",
+      "artifact": "maven-artifact",
+      "version": "3.6.3",
+      "file": "maven-artifact-3.6.3.jar",
+      "bytes": 57824,
+      "sha256": "61b20da4e1e3db837630d0810a6a7a5ac9fb7ea31b0a55638062aad6e479c09c",
+      "sha1": "f8ff8032903882376e8d000c51e3e16d20fc7df7",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/3.6.3/maven-artifact-3.6.3.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "maven-artifact-3.6.3.pom",
+        "bytes": 2394,
+        "sha256": "47a615f91a888503a17859cadcbe6e8641976f8c08bf9b7b2ac508910f1a7471",
+        "url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/3.6.3/maven-artifact-3.6.3.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "org.codehaus.plexus",
+      "artifact": "plexus-utils",
+      "version": "3.2.1",
+      "file": "plexus-utils-3.2.1.jar",
+      "bytes": 261801,
+      "sha256": "8d07b497bb8deb167ee5329cae87ef2043833bf52e4f15a5a9379cec447a5b2b",
+      "sha1": "13b015768e0d04849d2794e4c47eb02d01a0de32",
+      "url": "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/3.2.1/plexus-utils-3.2.1.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "plexus-utils-3.2.1.pom",
+        "bytes": 5342,
+        "sha256": "7a5001ab88105b4f37c4fab3b62d977316290a13f8b14c6684f25f2a32efdef1",
+        "url": "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/3.2.1/plexus-utils-3.2.1.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "org.jline",
+      "artifact": "jline-reader",
+      "version": "3.12.1",
+      "file": "jline-reader-3.12.1.jar",
+      "bytes": 150765,
+      "sha256": "4d1037c7110027ed64816c510fad2afa0a5aa9bbc38fb9f0e772870823fcad2a",
+      "sha1": "4382ab1382c7b6f379377ed5f665dc2f6e1218bc",
+      "url": "https://repo.maven.apache.org/maven2/org/jline/jline-reader/3.12.1/jline-reader-3.12.1.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "jline-reader-3.12.1.pom",
+        "bytes": 1111,
+        "sha256": "b82a13ae94c8ccbb78913bfbd45a4a761289c928b37031835788f4e5c969da79",
+        "url": "https://repo.maven.apache.org/maven2/org/jline/jline-reader/3.12.1/jline-reader-3.12.1.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "org.jline",
+      "artifact": "jline-terminal",
+      "version": "3.12.1",
+      "file": "jline-terminal-3.12.1.jar",
+      "bytes": 211712,
+      "sha256": "eb6115680f732562f0e8e6777f127dece81e23b25015925f3c4a2a900d48cc9e",
+      "sha1": "c777448314e050d980a6b697c140f3bfe9eb7416",
+      "url": "https://repo.maven.apache.org/maven2/org/jline/jline-terminal/3.12.1/jline-terminal-3.12.1.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "jline-terminal-3.12.1.pom",
+        "bytes": 1144,
+        "sha256": "6f8e6d82510f8b993d5d3519313fc251c9c5d6ec8c3fd1fad9ba6213e25743ee",
+        "url": "https://repo.maven.apache.org/maven2/org/jline/jline-terminal/3.12.1/jline-terminal-3.12.1.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "org.jline",
+      "artifact": "jline",
+      "version": "3.12.1",
+      "file": "jline-3.12.1.jar",
+      "bytes": 732926,
+      "sha256": "babda835ee57f2eb87ee088e53f8af7609f7117240c22792dc65539478b556e4",
+      "sha1": "de2bd909cb9f8eaa741bd03df4a1bd3f6eb593c7",
+      "url": "https://repo.maven.apache.org/maven2/org/jline/jline/3.12.1/jline-3.12.1.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "jline-3.12.1.pom",
+        "bytes": 15382,
+        "sha256": "4ac4e0c63ad034a35accae2e6248eaf04513925c5bab323de07113f2f672120f",
+        "url": "https://repo.maven.apache.org/maven2/org/jline/jline/3.12.1/jline-3.12.1.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "org.ow2.asm",
+      "artifact": "asm-analysis",
+      "version": "9.6",
+      "file": "asm-analysis-9.6.jar",
+      "bytes": 34041,
+      "sha256": "d92832d7c37edc07c60e2559ac6118b31d642e337a6671edcb7ba9fae68edbbb",
+      "sha1": "9ce6c7b174bd997fc2552dff47964546bd7a5ec3",
+      "url": "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-analysis/9.6/asm-analysis-9.6.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "asm-analysis-9.6.pom",
+        "bytes": 2621,
+        "sha256": "fa3f995021cff4f4139306e6cffeeea07539106440d29b19cc06a7a636a13850",
+        "url": "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-analysis/9.6/asm-analysis-9.6.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "org.ow2.asm",
+      "artifact": "asm-commons",
+      "version": "9.6",
+      "file": "asm-commons-9.6.jar",
+      "bytes": 72194,
+      "sha256": "7aefd0d5c0901701c69f7513feda765fb6be33af2ce7aa17c5781fc87657c511",
+      "sha1": "f1a9e5508eff490744144565c47326c8648be309",
+      "url": "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-commons/9.6/asm-commons-9.6.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "asm-commons-9.6.pom",
+        "bytes": 2788,
+        "sha256": "a98ae4895334baf8ff86bd66516210dbd9a03f1a6e15e47dda82afcf6b53d77c",
+        "url": "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-commons/9.6/asm-commons-9.6.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "org.ow2.asm",
+      "artifact": "asm-tree",
+      "version": "9.6",
+      "file": "asm-tree-9.6.jar",
+      "bytes": 51935,
+      "sha256": "c43ecf17b539c777e15da7b5b86553b377e2d39a683de6285567d5283888e7ef",
+      "sha1": "c0cdda9d211e965d2a4448aa3fd86110f2f8c2de",
+      "url": "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-tree/9.6/asm-tree-9.6.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "asm-tree-9.6.pom",
+        "bytes": 2592,
+        "sha256": "1bcb481d7fc16b955bb60ca07c8cfa2424bcee78bdc405bba31c7d6f5dc2d113",
+        "url": "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-tree/9.6/asm-tree-9.6.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "org.ow2.asm",
+      "artifact": "asm-util",
+      "version": "9.6",
+      "file": "asm-util-9.6.jar",
+      "bytes": 91131,
+      "sha256": "c635a7402f4aa9bf66b2f4230cea62025a0fe1cd63e8729adefc9b1994fac4c3",
+      "sha1": "f77caf84eb93786a749b2baa40865b9613e3eaee",
+      "url": "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-util/9.6/asm-util-9.6.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "asm-util-9.6.pom",
+        "bytes": 2938,
+        "sha256": "52c5c1d357404779d1a99b49a85bf9d3a085025b8516cb73dbef77c8ae34005e",
+        "url": "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-util/9.6/asm-util-9.6.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "org.ow2.asm",
+      "artifact": "asm",
+      "version": "9.6",
+      "file": "asm-9.6.jar",
+      "bytes": 123598,
+      "sha256": "3c6fac2424db3d4a853b669f4e3d1d9c3c552235e19a319673f887083c2303a1",
+      "sha1": "aa205cf0a06dbd8e04ece91c0b37c3f5d567546a",
+      "url": "https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.6/asm-9.6.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "asm-9.6.pom",
+        "bytes": 2370,
+        "sha256": "92eee24bc3c843e4881d46c1dd6505471ee3142facfb466b428cfea5a56c6b60",
+        "url": "https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.6/asm-9.6.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "org.slf4j",
+      "artifact": "slf4j-api",
+      "version": "1.8.0-beta4",
+      "file": "slf4j-api-1.8.0-beta4.jar",
+      "bytes": 44213,
+      "sha256": "602b712329c84b4a83c40464f4fdfd0fe4238c53ef397139a867064739dbf4e0",
+      "sha1": "83b0359d847ee053d745be7ec0d8e9e8a44304b4",
+      "url": "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-api/1.8.0-beta4/slf4j-api-1.8.0-beta4.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "slf4j-api-1.8.0-beta4.pom",
+        "bytes": 1654,
+        "sha256": "f8316d28acf252b21b1e9e8eed9a84c2afbdc8e040f69d3a10bab813d3d85a85",
+        "url": "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-api/1.8.0-beta4/slf4j-api-1.8.0-beta4.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "org.spongepowered",
+      "artifact": "mixin",
+      "version": "0.8.4",
+      "file": "mixin-0.8.4.jar",
+      "bytes": 1069391,
+      "sha256": "751118c1d01800c0000a253d10a66f8c1b755805b2b13bfb0c21624fac905661",
+      "sha1": "04ec7d77d9ab32596ca0b78bb123956734767e3a",
+      "url": "https://maven.minecraftforge.net/org/spongepowered/mixin/0.8.4/mixin-0.8.4.jar",
+      "repository": "forgeMaven",
+      "pom": {
+        "file": "mixin-0.8.4.pom",
+        "bytes": 1081,
+        "sha256": "56240e18623ad41814a883a20deb97fd866075784ae7e976b8e60780c225a724",
+        "url": "https://maven.minecraftforge.net/org/spongepowered/mixin/0.8.4/mixin-0.8.4.pom"
+      },
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "group": "org.ow2.asm",
+      "artifact": "asm",
+      "version": "7.2",
+      "file": "asm-7.2.jar",
+      "bytes": 114873,
+      "sha256": "7e6cc9e92eb94d04e39356c6d8144ca058cda961c344a7f62166a405f3206672",
+      "sha1": "fa637eb67eb7628c915d73762b681ae7ff0b9731",
+      "url": "https://repo.maven.apache.org/maven2/org/ow2/asm/asm/7.2/asm-7.2.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "asm-7.2.pom",
+        "bytes": 2944,
+        "sha256": "e9e529afbd4bc699f6a3380855d27d13017c360fdb68547e06d1c3842d84e262",
+        "url": "https://repo.maven.apache.org/maven2/org/ow2/asm/asm/7.2/asm-7.2.pom"
+      },
+      "configurations": [
+        "_compileJava_1"
+      ]
+    },
+    {
+      "group": "org.ow2.asm",
+      "artifact": "asm-tree",
+      "version": "7.2",
+      "file": "asm-tree-7.2.jar",
+      "bytes": 50283,
+      "sha256": "c063f5a67fa03cdc9bd79fd1c2ea6816cc4a19473ecdfbd9e9153b408c6f2656",
+      "sha1": "3a23cc36edaf8fc5a89cb100182758ccb5991487",
+      "url": "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-tree/7.2/asm-tree-7.2.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "asm-tree-7.2.pom",
+        "bytes": 3131,
+        "sha256": "56765f0a8bd0978214f7ec87a9dafb5825b8191cff554a5adc14c65d1f5b0442",
+        "url": "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-tree/7.2/asm-tree-7.2.pom"
+      },
+      "configurations": [
+        "_compileJava_1"
+      ]
+    },
+    {
+      "group": "org.ow2.asm",
+      "artifact": "asm-commons",
+      "version": "7.2",
+      "file": "asm-commons-7.2.jar",
+      "bytes": 70051,
+      "sha256": "0e86b8b179c5fb223d1a880a0ff4960b6978223984b94e62e71135f2d8ea3558",
+      "sha1": "ca2954e8d92a05bacc28ff465b25c70e0f512497",
+      "url": "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-commons/7.2/asm-commons-7.2.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "asm-commons-7.2.pom",
+        "bytes": 3668,
+        "sha256": "190ed352a8c20594b196b20194d06773b91c86b8d36868f937e5dbd0e9c0d78d",
+        "url": "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-commons/7.2/asm-commons-7.2.pom"
+      },
+      "configurations": [
+        "_compileJava_1"
+      ]
+    },
+    {
+      "group": "org.ow2.asm",
+      "artifact": "asm-analysis",
+      "version": "7.2",
+      "file": "asm-analysis-7.2.jar",
+      "bytes": 33444,
+      "sha256": "be922aae60ff1ff1768e8e6544a38a7f92bd0a6d6b0b9791f94955d1bd453de2",
+      "sha1": "b6e6abe057f23630113f4167c34bda7086691258",
+      "url": "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-analysis/7.2/asm-analysis-7.2.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "asm-analysis-7.2.pom",
+        "bytes": 3160,
+        "sha256": "71faa63489b3de4d6251581d2b26e87e0c167c5a08198ca62853fd83644d841f",
+        "url": "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-analysis/7.2/asm-analysis-7.2.pom"
+      },
+      "configurations": [
+        "_compileJava_1"
+      ]
+    },
+    {
+      "group": "org.ow2.asm",
+      "artifact": "asm-util",
+      "version": "7.2",
+      "file": "asm-util-7.2.jar",
+      "bytes": 80707,
+      "sha256": "6e24913b021ffacfe8e7e053d6e0ccc731941148cfa078d4f1ed3d96904530f8",
+      "sha1": "a3ae34e57fa8a4040e28247291d0cc3d6b8c7bcf",
+      "url": "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-util/7.2/asm-util-7.2.jar",
+      "repository": "mavenCentral",
+      "pom": {
+        "file": "asm-util-7.2.pom",
+        "bytes": 3653,
+        "sha256": "d1c3709a0a3573954d4baf73169fc942929c72b5c4a6b719656f5958c2a25f3c",
+        "url": "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-util/7.2/asm-util-7.2.pom"
+      },
+      "configurations": [
+        "_compileJava_1"
+      ]
+    }
+  ],
+  "mojangArtifacts": [
+    {
+      "library": "com.google.code.gson:gson:2.8.0",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/com/google/code/gson/gson/2.8.0/gson-2.8.0.jar",
+      "file": "gson-2.8.0.jar",
+      "bytes": 231952,
+      "sha1": "c4ba5371a29ac9b2ad6129b1d39ea38750043eff",
+      "sha256": "c6221763bd79c4f1c3dc7f750b5f29a0bb38b367b81314c4f71896e340c40825",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "com.google.guava:guava:21.0",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/com/google/guava/guava/21.0/guava-21.0.jar",
+      "file": "guava-21.0.jar",
+      "bytes": 2521113,
+      "sha1": "3a3d111be1be1b745edfa7d91678a12d7ed38709",
+      "sha256": "972139718abc8a4893fa78cba8cf7b2c903f35c97aaf44fa3031b0669948b480",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "com.ibm.icu:icu4j:66.1",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/com/ibm/icu/icu4j/66.1/icu4j-66.1.jar",
+      "file": "icu4j-66.1.jar",
+      "bytes": 12935630,
+      "sha1": "72c7519b6d91f7a1f993bd44a99fe95d67211b27",
+      "sha256": "5dcca993f67fd6c357774f498d49b7e189b1d9a2cfce050cb4ee1dd96c800f1a",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "com.mojang:authlib:2.1.28",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/com/mojang/authlib/2.1.28/authlib-2.1.28.jar",
+      "file": "authlib-2.1.28.jar",
+      "bytes": 76328,
+      "sha1": "ad54da276bf59983d02d5ed16fc14541354c71fd",
+      "sha256": "bae2283ec6afde9806142cd877b786123143ae50686fdd138ddb281b3de81d59",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "com.mojang:brigadier:1.0.17",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/com/mojang/brigadier/1.0.17/brigadier-1.0.17.jar",
+      "file": "brigadier-1.0.17.jar",
+      "bytes": 77392,
+      "sha1": "c6b7dc51dd44379cc751b7504816006e9be4b1e6",
+      "sha256": "296b69b63f3d2a2092bf94fa12add4deb89e7d1f977157f7ee1b6b6d0fd52a58",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "com.mojang:datafixerupper:4.0.26",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/com/mojang/datafixerupper/4.0.26/datafixerupper-4.0.26.jar",
+      "file": "datafixerupper-4.0.26.jar",
+      "bytes": 673183,
+      "sha1": "ebd6690f33871ccee9b6132c6480668ee2e35020",
+      "sha256": "58fcc65cf4bde25a70073e574a15cff790df176920dd219291d5649f24417316",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "com.mojang:javabridge:1.0.22",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/com/mojang/javabridge/1.0.22/javabridge-1.0.22.jar",
+      "file": "javabridge-1.0.22.jar",
+      "bytes": 5111,
+      "sha1": "6aa6453aa99a52a5cd91749da1af6ab70e082ab3",
+      "sha256": "43fa389f9e18de2bd8fe8bdf924b094153f5f3ba748e84c3052b4f85627fdc0c",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "com.mojang:patchy:1.3.9",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/com/mojang/patchy/1.3.9/patchy-1.3.9.jar",
+      "file": "patchy-1.3.9.jar",
+      "bytes": 23581,
+      "sha1": "eb8bb7b66fa0e2152b1b40b3856e82f7619439ee",
+      "sha256": "79f5a9d8c788489d3375cb77cc826a905e261e50d23f31b94c2d5f2b92ad3dc6",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "com.mojang:text2speech:1.11.3",
+      "classifier": "natives-windows",
+      "url": "https://libraries.minecraft.net/com/mojang/text2speech/1.11.3/text2speech-1.11.3-natives-windows.jar",
+      "file": "text2speech-1.11.3-natives-windows.jar",
+      "bytes": 81379,
+      "sha1": "c0b242c0091be5acbf303263c7eeeaedd70544c7",
+      "sha256": "56a8b2d626821b9941a3e41ce6b163120d22c08c3725544100cf0375a996d9bc",
+      "configurations": [
+        "_compileJava_1",
+        "minecraft",
+        "runtimeClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "com.mojang:text2speech:1.11.3",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/com/mojang/text2speech/1.11.3/text2speech-1.11.3.jar",
+      "file": "text2speech-1.11.3.jar",
+      "bytes": 13164,
+      "sha1": "f378f889797edd7df8d32272c06ca80a1b6b0f58",
+      "sha256": "7db3cfa0ca877dd08ea3336138f91f47eb93528bf04703eb8fa478e2da97ef66",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "commons-codec:commons-codec:1.10",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/commons-codec/commons-codec/1.10/commons-codec-1.10.jar",
+      "file": "commons-codec-1.10.jar",
+      "bytes": 284184,
+      "sha1": "4b95f4897fa13f2cd904aee711aeafc0c5295cd8",
+      "sha256": "4241dfa94e711d435f29a4604a3e2de5c4aa3c165e23bd066be6fc1fc4309569",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "commons-io:commons-io:2.5",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/commons-io/commons-io/2.5/commons-io-2.5.jar",
+      "file": "commons-io-2.5.jar",
+      "bytes": 208700,
+      "sha1": "2852e6e05fbb95076fc091f6d1780f1f8fe35e0f",
+      "sha256": "a10418348d234968600ccb1d988efcbbd08716e1d96936ccc1880e7d22513474",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "commons-logging:commons-logging:1.1.3",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/commons-logging/commons-logging/1.1.3/commons-logging-1.1.3.jar",
+      "file": "commons-logging-1.1.3.jar",
+      "bytes": 62050,
+      "sha1": "f6f66e966c70a83ffbdb6f17a0919eaf7c8aca7f",
+      "sha256": "70903f6fc82e9908c8da9f20443f61d90f0870a312642991fe8462a0b9391784",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "io.netty:netty-all:4.1.25.Final",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/io/netty/netty-all/4.1.25.Final/netty-all-4.1.25.Final.jar",
+      "file": "netty-all-4.1.25.Final.jar",
+      "bytes": 3823147,
+      "sha1": "d0626cd3108294d1d58c05859add27b4ef21f83b",
+      "sha256": "972642d0037706485747d34ce50fd67a15f0ed3d8a781882d683824c9977bc86",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "it.unimi.dsi:fastutil:8.2.1",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/it/unimi/dsi/fastutil/8.2.1/fastutil-8.2.1.jar",
+      "file": "fastutil-8.2.1.jar",
+      "bytes": 18800417,
+      "sha1": "5ad88f325e424f8dbc2be5459e21ea5cab3864e9",
+      "sha256": "7d336e2b61ddf6e4193a55627b7e606bf42b7e2f652df2fb836fc343dd51ba4a",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "net.java.dev.jna:jna:4.4.0",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/net/java/dev/jna/jna/4.4.0/jna-4.4.0.jar",
+      "file": "jna-4.4.0.jar",
+      "bytes": 1091208,
+      "sha1": "cb208278274bf12ebdb56c61bd7407e6f774d65a",
+      "sha256": "c4dadeeecaa90c8847902082aee5eb107fcf59c5d0e63a17fcaf273c0e2d2bd1",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "net.java.dev.jna:platform:3.4.0",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/net/java/dev/jna/platform/3.4.0/platform-3.4.0.jar",
+      "file": "platform-3.4.0.jar",
+      "bytes": 913436,
+      "sha1": "e3f70017be8100d3d6923f50b3d2ee17714e9c13",
+      "sha256": "ea89d5090c8303ba4e9a0056e6d8a20429f3e021411e950bfd9eba3b6e6cf15c",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "net.java.jinput:jinput:2.0.5",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/net/java/jinput/jinput/2.0.5/jinput-2.0.5.jar",
+      "file": "jinput-2.0.5.jar",
+      "bytes": 208338,
+      "sha1": "39c7796b469a600f72380316f6b1f11db6c2c7c4",
+      "sha256": "79b5a4f5829e1a49a415711f7fb8eb5b9ad22defa72929fda2da96ec30d3f018",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "net.java.jutils:jutils:1.0.0",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/net/java/jutils/jutils/1.0.0/jutils-1.0.0.jar",
+      "file": "jutils-1.0.0.jar",
+      "bytes": 7508,
+      "sha1": "e12fe1fda814bd348c1579329c86943d2cd3c6a6",
+      "sha256": "c3334ff39cf0ab3b54925619101054c90098b7c733b1e7834c7b75e4c41e84a5",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "org.apache.commons:commons-compress:1.8.1",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/org/apache/commons/commons-compress/1.8.1/commons-compress-1.8.1.jar",
+      "file": "commons-compress-1.8.1.jar",
+      "bytes": 365552,
+      "sha1": "a698750c16740fd5b3871425f4cb3bbaa87f529d",
+      "sha256": "5fca136503f86ecc6cb61fbd17b137d59e56b45c7a5494e6b8fd3cabd4697fbd",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "org.apache.httpcomponents:httpclient:4.3.3",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/org/apache/httpcomponents/httpclient/4.3.3/httpclient-4.3.3.jar",
+      "file": "httpclient-4.3.3.jar",
+      "bytes": 589512,
+      "sha1": "18f4247ff4572a074444572cee34647c43e7c9c7",
+      "sha256": "9844cc9b5440d65a88d28bcba9d771374d2dfdab898848cda164611091633013",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "org.apache.httpcomponents:httpcore:4.3.2",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/org/apache/httpcomponents/httpcore/4.3.2/httpcore-4.3.2.jar",
+      "file": "httpcore-4.3.2.jar",
+      "bytes": 282269,
+      "sha1": "31fbbff1ddbf98f3aa7377c94d33b0447c646b6e",
+      "sha256": "abd02320e2356f89d054dae4cf02306bef20a9cf7865b3ac94ec7552b4f1528b",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "org.lwjgl:lwjgl-glfw:3.2.2",
+      "classifier": "natives-windows",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-glfw/3.2.2/lwjgl-glfw-3.2.2-natives-windows.jar",
+      "file": "lwjgl-glfw-3.2.2-natives-windows.jar",
+      "bytes": 266648,
+      "sha1": "dc6826d636bf796b33a49038c354210e661bfc17",
+      "sha256": "1e3d07b431f9329294eb2c79036831c3ed8ab4ebc2ff6c8c37996c4ca7fc7dcb",
+      "configurations": [
+        "_compileJava_1",
+        "minecraft",
+        "runtimeClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "org.lwjgl:lwjgl-glfw:3.2.2",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-glfw/3.2.2/lwjgl-glfw-3.2.2.jar",
+      "file": "lwjgl-glfw-3.2.2.jar",
+      "bytes": 108907,
+      "sha1": "d3ad4df38e400b8afba1de63f84338809399df5b",
+      "sha256": "45b6ec9491f09260f0c8218762c021bffe0e1b96f650891d9c773d50fdc945c9",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "org.lwjgl:lwjgl-jemalloc:3.2.2",
+      "classifier": "natives-windows",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-jemalloc/3.2.2/lwjgl-jemalloc-3.2.2-natives-windows.jar",
+      "file": "lwjgl-jemalloc-3.2.2-natives-windows.jar",
+      "bytes": 220623,
+      "sha1": "338b25b99da3ba5f441f6492f2ce2a9c608860ed",
+      "sha256": "71a5cd5789fe3212a4a26f0704b38bbc189f29a8ec8b24b17d3c75cca5bd424e",
+      "configurations": [
+        "_compileJava_1",
+        "minecraft",
+        "runtimeClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "org.lwjgl:lwjgl-jemalloc:3.2.2",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-jemalloc/3.2.2/lwjgl-jemalloc-3.2.2.jar",
+      "file": "lwjgl-jemalloc-3.2.2.jar",
+      "bytes": 34848,
+      "sha1": "ee8e57a79300f78294576d87c4a587f8c99402e2",
+      "sha256": "d8a0eacb25b5336b5a673e1431adf123a78cce10f263bb043230e5c59d673e82",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "org.lwjgl:lwjgl-openal:3.2.2",
+      "classifier": "natives-windows",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-openal/3.2.2/lwjgl-openal-3.2.2-natives-windows.jar",
+      "file": "lwjgl-openal-3.2.2-natives-windows.jar",
+      "bytes": 1310102,
+      "sha1": "ec20a7d42a2438528fca87e60b1705f1e2339ddb",
+      "sha256": "1c53175903e33165c308408d51630473f8d1f8ac50e3f1767296ecd3121dc7a6",
+      "configurations": [
+        "_compileJava_1",
+        "minecraft",
+        "runtimeClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "org.lwjgl:lwjgl-openal:3.2.2",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-openal/3.2.2/lwjgl-openal-3.2.2.jar",
+      "file": "lwjgl-openal-3.2.2.jar",
+      "bytes": 80012,
+      "sha1": "2b772a102b0a11ee5f2109a5b136f4dc7c630827",
+      "sha256": "164f73a2be18bb1d158a47205cc33f8156fc4325454c234d0e062b84afd67223",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "org.lwjgl:lwjgl-opengl:3.2.2",
+      "classifier": "natives-windows",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-opengl/3.2.2/lwjgl-opengl-3.2.2-natives-windows.jar",
+      "file": "lwjgl-opengl-3.2.2-natives-windows.jar",
+      "bytes": 170798,
+      "sha1": "d8dcdc91066cae2d2d8279cb4a9f9f05d9525826",
+      "sha256": "f43182267b06c367fedf1ea2c1be6be0483bc43531bf3a736cdf388b87e86139",
+      "configurations": [
+        "_compileJava_1",
+        "minecraft",
+        "runtimeClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "org.lwjgl:lwjgl-opengl:3.2.2",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-opengl/3.2.2/lwjgl-opengl-3.2.2.jar",
+      "file": "lwjgl-opengl-3.2.2.jar",
+      "bytes": 929780,
+      "sha1": "6ac5bb88b44c43ea195a570aab059f63da004cd8",
+      "sha256": "8ef989f6b6956dcafffc76a57389d46cbcec749c3b87a2a53a51dd28229f185b",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "org.lwjgl:lwjgl-stb:3.2.2",
+      "classifier": "natives-windows",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-stb/3.2.2/lwjgl-stb-3.2.2-natives-windows.jar",
+      "file": "lwjgl-stb-3.2.2-natives-windows.jar",
+      "bytes": 465810,
+      "sha1": "811f705cbb29e8ae8d60bdf8fdd38c0c123ad3ef",
+      "sha256": "79e773c48c6a7d4c24a3ebb3d36541c9668d790752623c5bb1eba361988c44b2",
+      "configurations": [
+        "_compileJava_1",
+        "minecraft",
+        "runtimeClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "org.lwjgl:lwjgl-stb:3.2.2",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-stb/3.2.2/lwjgl-stb-3.2.2.jar",
+      "file": "lwjgl-stb-3.2.2.jar",
+      "bytes": 104469,
+      "sha1": "3b8e6ebc5851dd3d17e37e5cadce2eff2a429f0f",
+      "sha256": "79800c9c80dcadbbbd2b3b40ae17258f7d3e81bad5bf0832217a87fc0d2587c2",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "org.lwjgl:lwjgl-tinyfd:3.2.2",
+      "classifier": "natives-windows",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-tinyfd/3.2.2/lwjgl-tinyfd-3.2.2-natives-windows.jar",
+      "file": "lwjgl-tinyfd-3.2.2-natives-windows.jar",
+      "bytes": 208314,
+      "sha1": "e9115958773644e863332a6a06488d26f9e1fc9f",
+      "sha256": "2b30080dc2816d7d96fc293be82f38b9fdea4e7c5e7fffd355a3d9042e03b14b",
+      "configurations": [
+        "_compileJava_1",
+        "minecraft",
+        "runtimeClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "org.lwjgl:lwjgl-tinyfd:3.2.2",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-tinyfd/3.2.2/lwjgl-tinyfd-3.2.2.jar",
+      "file": "lwjgl-tinyfd-3.2.2.jar",
+      "bytes": 7092,
+      "sha1": "fcbe606c8f8da6f8f9a05e2c540eb1ee8632b0e9",
+      "sha256": "2e084e0faf7390979e7a19fc9605378b24dabc319bdd62a49de9def331c67693",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "org.lwjgl:lwjgl:3.2.2",
+      "classifier": "natives-windows",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl/3.2.2/lwjgl-3.2.2-natives-windows.jar",
+      "file": "lwjgl-3.2.2-natives-windows.jar",
+      "bytes": 279593,
+      "sha1": "05359f3aa50d36352815fc662ea73e1c00d22170",
+      "sha256": "59e8c44b4a119da9321bb117a9edc68c8dbefb60c72c0739233ada0b6114d715",
+      "configurations": [
+        "_compileJava_1",
+        "minecraft",
+        "runtimeClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "org.lwjgl:lwjgl:3.2.2",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl/3.2.2/lwjgl-3.2.2.jar",
+      "file": "lwjgl-3.2.2.jar",
+      "bytes": 321900,
+      "sha1": "8ad6294407e15780b43e84929c40e4c5e997972e",
+      "sha256": "600591641bf3e168102cc0bc8ff31e57cd6717fcf882dbf453aa98cb92fb0a9b",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "library": "oshi-project:oshi-core:1.1",
+      "classifier": "",
+      "url": "https://libraries.minecraft.net/oshi-project/oshi-core/1.1/oshi-core-1.1.jar",
+      "file": "oshi-core-1.1.jar",
+      "bytes": 30973,
+      "sha1": "9ddf7b048a8d701be231c0f4f95fd986198fd2d8",
+      "sha256": "27901e5d4d60d3502571d5e6358fc89e3fcf874138b69d495d139bcc3e169404",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    }
+  ],
+  "generatedArtifacts": [
+    {
+      "component": "net.minecraft:client:1.16.5",
+      "file": "client-extra.jar",
+      "bytes": 8428369,
+      "sha256": "9dabcadc60eead86895035eab3ff66ad77afd3a8d9a9f8eb3068ae886526e86f",
+      "kind": "ForgeGradleMinecraftOutput",
+      "configurations": [
+        "_compileJava_1",
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "component": "net.minecraft:mappings_official:1.16.5",
+      "file": "mapping-1.16.5-mapping.zip",
+      "bytes": 363706,
+      "sha256": "51eebab13cc1a1781a6cb7975c8abc33395fc45002941cc4927c6c1b946e0dd9",
+      "kind": "ForgeGradleMcpOutput",
+      "configurations": [
+        "minecraft",
+        "runtimeClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "component": "net.minecraftforge:forge:1.16.5-36.2.42_mapped_official_1.16.5",
+      "file": "forge-1.16.5-36.2.42_mapped_official_1.16.5-launcher.jar",
+      "bytes": 212563,
+      "sha256": "dfeab9c7d582fce5b1112e9d3038fa0e7075296e467031ce1e2c0ba9fdcf441f",
+      "kind": "ForgeGradleMappedOutput",
+      "configurations": [
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    },
+    {
+      "component": "net.minecraftforge:forge:1.16.5-36.2.42_mapped_official_1.16.5",
+      "file": "forge-1.16.5-36.2.42_mapped_official_1.16.5.jar",
+      "bytes": 14784630,
+      "sha256": "c32a54a6bf092487777dfa1e5fe804f03f26941ee5e205bc35efcaf1719eb161",
+      "kind": "ForgeGradleMappedOutput",
+      "configurations": [
+        "compileClasspath",
+        "minecraft",
+        "runtimeClasspath",
+        "testCompileClasspath",
+        "testRuntimeClasspath"
+      ]
+    }
+  ],
+  "catalogHash": "8829d0392640c83cc2139d91d53039ee0e32c6a496e462d04721d2fdeeabcebe",
+  "supportPoms": [
+    {
+      "group": "org.sonatype.oss",
+      "artifact": "oss-parent",
+      "version": "7",
+      "file": "oss-parent-7.pom",
+      "bytes": 4824,
+      "sha256": "b51f8867c92b6a722499557fc3a1fdea77bdf9ef574722fe90ce436a29559454",
+      "url": "https://repo.maven.apache.org/maven2/org/sonatype/oss/oss-parent/7/oss-parent-7.pom"
+    },
+    {
+      "group": "org.antlr",
+      "artifact": "antlr4-master",
+      "version": "4.9.1",
+      "file": "antlr4-master-4.9.1.pom",
+      "bytes": 4404,
+      "sha256": "030c212761e3b24542d3146c338976963bc95e841656ebcd8307a80fd6aabbf4",
+      "url": "https://repo.maven.apache.org/maven2/org/antlr/antlr4-master/4.9.1/antlr4-master-4.9.1.pom"
+    },
+    {
+      "group": "org.apache.commons",
+      "artifact": "commons-parent",
+      "version": "47",
+      "file": "commons-parent-47.pom",
+      "bytes": 77562,
+      "sha256": "8a8ecb570553bf9f1ffae211a8d4ca9ee630c17afe59293368fba7bd9b42fcb7",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-parent/47/commons-parent-47.pom"
+    },
+    {
+      "group": "org.apache.logging.log4j",
+      "artifact": "log4j",
+      "version": "2.15.0",
+      "file": "log4j-2.15.0.pom",
+      "bytes": 68853,
+      "sha256": "3f745daa4ea6dc2606525bd4279bf30062066bd223866adb7f5eee46dcf76a03",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j/2.15.0/log4j-2.15.0.pom"
+    },
+    {
+      "group": "org.apache.maven",
+      "artifact": "maven",
+      "version": "3.6.3",
+      "file": "maven-3.6.3.pom",
+      "bytes": 26435,
+      "sha256": "d2d86245ea66149bc14d2dd72bbb961f964dd658b809a0573252c06531eeec16",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven/3.6.3/maven-3.6.3.pom"
+    },
+    {
+      "group": "org.codehaus.plexus",
+      "artifact": "plexus",
+      "version": "5.1",
+      "file": "plexus-5.1.pom",
+      "bytes": 22504,
+      "sha256": "a343e44ff5796aed0ea60be11454c935ce20ab1c5f164acc8da574482dcbc7e9",
+      "url": "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus/5.1/plexus-5.1.pom"
+    },
+    {
+      "group": "org.jline",
+      "artifact": "jline-parent",
+      "version": "3.12.1",
+      "file": "jline-parent-3.12.1.pom",
+      "bytes": 18997,
+      "sha256": "a1ece09d136b474e0a59511ffc7f4f5321b22d6415022d49a24e9d9ac10ca40c",
+      "url": "https://repo.maven.apache.org/maven2/org/jline/jline-parent/3.12.1/jline-parent-3.12.1.pom"
+    },
+    {
+      "group": "org.ow2",
+      "artifact": "ow2",
+      "version": "1.5.1",
+      "file": "ow2-1.5.1.pom",
+      "bytes": 11290,
+      "sha256": "321ddbb7ee6fe4f53dea6b4cd6db74154d6bfa42391c1f763b361b9f485acf05",
+      "url": "https://repo.maven.apache.org/maven2/org/ow2/ow2/1.5.1/ow2-1.5.1.pom"
+    },
+    {
+      "group": "org.slf4j",
+      "artifact": "slf4j-parent",
+      "version": "1.8.0-beta4",
+      "file": "slf4j-parent-1.8.0-beta4.pom",
+      "bytes": 16976,
+      "sha256": "bafba30a83d53a94550196447562aa8cdad145615c28932c6a4bb441c3553101",
+      "url": "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-parent/1.8.0-beta4/slf4j-parent-1.8.0-beta4.pom"
+    },
+    {
+      "group": "org.sonatype.oss",
+      "artifact": "oss-parent",
+      "version": "9",
+      "file": "oss-parent-9.pom",
+      "bytes": 6569,
+      "sha256": "fb40265f982548212ff82e362e59732b2187ec6f0d80182885c14ef1f982827a",
+      "url": "https://repo.maven.apache.org/maven2/org/sonatype/oss/oss-parent/9/oss-parent-9.pom"
+    },
+    {
+      "group": "org.apache",
+      "artifact": "apache",
+      "version": "19",
+      "file": "apache-19.pom",
+      "bytes": 15489,
+      "sha256": "91f7a33096ea69bac2cbaf6d01feb934cac002c48d8c8cfa9c240b40f1ec21df",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/apache/19/apache-19.pom"
+    },
+    {
+      "group": "org.apache.logging",
+      "artifact": "logging-parent",
+      "version": "3",
+      "file": "logging-parent-3.pom",
+      "bytes": 3136,
+      "sha256": "763a2ec2b8094d4161deb6c264b1262085b9be30bf3a31c2ce137242e57722a7",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/logging/logging-parent/3/logging-parent-3.pom"
+    },
+    {
+      "group": "org.apache.maven",
+      "artifact": "maven-parent",
+      "version": "33",
+      "file": "maven-parent-33.pom",
+      "bytes": 44155,
+      "sha256": "3856e3fcd169502d5f12fe2452604ebf6c7c025f15656bfa558ea99ed29d73ea",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven-parent/33/maven-parent-33.pom"
+    },
+    {
+      "group": "org.apache",
+      "artifact": "apache",
+      "version": "23",
+      "file": "apache-23.pom",
+      "bytes": 18422,
+      "sha256": "bc10624e0623f36577fac5639ca2936d3240ed152fb6d8d533ab4d270543491c",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/apache/23/apache-23.pom"
+    },
+    {
+      "group": "org.apache",
+      "artifact": "apache",
+      "version": "21",
+      "file": "apache-21.pom",
+      "bytes": 17107,
+      "sha256": "af10c108da014f17cafac7b52b2b4b5a3a1c18265fa2af97a325d9143537b380",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/apache/21/apache-21.pom"
+    },
+    {
+      "group": "org.apache.logging.log4j",
+      "artifact": "log4j",
+      "version": "2.11.2",
+      "file": "log4j-2.11.2.pom",
+      "bytes": 61750,
+      "sha256": "a3d10c4a07ffb384cad0dc518f53afba732a6eb4786ccbccb6b03b744a543bd1",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j/2.11.2/log4j-2.11.2.pom"
+    },
+    {
+      "group": "org.ow2",
+      "artifact": "ow2",
+      "version": "1.5",
+      "file": "ow2-1.5.pom",
+      "bytes": 11230,
+      "sha256": "0f8a1b116e760b8fe6389c51b84e4b07a70fc11082d4f936e453b583dd50b43b",
+      "url": "https://repo.maven.apache.org/maven2/org/ow2/ow2/1.5/ow2-1.5.pom"
+    }
+  ],
+  "moduleMetadata": [
+    {
+      "group": "cpw.mods",
+      "artifact": "grossjava9hacks",
+      "version": "1.3.3",
+      "file": "grossjava9hacks-1.3.3.module",
+      "bytes": 2321,
+      "sha256": "faf90c546ba4dbf7c085b652373d74dfe34ea245863f82795dc9293fd86c579d",
+      "url": "https://maven.minecraftforge.net/cpw/mods/grossjava9hacks/1.3.3/grossjava9hacks-1.3.3.module"
+    },
+    {
+      "group": "cpw.mods",
+      "artifact": "modlauncher",
+      "version": "8.1.3",
+      "file": "modlauncher-8.1.3.module",
+      "bytes": 3685,
+      "sha256": "54bf09f67713c16ae71f7602987c698731048be1d8cc119d6b835e61e42f6274",
+      "url": "https://maven.minecraftforge.net/cpw/mods/modlauncher/8.1.3/modlauncher-8.1.3.module"
+    },
+    {
+      "group": "net.jodah",
+      "artifact": "typetools",
+      "version": "0.8.3",
+      "file": "typetools-0.8.3.module",
+      "bytes": 2708,
+      "sha256": "4f82b442e0b16503c2a1121e8b365a6876733979164d4604e748ae8f74cd85de",
+      "url": "https://maven.minecraftforge.net/net/jodah/typetools/0.8.3/typetools-0.8.3.module"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "accesstransformers",
+      "version": "3.0.1",
+      "file": "accesstransformers-3.0.1.module",
+      "bytes": 4472,
+      "sha256": "009bb12ba723abcb6450cc55bde228da1822e33309606acdb8aa0e8437f6891b",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/accesstransformers/3.0.1/accesstransformers-3.0.1.module"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "coremods",
+      "version": "4.0.6",
+      "file": "coremods-4.0.6.module",
+      "bytes": 3216,
+      "sha256": "447232ad982a9164dcc440c6903c946565697fdd3d62cc723cf5ef0f7c4acf90",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/coremods/4.0.6/coremods-4.0.6.module"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "eventbus",
+      "version": "4.0.0",
+      "file": "eventbus-4.0.0.module",
+      "bytes": 3473,
+      "sha256": "26dc07eae3bf1f1edc856ef03834ca2fc355e680e0638a81d6a1c1109a129365",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/eventbus/4.0.0/eventbus-4.0.0.module"
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "forgespi",
+      "version": "3.2.0",
+      "file": "forgespi-3.2.0.module",
+      "bytes": 3066,
+      "sha256": "fe17628a8db9efd6587921278c1b1e60285d63fb2267e14f447fe4b8448d8cb9",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/forgespi/3.2.0/forgespi-3.2.0.module"
+    }
+  ],
+  "dynamicMetadata": [
+    {
+      "group": "cpw.mods",
+      "artifact": "modlauncher",
+      "file": "maven-metadata.xml",
+      "bytes": 2565,
+      "sha256": "1e382b4d75560c2cf61a39cb04e836e2a77316dff0a57197e53579773383033a",
+      "url": "https://maven.minecraftforge.net/cpw/mods/modlauncher/maven-metadata.xml",
+      "requiredSelectors": [
+        "5.1.+",
+        "6.1.+"
+      ],
+      "resolutions": [
+        {
+          "selector": "5.1.+",
+          "version": "5.1.2"
+        },
+        {
+          "selector": "6.1.+",
+          "version": "6.1.3"
+        }
+      ]
+    },
+    {
+      "group": "net.minecraftforge",
+      "artifact": "forgespi",
+      "file": "maven-metadata.xml",
+      "bytes": 2209,
+      "sha256": "421a41e504319d559dfaab47ab2fc8f6180b51cd8870d392058835e60c88cce4",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/forgespi/maven-metadata.xml",
+      "requiredSelectors": [
+        "3.1.+"
+      ],
+      "resolutions": [
+        {
+          "selector": "3.1.+",
+          "version": "3.1.1"
+        }
+      ]
+    },
+    {
+      "group": "org.apache.logging.log4j",
+      "artifact": "log4j-api",
+      "file": "maven-metadata.xml",
+      "bytes": 2800,
+      "sha256": "3297b052bb53ea953cdd82f0fb5bb3205011424a67fd34982348be3c48fb8493",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-api/maven-metadata.xml",
+      "requiredSelectors": [
+        "2.11.+"
+      ],
+      "resolutions": [
+        {
+          "selector": "2.11.+",
+          "version": "2.11.2"
+        }
+      ]
+    },
+    {
+      "group": "org.apache.logging.log4j",
+      "artifact": "log4j-core",
+      "file": "maven-metadata.xml",
+      "bytes": 2838,
+      "sha256": "b0ae403c2a95eeda3b9ecfc529137b85604eb57a80006ed337fb9b4ba8feba38",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/maven-metadata.xml",
+      "requiredSelectors": [
+        "2.11.+"
+      ],
+      "resolutions": [
+        {
+          "selector": "2.11.+",
+          "version": "2.11.2"
+        }
+      ]
+    },
+    {
+      "group": "cpw.mods",
+      "artifact": "grossjava9hacks",
+      "file": "maven-metadata.xml",
+      "bytes": 483,
+      "sha256": "ff3326177ce192ec7b353ffa176ccb0636b06a9bc2722ba1232fbac116b69008",
+      "url": "https://maven.minecraftforge.net/cpw/mods/grossjava9hacks/maven-metadata.xml",
+      "requiredSelectors": [
+        "1.3.+"
+      ],
+      "resolutions": [
+        {
+          "selector": "1.3.+",
+          "version": "1.3.3"
+        }
+      ]
+    },
+    {
+      "group": "net.jodah",
+      "artifact": "typetools",
+      "file": "maven-metadata.xml",
+      "bytes": 677,
+      "sha256": "88b4edb8f6f30d68a65a02d255208329031f2af8c30d9f1cc4ee40997a502de3",
+      "url": "https://maven.minecraftforge.net/net/jodah/typetools/maven-metadata.xml",
+      "requiredSelectors": [
+        "0.8.+"
+      ],
+      "resolutions": [
+        {
+          "selector": "0.8.+",
+          "version": "0.8.3"
+        }
+      ]
+    }
+  ],
+  "dynamicCandidates": [
+    {
+      "file": "modlauncher-5.1.2.module",
+      "artifact": "modlauncher",
+      "bytes": 3732,
+      "group": "cpw.mods",
+      "url": "https://maven.minecraftforge.net/cpw/mods/modlauncher/5.1.2/modlauncher-5.1.2.module",
+      "version": "5.1.2",
+      "sha256": "825bcdb91eb8845317dcaebaafef0091b32f28d321218447255dbec0b3cdb53c"
+    },
+    {
+      "file": "modlauncher-6.1.3.module",
+      "artifact": "modlauncher",
+      "bytes": 3732,
+      "group": "cpw.mods",
+      "url": "https://maven.minecraftforge.net/cpw/mods/modlauncher/6.1.3/modlauncher-6.1.3.module",
+      "version": "6.1.3",
+      "sha256": "f8caf042a9abf8dff20a6fd62680e9e68512b043569c749c95ce95128c07f703"
+    },
+    {
+      "file": "forgespi-3.1.1.module",
+      "artifact": "forgespi",
+      "bytes": 3066,
+      "group": "net.minecraftforge",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/forgespi/3.1.1/forgespi-3.1.1.module",
+      "version": "3.1.1",
+      "sha256": "d7bc9370032fa7e3d60a50fc1e21f02fea0453041cdd12c9668802091f4e02db"
+    },
+    {
+      "file": "log4j-api-2.11.2.pom",
+      "artifact": "log4j-api",
+      "bytes": 13141,
+      "group": "org.apache.logging.log4j",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-api/2.11.2/log4j-api-2.11.2.pom",
+      "version": "2.11.2",
+      "sha256": "a8d00d185bf1b236c18f98331de8c33f12fd477c4f1552f575616576e199024c"
+    },
+    {
+      "file": "log4j-core-2.11.2.pom",
+      "artifact": "log4j-core",
+      "bytes": 23154,
+      "group": "org.apache.logging.log4j",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/2.11.2/log4j-core-2.11.2.pom",
+      "version": "2.11.2",
+      "sha256": "25ebc94ca06409fb48444e037186e8d1af37d4fb7429d0ed43b1a86d26f69631"
+    },
+    {
+      "group": "cpw.mods",
+      "artifact": "grossjava9hacks",
+      "version": "1.3.3",
+      "file": "grossjava9hacks-1.3.3.module",
+      "bytes": 2321,
+      "sha256": "faf90c546ba4dbf7c085b652373d74dfe34ea245863f82795dc9293fd86c579d",
+      "url": "https://maven.minecraftforge.net/cpw/mods/grossjava9hacks/1.3.3/grossjava9hacks-1.3.3.module"
+    },
+    {
+      "group": "net.jodah",
+      "artifact": "typetools",
+      "version": "0.8.3",
+      "file": "typetools-0.8.3.module",
+      "bytes": 2708,
+      "sha256": "4f82b442e0b16503c2a1121e8b365a6876733979164d4604e748ae8f74cd85de",
+      "url": "https://maven.minecraftforge.net/net/jodah/typetools/0.8.3/typetools-0.8.3.module"
+    }
+  ]
+}

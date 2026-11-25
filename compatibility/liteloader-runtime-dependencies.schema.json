@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pycodersmod.github.io/minecraftmodtestlauncher/schemas/liteloader-runtime-dependencies.schema.json",
+  "title": "Pinned LiteLoader runtime dependency coordinates",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "status", "universeHash", "sourceUrl", "sourceSha256", "mainClass", "tweakClass", "targets", "libraries"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "status": {"enum": ["PARTIAL", "COMPLETE"]},
+    "universeHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "sourceUrl": {"const": "https://dl.liteloader.com/versions/versions.json"},
+    "sourceSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "mainClass": {"const": "net.minecraft.launchwrapper.Launch"},
+    "tweakClass": {"const": "com.mumfrey.liteloader.launch.LiteLoaderTweaker"},
+    "targets": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/target"}},
+    "libraries": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/library"}}
+  },
+  "$defs": {
+    "target": {
+      "type": "object", "additionalProperties": false,
+      "required": ["targetId", "minecraftId", "loaderVersion", "loaderArtifactSha256", "libraries"],
+      "properties": {
+        "targetId": {"type": "string", "pattern": "^LiteLoader@.+$"},
+        "minecraftId": {"type": "string", "minLength": 1},
+        "loaderVersion": {"type": "string", "minLength": 1},
+        "loaderArtifactSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "libraries": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.+-]+$"}}
+      }
+    },
+    "library": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "url", "bytes", "sha1", "sha256", "hashEvidence"],
+      "properties": {
+        "name": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.+-]+$"},
+        "url": {"type": "string", "format": "uri", "pattern": "^https://libraries\\.minecraft\\.net/"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "sha1": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "hashEvidence": {"enum": ["MOJANG_SHA1_SIZE_PLUS_HTTPS_SHA256", "HTTPS_DOWNLOAD_OBSERVATION"]},
+        "dependencySourceUrl": {"const": "https://www.liteloader.com/explore/docs/user:install:manual:1.7.10?do=export_raw"},
+        "dependencySourceSha256": {"const": "4bd57f6775688e83f41cb66d670a735eff365954517deb9c837e8bfc58a899ec"}
+      }
+    }
+  }
+}

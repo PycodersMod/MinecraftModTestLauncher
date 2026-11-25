@@ -9,7 +9,11 @@
     { "os": "MacOS", "arch": ["x64", "arm64"], "cli": "Native", "build": "Native", "minecraftGui": "NotDeclared", "windowManagement": "Unsupported" }
   ],
   "agentProviders": [
-    { "loader": "Forge", "minecraft": "1.20.1", "providerId": "forge-1.20.1", "status": "Supported", "roles": ["Client", "Host", "Guest"] },
+    { "loader": "Forge", "minecraft": "1.20.1", "loaderVersion": "1.20.1-47.2.0", "providerId": "forge-1.20.1", "status": "Supported", "roles": ["Client", "Host", "Guest"] },
+    { "loader": "Fabric", "minecraft": "1.21.7", "loaderVersion": "0.19.5", "providerId": "fabric-1.21.7", "status": "Supported", "roles": ["Client", "Host", "Guest"] },
+    { "loader": "Fabric", "minecraft": "1.21.8", "loaderVersion": "0.19.5", "providerId": "fabric-1.21.8", "status": "Supported", "roles": ["Client", "Host", "Guest"] },
+    { "loader": "Fabric", "minecraft": "1.21.11", "loaderVersion": "0.19.5", "providerId": "fabric-1.21.11", "status": "Supported", "roles": ["Client", "Host", "Guest"] },
+    { "loader": "Fabric", "minecraft": "26.3", "loaderVersion": "0.19.5", "providerId": "fabric-26.3", "status": "Supported", "roles": ["Client", "Host", "Guest"] },
     { "loader": "Fabric", "minecraft": "1.21.6", "providerId": null, "status": "Unsupported", "reason": "AGENT_PROVIDER_NOT_FOUND" },
     { "loader": "NeoForge", "minecraft": "1.21.1", "providerId": null, "status": "Unsupported", "reason": "AGENT_PROVIDER_NOT_FOUND" }
   ],

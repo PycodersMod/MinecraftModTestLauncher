@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "org.pycodersmod.mmtl.agent.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "client-mmtl-agent.refmap.json",
+  "client": [
+    "MinecraftClientReadyMixin",
+    "ClientPlayNetworkHandlerReadyMixin",
+    "IntegratedServerInvoker",
+    "IntegratedServerLoopbackMixin",
+    "LanServerPingerMixin",
+    "CreateWorldScreenInvoker"
+  ]
+}

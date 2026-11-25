@@ -1,0 +1,181 @@
+import groovy.json.JsonSlurper
+
+plugins {
+    id 'net.fabricmc.fabric-loom-remap' version '1.18.4' apply false
+    id 'net.fabricmc.fabric-loom' version '1.18.4' apply false
+}
+
+group = 'org.pycodersmod.mmtl'
+version = project.agent_version
+def minecraftVersion = project.minecraft_version.toString()
+def loaderVersion = project.loader_version.toString()
+def minimumJavaMajor = project.agent_min_java.toString().toInteger()
+def loomPluginId = (project.findProperty('loom_plugin_id') ?: 'net.fabricmc.fabric-loom-remap').toString()
+if (!(loomPluginId in ['net.fabricmc.fabric-loom-remap', 'net.fabricmc.fabric-loom'])) {
+    throw new GradleException("Unsupported Fabric Agent Loom plugin: ${loomPluginId}")
+}
+def mappingStrategy = (project.findProperty('mapping_strategy') ?: 'officialMojang').toString()
+if (!(mappingStrategy in ['officialMojang', 'none'])) {
+    throw new GradleException("Unsupported Fabric Agent mapping_strategy: ${mappingStrategy}")
+}
+if (mappingStrategy == 'none' && loomPluginId != 'net.fabricmc.fabric-loom') {
+    throw new GradleException("mapping_strategy=none requires net.fabricmc.fabric-loom")
+}
+apply plugin: loomPluginId
+def coreJarFile = rootProject.file("../../core/build/libs/mmtl-agent-core-${project.version}.jar")
+base { archivesName = "mmtl-agent-fabric-${minecraftVersion}" }
+
+loom {
+    splitEnvironmentSourceSets()
+    mixin {
+        defaultRefmapName = 'mmtl-agent.refmap.json'
+        useLegacyMixinAp = true
+    }
+    mods {
+        mmtl_agent {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    if (mappingStrategy == 'officialMojang') {
+        mappings loom.officialMojangMappings()
+    } else if (mappingStrategy != 'none') {
+        throw new GradleException("Unsupported Fabric Agent mapping_strategy: ${mappingStrategy}")
+    }
+    def loaderConfiguration = loomPluginId == 'net.fabricmc.fabric-loom-remap' ? 'modImplementation' : 'implementation'
+    add(loaderConfiguration, "net.fabricmc:fabric-loader:${loaderVersion}")
+    annotationProcessor 'net.fabricmc:sponge-mixin:0.17.4+mixin.0.8.7'
+    implementation 'org.pycodersmod.mmtl:mmtl-agent-core:0.1.0'
+    testImplementation 'junit:junit:4.13.2'
+}
+
+def generatedArtifactManifest = new JsonSlurper().parse(file('gradle/loom-generated-artifacts.json'))
+if ((int) generatedArtifactManifest.schemaVersion != 1 || !(generatedArtifactManifest.artifacts instanceof List)) {
+    throw new GradleException('Invalid Loom generated artifact content manifest')
+}
+def exactGeneratedArtifacts = generatedArtifactManifest.artifacts.findAll { it.minecraftVersion == minecraftVersion }
+if (exactGeneratedArtifacts) {
+    def contentGate = tasks.register('verifyLoomGeneratedArtifactContent') {
+        group = 'verification'
+        description = 'Verifies exact content of the pinned Loom-generated local Minecraft artifact.'
+        doLast {
+            exactGeneratedArtifacts.each { expected ->
+                def configuration = configurations.findByName(expected.configuration.toString())
+                if (configuration == null) throw new GradleException("Missing pinned artifact configuration ${expected.configuration}")
+                def matches = configuration.resolvedConfiguration.resolvedArtifacts.findAll { artifact ->
+                    def id = artifact.moduleVersion.id
+                    id.group == expected.group && id.name == expected.name &&
+                        id.version == expected.version && artifact.file.name == expected.file
+                }
+                if (matches.size() != 1) throw new GradleException("Expected one exact Loom-generated artifact ${expected.name}, found ${matches.size()}")
+                String actual = org.pycodersmod.mmtl.gradle.LoomArchiveContentHash.compute(matches[0].file.toPath())
+                if (!actual.equalsIgnoreCase(expected.contentSha256)) {
+                    throw new GradleException("Loom-generated artifact content SHA-256 mismatch for ${expected.name}: ${actual}")
+                }
+                logger.lifecycle("Verified exact Loom-generated artifact content: ${expected.group}:${expected.name}:${expected.version}")
+            }
+        }
+    }
+    tasks.named('compileJava').configure { dependsOn(contentGate) }
+    if (tasks.findByName('compileClientJava') != null) {
+        tasks.named('compileClientJava').configure { dependsOn(contentGate) }
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 21
+    options.encoding = 'UTF-8'
+}
+
+tasks.named('test') {
+    dependsOn gradle.includedBuild('core').task(':test')
+}
+
+processResources {
+    inputs.property 'agentVersion', project.version
+    inputs.property 'minecraftVersion', minecraftVersion
+    inputs.property 'loaderVersion', loaderVersion
+    inputs.property 'minimumJavaMajor', minimumJavaMajor
+    filesMatching('fabric.mod.json') {
+        expand agentVersion: project.version,
+                minecraftVersion: minecraftVersion,
+                loaderVersion: loaderVersion,
+                minimumJavaMajor: minimumJavaMajor
+    }
+}
+
+jar {
+    dependsOn gradle.includedBuild('core').task(':jar')
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { zipTree(coreJarFile) }
+}
+
+tasks.register('verifyMmtlAgentJar') {
+    dependsOn tasks.named('jar')
+    doLast {
+        File agentJar = tasks.named('jar').get().archiveFile.get().asFile
+        java.util.zip.ZipFile archive = new java.util.zip.ZipFile(agentJar)
+        try {
+            ['MmtlFabricAgent.class', 'FabricAgentBootstrap.class', 'AgentHandshake.class',
+             'AgentHandshake$Context.class', 'AgentEventSink.class'].each { className ->
+                if (!archive.getEntry("org/pycodersmod/mmtl/agent/${className}")) {
+                    throw new GradleException("Fabric Agent JAR is missing ${className}")
+                }
+            }
+            def metadataEntry = archive.getEntry('fabric.mod.json')
+            if (!metadataEntry) throw new GradleException('Fabric Agent JAR is missing fabric.mod.json')
+            if (!archive.getEntry('mmtl-agent.mixins.json') || !archive.getEntry('client-mmtl-agent.refmap.json')) throw new GradleException('Fabric Agent JAR is missing its client readiness mixin config or refmap')
+            def metadata = new groovy.json.JsonSlurper().parse(archive.getInputStream(metadataEntry))
+            def mixinConfig = new groovy.json.JsonSlurper().parse(archive.getInputStream(archive.getEntry('mmtl-agent.mixins.json')))
+            if (metadata.id != 'mmtl_agent' || metadata.entrypoints.main != ['org.pycodersmod.mmtl.agent.MmtlFabricAgent'] ||
+                    metadata.mixins != ['mmtl-agent.mixins.json'] ||
+                    metadata.depends.fabricloader != "=${loaderVersion}" ||
+                    metadata.depends.minecraft != "=${minecraftVersion}" ||
+                    metadata.depends.java != ">=${minimumJavaMajor}") {
+                throw new GradleException('Fabric Agent JAR has invalid exact target metadata or entrypoint')
+            }
+            if (!mixinConfig.client.contains('MinecraftClientReadyMixin') || !mixinConfig.client.contains('ClientPlayNetworkHandlerReadyMixin') ||
+                    !mixinConfig.client.contains('IntegratedServerInvoker') || !mixinConfig.client.contains('IntegratedServerLoopbackMixin') ||
+                    !mixinConfig.client.contains('LanServerPingerMixin') || !mixinConfig.client.contains('CreateWorldScreenInvoker') ||
+                    !archive.getEntry('org/pycodersmod/mmtl/agent/mixin/MinecraftClientReadyMixin.class') ||
+                    !archive.getEntry('org/pycodersmod/mmtl/agent/mixin/ClientPlayNetworkHandlerReadyMixin.class') ||
+                    !archive.getEntry('org/pycodersmod/mmtl/agent/mixin/IntegratedServerInvoker.class') ||
+                    !archive.getEntry('org/pycodersmod/mmtl/agent/mixin/IntegratedServerLoopbackMixin.class') ||
+                    !archive.getEntry('org/pycodersmod/mmtl/agent/mixin/LanServerPingerMixin.class') ||
+                    !archive.getEntry('org/pycodersmod/mmtl/agent/mixin/CreateWorldScreenInvoker.class')) {
+                throw new GradleException('Fabric Agent JAR is missing its exact client, world-creation or IntegratedLAN mixins')
+            }
+        } finally {
+            archive.close()
+        }
+    }
+}
+
+tasks.register('stageMmtlAgent') {
+    dependsOn tasks.named('verifyMmtlAgentJar')
+    doLast {
+        File destinationDirectory = rootProject.file("../../providers/fabric-${minecraftVersion}")
+        destinationDirectory.mkdirs()
+        File sourceJar = tasks.named('jar').get().archiveFile.get().asFile
+        File destinationJar = new File(destinationDirectory, "mmtl-agent-fabric-${minecraftVersion}-${project.version}.jar")
+        destinationJar.bytes = sourceJar.bytes
+        String digest = java.security.MessageDigest.getInstance('SHA-256').digest(destinationJar.bytes).encodeHex().toString()
+        def providerId = "fabric-${minecraftVersion}"
+        def artifactPath = "providers/fabric-${minecraftVersion}/mmtl-agent-fabric-${minecraftVersion}-${project.version}.jar"
+        def manifest = [schemaVersion:1,providerId:providerId,loaderId:'Fabric',minecraftVersions:[minecraftVersion],
+                        loaderVersions:[loaderVersion],agentVersion:project.version.toString(),
+                        artifact:artifactPath,sha256:digest,
+                        minJavaMajor:minimumJavaMajor,roles:['Client','Host','Guest'],
+                        capabilities:['OfflineSessionHandshake','SessionEventTelemetry']]
+        new File(destinationDirectory, 'agent-manifest.json').text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(manifest)) + System.lineSeparator()
+    }
+}

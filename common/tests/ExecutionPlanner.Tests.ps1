@@ -1,6 +1,7 @@
 BeforeAll {
     $script:repoRoot = Split-Path -Parent $PSScriptRoot
     Import-Module (Join-Path $script:repoRoot 'src/Execution/ExecutionPlanner.psm1') -Force
+    Import-Module (Join-Path $script:repoRoot 'src/Execution/ExecutionPlan.psm1') -Force
 
     function New-TestJavaHome {
         param([string]$Root,[int]$Major,[string]$Arch='x64')
@@ -34,6 +35,47 @@ BeforeAll {
 }
 
 Describe '统一 Execution Planner' {
+    It 'Execution Plan 保留有效场景值及命令行来源，并把客户端数纳入语义摘要' {
+        $input=New-TestPlannerInputs
+        $input.Profile.mode='IntegratedLAN';$input.Profile.players=3
+        $input.Profile|Add-Member -NotePropertyName clientCount -NotePropertyValue 3 -Force
+        $input.Profile|Add-Member -NotePropertyName multiplayer -NotePropertyValue ([pscustomobject]@{transport='IntegratedLAN'}) -Force
+        $input.Profile|Add-Member -NotePropertyName identity -NotePropertyValue ([pscustomobject]@{kind='Offline';hostName='Host';guestNamePattern='Guest_{index}'}) -Force
+        $input.Profile|Add-Member -NotePropertyName scenarioConfiguration -NotePropertyValue ([pscustomobject]@{configDigest=('sha256:'+('a'*64));sourceProfileName='matrix';valueSources=[pscustomobject]@{clientCount='CommandLine';transport='Profile'}}) -Force
+        $plan=New-MmtlExecutionPlan @input
+        $plan.profile.clientCount | Should -Be 3
+        $plan.profile.transport | Should -BeExactly 'IntegratedLAN'
+        $plan.profile.identity.kind | Should -BeExactly 'Offline'
+        $plan.profile.scenarioConfiguration.valueSources.clientCount | Should -BeExactly 'CommandLine'
+        $result=Test-MmtlExecutionPlan -Plan $plan
+        $result.valid | Should -BeTrue
+        $changed=$plan|ConvertTo-Json -Depth 80|ConvertFrom-Json
+        $changed.profile.clientCount=4
+        (Get-MmtlExecutionPlanSemanticDigest -Plan $changed) | Should -Not -BeExactly $plan.semanticDigest
+    }
+
+    It '将精确 LiteLoader Runtime 描述纳入 Execution Plan 及语义摘要' {
+        $input=New-TestPlannerInputs
+        $input.Project.Loader='LiteLoader';$input.Project.LoaderVersion='1.7.10_04';$input.Project.MinecraftVersion='1.7.10'
+        $input.Project.LoaderStack=[pscustomobject]@{primaryLoader=[pscustomobject]@{id='LiteLoader';version='1.7.10_04'};overlayLoaders=@()}
+        $baseline=New-MmtlExecutionPlan @input
+        $descriptor=[pscustomobject]@{targetId='LiteLoader@1.7.10';minecraftId='1.7.10';loaderVersion='1.7.10_04';loaderArtifactSha256=('a'*64);loaderArtifactUrl='https://dl.liteloader.com/versions/liteloader.jar';loaderArtifactBytes=100;loaderArtifactOfficialMd5=('c'*32);mainClass='net.minecraft.launchwrapper.Launch';tweakClass='com.mumfrey.liteloader.launch.LiteLoaderTweaker';clientArtifact=[pscustomobject]@{url='https://launcher.mojang.com/v1/objects/e80d9b3bf5085002218d4be59e668bac718abbc6/client.jar';sha1='e80d9b3bf5085002218d4be59e668bac718abbc6';bytes=5256245;metadataSnapshotSha256=('d'*64)};serverArtifact=[pscustomobject]@{url='https://launcher.mojang.com/v1/objects/952438ac4e01b4d115c5fc38f891710c4941df29/server.jar';sha1='952438ac4e01b4d115c5fc38f891710c4941df29';bytes=9605030;metadataSnapshotSha256=('d'*64)};versionMetadata=[pscustomobject]@{url='https://piston-meta.mojang.com/v1/packages/ed5d8789ed29872ea2ef1c348302b0c55e3f3468/1.7.10.json';sha1='ed5d8789ed29872ea2ef1c348302b0c55e3f3468';bytes=999;sha256=('d'*64)};assetIndex=[pscustomobject]@{url='https://launchermeta.mojang.com/v1/packages/1863782e33ce7b584fc45b037325a1964e095d3e/1.7.10.json';sha1='1863782e33ce7b584fc45b037325a1964e095d3e';bytes=72996;id='1.7.10'};libraries=@([pscustomobject]@{name='net.minecraft:launchwrapper:1.11';url='https://libraries.minecraft.net/net/minecraft/launchwrapper/1.11/launchwrapper-1.11.jar';bytes=33143;sha1='9c0592c6e1e9ea296a70948081bd4cc84dda1289';sha256=('b'*64);hashEvidence='HTTPS_DOWNLOAD_OBSERVATION'})}
+        $input.LoaderLaunchPlan=$descriptor
+
+        $plan=New-MmtlExecutionPlan @input
+
+        $plan.runtime.loaderLaunchPlan.targetId | Should -BeExactly 'LiteLoader@1.7.10'
+        $plan.runtime.loaderLaunchPlan.libraries[0].name | Should -BeExactly 'net.minecraft:launchwrapper:1.11'
+        $plan.semanticDigest | Should -Not -BeExactly $baseline.semanticDigest
+        (Test-MmtlExecutionPlan -Plan $plan).valid | Should -BeTrue
+    }
+
+    It '拒绝与项目 Loader 或 Minecraft exact target 不一致的 Runtime 描述' {
+        $case=New-TestPlannerInputs
+        $case.LoaderLaunchPlan=[pscustomobject]@{targetId='LiteLoader@1.7.10';minecraftId='1.7.10';loaderVersion='1.7.10_04';loaderArtifactSha256=('a'*64);loaderArtifactUrl='https://dl.liteloader.com/versions/liteloader.jar';loaderArtifactBytes=100;loaderArtifactOfficialMd5=('c'*32);mainClass='net.minecraft.launchwrapper.Launch';tweakClass='com.mumfrey.liteloader.launch.LiteLoaderTweaker';libraries=@()}
+        { New-MmtlExecutionPlan @case } | Should -Throw '*LOADER_LAUNCH_PLAN_PROJECT_MISMATCH*'
+    }
+
     It '对只记录为 Profile 元数据的游戏内行为输出稳定非阻断 warning' {
         $input=New-TestPlannerInputs
         $input.Profile|Add-Member -NotePropertyName hostCheats -NotePropertyValue $true -Force
@@ -109,6 +151,24 @@ Describe '统一 Execution Planner' {
         $plan.runtimeJava.requirement.major | Should -Be 25
         $plan.runtimeJava.requirement.source | Should -BeExactly 'ProjectOverride'
         $plan.runtimeJava.resolution.actualMajor | Should -Be 25
+    }
+
+    It 'Profile Build Java override 精确选择 Gradle JVM 且不改变 Runtime Java' {
+        $input=New-TestPlannerInputs
+        $jdk25=Join-Path $TestDrive 'java25'
+        New-TestJavaHome $jdk25 25
+        $input.config.javaHomes | Add-Member -NotePropertyName '25' -NotePropertyValue $jdk25 -Force
+        $input.project.RuntimeJavaRequirement=[pscustomobject]@{major=21;requirementKind='Exact';source='MojangVersionMetadata';confidence='High'}
+        $input.profile | Add-Member -NotePropertyName buildJavaOverride -NotePropertyValue ([pscustomobject]@{major=25}) -Force
+
+        $plan=New-MmtlExecutionPlan @input
+
+        $plan.buildJava.requirement.major | Should -Be 25
+        $plan.buildJava.requirement.exactMajor | Should -Be 25
+        $plan.buildJava.requirement.source | Should -BeExactly 'ProfileBuildJavaOverride'
+        $plan.buildJava.resolution.actualMajor | Should -Be 25
+        $plan.runtimeJava.requirement.major | Should -Be 21
+        $plan.runtimeJava.resolution.actualMajor | Should -Be 21
     }
 
     It 'Dedicated EULA 未预先授权只阻止 Launch 且 Auto 端口不分配' {

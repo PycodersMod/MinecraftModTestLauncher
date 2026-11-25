@@ -45,7 +45,7 @@ CLI 从已配置的 Runtime Root 读取运行记录。它会拒绝不在目标�
 
 `runServer` 证据需要真实就绪标记、进程身份、端口监听/释放以及安全停止。不得为了让测试通过而创建或更改 EULA 接受值。如果缺少当前任务明确授权或配置前置条件，应记录 `SKIPPED_EULA_NOT_PREAUTHORIZED`。
 
-客户端验证必须从真实 Minecraft 进程观察到初始化标记。Gradle task 启动、未认证的占位会话、WSLg 或仅构建的 runner 都不能作为客户端验证。如果需要 Microsoft 身份验证，应记录 `AUTH_REQUIRED` 并继续处理其它目标。
+客户端验证必须从真实 Minecraft 进程观察到初始化标记。Gradle task 启动、未认证的占位会话、WSLg 或仅构建的 runner 都不能作为客户端验证。MMTL 多客户端测试使用本地离线身份，不读取 Microsoft/Mojang 登录凭据；若某精确目标拒绝或无法安全使用离线身份，应记录 `OfflineIdentityUnsupported`（或对应的目标能力阻塞）并继续其它目标，不要求用户登录真实账号，也不尝试绕过在线认证。
 
 ## Fixture 信任
 

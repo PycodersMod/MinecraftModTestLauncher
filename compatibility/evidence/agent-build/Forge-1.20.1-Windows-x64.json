@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "targetId": "Forge@1.20.1",
+  "minecraftId": "1.20.1",
+  "loaderId": "Forge",
+  "loaderVersion": "1.20.1-47.2.0",
+  "providerId": "forge-1.20.1",
+  "agentVersion": "0.1.0",
+  "provider": {
+    "providerId": "forge-1.20.1",
+    "loaderId": "Forge",
+    "minecraftVersions": [
+      "1.20.1"
+    ],
+    "loaderVersions": [
+      "1.20.1-47.2.0"
+    ],
+    "agentVersion": "0.1.0",
+    "manifestPath": "compatibility/evidence/agent-build/Forge-1.20.1-Windows-x64/agent-manifest.json",
+    "manifestSha256": "91aa71289d1d90a794be8f272fb58666b5ce7d21e26753e0dc06c63751ba73e0",
+    "artifactSha256": "dbbfb3641c63acf88f663aaa3da3879ff2ce61a12c732762987077473774c781"
+  },
+  "validationLevel": "AGENT_BUILD_VERIFIED",
+  "result": "PASSED",
+  "source": {
+    "sha256": "9c3b16c68948d8855c1ee0563545ff0e18c9e976af849e343ea6288ad660120f",
+    "unchangedDuringBuild": true
+  },
+  "buildSystem": {
+    "id": "Gradle",
+    "version": "8.5",
+    "wrapperSha256": "15c8a61bad9b8758b13b1d8e5987bba2d714c0a57fc3c1d6fc2140237e4a5485"
+  },
+  "java": {
+    "vendor": "Oracle Corporation",
+    "version": "17.0.19",
+    "major": 17,
+    "architecture": "x64"
+  },
+  "artifact": {
+    "path": "compatibility/evidence/agent-build/Forge-1.20.1-Windows-x64/agent.jar",
+    "sha256": "dbbfb3641c63acf88f663aaa3da3879ff2ce61a12c732762987077473774c781"
+  },
+  "tests": {
+    "result": "PASSED",
+    "passed": 19,
+    "failed": 0,
+    "skipped": 0
+  },
+  "logs": [
+    {
+      "sha256": "de25a055abe555f2157a45df8d5fe5fff09ee109821c359c6f3fd6ef9de17065"
+    },
+    {
+      "sha256": "8140a11b83c51fd80637f82385bdebd7c38fc7261d6a25032956f4e63d150d8e"
+    },
+    {
+      "sha256": "8515b81e6bee1f8ef3b68ebc5c555e702093f3c96203e7d6b4619da8102f3dbf"
+    },
+    {
+      "sha256": "3a67519bc8732f4409fb9779970e2bed6f3e20a0d391c80509ac9620b06e36ac"
+    },
+    {
+      "sha256": "5cd0a0ded76afa84a1dd64cec86d36573b759f12776017c6b091bccb9467888a"
+    },
+    {
+      "sha256": "525c777608334afb1fd9197b34cc9f0417a4a35d295ed2ce3187d23f203810b1"
+    },
+    {
+      "sha256": "2aba7111d00f2a3a4c2f1cc4bdef91dac2baee9aa42ecb8fc51eb7f40f9c18ad"
+    },
+    {
+      "sha256": "7cc00656e3e67d511f42c04eebbe0f09223c7195d0e192871032a010fb1954ae"
+    }
+  ]
+}

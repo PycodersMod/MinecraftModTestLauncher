@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pycodersmod.github.io/minecraftmodtestlauncher/schemas/agent-build-evidence.schema.json",
+  "title": "MMTL exact-target Agent build evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "targetId", "minecraftId", "loaderId", "loaderVersion", "providerId", "agentVersion", "provider", "validationLevel", "result", "source", "buildSystem", "java", "artifact", "tests", "logs"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "targetId": {"type": "string", "minLength": 1},
+    "minecraftId": {"type": "string", "minLength": 1},
+    "loaderId": {"type": "string", "minLength": 1},
+    "loaderVersion": {"type": "string", "minLength": 1},
+    "providerId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{1,63}$"},
+    "agentVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][A-Za-z0-9.-]+)?$"},
+    "provider": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["providerId", "loaderId", "minecraftVersions", "loaderVersions", "agentVersion", "manifestPath", "manifestSha256", "artifactSha256"],
+      "properties": {
+        "providerId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{1,63}$"},
+        "loaderId": {"type": "string", "minLength": 1},
+        "minecraftVersions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "loaderVersions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "agentVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][A-Za-z0-9.-]+)?$"},
+        "manifestPath": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?![A-Za-z]:)(?!.*(?:^|[\\\\/])\\.\\.(?:[\\\\/]|$))[^:]+$"},
+        "manifestSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "artifactSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "validationLevel": {"const": "AGENT_BUILD_VERIFIED"},
+    "result": {"const": "PASSED"},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sha256", "unchangedDuringBuild"],
+      "properties": {"sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "unchangedDuringBuild": {"const": true}}
+    },
+    "buildSystem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "wrapperSha256"],
+      "properties": {"id": {"const": "Gradle"}, "version": {"type": "string", "minLength": 1}, "wrapperSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+    },
+    "java": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["vendor", "version", "major", "architecture"],
+      "properties": {"vendor": {"type": "string", "minLength": 1}, "version": {"type": "string", "minLength": 1}, "major": {"type": "integer", "minimum": 1}, "architecture": {"enum": ["x64", "ARM64"]}}
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {"path": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?![A-Za-z]:)(?!.*(?:^|[\\\\/])\\.\\.(?:[\\\\/]|$))[^:]+$"}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+    },
+    "tests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["result", "passed", "failed", "skipped"],
+      "properties": {"result": {"const": "PASSED"}, "passed": {"type": "integer", "minimum": 1}, "failed": {"const": 0}, "skipped": {"type": "integer", "minimum": 0}}
+    },
+    "logs": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["sha256"], "properties": {"sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}}}
+  }
+}

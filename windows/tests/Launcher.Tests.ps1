@@ -1,5 +1,6 @@
 BeforeAll {
     $script:root=Join-Path (Split-Path -Parent (Split-Path -Parent $PSScriptRoot)) 'common'
+    $script:platformRoot=Split-Path -Parent $script:root
     Get-ChildItem (Join-Path $script:root 'src') -Filter '*.psm1' -Recurse | ForEach-Object { Import-Module $_.FullName -Force }
     Import-Module (Join-Path $script:root 'src/Config.psm1') -Force
     Import-Module (Join-Path $script:root 'src/ProjectDetector.psm1') -Force
@@ -24,9 +25,64 @@ BeforeAll {
         return $path
     }
 }
+
+Describe 'Windows scenario CLI cross-platform contract' {
+    It 'forwards all CLI arguments and keeps the daily default at one offline client' {
+        $wrapperPath=Join-Path $script:platformRoot 'windows/launcher.ps1'
+        $wrapper=Get-Content -LiteralPath $wrapperPath -Raw
+        $wrapper | Should -Match '\[Parameter\(ValueFromRemainingArguments=\$true\)\]\[string\[\]\]\$Arguments'
+        $wrapper | Should -Match "common/src/Launcher\.ps1.*@Arguments"
+
+        Import-Module (Join-Path $script:platformRoot 'common/src/Config.psm1') -Force
+        $profile=[pscustomobject]@{project='fixture'}
+        $empty=ConvertFrom-MmtlScenarioCliOverrides -Arguments @()
+        $single=Merge-MmtlScenarioConfiguration -Profile $profile -Overrides $empty -ProfileName 'single' -SourceConfigVersion 3
+        $single.clientCount | Should -Be 1
+        $single.mode | Should -BeExactly 'Single'
+        $single.transport | Should -BeExactly 'None'
+        $single.identity.kind | Should -BeExactly 'Offline'
+
+        $overrides=ConvertFrom-MmtlScenarioCliOverrides -Arguments @('--client-count','2')
+        $effective=Merge-MmtlScenarioConfiguration -Profile $profile -Overrides $overrides -ProfileName 'matrix' -SourceConfigVersion 3
+        $effective.clientCount | Should -Be 2
+        $effective.mode | Should -BeExactly 'IntegratedLAN'
+        $effective.provenance.valueSources.clientCount | Should -BeExactly 'CommandLine'
+    }
+
+    It 'Runtime Binding CLI 也会先归一化场景配置并返回有效计划' {
+        $project=New-TestModProject -Name 'runtime-binding-cli' -Loader Fabric -MinecraftVersion '1.21.6' -JavaMajor 21
+        $config=Get-Content -LiteralPath (Join-Path $script:platformRoot 'common/config/launcher.config.example.json') -Raw | ConvertFrom-Json
+        $config.runtimeRoot=Join-Path $TestDrive 'runtime-binding-cli-runtime'
+        $config.profiles.'single-example'.project=$project
+        $config.profiles.'single-example'.autoBuild=$false
+        $configPath=Join-Path $TestDrive 'runtime-binding-cli-config.json'
+        Set-Content -LiteralPath $configPath -Value ($config | ConvertTo-Json -Depth 30) -Encoding utf8
+
+        $launcher=Join-Path $script:platformRoot 'windows/launcher.ps1'
+        $startInfo=[Diagnostics.ProcessStartInfo]::new()
+        $startInfo.FileName=Join-Path $PSHOME 'pwsh.exe'
+        $startInfo.UseShellExecute=$false
+        $startInfo.CreateNoWindow=$true
+        $startInfo.RedirectStandardOutput=$true
+        $startInfo.RedirectStandardError=$true
+        foreach($argument in @('-NoProfile','-File',$launcher,'--config-file',$configPath,'--profile','single-example','--runtime-binding','--json')){$startInfo.ArgumentList.Add([string]$argument)}
+        $process=[Diagnostics.Process]::new();$process.StartInfo=$startInfo
+        $null=$process.Start()
+        $stdoutTask=$process.StandardOutput.ReadToEndAsync();$stderrTask=$process.StandardError.ReadToEndAsync()
+        $process.WaitForExit(30000) | Should -BeTrue
+        $stdout=$stdoutTask.GetAwaiter().GetResult();$stderr=$stderrTask.GetAwaiter().GetResult()
+        try {
+            $process.ExitCode | Should -Be 0 -Because $stderr
+            $result=$stdout | ConvertFrom-Json
+            $result.mode | Should -Be 'Unknown'
+            $result.compatibility | Should -BeExactly 'Unknown'
+            $result.probe | Should -BeNullOrEmpty
+        } finally { $process.Dispose() }
+    }
+}
 Describe 'MMTL 安全与项目检测' {
     It '拒绝 Runtime Root 外的删除目标' {
-        { Remove-MmtlSession -RuntimeRoot 'C:\mmtl' -SessionPath (Join-Path $TestDrive 'outside-session') } | Should -Throw
+        { Remove-MmtlSession -RuntimeRoot 'C:\mmtl' -SessionPath (Join-Path $TestDrive 'outside-session') } | Should -Throw # public-hygiene: allow-synthetic-path
     }
     It 'Session 子目录中出现 junction 时拒绝递归删除' {
         $runtime=Join-Path $TestDrive 'junction-runtime';$outside=Join-Path $TestDrive 'junction-outside'
@@ -137,7 +193,7 @@ Describe 'MMTL 安全与项目检测' {
         $runtime=Join-Path $TestDrive 'report-runtime'
         $session=New-MmtlSession -RuntimeRoot $runtime -Name 'report' -Metadata ([pscustomobject]@{players=1})
         $testProcessId=2147480000
-        $entry=[pscustomobject]@{PID=$testProcessId;Role='Client';Username='Dev';StartTimeUtc='2000-01-01T00:00:00.0000000Z';Executable='C:\fake\pwsh.exe';ParentPID=0;CommandLine='';LogPath=(Join-Path $session 'logs\client.log');ProcessTree=@()}
+        $entry=[pscustomobject]@{PID=$testProcessId;Role='Client';Username='Dev';StartTimeUtc='2000-01-01T00:00:00.0000000Z';Executable='C:\fake\pwsh.exe';ParentPID=0;CommandLine='';LogPath=(Join-Path $session 'logs\client.log');ProcessTree=@()} # public-hygiene: allow-synthetic-path
         $entry|ConvertTo-Json|Set-Content (Join-Path $session 'pids.json')
         [pscustomobject]@{PID=$testProcessId;ExitCode=-1;FinishedUtc='2026-09-29T00:00:00Z';Error='runClient crashed'}|ConvertTo-Json|Set-Content (Join-Path $session "process-$testProcessId.exit.json")
         $crashDir=Join-Path $session 'Dev\crash-reports';New-Item -ItemType Directory -Path $crashDir -Force|Out-Null
@@ -263,24 +319,88 @@ Describe 'MMTL 安全与项目检测' {
     It '把 Gradle 实例日志和进程登记限制在 Session 内' {
         $projectPath=New-TestModProject -Name 'fake-gradle-project' -Loader Forge -MinecraftVersion '1.20.1' -JavaMajor 17
         $wrapper=Join-Path $projectPath 'gradlew.bat'
-        "@echo off`necho fake-gradle-start`ntimeout /t 30 /nobreak >nul`n" | Set-Content -LiteralPath $wrapper
+        "@echo off`necho fake-gradle-start`necho build-home=%JAVA_HOME%`necho runtime-home=%MMTL_RUNTIME_JAVA_HOME%`necho runtime-java=%MMTL_RUNTIME_JAVA_EXECUTABLE%`necho runtime-major=%MMTL_RUNTIME_JAVA_MAJOR%`necho gradle-args=%*`ntimeout /t 30 /nobreak >nul`n" | Set-Content -LiteralPath $wrapper
         $project=Get-MmtlProject $projectPath
         $runtime=Join-Path $TestDrive 'run-runtime'
         $session=New-MmtlSession -RuntimeRoot $runtime -Name 'fake_run' -Metadata ([pscustomobject]@{players=1})
         $profile=[pscustomobject]@{gameArgs=@();jvmArgs=@();memoryMb=1024;guiScale=1}
         $plan=New-MmtlGradleRunPlan -Project $project -Mode Single -RuntimeRoot $session -Role Client -Username 'Dev' -Profile $profile
-        $java=Join-Path $TestDrive 'jdk/bin/java.exe';New-Item -ItemType File -Path $java -Force|Out-Null
-        $javaHome=Split-Path (Split-Path $java -Parent) -Parent
-        $started=Start-MmtlGradleInstance -Project $project -Plan $plan -JavaPath $java -SessionPath $session
+        $buildJava=Join-Path $TestDrive 'jdk-build/bin/java.exe';New-Item -ItemType File -Path $buildJava -Force|Out-Null
+        $runtimeJava=Join-Path $TestDrive 'jdk-runtime/bin/java.exe';New-Item -ItemType File -Path $runtimeJava -Force|Out-Null
+        $buildJavaHome=Split-Path (Split-Path $buildJava -Parent) -Parent
+        $runtimeJavaHome=Split-Path (Split-Path $runtimeJava -Parent) -Parent
+        $started=Start-MmtlGradleInstance -Project $project -Plan $plan -BuildJavaPath $buildJava -RuntimeJavaPath $runtimeJava -RuntimeJavaMajor 21 -SessionPath $session
         try {
             $deadline=(Get-Date).AddSeconds(8)
             while(-not (Select-String -Path $started.LogPath -Pattern 'fake-gradle-start' -Quiet -ErrorAction SilentlyContinue) -and (Get-Date) -lt $deadline){Start-Sleep -Milliseconds 100}
             (Select-String -Path $started.LogPath -Pattern 'fake-gradle-start' -Quiet) | Should -BeTrue
+            (Select-String -Path $started.LogPath -Pattern ([regex]::Escape("build-home=$buildJavaHome")) -Quiet) | Should -BeTrue
+            (Select-String -Path $started.LogPath -Pattern ([regex]::Escape("runtime-home=$runtimeJavaHome")) -Quiet) | Should -BeTrue
+            (Select-String -Path $started.LogPath -Pattern ([regex]::Escape("runtime-java=$runtimeJava")) -Quiet) | Should -BeTrue
+            (Select-String -Path $started.LogPath -Pattern 'runtime-major=21' -Quiet) | Should -BeTrue
+            (Select-String -Path $started.LogPath -Pattern 'gradle-args=.*-Dorg\.gradle\.java\.installations\.paths=' -Quiet) | Should -BeTrue
+            (Select-String -Path $started.LogPath -Pattern 'gradle-args=.*--init-script.*runtime-.*\.gradle' -Quiet) | Should -BeTrue
             (Get-Content -LiteralPath (Join-Path $started.RuntimeDirectory 'options.txt') -Raw).Trim() | Should -Be 'guiScale:1'
             (Test-MmtlInsideRoot -Root $session -Target $started.LogPath) | Should -BeTrue
             $entry=Get-Content (Join-Path $session 'pids.json') -Raw|ConvertFrom-Json|Where-Object PID -eq $started.ProcessId
             $entry.Role | Should -Be 'Client'
             $entry.Username | Should -Be 'Dev'
+        } finally {Stop-MmtlTrackedProcess -SessionPath $session -ProcessId $started.ProcessId -Confirm:$false|Out-Null}
+    }
+    It '将已固定 LiteLoader 工件通过 Session 内 init script 接入受管 Gradle JavaExec' {
+        $projectPath=New-TestModProject -Name 'fake-liteloader-project' -Loader Forge -MinecraftVersion '1.20.1' -JavaMajor 17
+        $wrapper=Join-Path $projectPath 'gradlew.bat'
+        "@echo off`necho fake-gradle-start`necho gradle-args=%*`ntimeout /t 30 /nobreak >nul`n" | Set-Content -LiteralPath $wrapper
+        $project=Get-MmtlProject $projectPath
+        $project.Loader='LiteLoader';$project.MinecraftVersion='1.7.10';$project.LoaderVersion='1.7.10_04'
+        $session=New-MmtlSession -RuntimeRoot (Join-Path $TestDrive 'liteloader-run-runtime') -Name 'liteloader_run' -Metadata ([pscustomobject]@{players=1})
+        $loaderBytes=[byte[]]@(1,2,3,4);$libraryBytes=[byte[]]@(5,6,7,8)
+        $loaderPath=Join-Path $session 'libraries/liteloader/com/mumfrey/liteloader/1.7.10_04/liteloader-1.7.10_04.jar'
+        $libraryPath=Join-Path $session 'libraries/liteloader/net/minecraft/launchwrapper/1.11/launchwrapper-1.11.jar'
+        New-Item -ItemType Directory -Path (Split-Path $loaderPath) -Force|Out-Null;New-Item -ItemType Directory -Path (Split-Path $libraryPath) -Force|Out-Null
+        [IO.File]::WriteAllBytes($loaderPath,$loaderBytes);[IO.File]::WriteAllBytes($libraryPath,$libraryBytes)
+        $sha256={param($bytes)[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()}
+        $plan=[pscustomobject]@{Project=$project.Root;Mode='Single';Role='Client';Username='Dev';Task='runClient';RuntimeDirectory=(Join-Path $session 'Dev');GuiScale=$null;Arguments=@('--no-daemon','--console=plain','-PpycodersRuntimeDir='+ (Join-Path $session 'Dev'),'runClient')}
+        $descriptor=[pscustomobject]@{
+            targetId='LiteLoader@1.7.10';minecraftId='1.7.10';loaderVersion='1.7.10_04';loaderArtifactUrl='https://dl.liteloader.com/versions/liteloader.jar';loaderArtifactBytes=$loaderBytes.Length
+            loaderArtifactSha256=(& $sha256 $loaderBytes);loaderArtifactOfficialMd5=[Convert]::ToHexString([Security.Cryptography.MD5]::HashData($loaderBytes)).ToLowerInvariant()
+            mainClass='net.minecraft.launchwrapper.Launch';tweakClass='com.mumfrey.liteloader.launch.LiteLoaderTweaker'
+            clientArtifact=[pscustomobject]@{url='https://launcher.mojang.com/v1/objects/e80d9b3bf5085002218d4be59e668bac718abbc6/client.jar';sha1='e80d9b3bf5085002218d4be59e668bac718abbc6';bytes=5256245}
+            serverArtifact=[pscustomobject]@{url='https://launcher.mojang.com/v1/objects/952438ac4e01b4d115c5fc38f891710c4941df29/server.jar';sha1='952438ac4e01b4d115c5fc38f891710c4941df29';bytes=9605030}
+            versionMetadata=[pscustomobject]@{url='https://piston-meta.mojang.com/v1/packages/ed5d8789ed29872ea2ef1c348302b0c55e3f3468/1.7.10.json';sha1='ed5d8789ed29872ea2ef1c348302b0c55e3f3468';bytes=14777;sha256='265c7e47aad4c74f6085a49667d3a828f48d63f484def2ae70b5e426e5b7cba6'}
+            assetIndex=[pscustomobject]@{url='https://launchermeta.mojang.com/v1/packages/1863782e33ce7b584fc45b037325a1964e095d3e/1.7.10.json';sha1='1863782e33ce7b584fc45b037325a1964e095d3e';bytes=72996;id='1.7.10'}
+            libraries=@([pscustomobject]@{name='net.minecraft:launchwrapper:1.11';url='https://libraries.minecraft.net/net/minecraft/launchwrapper/1.11/launchwrapper-1.11.jar';bytes=$libraryBytes.Length;sha1=[Convert]::ToHexString([Security.Cryptography.SHA1]::HashData($libraryBytes)).ToLowerInvariant();sha256=(& $sha256 $libraryBytes)})
+        }
+        Mock Save-MmtlMojangAssets -ModuleName RunManager {
+            param($GradleUserHome,$LoaderLaunchPlan,$Download,$TimeoutSeconds)
+            [pscustomobject]@{minecraftId=[string]$LoaderLaunchPlan.minecraftId;assetCount=1;cachedAssetCount=1;downloadedAssetCount=0;assetBytes=0L;indexCached=$true;indexSha1=[string]$LoaderLaunchPlan.assetIndex.sha1}
+        }
+        Mock Save-MmtlLiteLoaderClientArtifact -ModuleName RunManager {
+            param($SessionPath,$LoaderLaunchPlan,$Download,$TimeoutSeconds)
+            [pscustomobject]@{path=(Join-Path $SessionPath 'gradle-loader/minecraft-artifacts/client-1.7.10.jar');bytes=[long]$LoaderLaunchPlan.clientArtifact.bytes;sha1=[string]$LoaderLaunchPlan.clientArtifact.sha1;cached=$true}
+        }
+        $buildJava=Join-Path $TestDrive 'jdk-lite-build/bin/java.exe';New-Item -ItemType File -Path $buildJava -Force|Out-Null
+        $runtimeJava=Join-Path $TestDrive 'jdk-lite-runtime/bin/java.exe';New-Item -ItemType File -Path $runtimeJava -Force|Out-Null
+        $started=Start-MmtlGradleInstance -Project $project -Plan $plan -BuildJavaPath $buildJava -RuntimeJavaPath $runtimeJava -RuntimeJavaMajor 8 -SessionPath $session -LoaderLaunchPlan $descriptor
+        try {
+            $deadline=(Get-Date).AddSeconds(8)
+            while(-not (Select-String -Path $started.LogPath -Pattern 'fake-gradle-start' -Quiet -ErrorAction SilentlyContinue) -and (Get-Date) -lt $deadline){Start-Sleep -Milliseconds 100}
+            (Select-String -Path $started.LogPath -Pattern 'fake-gradle-start' -Quiet) | Should -BeTrue
+            (Select-String -Path $started.LogPath -Pattern 'gradle-args=.*--init-script.*liteloader-.*\.gradle' -Quiet) | Should -BeTrue
+            $scriptPath=Get-ChildItem -LiteralPath (Join-Path $session 'gradle-loader') -Filter 'liteloader-*.gradle' -File | Select-Object -First 1 -ExpandProperty FullName
+            $scriptPath | Should -Not -BeNullOrEmpty
+            $scriptText=Get-Content -LiteralPath $scriptPath -Raw
+            $match=[regex]::Match($scriptText,"Base64\.decoder\.decode\('(?<value>[A-Za-z0-9+/=]+)'\)")
+            $match.Success | Should -BeTrue
+            $config=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($match.Groups['value'].Value))|ConvertFrom-Json
+            $config.taskName | Should -BeExactly 'runClient'
+            @($config.classpath).Count | Should -Be 2
+            $config.mainClass | Should -BeExactly 'net.minecraft.launchwrapper.Launch'
+            $config.tweakClass | Should -BeExactly 'com.mumfrey.liteloader.launch.LiteLoaderTweaker'
+            $config.classpath | Should -Contain $loaderPath
+            $config.classpath | Should -Contain $libraryPath
+            Should -Invoke Save-MmtlMojangAssets -ModuleName RunManager -Times 1 -Exactly
+            Should -Invoke Save-MmtlLiteLoaderClientArtifact -ModuleName RunManager -Times 1 -Exactly
         } finally {Stop-MmtlTrackedProcess -SessionPath $session -ProcessId $started.ProcessId -Confirm:$false|Out-Null}
     }
     It '接受兼容的多项目组合' {
@@ -333,7 +453,7 @@ Describe 'MMTL 安全与项目检测' {
     }
     It '登记进程已退出时停止命令安全返回而不触碰复用 PID' {
         $session=Join-Path $TestDrive 'exited-process-session';New-Item -ItemType Directory $session|Out-Null
-        $record=[pscustomobject]@{PID=2147480000;Role='Client';Username='Dev';StartTimeUtc='2000-01-01T00:00:00.0000000Z';Executable='C:\fake\pwsh.exe';ParentPID=0;CommandLine='';ProcessTree=@()}
+        $record=[pscustomobject]@{PID=2147480000;Role='Client';Username='Dev';StartTimeUtc='2000-01-01T00:00:00.0000000Z';Executable='C:\fake\pwsh.exe';ParentPID=0;CommandLine='';ProcessTree=@()} # public-hygiene: allow-synthetic-path
         $record|ConvertTo-Json|Set-Content (Join-Path $session 'pids.json')
         (Stop-MmtlTrackedProcess -SessionPath $session -ProcessId 2147480000 -Confirm:$false) | Should -BeFalse
     }
@@ -372,7 +492,7 @@ Start-Sleep -Seconds 60
         }
     }
     It 'Portable Runtime 指向仓库内的 .runtime' {
-        $resolved=Resolve-MmtlRuntimeRoot -Path 'C:\ignored' -Portable -LauncherRoot $script:root
+        $resolved=Resolve-MmtlRuntimeRoot -Path 'C:\ignored' -Portable -LauncherRoot $script:root # public-hygiene: allow-synthetic-path
         $resolved | Should -Be (Join-Path $script:root '.runtime')
     }
     It 'Fabric Loom 跨盘 Runtime 使用受控目录联接且只删除联接本身' {

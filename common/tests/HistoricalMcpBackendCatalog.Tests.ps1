@@ -5,7 +5,7 @@ BeforeAll {
 
     $script:catalogFixture = [pscustomobject][ordered]@{
         schemaVersion = 1
-        universeHash = '0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606'
+        universeHash = 'c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c'
         backendId = 'retromcp-java'
         backendSource = [pscustomobject]@{
             repositoryUrl = 'https://github.com/MCPHackers/RetroMCP-Java'
@@ -88,7 +88,7 @@ Describe 'Historical MCP backend catalog' {
 
         $audit = & (Join-Path $repoRoot 'tools/Test-HistoricalMcpBackendCatalog.ps1') -CatalogPath $catalogPath -UniversePath $universePath
 
-        $audit.universeHash | Should -BeExactly '0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606'
+        $audit.universeHash | Should -BeExactly 'c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c'
         $audit.targetCount | Should -Be 1631
         $audit.loaders.ModLoader.candidateCount | Should -Be 23
         $audit.loaders.ModLoader.missingCount | Should -Be 19

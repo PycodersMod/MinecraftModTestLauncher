@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "targetId": "Fabric@1.21.8",
+  "minecraftId": "1.21.8",
+  "loaderId": "Fabric",
+  "loaderVersion": "0.19.5",
+  "providerId": "fabric-1.21.8",
+  "agentVersion": "0.1.0",
+  "provider": {
+    "providerId": "fabric-1.21.8",
+    "loaderId": "Fabric",
+    "minecraftVersions": [
+      "1.21.8"
+    ],
+    "loaderVersions": [
+      "0.19.5"
+    ],
+    "agentVersion": "0.1.0",
+    "manifestPath": "compatibility/evidence/agent-build/Fabric-1.21.8-Windows-x64/agent-manifest.json",
+    "manifestSha256": "72899d5df67ad44f62f8cedff7bd3a1bb1005441bd221faee1cca41a7862be30",
+    "artifactSha256": "220f691e90f7df6eec678c3801ddee1855f3470a3687d3f55f8df19bf91d511f"
+  },
+  "validationLevel": "AGENT_BUILD_VERIFIED",
+  "result": "PASSED",
+  "source": {
+    "sha256": "59d6643c6f376c93db518fc892367d7033191541a8e24f2ffc7d8f8fbbaa681c",
+    "unchangedDuringBuild": true
+  },
+  "buildSystem": {
+    "id": "Gradle",
+    "version": "9.7.1",
+    "wrapperSha256": "7a9ce74cff467ca1bf60a4fcd9f05185acceda4d0f382434d393e17864262c5d"
+  },
+  "java": {
+    "vendor": "Oracle Corporation",
+    "version": "25.0.1",
+    "major": 25,
+    "architecture": "x64"
+  },
+  "artifact": {
+    "path": "compatibility/evidence/agent-build/Fabric-1.21.8-Windows-x64/agent.jar",
+    "sha256": "220f691e90f7df6eec678c3801ddee1855f3470a3687d3f55f8df19bf91d511f"
+  },
+  "tests": {
+    "result": "PASSED",
+    "passed": 19,
+    "failed": 0,
+    "skipped": 0
+  },
+  "logs": [
+    {
+      "sha256": "61ff8bbbf1d32a17126c80ef26827db3aad8175931d0b028c27e4252eaa79045"
+    }
+  ]
+}

@@ -2,6 +2,7 @@
 param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Arguments)
 $ErrorActionPreference='Stop'
 if($null -eq $Arguments){$Arguments=@()}
+if($Arguments -contains '--probe-runtime-binding-for-launch' -and $Arguments -notcontains '--launch-check' -and $Arguments -notcontains '--launch' -and $Arguments -notcontains '--run-scenario'){throw '--probe-runtime-binding-for-launch 只能与 --launch-check、--launch 或 --run-scenario 同时使用。'}
  $here=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $commonRoot=Split-Path -Parent $PSScriptRoot
 Import-Module (Join-Path $commonRoot 'src/Platform/Platform.psm1') -Force
@@ -44,7 +45,7 @@ if($configFileIndex -ge 0){if($configFileIndex+1 -ge $Arguments.Count){throw '--
 $portable=($Arguments -contains '--portable') -and -not ($configPath -and (Test-Path $configPath) -and (Read-MmtlConfig -Path $configPath).runtimeRoot)
 if(($Arguments -contains '--help' -or $Arguments -contains '-h')){Write-Host '首次运行：--init [--config-file <path>] [--portable] [--json]；创建本地配置、Runtime、空 Registry 与三种示例 Profile，不修改 Mod。'}
 if($Arguments -contains '--help' -or $Arguments -contains '-h'){
-    Write-Host 'Minecraft 模组测试启动器（Mod 开发者工具）';Write-Host '用法：launcher.cmd / launcher.sh [--import-project <path>|--list-projects|--project-info <id>|--remove-project <id>|--recover-project-registry --confirm-backup|--plan|--scenario-plan|--launch-check|--runtime-binding|--doctor|--capabilities|--explain-java|--validate|--dry-run|--build|--launch|--launch-rehearsal|--human-validation-plan] [--profile NAME]';Write-Host '项目：--import-project <path> [--primary-mod-id ID] [--json]（只读探测并登记）| --list-projects [--json] | --project-info <id> [--json] | --remove-project <id> [--json] | --recover-project-registry --confirm-backup（备份损坏 Registry 后重建空 Registry）';Write-Host '执行计划：--plan [--json] [--plan-output <path>]；场景只读计划：--scenario-plan [--json]；启动预检：--launch-check [--json]；Runtime Binding：--runtime-binding [--probe] [--json]';Write-Host '环境诊断：--doctor [--offline] [--json]；平台能力：--capabilities [--json]；Java 解析：--explain-java [--json]';Write-Host 'JarMod Session overlay：--jarmod-overlay <session-id> --base-jar <path> --patch-archive <path> --patch-strategy OverlayRejectConflicts|OverlayReplaceConflicts [--json]；只写入指定 Session 副本，不启动 Minecraft。';Write-Host '人工验证准备：--human-validation-plan [--json]；只生成本地计划与 HANDOVER/manual-validation 包，不启动 Minecraft。';Write-Host '工作区发现：--discover-projects <workspace-or-repository> [--json]';Write-Host '版本目录：--list-minecraft-versions | --minecraft-info <id|CurrentStable> | --refresh-catalog';Write-Host '加载器：--list-loaders <mc> [--include-historical] | --loader-info <mc> <loader> | --provider-status <loader>';Write-Host '覆盖审计：';foreach($option in Get-MmtlCoverageCliOptionDefinitions){Write-Host "  $($option.usage) — $($option.description)"};Write-Host '深度验证：--validation-plan --scope P0|CurrentStable | --validation-matrix <target-definitions.json> [--validation-output <path>] | --validation-summary [--validation-version <mc>] [--validation-loader <id>]';Write-Host '历史生态提供器仅使用 HTTPS 元数据与缓存；不会自动执行仅提供 HTTP 的制品。';Write-Host '离线选项：--catalog-offline 仅影响 Mojang 版本目录；--loader-offline 仅影响加载器元数据；均不改变 Gradle 离线模式。';Write-Host '会话：--list-sessions [--json] | --recover-sessions [--dry-run] [--json] | --session-info ID [--json] | --session-validate ID | --stop ID | --clean-session ID';Write-Host '日志分析：--analyze-session ID [--json] | --session-report ID [--json]；规则分析会保留 raw 日志，不把无异常信号解释为 Mod 功能通过。';Write-Host '运行时观察：--observe-session ID [--timeout-seconds N] [--json] | --session-events ID [--json]；只观察当前 Session 登记数据，不启动 Minecraft。';Write-Host '场景：--scenario-plan [--json] 只读生成顺序；--run-scenario 执行非交互场景；--scenario-status ID 查询；--scenario-action ID WAIT|SEND_COMMAND|SCREENSHOT|STOP_ROLE|STOP_ALL；SEND_COMMAND 需显式 --grant-command-permission，SCREENSHOT 需受管 Agent。';Write-Host '安全演练：--launch-rehearsal [--json]；按 Plan 模式执行 Single、Dedicated 或 IntegratedLAN 合成 harness，不启动真实 Minecraft。';Write-Host '运行目录：--portable';Write-Host '不传参数时进入交互模式；--config-file 仅供临时配置调用。';exit 0
+    Write-Host 'Minecraft 模组测试启动器（Mod 开发者工具）';Write-Host '用法：launcher.cmd / launcher.sh [--import-project <path>|--list-projects|--project-info <id>|--remove-project <id>|--recover-project-registry --confirm-backup|--plan|--scenario-plan|--launch-check|--runtime-binding|--doctor|--capabilities|--explain-java|--validate|--dry-run|--build|--launch|--launch-rehearsal|--human-validation-plan] [--profile NAME]';Write-Host '项目：--import-project <path> [--primary-mod-id ID] [--json]（只读探测并登记）| --list-projects [--json] | --project-info <id> [--json] | --remove-project <id> [--json] | --recover-project-registry --confirm-backup（备份损坏 Registry 后重建空 Registry）';Write-Host '执行计划：--plan [--json] [--plan-output <path>]；场景只读计划：--scenario-plan [--json]；启动预检：--launch-check [--json]；可选本次探测：--launch-check/--launch --probe-runtime-binding-for-launch；Runtime Binding：--runtime-binding [--probe] [--offline|--online] [--json]';Write-Host '环境诊断：--doctor [--offline] [--json]；平台能力：--capabilities [--json]；Java 解析：--explain-java [--json]';Write-Host 'JarMod Session overlay：--jarmod-overlay <session-id> --base-jar <path> --patch-archive <path> --patch-strategy OverlayRejectConflicts|OverlayReplaceConflicts [--json]；只写入指定 Session 副本，不启动 Minecraft。';Write-Host '人工验证准备：--human-validation-plan [--json]；只生成本地计划与 HANDOVER/manual-validation 包，不启动 Minecraft。';Write-Host '工作区发现：--discover-projects <workspace-or-repository> [--json]';Write-Host '版本目录：--list-minecraft-versions | --minecraft-info <id|CurrentStable> | --refresh-catalog';Write-Host '加载器：--list-loaders <mc> [--include-historical] | --loader-info <mc> <loader> | --provider-status <loader>';Write-Host '覆盖审计：';foreach($option in Get-MmtlCoverageCliOptionDefinitions){Write-Host "  $($option.usage) — $($option.description)"};Write-Host '深度验证：--validation-plan --scope P0|CurrentStable | --validation-matrix <target-definitions.json> [--validation-output <path>] | --validation-summary [--validation-version <mc>] [--validation-loader <id>]';Write-Host '历史生态提供器仅使用 HTTPS 元数据与缓存；不会自动执行仅提供 HTTP 的制品。';Write-Host '离线选项：--catalog-offline 仅影响 Mojang 版本目录；--loader-offline 仅影响加载器元数据；均不改变 Gradle 离线模式。';Write-Host '会话：--list-sessions [--json] | --recover-sessions [--dry-run] [--json] | --session-info ID [--json] | --session-validate ID | --stop ID | --clean-session ID';Write-Host '日志分析：--analyze-session ID [--json] | --session-report ID [--json]；规则分析会保留 raw 日志，不把无异常信号解释为 Mod 功能通过。';Write-Host '运行时观察：--observe-session ID [--timeout-seconds N] [--json] | --session-events ID [--json]；只观察当前 Session 登记数据，不启动 Minecraft。';Write-Host '场景：--scenario-plan [--json] 只读生成顺序；--run-scenario 执行非交互场景；--scenario-status ID 查询；--scenario-action ID WAIT|SEND_COMMAND|SCREENSHOT|STOP_ROLE|STOP_ALL；SEND_COMMAND 需显式 --grant-command-permission，SCREENSHOT 需受管 Agent。';Write-Host '安全演练：--launch-rehearsal [--json]；按 Plan 模式执行 Single、Dedicated 或 IntegratedLAN 合成 harness，不启动真实 Minecraft。';Write-Host '运行目录：--portable';Write-Host '不传参数时进入交互模式；--config-file 仅供临时配置调用。';exit 0
 }
 $capabilitiesIndex=[Array]::IndexOf($Arguments,'--capabilities')
 if($capabilitiesIndex -ge 0){
@@ -424,33 +425,99 @@ if($Arguments.Count -eq 0){
 $profileNameIndex=[Array]::IndexOf($Arguments,'--profile')
 $profileName=if($profileNameIndex -ge 0 -and $profileNameIndex+1 -lt $Arguments.Count){[string]$Arguments[$profileNameIndex+1]}else{$null}
 $profile=$null;$project=$null
-if($config -and $Arguments -notcontains '--human-validation-plan' -and -not $projectRegistryMode){$profile=Get-MmtlProfile -Config $config -Name $profileName;if(-not $readOnlyPlanMode){Assert-MmtlProfile -Profile $profile | Out-Null};if($Arguments -notcontains '--scenario-plan' -and $Arguments -notcontains '--scenario-status' -and $Arguments -notcontains '--scenario-action'){$project=Get-MmtlProject -Path $profile.project}}
+$scenarioOverrideOptions=@('--client-count','--multiplayer','--host-name','--guest-name-pattern','--world')
+$scenarioOverrideArgs=[Collections.Generic.List[string]]::new()
+for($argumentIndex=0;$argumentIndex -lt $Arguments.Count;$argumentIndex++){
+    if([string]$Arguments[$argumentIndex] -in $scenarioOverrideOptions){
+        $scenarioOverrideArgs.Add([string]$Arguments[$argumentIndex])
+        if($argumentIndex+1 -lt $Arguments.Count){$scenarioOverrideArgs.Add([string]$Arguments[++$argumentIndex])}
+    }
+}
+$effectiveScenario=$null
+if($config -and $Arguments -notcontains '--human-validation-plan' -and -not $projectRegistryMode){
+    $profile=Get-MmtlProfile -Config $config -Name $profileName
+    $scenarioPlanCommand=($Arguments -contains '--scenario-plan' -or $Arguments -contains '--plan' -or $Arguments -contains '--launch-check' -or $Arguments -contains '--runtime-binding' -or $Arguments -contains '--run-scenario' -or $Arguments -contains '--launch-rehearsal' -or $Arguments -contains '--launch' -or $Arguments -contains '--build')
+    if($scenarioPlanCommand -or $scenarioOverrideArgs.Count -gt 0){
+        if(-not $scenarioPlanCommand){throw 'SCENARIO_OVERRIDE_COMMAND_REQUIRED: 场景覆盖只能与计划或执行命令组合。'}
+        $scenarioOverrides=ConvertFrom-MmtlScenarioCliOverrides -Arguments @($scenarioOverrideArgs.ToArray())
+        $sourceVersion=if($null -ne $config.PSObject.Properties['configVersion']){[int]$config.configVersion}else{1}
+        $effectiveScenario=Merge-MmtlScenarioConfiguration -Profile $profile -Overrides $scenarioOverrides -ProfileName $(if($profileName){$profileName}else{[string]$config.defaultProfile}) -SourceConfigVersion $sourceVersion
+        $profile=$effectiveScenario.executionProfile
+    }
+    if(-not $readOnlyPlanMode){Assert-MmtlProfile -Profile $profile | Out-Null}
+    if($Arguments -notcontains '--scenario-plan' -and $Arguments -notcontains '--scenario-status' -and $Arguments -notcontains '--scenario-action'){$project=Get-MmtlProject -Path $profile.project}
+}
 if($Arguments -contains '--scenario-plan'){
     if(-not $profile){throw 'SCENARIO_PROFILE_REQUIRED'}
-    $hostName=if($profile.hostUsername){[string]$profile.hostUsername}else{'MMTL_Host'}
-    $guestPrefix=if($profile.clientPrefix){[string]$profile.clientPrefix}else{'MMTL_C'}
-    $scenarioPlan=New-MmtlScenarioPlan -Mode ([string]$profile.mode) -Players ([int]$profile.players) -HostUsername $hostName -GuestPrefix $guestPrefix -AutoCreateWorld:([bool]$profile.newWorld) -DurationSeconds $(if($profile.durationSeconds){[int]$profile.durationSeconds}else{60})
-    $result=[pscustomobject][ordered]@{schemaVersion=1;status='PlanOnly';plan=$scenarioPlan;dedicatedEulaAccepted=([string]$profile.mode -ne 'Dedicated' -or $profile.acceptEula -eq $true)}
+    $hostName=if($profile.PSObject.Properties['identity'] -and $profile.identity.hostName){[string]$profile.identity.hostName}elseif($profile.hostUsername){[string]$profile.hostUsername}else{'MMTL_Host'}
+    $guestPattern=if($profile.PSObject.Properties['identity'] -and $profile.identity.guestNamePattern){[string]$profile.identity.guestNamePattern}elseif($profile.clientPrefix){[string]$profile.clientPrefix+'{index}'}else{'MMTL_G{index}'}
+    $clientCount=[int]$(if($effectiveScenario){$effectiveScenario.clientCount}elseif($profile.PSObject.Properties['clientCount']){$profile.clientCount}else{$profile.players})
+    $scenarioPlan=New-MmtlScenarioPlan -Mode ([string]$profile.mode) -ClientCount $clientCount -HostUsername $hostName -GuestNamePattern $guestPattern -AutoCreateWorld:([bool]$profile.newWorld) -DurationSeconds $(if($profile.durationSeconds){[int]$profile.durationSeconds}else{60})
+    $eulaRequired=[string]$profile.mode -in @('Dedicated','HistoricalDedicatedEquivalent')
+    $result=[pscustomobject][ordered]@{schemaVersion=1;status='PlanOnly';plan=$scenarioPlan;scenarioConfiguration=$(if($effectiveScenario){$effectiveScenario.scenarioConfiguration}else{$null});dedicatedEulaAccepted=(-not $eulaRequired -or $profile.acceptEula -eq $true)}
     if($Arguments -contains '--json'){$result|ConvertTo-Json -Depth 20 -Compress}else{$result.plan|Format-List}
     exit 0
 }
 function New-MmtlCliExecutionPlan {
     param([Parameter(Mandatory)]$Primary,[Parameter(Mandatory)]$Profile,[Parameter(Mandatory)]$Config,[Parameter(Mandatory)][string]$RuntimeRoot,[string]$Name,[switch]$RequireBuild,[switch]$Clean)
-    $catalogEntry=$null;$versionMetadata=$null;$metadataWarning=$null
+    $catalogEntry=$null;$versionMetadata=$null;$metadataWarning=$null;$runtimeJavaRequirement=$null
     if($Primary.MinecraftVersion){
         try{$catalog=Get-MmtlMinecraftVersionCatalog -RuntimeRoot $catalogRuntimeRoot -Offline;$catalogEntry=Resolve-MmtlMinecraftVersion -MinecraftId ([string]$Primary.MinecraftVersion) -Catalog $catalog}
         catch{$metadataWarning=$_.Exception.Message}
         if($catalogEntry){try{$versionMetadata=Get-MmtlMinecraftVersionMetadata -CatalogEntry $catalogEntry -RuntimeRoot $catalogRuntimeRoot -Offline}catch{$metadataWarning=$_.Exception.Message}}
         if(-not $catalogEntry){$catalogEntry=[pscustomobject]@{id=[string]$Primary.MinecraftVersion;metadataStatus='UNAVAILABLE'}}
+        $hasRuntimeJavaMetadata=$versionMetadata -and $versionMetadata.PSObject.Properties['metadata'] -and $versionMetadata.metadata -and $versionMetadata.metadata.PSObject.Properties['javaVersion'] -and $versionMetadata.metadata.javaVersion
+        if(-not $hasRuntimeJavaMetadata){
+            $frozenRuntimeJavaCatalog=Get-Content -LiteralPath (Join-Path $here 'compatibility/runtime-java-catalog.json') -Raw -ErrorAction Stop|ConvertFrom-Json -ErrorAction Stop
+            $frozenUniverse=Get-Content -LiteralPath (Join-Path $here 'compatibility/compatibility-universe.json') -Raw -ErrorAction Stop|ConvertFrom-Json -ErrorAction Stop
+            $runtimeJavaRequirement=Resolve-MmtlFrozenRuntimeJavaCatalogRequirement -MinecraftId ([string]$Primary.MinecraftVersion) -Catalog $frozenRuntimeJavaCatalog -UniverseHash ([string]$frozenUniverse.catalogHash) -SnapshotRoot (Join-Path $here 'compatibility/snapshots')
+        }
     }
     $context=Get-MmtlPlatformContext
     $launchCapability=if($context.os -eq 'Windows'){'Native'}else{'BuildOnly'}
     $context.capabilities|Add-Member -NotePropertyName Launch -NotePropertyValue $launchCapability -Force
     $physicalMemory=0L;try{$physicalMemory=[long](Get-MmtlPhysicalMemoryMb)}catch{}
     $parameters=@{Project=$Primary;Profile=$Profile;Config=$Config;Platform=$context;RuntimeRoot=$RuntimeRoot;ProfileName=$Name;CatalogEntry=$catalogEntry;VersionMetadata=$versionMetadata;MetadataWarning=$metadataWarning;PhysicalMemoryMb=$physicalMemory}
+    if($runtimeJavaRequirement){$parameters.RuntimeJavaRequirement=$runtimeJavaRequirement}
+    if ([string]$Primary.Loader -ceq 'LiteLoader' -and $Primary.MinecraftVersion -and $Primary.LoaderVersion) {
+        $universe=Get-Content -LiteralPath (Join-Path $here 'compatibility/compatibility-universe.json') -Raw | ConvertFrom-Json -ErrorAction Stop
+        $frozenRuntimeJavaCatalog=Get-Content -LiteralPath (Join-Path $here 'compatibility/runtime-java-catalog.json') -Raw -ErrorAction Stop|ConvertFrom-Json -ErrorAction Stop
+        $loaderArtifactCatalog=Get-Content -LiteralPath (Join-Path $here 'compatibility/liteloader-artifact-pins.json') -Raw | ConvertFrom-Json -ErrorAction Stop
+        $loaderRuntimeCatalog=Get-Content -LiteralPath (Join-Path $here 'compatibility/liteloader-runtime-dependencies.json') -Raw | ConvertFrom-Json -ErrorAction Stop
+        Import-Module (Join-Path $commonRoot 'src/Compatibility/LiteLoaderRuntimeDependencies.psm1') -Force
+        try {
+            $parameters.LoaderLaunchPlan=Get-MmtlLiteLoaderRuntimeDependencies -TargetId ("LiteLoader@"+[string]$Primary.MinecraftVersion) -Universe $universe -Catalog $loaderRuntimeCatalog -LoaderArtifactCatalog $loaderArtifactCatalog
+            $snapshotRoot=Join-Path $here 'compatibility/snapshots'
+            $mojangClient=Resolve-MmtlFrozenMojangClientArtifact -MinecraftId ([string]$Primary.MinecraftVersion) -Catalog $frozenRuntimeJavaCatalog -UniverseHash ([string]$frozenUniverse.catalogHash) -SnapshotRoot $snapshotRoot -ArtifactName client
+            $mojangServer=Resolve-MmtlFrozenMojangClientArtifact -MinecraftId ([string]$Primary.MinecraftVersion) -Catalog $frozenRuntimeJavaCatalog -UniverseHash ([string]$frozenUniverse.catalogHash) -SnapshotRoot $snapshotRoot -ArtifactName server
+            $parameters.LoaderLaunchPlan | Add-Member -NotePropertyName clientArtifact -NotePropertyValue $mojangClient -Force
+            $parameters.LoaderLaunchPlan | Add-Member -NotePropertyName serverArtifact -NotePropertyValue $mojangServer -Force
+            $parameters.LoaderLaunchPlan | Add-Member -NotePropertyName versionMetadata -NotePropertyValue $mojangClient.versionMetadata -Force
+            $parameters.LoaderLaunchPlan | Add-Member -NotePropertyName assetIndex -NotePropertyValue $mojangClient.assetIndex -Force
+        }
+        catch { if ($_.Exception.Message -notlike '*LITELOADER_RUNTIME_TARGET_UNSUPPORTED*' -and $_.Exception.Message -notlike '*LITELOADER_ARTIFACT_PIN_NOT_FOUND*') { throw } }
+    }
     if($RequireBuild){$parameters.BuildRequired=$true}
     if($Clean){$parameters.CleanBuild=$true}
     $basePlan=New-MmtlExecutionPlan @parameters
+    if($Arguments -contains '--probe-runtime-binding-for-launch'){
+        $probeResult=$null
+        try {
+            $trustedProjectRoots=@();if($Config -and $Config.PSObject.Properties['trustedProjectRoots']){$trustedProjectRoots=@($Config.trustedProjectRoots|ForEach-Object{[string]$_})}
+            $probeOffline=($Arguments -contains '--offline' -or -not ($Arguments -contains '--online'))
+            $probeResult=Invoke-MmtlRuntimeBindingProbe -Project $Primary -Plan $basePlan -RuntimeRoot $RuntimeRoot -TrustedProjectRoots $trustedProjectRoots -Offline:$probeOffline
+            $parameters.AdapterEvidence=New-MmtlRuntimeBindingAdapterEvidenceFromFreshProbe -Project $Primary -Plan $basePlan -ProbeResult $probeResult
+            $freshPlan=New-MmtlExecutionPlan @parameters
+            $freshPlan|Add-Member -NotePropertyName freshRuntimeBindingProbe -NotePropertyValue ([pscustomobject]@{status='Observed';cacheHit=$false;timestamp=[string]$probeResult.timestamp;evidencePath=[string]$probeResult.evidencePath}) -Force
+            return $freshPlan
+        } catch {
+            $probeStatus=if($probeResult){[string]$probeResult.status}else{'ProbeFailed'}
+            $probeReason=if($probeResult){[string]$probeResult.errorCode}else{[string]$_.Exception.Message}
+            $probeEvidencePath='';if($probeResult -and $probeResult.PSObject.Properties['evidencePath']){$probeEvidencePath=[string]$probeResult.evidencePath}
+            $basePlan|Add-Member -NotePropertyName freshRuntimeBindingProbe -NotePropertyValue ([pscustomobject]@{status=$probeStatus;cacheHit=$false;errorCode=$probeReason;evidencePath=$probeEvidencePath}) -Force
+            return $basePlan
+        }
+    }
     $cachedBinding=Get-MmtlCachedRuntimeBindingEvidence -Project $Primary -Plan $basePlan -RuntimeRoot $RuntimeRoot
     if(-not $cachedBinding){return $basePlan}
     $parameters.AdapterEvidence=[pscustomobject]@{runtimeJavaBindingMode=[string]$cachedBinding.runtimeJavaBinding.mode;runtimeJavaBindingEvidence=$cachedBinding.runtimeJavaBinding}
@@ -522,7 +589,8 @@ if($Arguments -contains '--runtime-binding'){
     $probeResult=$null
     if($Arguments -contains '--probe'){
         $trustedProjectRoots=@();if($config -and $config.PSObject.Properties['trustedProjectRoots']){$trustedProjectRoots=@($config.trustedProjectRoots|ForEach-Object{[string]$_})}
-        try{$probeResult=Invoke-MmtlRuntimeBindingProbe -Project $project -Plan $executionPlan -RuntimeRoot $runtimeRoot -TrustedProjectRoots $trustedProjectRoots -Offline}
+        $probeOffline=($Arguments -contains '--offline' -or -not ($Arguments -contains '--online'))
+        try{$probeResult=Invoke-MmtlRuntimeBindingProbe -Project $project -Plan $executionPlan -RuntimeRoot $runtimeRoot -TrustedProjectRoots $trustedProjectRoots -Offline:$probeOffline}
         catch{[Console]::Error.WriteLine([string]$_);exit 2}
         $bindingMode=[string]$probeResult.runtimeJavaBinding.mode;$bindingEvidence=$probeResult.runtimeJavaBinding
     }else{$bindingMode=[string]$executionPlan.runtimeJava.bindingMode;$bindingEvidence=$executionPlan.runtimeJava.bindingEvidence}
@@ -584,7 +652,8 @@ if($Arguments -contains '--explain-java'){
 function Get-MmtlProjectOutputJar {
     param([Parameter(Mandatory)]$Project)
     $jars=@(Get-ChildItem -LiteralPath (Join-Path $Project.Root 'build/libs') -Filter '*.jar' -File -ErrorAction SilentlyContinue|Where-Object{$_.Name -notmatch '(?i)(sources|javadoc|dev)(?:[-.]|\.jar$)'})
-    if($jars.Count -ne 1){throw "项目 $($Project.Root) 应有且仅有一个可用 Mod JAR，实际 $($jars.Count) 个。"}
+    if($jars.Count -eq 0){throw "项目 $($Project.Root) 缺少链接项目 JAR。"}
+    if($jars.Count -gt 1){$ordered=@($jars|Sort-Object LastWriteTimeUtc -Descending);if($ordered[0].LastWriteTimeUtc -eq $ordered[1].LastWriteTimeUtc){throw "项目 $($Project.Root) 的链接 JAR 产物不唯一。"};return $ordered[0].FullName}
     return $jars[0].FullName
 }
 function Invoke-MmtlSessionMetadataWrite {
@@ -604,14 +673,14 @@ function Start-MmtlConfiguredRun {
     if($linked.Count){Assert-MmtlCompatible -Projects (@($Primary)+$linked)|Out-Null}
     $projects=@($Primary)+$linked
     foreach($candidate in $projects){if($candidate.Loader -eq 'Unknown' -or -not $candidate.Wrapper -or -not $candidate.LoaderVersion){throw "项目检测信息不完整：$($candidate.Root)"}}
-    $players=[int]$Profile.players
-    if($players -gt 8){throw 'v1 单次最多运行 8 个游戏客户端。'}
+    $players=[int]$(if($Profile.PSObject.Properties['clientCount']){$Profile.clientCount}else{$Profile.players})
     if($Profile.mode -eq 'Single' -and $players -ne 1){throw 'Single 模式的 players 必须为 1。'}
     if($Profile.mode -eq 'IntegratedLAN' -and $players -lt 2){throw 'IntegratedLAN 的 players 包含 Host，至少为 2。'}
     $memoryBudget=Get-MmtlMemoryBudget -Profile $Profile -Mode $Profile.mode;$memoryOverageConfirmed=$false
     if($memoryBudget.ExceedsLimit){if($NonInteractive){throw 'SCENARIO_MEMORY_BUDGET_EXCEEDED: non-interactive scenario refuses to prompt for over-budget confirmation.'};Write-Warning "预计 Xmx 总和 $($memoryBudget.RequestedMb) MB，超过物理内存 80% 预算 $($memoryBudget.LimitMb) MB。";$memoryApproval=Read-Host '继续可能造成系统变慢或实例崩溃。输入 Y 明确继续，其他输入取消';if($memoryApproval -notmatch '^(?i:y|yes)$'){throw '用户未确认超额内存预算，已取消启动。'};$memoryOverageConfirmed=$true}
-    $hostName=if($Profile.hostUsername){[string]$Profile.hostUsername}else{'Dev'}
-    $prefix=if($Profile.clientPrefix){[string]$Profile.clientPrefix}else{'Dev_'}
+    $hostName=if($Profile.PSObject.Properties['identity'] -and $Profile.identity.hostName){[string]$Profile.identity.hostName}elseif($Profile.hostUsername){[string]$Profile.hostUsername}else{'Dev'}
+    $guestPattern=if($Profile.PSObject.Properties['identity'] -and $Profile.identity.guestNamePattern){[string]$Profile.identity.guestNamePattern}else{if($Profile.clientPrefix){[string]$Profile.clientPrefix+'{index}'}else{'Dev_{index}'}}
+    $prefix=$guestPattern.Replace('{index}','')
     if($hostName -notmatch '^[A-Za-z0-9_]{1,16}$'){throw 'hostUsername 必须为 1 到 16 位 ASCII 字母、数字或下划线。'}
     if($prefix -notmatch '^[A-Za-z0-9_]{1,15}$'){throw 'clientPrefix 必须为 1 到 15 位 ASCII 字母、数字或下划线。'}
     $java=switch([string]$ExecutionPlan.runtimeJava.bindingMode){
@@ -628,23 +697,23 @@ function Start-MmtlConfiguredRun {
     if($NonInteractive -and $Profile.mode -eq 'IntegratedLAN'){
         if($Profile.newWorld -ne $true){throw 'WORLD_TEMPLATE_REQUIRED: non-interactive IntegratedLAN currently requires a fresh Session-local world or a supported template.'}
         if([string]$Profile.gameMode -notin @('survival','creative')){throw 'WORLD_MODE_UNSUPPORTED_FOR_AUTOMATION: Forge world creation supports survival or creative.'}
-        $agentProvider=Get-MmtlAgentProviderStatus -AgentRoot (Join-Path $here 'common/agent') -LoaderId ([string]$Primary.Loader) -MinecraftVersion ([string]$Primary.MinecraftVersion)
+        $agentProvider=Get-MmtlAgentProviderStatus -AgentRoot (Join-Path $here 'common/agent') -LoaderId ([string]$Primary.Loader) -MinecraftVersion ([string]$Primary.MinecraftVersion) -LoaderVersion ([string]$Primary.LoaderVersion)
         if($agentProvider.status -cne 'Supported'){throw "SCENARIO_AGENT_PROVIDER_UNSUPPORTED: $($agentProvider.reason)"}
         foreach($capability in @('OfflineIntegratedLanHost','LoopbackOnlyListener','LanDiscoverySuppressed','GuestLoopbackVerification')){if(@($agentProvider.capabilities) -notcontains $capability){throw "SCENARIO_AGENT_CAPABILITY_MISSING: $capability"}}
         $scenarioLanPort=if($requestedPort){$requestedPort}else{Get-MmtlPort}
     }elseif($NonInteractive -and $Profile.mode -eq 'Single'){
-        $candidateAgent=Get-MmtlAgentProviderStatus -AgentRoot (Join-Path $here 'common/agent') -LoaderId ([string]$Primary.Loader) -MinecraftVersion ([string]$Primary.MinecraftVersion)
+        $candidateAgent=Get-MmtlAgentProviderStatus -AgentRoot (Join-Path $here 'common/agent') -LoaderId ([string]$Primary.Loader) -MinecraftVersion ([string]$Primary.MinecraftVersion) -LoaderVersion ([string]$Primary.LoaderVersion)
         if($candidateAgent.status -ceq 'Supported' -and @($candidateAgent.roles) -contains 'Client'){$agentProvider=$candidateAgent}
     }
     $name=[IO.Path]::GetFileName($Primary.Root)-replace '[^A-Za-z0-9_-]','_'
-    $metadata=[pscustomobject]@{project=$Primary.Root;linkedProjects=@($linked.Root);linkedArtifacts=@();minecraft=$Primary.MinecraftVersion;loader=$Primary.Loader;loaderVersion=$Primary.LoaderVersion;javaMajor=$Primary.JavaMajor;runtimeJavaMajor=[int]$ExecutionPlan.runtimeJava.requirement.major;runtimeJavaPath=$java;mode=$Profile.mode;players=$players;hostUsername=$hostName;clientPrefix=$prefix;hostCheats=[bool]$Profile.hostCheats;clientPermissionLevel=[int]$Profile.clientPermissionLevel;gameMode=$Profile.gameMode;difficulty=$Profile.difficulty;worldName=$Profile.worldName;seed=$Profile.seed;newWorld=[bool]$Profile.newWorld;resetWorld=[bool]$Profile.resetWorld;worldResetCount=0;resolution=$Profile.resolution;guiScale=$Profile.guiScale;windowLayout=$Profile.windowLayout;windowLayoutStatus='Pending';memoryMb=$Profile.memoryMb;hostMemoryMb=$Profile.hostMemoryMb;clientMemoryMb=$Profile.clientMemoryMb;serverMemoryMb=$Profile.serverMemoryMb;memoryBudget=$memoryBudget;memoryOverageConfirmed=$memoryOverageConfirmed;port=$requestedPort;builds=@();processes=@();createdBy='MinecraftModTestLauncher'}
+    $metadata=[pscustomobject]@{project=$Primary.Root;linkedProjects=@($linked.Root);linkedArtifacts=@();minecraft=$Primary.MinecraftVersion;loader=$Primary.Loader;loaderVersion=$Primary.LoaderVersion;javaMajor=$Primary.JavaMajor;runtimeJavaMajor=[int]$ExecutionPlan.runtimeJava.requirement.major;runtimeJavaPath=$java;mode=$Profile.mode;players=$players;clientCount=[int]$(if($Profile.PSObject.Properties['clientCount']){$Profile.clientCount}else{$players});transport=[string]$(if($Profile.PSObject.Properties['multiplayer']){$Profile.multiplayer.transport}else{if($Profile.mode -eq 'Single'){'None'}else{$Profile.mode}});identity=$(if($Profile.PSObject.Properties['identity']){$Profile.identity}else{[pscustomobject]@{kind='Offline';hostName=$hostName;guestNamePattern=($prefix+'{index}')}});hostUsername=$hostName;clientPrefix=$prefix;hostCheats=[bool]$Profile.hostCheats;clientPermissionLevel=[int]$Profile.clientPermissionLevel;gameMode=$Profile.gameMode;difficulty=$Profile.difficulty;worldName=$Profile.worldName;seed=$Profile.seed;newWorld=[bool]$Profile.newWorld;resetWorld=[bool]$Profile.resetWorld;worldResetCount=0;resolution=$Profile.resolution;guiScale=$Profile.guiScale;windowLayout=$Profile.windowLayout;windowLayoutStatus='Pending';memoryMb=$Profile.memoryMb;hostMemoryMb=$Profile.hostMemoryMb;clientMemoryMb=$Profile.clientMemoryMb;serverMemoryMb=$Profile.serverMemoryMb;memoryBudget=$memoryBudget;memoryOverageConfirmed=$memoryOverageConfirmed;port=$requestedPort;builds=@();processes=@();createdBy='MinecraftModTestLauncher'}
     $metadata=Initialize-MmtlScenarioSessionMetadata -Metadata $metadata
     $session=New-MmtlSession -RuntimeRoot $RuntimeRoot -Name $name -Metadata $metadata
     Initialize-MmtlSessionV2 -SessionPath $session -ExecutionPlan $ExecutionPlan|Out-Null
     $sessionId=Split-Path $session -Leaf
-    $scenarioPlan=$null;$sessionToken=$null
+    $scenarioPlan=New-MmtlScenarioPlan -Mode ([string]$Profile.mode) -ClientCount $players -HostUsername $hostName -GuestNamePattern $guestPattern -AutoCreateWorld:([bool]$Profile.newWorld) -DurationSeconds $(if($Profile.durationSeconds){[int]$Profile.durationSeconds}else{60})
+    $sessionToken=$null
     if($NonInteractive){
-        $scenarioPlan=New-MmtlScenarioPlan -Mode ([string]$Profile.mode) -Players $players -HostUsername $hostName -GuestPrefix $prefix -AutoCreateWorld:([bool]$Profile.newWorld) -DurationSeconds $(if($Profile.durationSeconds){[int]$Profile.durationSeconds}else{60})
         Initialize-MmtlScenarioState -SessionPath $session -SessionId $sessionId -Plan $scenarioPlan|Out-Null
         Set-MmtlScenarioState -SessionPath $session -NextState Building -EventCode ROLE_START_REQUESTED -Summary 'Session 准备完毕，开始执行 Scenario。'|Out-Null
         $randomBytes=[byte[]]::new(32);$generator=[Security.Cryptography.RandomNumberGenerator]::Create();try{$generator.GetBytes($randomBytes)}finally{$generator.Dispose()};$sessionToken=[Convert]::ToHexString($randomBytes).ToLowerInvariant()
@@ -653,11 +722,11 @@ function Start-MmtlConfiguredRun {
     $builds=[Collections.Generic.List[object]]::new();$linkedJars=[Collections.Generic.List[string]]::new()
     try{
         Write-Host "会话：$sessionId`nMinecraft：$($Primary.MinecraftVersion)`nLoader：$($Primary.Loader) $($Primary.LoaderVersion)`nJava：$($Primary.JavaMajor)`n模式：$($Profile.mode)`n玩家：$players`n运行目录：$session"
-        if($Profile.resetWorld -eq $true){$resetWorldCount=0;foreach($username in @($hostName)+@(for($i=1;$i -lt $players;$i++){$prefix+$i})){if(Reset-MmtlSessionWorld -RuntimeRoot $RuntimeRoot -SessionPath $session -PlayerName $username -WorldName ([string]$Profile.worldName) -Reset -Confirm:$false){$resetWorldCount++}};$metadata.worldResetCount=$resetWorldCount;Write-Host "当前 Session 测试世界重置数：$resetWorldCount"}
+        if($Profile.resetWorld -eq $true){$resetWorldCount=0;foreach($username in @($scenarioPlan.roles|Where-Object{$_.role -in @('Client','Host','Guest')}|ForEach-Object username)){if(Reset-MmtlSessionWorld -RuntimeRoot $RuntimeRoot -SessionPath $session -PlayerName $username -WorldName ([string]$Profile.worldName) -Reset -Confirm:$false){$resetWorldCount++}};$metadata.worldResetCount=$resetWorldCount;Write-Host "当前 Session 测试世界重置数：$resetWorldCount"}
         $projectJava=[string]$ExecutionPlan.buildJava.resolution.javaPath
         if($Profile.autoBuild -ne $false){
             Set-MmtlSessionV2State -SessionPath $session -State Building|Out-Null
-            $projectPipeline=Invoke-MmtlProjectBuildPipeline -Primary $Primary -LinkedProjects $linked -JavaPath $projectJava -SessionPath $session -AutoBuild -Clean:([bool]$Profile.cleanBuild) -BuildAction {param($Project,$JavaPath,$SessionPath,$Clean) Invoke-MmtlGradleBuild -Project $Project -JavaPath $JavaPath -SessionPath $SessionPath -Clean:$Clean}
+            $projectPipeline=Invoke-MmtlProjectBuildPipeline -Primary $Primary -LinkedProjects $linked -JavaPath $projectJava -SessionPath $session -AutoBuild -Clean:([bool]$Profile.cleanBuild) -LoaderLaunchPlan $ExecutionPlan.runtime.loaderLaunchPlan -BuildAction {param($Project,$JavaPath,$SessionPath,$Clean,$LoaderLaunchPlan) Invoke-MmtlGradleBuild -Project $Project -JavaPath $JavaPath -SessionPath $SessionPath -Clean:$Clean -LoaderLaunchPlan $LoaderLaunchPlan}
         }else{
             $projectPipeline=Invoke-MmtlProjectBuildPipeline -Primary $Primary -LinkedProjects $linked -JavaPath $projectJava -SessionPath $session -ArtifactResolver {param($Project) Get-MmtlProjectOutputJar -Project $Project}
         }
@@ -672,7 +741,8 @@ function Start-MmtlConfiguredRun {
             $jarPath=[string]$configuredJar
             if(-not [IO.Path]::IsPathRooted($jarPath)){$jarPath=Join-Path $here $jarPath}
             $resolvedJar=(Resolve-Path -LiteralPath $jarPath -ErrorAction Stop).Path
-            if([IO.Path]::GetExtension($resolvedJar) -ne '.jar'){throw "extraMods 仅接受 JAR：$configuredJar"}
+            $allowedExtraExtensions=if([string]$Primary.Loader -ceq 'LiteLoader'){@('.jar','.litemod')}else{@('.jar')}
+            if([IO.Path]::GetExtension($resolvedJar).ToLowerInvariant() -notin $allowedExtraExtensions){throw "extraMods 扩展名与当前 Loader 不兼容：$configuredJar"}
             $extraJars.Add($resolvedJar)
         }
         if($Profile.mode -eq 'Dedicated'){
@@ -683,7 +753,7 @@ function Start-MmtlConfiguredRun {
                 else{$null=Set-MmtlDedicatedServerPort -SessionPath $session -Port $candidatePort}
                 $startedServer=$null
                 try{
-                    $startedServer=Start-MmtlGradleInstance -Project $Primary -Plan $serverPlan -JavaPath $java -SessionPath $session -ModJars @($extraJars) -ExpectedModHashes $projectPipeline.expectedModHashes
+                    $startedServer=Start-MmtlGradleInstance -Project $Primary -Plan $serverPlan -BuildJavaPath $projectJava -RuntimeJavaPath $java -RuntimeJavaMajor ([int]$ExecutionPlan.runtimeJava.resolution.actualMajor) -SessionPath $session -ModJars @($extraJars) -ExpectedModHashes $projectPipeline.expectedModHashes -LoaderLaunchPlan $ExecutionPlan.runtime.loaderLaunchPlan
                     Write-Host "Dedicated Server 已启动，等待端口 $candidatePort 就绪。日志：$($startedServer.LogPath)"
                     $null=Wait-MmtlDedicatedReady -Path $startedServer.LogPath -ProcessId $startedServer.ProcessId -TimeoutSeconds 300
                     return $startedServer
@@ -700,11 +770,10 @@ function Start-MmtlConfiguredRun {
             if($allocation.Attempts -gt 1){Write-Host "端口绑定冲突后已安全重试，共尝试 $($allocation.Attempts) 次。"}
             if($NonInteractive){Set-MmtlScenarioState -SessionPath $session -NextState ServerReady -EventCode ROLE_READY -Role Server -Summary 'Dedicated Server 已就绪。'|Out-Null;Set-MmtlScenarioState -SessionPath $session -NextState ClientsStarting -EventCode ROLE_START_REQUESTED -Role Client -Summary '启动 Dedicated 客户端。'|Out-Null}
             $metadata.port=$port
-            $clientNames=@($hostName)
-            for($i=1;$i -lt $players;$i++){$clientNames+=($prefix+$i)}
+            $clientNames=@($scenarioPlan.roles|Where-Object role -eq 'Client'|ForEach-Object username)
             foreach($username in $clientNames){
                 $plan=New-MmtlGradleRunPlan -Project $Primary -Mode Dedicated -RuntimeRoot $session -Role Client -Username $username -Port $port -Profile $Profile
-                $started=Start-MmtlGradleInstance -Project $Primary -Plan $plan -JavaPath $java -SessionPath $session -ModJars @($extraJars) -ExpectedModHashes $projectPipeline.expectedModHashes
+                $started=Start-MmtlGradleInstance -Project $Primary -Plan $plan -BuildJavaPath $projectJava -RuntimeJavaPath $java -RuntimeJavaMajor ([int]$ExecutionPlan.runtimeJava.resolution.actualMajor) -SessionPath $session -ModJars @($extraJars) -ExpectedModHashes $projectPipeline.expectedModHashes -LoaderLaunchPlan $ExecutionPlan.runtime.loaderLaunchPlan
                 $metadata.processes+=@([pscustomobject]@{PID=$started.ProcessId;role=$started.Role;username=$started.Username;log=$started.LogPath})
                 Write-Host "客户端 $username 已启动；日志：$($started.LogPath)"
             }
@@ -714,12 +783,15 @@ function Start-MmtlConfiguredRun {
             if($NonInteractive){Set-MmtlScenarioState -SessionPath $session -NextState HostStarting -EventCode ROLE_START_REQUESTED -Role Host -Summary '启动受管 IntegratedLAN Host。'|Out-Null;$hostBinding=New-MmtlAgentLaunchBinding -Provider $agentProvider -SessionPath $session -SessionId $sessionId -Role Host -SessionToken $sessionToken -IntegratedLanPort $scenarioLanPort -AutoCreateWorld:([bool]$Profile.newWorld) -WorldName $(if($Profile.worldName){[string]$Profile.worldName}else{'MMTL-Test'}) -WorldGameMode $(if($Profile.gameMode){[string]$Profile.gameMode}else{'survival'}) -WorldDifficulty $(if($Profile.difficulty){[string]$Profile.difficulty}else{'normal'}) -WorldSeed ([string]$Profile.seed) -WorldAllowCommands:([bool]$Profile.hostCheats);$hostAgentArgs=@($hostBinding.jvmArgs)}else{$hostBinding=$null;$hostAgentArgs=@()}
             $hostPlan=New-MmtlGradleRunPlan -Project $Primary -Mode IntegratedLAN -RuntimeRoot $session -Role Host -Username $hostName -Profile $Profile -AgentJvmArguments $hostAgentArgs
             $hostModJars=Get-MmtlAgentRuntimeModJars -ModJars @($extraJars) -Binding $hostBinding
-            $hostProcess=Start-MmtlGradleInstance -Project $Primary -Plan $hostPlan -JavaPath $java -SessionPath $session -ModJars $hostModJars -ExpectedModHashes $projectPipeline.expectedModHashes
+            $hostProcess=Start-MmtlGradleInstance -Project $Primary -Plan $hostPlan -BuildJavaPath $projectJava -RuntimeJavaPath $java -RuntimeJavaMajor ([int]$ExecutionPlan.runtimeJava.resolution.actualMajor) -SessionPath $session -ModJars $hostModJars -ExpectedModHashes $projectPipeline.expectedModHashes -LoaderLaunchPlan $ExecutionPlan.runtime.loaderLaunchPlan
             $metadata.processes+=@([pscustomobject]@{PID=$hostProcess.ProcessId;role='Host';username=$hostName;log=$hostProcess.LogPath})
             if($NonInteractive){
                 Write-Host "IntegratedLAN Host 已启动；等待 Agent world join、loopback publish 与端口 $scenarioLanPort 就绪。"
-                $hostReady=Wait-MmtlAgentIntegratedLanReady -SessionPath $session -EventPath $hostBinding.eventSink -SessionId $sessionId -ExpectedNonceHash $hostBinding.sessionNonceHash -Port $scenarioLanPort -ProcessId $hostProcess.ProcessId -TimeoutSeconds 300
-                Set-MmtlScenarioState -SessionPath $session -NextState HostReady -EventCode ROLE_READY -Role Host -Summary 'Host world join 和 loopback listener 均已验证。'|Out-Null
+                $hostReady=Wait-MmtlAgentIntegratedLanReady -SessionPath $session -EventPath $hostBinding.eventSink -SessionId $sessionId -ExpectedNonceHash $hostBinding.sessionNonceHash -Port $scenarioLanPort -ProcessId $hostProcess.ProcessId -ProcessIdentity $hostProcess.StartIdentity -TimeoutSeconds 300
+                Set-MmtlScenarioState -SessionPath $session -NextState HostReady -EventCode ROLE_READY -Role Host -Summary 'Host Agent 事件已确认且进程存活。'|Out-Null
+                Set-MmtlScenarioState -SessionPath $session -NextState WorldReady -EventCode HOST_WORLD_READY -Role Host -Summary 'Host WORLD_JOINED 事件已绑定到当前 Session 与 PID。'|Out-Null
+                Set-MmtlScenarioState -SessionPath $session -NextState LanPublishing -EventCode LAN_PUBLISH_CONFIRMED -Role Host -Summary 'Host 已报告 loopback LAN 发布。'|Out-Null
+                Set-MmtlScenarioState -SessionPath $session -NextState LanReady -EventCode LAN_LISTENER_READY -Role Host -Summary 'LAN_PUBLISHED 与实测 loopback TCP listener 同时匹配。'|Out-Null
                 $port=$scenarioLanPort
             }else{
                 Write-Host "主机客户端已启动。请进入测试世界，并在游戏菜单中手动选择“对局域网开放”（Open to LAN）。若选择固定端口，请使用 $requestedPort。"
@@ -728,31 +800,59 @@ function Start-MmtlConfiguredRun {
                 if($requestedPort -and $port -ne $requestedPort){throw "游戏实际开放端口 $port 与配置固定端口 $requestedPort 不同。"}
             }
             $metadata.port=$port
-            if($NonInteractive){Set-MmtlScenarioState -SessionPath $session -NextState GuestsStarting -EventCode ROLE_START_REQUESTED -Role Guest -Summary 'Host 就绪；开始依次启动 Guest。'|Out-Null}
-            for($i=1;$i -lt $players;$i++){
-                $username=$prefix+$i
+            if($NonInteractive){Set-MmtlScenarioState -SessionPath $session -NextState GuestsStarting -EventCode ROLE_START_REQUESTED -Role Guest -Summary 'Host 世界身份与 LAN 监听已验证；按计划依次启动 Guest。'|Out-Null}
+            $assertionGuestBinding=$null;$assertionGuestProcess=$null;$assertionGuestReady=$null
+            foreach($guestRole in @($scenarioPlan.roles|Where-Object role -eq 'Guest')){
+                $username=[string]$guestRole.username
                 if($NonInteractive){$guestBinding=New-MmtlAgentLaunchBinding -Provider $agentProvider -SessionPath $session -SessionId $sessionId -Role Guest -SessionToken $sessionToken -ExpectedLoopbackPort $port;$guestAgentArgs=@($guestBinding.jvmArgs)}else{$guestBinding=$null;$guestAgentArgs=@()}
                 $plan=New-MmtlGradleRunPlan -Project $Primary -Mode IntegratedLAN -RuntimeRoot $session -Role Client -Username $username -Port $port -Profile $Profile -AgentJvmArguments $guestAgentArgs
                 $guestModJars=Get-MmtlAgentRuntimeModJars -ModJars @($extraJars) -Binding $guestBinding
-                $started=Start-MmtlGradleInstance -Project $Primary -Plan $plan -JavaPath $java -SessionPath $session -ModJars $guestModJars -ExpectedModHashes $projectPipeline.expectedModHashes
+                $started=Start-MmtlGradleInstance -Project $Primary -Plan $plan -BuildJavaPath $projectJava -RuntimeJavaPath $java -RuntimeJavaMajor ([int]$ExecutionPlan.runtimeJava.resolution.actualMajor) -SessionPath $session -ModJars $guestModJars -ExpectedModHashes $projectPipeline.expectedModHashes -LoaderLaunchPlan $ExecutionPlan.runtime.loaderLaunchPlan
                 $metadata.processes+=@([pscustomobject]@{PID=$started.ProcessId;role='Client';username=$username;log=$started.LogPath})
                 Write-Host "LAN 客户端 $username 已启动；日志：$($started.LogPath)"
-                if($NonInteractive){$null=Wait-MmtlAgentGuestJoined -SessionPath $session -EventPath $guestBinding.eventSink -SessionId $sessionId -ExpectedNonceHash $guestBinding.sessionNonceHash -Port $port -ProcessId $started.ProcessId -TimeoutSeconds 180}
+                if($NonInteractive){$guestReady=Wait-MmtlAgentGuestJoined -SessionPath $session -EventPath $guestBinding.eventSink -SessionId $sessionId -ExpectedNonceHash $guestBinding.sessionNonceHash -Port $port -ProcessId $started.ProcessId -ProcessIdentity $started.StartIdentity -TimeoutSeconds 180 -ExpectedWorldKey $hostReady.world.worldKey -ExpectedDimensionKey $hostReady.world.dimensionKey;if($guestReady.world.playerIdentity -ceq $hostReady.world.playerIdentity){throw 'AGENT_GUEST_IDENTITY_COLLISION'};if(-not $assertionGuestBinding){$assertionGuestBinding=$guestBinding;$assertionGuestProcess=$started;$assertionGuestReady=$guestReady};$null=Add-MmtlScenarioEvent -SessionPath $session -EventCode GUEST_WORLD_JOINED -Role Guest -Summary "Guest $username joined the verified Host world."}
             }
-            if($NonInteractive){Set-MmtlScenarioState -SessionPath $session -NextState GuestsReady -EventCode ROLE_READY -Role Guest -Summary '所有 Guest 均通过 Agent join observation。'|Out-Null}
+            if($NonInteractive){
+                if(-not $assertionGuestBinding -or -not $assertionGuestProcess -or -not $assertionGuestReady){throw 'SCENARIO_SHARED_ASSERTION_GUEST_MISSING'}
+                $markerId='mmtl-'+[guid]::NewGuid().ToString('N').Substring(0,16);$markerX=0;$markerY=100;$markerZ=0
+                $hostAction=New-MmtlAgentActionRequest -SessionPath $session -Role Host -Action PLACE_BLOCK_MARKER -MarkerId $markerId -DimensionKey $hostReady.world.dimensionKey -X $markerX -Y $markerY -Z $markerZ
+                Wait-MmtlAgentAction -Request $hostAction -TimeoutSeconds 60|Out-Null
+                $guestAction=New-MmtlAgentActionRequest -SessionPath $session -Role Guest -Action OBSERVE_BLOCK_MARKER -ActorActionId $hostAction.actionId -MarkerId $markerId -DimensionKey $hostReady.world.dimensionKey -X $markerX -Y $markerY -Z $markerZ
+                Wait-MmtlAgentAction -Request $guestAction -TimeoutSeconds 60|Out-Null
+                $hostProofEvents=foreach($line in [IO.File]::ReadAllLines($hostBinding.eventSink)){try{$event=ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId $sessionId -ExpectedRole Host -ExpectedNonceHash $hostBinding.sessionNonceHash -ProcessId $hostProcess.ProcessId -ProcessIdentity $hostProcess.StartIdentity;if($event.eventCode -in @('AGENT_CLIENT_READY','AGENT_WORLD_JOINED','INTEGRATED_SERVER_READY','LAN_PORT_PUBLISHED','AGENT_SHARED_STATE_WRITTEN')){$event}}catch{}}
+                $guestProofEvents=foreach($line in [IO.File]::ReadAllLines($assertionGuestBinding.eventSink)){try{$event=ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId $sessionId -ExpectedRole Guest -ExpectedNonceHash $assertionGuestBinding.sessionNonceHash -ProcessId $assertionGuestProcess.ProcessId -ProcessIdentity $assertionGuestProcess.StartIdentity;if($event.eventCode -in @('AGENT_CLIENT_READY','AGENT_GUEST_CONNECTED','AGENT_WORLD_JOINED','AGENT_SHARED_STATE_OBSERVED')){$event}}catch{}}
+                $assertionSpec=[pscustomobject]@{schemaVersion=1;assertionId='mmtl-block-marker-v1';protocolId='mmtl-block-marker-v1';operationCode='PLACE_BLOCK_MARKER';observationCode='OBSERVE_BLOCK_MARKER';actionId=$hostAction.actionId;markerId=$markerId;expectedStateSha256=(Get-MmtlSharedBlockMarkerStateHash -SessionId $sessionId -MarkerId $markerId -DimensionKey $hostReady.world.dimensionKey -X $markerX -Y $markerY -Z $markerZ)}
+                $sharedProof=Test-MmtlSharedWorldAssertion -SessionId $sessionId -ClientAEvents @($hostProofEvents) -ClientBEvents @($guestProofEvents) -HostOrServerEvents @($hostProofEvents) -AssertionSpec $assertionSpec
+                if(-not $sharedProof.passed){throw "SCENARIO_SHARED_WORLD_ASSERTION_FAILED:$($sharedProof.reasonCode)"}
+                $metadata.sharedWorldAssertion=$sharedProof;$null=Add-MmtlScenarioEvent -SessionPath $session -EventCode SHARED_WORLD_ASSERTION_PASS -Role Host -Summary '独立 Guest 已观察到 Host 在当前 IntegratedLAN 世界写入的 block marker。'
+            }
+            if($NonInteractive){Set-MmtlScenarioState -SessionPath $session -NextState GuestsReady -EventCode ROLE_READY -Role Guest -Summary '所有 Guest 均已依次加入同一受管 world identity。'|Out-Null}
         }else{
             if($NonInteractive){Set-MmtlScenarioState -SessionPath $session -NextState ClientStarting -EventCode ROLE_START_REQUESTED -Role Client -Summary '启动 Single 客户端。'|Out-Null}
             $clientAgentArgs=@();$clientBinding=$null
-            if($NonInteractive -and $agentProvider -and $agentProvider.status -ceq 'Supported'){$clientBinding=New-MmtlAgentLaunchBinding -Provider $agentProvider -SessionPath $session -SessionId $sessionId -Role Client -SessionToken $sessionToken;$clientAgentArgs=@($clientBinding.jvmArgs)}
+            $singleAutoCreateWorld=$NonInteractive -and [bool]$Profile.newWorld
+            if($singleAutoCreateWorld -and (-not $agentProvider -or $agentProvider.status -cne 'Supported' -or @($agentProvider.roles) -notcontains 'Client')){throw 'SCENARIO_SINGLE_WORLD_AGENT_UNSUPPORTED'}
+            if($singleAutoCreateWorld){
+                $clientBinding=New-MmtlAgentLaunchBinding -Provider $agentProvider -SessionPath $session -SessionId $sessionId -Role Client -SessionToken $sessionToken -AutoCreateWorld -WorldName $(if($Profile.worldName){[string]$Profile.worldName}else{'MMTL-Test'}) -WorldGameMode $(if($Profile.gameMode){[string]$Profile.gameMode}else{'survival'}) -WorldDifficulty $(if($Profile.difficulty){[string]$Profile.difficulty}else{'normal'}) -WorldSeed ([string]$Profile.seed) -WorldAllowCommands:([bool]$Profile.hostCheats)
+            }elseif($NonInteractive -and $agentProvider -and $agentProvider.status -ceq 'Supported'){$clientBinding=New-MmtlAgentLaunchBinding -Provider $agentProvider -SessionPath $session -SessionId $sessionId -Role Client -SessionToken $sessionToken}
+            if($clientBinding){$clientAgentArgs=@($clientBinding.jvmArgs)}
             $plan=New-MmtlGradleRunPlan -Project $Primary -Mode Single -RuntimeRoot $session -Role Client -Username $hostName -Profile $Profile -AgentJvmArguments $clientAgentArgs
             $clientModJars=Get-MmtlAgentRuntimeModJars -ModJars @($extraJars) -Binding $clientBinding
-            $started=Start-MmtlGradleInstance -Project $Primary -Plan $plan -JavaPath $java -SessionPath $session -ModJars $clientModJars -ExpectedModHashes $projectPipeline.expectedModHashes
+            $started=Start-MmtlGradleInstance -Project $Primary -Plan $plan -BuildJavaPath $projectJava -RuntimeJavaPath $java -RuntimeJavaMajor ([int]$ExecutionPlan.runtimeJava.resolution.actualMajor) -SessionPath $session -ModJars $clientModJars -ExpectedModHashes $projectPipeline.expectedModHashes -LoaderLaunchPlan $ExecutionPlan.runtime.loaderLaunchPlan
             $metadata.processes+=@([pscustomobject]@{PID=$started.ProcessId;role='Client';username=$hostName;log=$started.LogPath})
+            $runtimeInventory=Assert-MmtlScenarioProcessInventory -SessionPath $session -Plan $scenarioPlan -StartedProcessIds @([int]$started.ProcessId)
+            $metadata.runtimeProcessInventory=[pscustomobject]@{expectedRoleCount=$runtimeInventory.expectedRoleCount;actualRoleCount=$runtimeInventory.actualRoleCount;verifiedAtUtc=[DateTimeOffset]::UtcNow.ToString('o')}
             Write-Host "Single 客户端已启动；日志：$($started.LogPath)"
             if($clientBinding){$null=Wait-MmtlAgentClientReady -SessionPath $session -EventPath $clientBinding.eventSink -SessionId $sessionId -ExpectedNonceHash $clientBinding.sessionNonceHash -ProcessId $started.ProcessId -TimeoutSeconds 300}
+            if($singleAutoCreateWorld){
+                $singleWorld=Wait-MmtlAgentWorldJoined -SessionPath $session -EventPath $clientBinding.eventSink -SessionId $sessionId -ExpectedNonceHash $clientBinding.sessionNonceHash -ProcessId $started.ProcessId -TimeoutSeconds 300 -ExpectedWorldKey $sessionId -ExpectedDimensionKey 'minecraft:overworld'
+                $metadata.singleWorldEvidence=[pscustomobject]@{worldKey=$singleWorld.world.worldKey;dimensionKey=$singleWorld.world.dimensionKey;playerIdentity=$singleWorld.world.playerIdentity;eventId=$singleWorld.event.metadata.agentEventId;timestampUtc=$singleWorld.event.timestampUtc}
+                $null=Add-MmtlScenarioEvent -SessionPath $session -EventCode SINGLE_WORLD_JOINED -Role Client -Summary 'Single 客户端进入本 Session 新建的受管世界。'
+            }
+            if($NonInteractive){Set-MmtlScenarioState -SessionPath $session -NextState ClientReady -EventCode ROLE_READY -Role Client -Summary 'Single 客户端进程已启动并完成可用性观测。'|Out-Null}
         }
         Set-MmtlSessionV2State -SessionPath $session -State Running|Out-Null
-        if($NonInteractive){Set-MmtlScenarioState -SessionPath $session -NextState Observing -EventCode SCENARIO_OBSERVATION_STARTED -Summary '全部场景角色就绪，进入观察阶段。'|Out-Null}
+        if($NonInteractive){Set-MmtlScenarioState -SessionPath $session -NextState Asserting -EventCode SCENARIO_ASSERTIONS_STARTED -Summary '所有已请求角色进入测试观察/断言阶段。'|Out-Null;Set-MmtlScenarioState -SessionPath $session -NextState Observing -EventCode SCENARIO_OBSERVATION_STARTED -Summary '全部场景角色就绪，进入观察阶段。'|Out-Null}
         if($Profile.windowLayout -and $Profile.windowLayout -ne 'None' -and ($Profile.mode -ne 'Single' -or $Profile.windowLayout -ne 'Auto')){
             try{$layoutResult=Set-MmtlSessionWindowLayout -SessionPath $session -Mode $Profile.windowLayout -TimeoutSeconds 90;$metadata.windowLayoutStatus=$layoutResult.Status;if($layoutResult.Status -in @('Partial','UnavailableFallbackNone')){Write-Warning "窗口布局结果：$($layoutResult.Status) ($($layoutResult.Reason))"}else{Write-Host "窗口布局：$($layoutResult.Status) ($($layoutResult.Windows) 个窗口)"}}
             catch{$metadata.windowLayoutStatus='UnavailableFallbackNone';Write-Warning "窗口布局失败并安全跳过：$($_.Exception.Message)"}
@@ -786,6 +886,7 @@ function Start-MmtlConfiguredRun {
         Invoke-MmtlSessionMetadataWrite -SessionPath $session -Action {
             $statePath=Join-Path $session 'session.json';$state=Get-Content -LiteralPath $statePath -Raw|ConvertFrom-Json;$state.metadata=$metadata;Write-MmtlAtomicTextFile -Path $statePath -Content (($state|ConvertTo-Json -Depth 30)+"`n")
             $report=@("# 会话 $sessionId",'',"- 模式：$($Profile.mode)","- 项目：$($Primary.Root)","- Minecraft：$($Primary.MinecraftVersion)","- Loader：$($Primary.Loader) $($Primary.LoaderVersion)","- Java：$($Primary.JavaMajor)","- 玩家：$($metadata.processes.username -join ', ')","- 端口：$($metadata.port)","- 内存预算 MB：$($memoryBudget.RequestedMb) / $($memoryBudget.LimitMb)；已确认超额=$memoryOverageConfirmed","- 世界重置次数：$($metadata.worldResetCount)","- 窗口布局：$($metadata.windowLayoutStatus)","- 运行目录：$session",'', '## 构建')
+            if($metadata.singleWorldEvidence){$report+=@('','## Single 受管世界',"- World：$($metadata.singleWorldEvidence.worldKey)","- Dimension：$($metadata.singleWorldEvidence.dimensionKey)","- Player identity：$($metadata.singleWorldEvidence.playerIdentity)")}
             foreach($build in $builds){$report+=@("- 项目：$($build.Project)","  - Git SHA：$($build.GitSha)","  - Jar：$($build.JarPath)","  - SHA-256：$($build.JarSha256)","  - 日志：$($build.LogPath)")}
             $report+=@('','## Processes');foreach($process in $metadata.processes){$report+="- $($process.role) $($process.username) PID $($process.PID): $($process.log)"};Write-MmtlAtomicTextFile -Path (Join-Path $session 'report.md') -Content (($report -join "`n")+"`n")
         }
@@ -812,13 +913,15 @@ if($Arguments -contains '--launch') {
     Start-MmtlConfiguredRun -Primary $project -Profile $profile -Config $config -RuntimeRoot $runtimeRoot -ExecutionPlan $executionPlan;exit 0
 }
 if($Arguments -contains '--run-scenario') {
-    if(($Arguments|Where-Object{$_ -notin @('--run-scenario','--json','--config-file',$configPath,'--profile',$profileName)}).Count){throw 'SCENARIO_OPTION_INVALID'}
+    $allowedScenarioArguments=@('--run-scenario','--probe-runtime-binding-for-launch','--online','--offline','--json','--config-file',$configPath,'--profile',$profileName)+@($scenarioOverrideArgs.ToArray())
+    if(($Arguments|Where-Object{$_ -notin $allowedScenarioArguments}).Count){throw 'SCENARIO_OPTION_INVALID'}
     $executionPlan=New-MmtlCliExecutionPlan -Primary $project -Profile $profile -Config $config -RuntimeRoot $runtimeRoot -Name $planProfileName -RequireBuild:([bool]$profile.autoBuild) -Clean:([bool]$profile.cleanBuild)
     Start-MmtlConfiguredRun -Primary $project -Profile $profile -Config $config -RuntimeRoot $runtimeRoot -ExecutionPlan $executionPlan -NonInteractive
     exit 0
 }
 if($Arguments -contains '--launch-rehearsal') {
     if(($Arguments|Where-Object{$_ -notin @('--launch-rehearsal','--json','--config-file',$configPath,'--profile',$profileName)}).Count){throw 'REHEARSAL_OPTION_INVALID: 演练命令不接受额外参数。'}
+    if($effectiveScenario -and $effectiveScenario.clientCount -gt 1 -and $effectiveScenario.transport -eq 'IntegratedLAN'){throw 'REHEARSAL_MULTICLIENT_LIFECYCLE_NOT_READY: 当前合成演练仍按既有两角色路径运行。'}
     $executionPlan=New-MmtlCliExecutionPlan -Primary $project -Profile $profile -Config $config -RuntimeRoot $runtimeRoot -Name $planProfileName -RequireBuild:([bool]$profile.autoBuild) -Clean:([bool]$profile.cleanBuild)
     $result=switch([string]$executionPlan.profile.mode){
         'Single' { Invoke-MmtlSingleLaunchRehearsal -ExecutionPlan $executionPlan -RuntimeRoot $runtimeRoot -RepositoryRoot $here }
@@ -844,7 +947,7 @@ if($Arguments -contains '--build') {
     $session=New-MmtlSession -RuntimeRoot $runtimeRoot -Name $sessionName -Metadata $metadata
     Initialize-MmtlSessionV2 -SessionPath $session -ExecutionPlan $executionPlan|Out-Null
     Set-MmtlSessionV2State -SessionPath $session -State Building|Out-Null
-    try{$build=Invoke-MmtlGradleBuild -Project $project -JavaPath ([string]$executionPlan.buildJava.resolution.javaPath) -SessionPath $session -Clean:([bool]$executionPlan.build.clean)}catch{Set-MmtlSessionV2State -SessionPath $session -State Failed|Out-Null;throw}
+    try{$build=Invoke-MmtlGradleBuild -Project $project -JavaPath ([string]$executionPlan.buildJava.resolution.javaPath) -SessionPath $session -Clean:([bool]$executionPlan.build.clean) -LoaderLaunchPlan $executionPlan.runtime.loaderLaunchPlan}catch{Set-MmtlSessionV2State -SessionPath $session -State Failed|Out-Null;throw}
     Set-MmtlSessionV2State -SessionPath $session -State Completed|Out-Null
     Invoke-MmtlSessionMetadataWrite -SessionPath $session -Action {
         $statePath=Join-Path $session 'session.json';$state=Get-Content $statePath -Raw|ConvertFrom-Json

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "fixtureId": "MMTLForgeMarkerFixtureV1",
+  "targetId": "Forge@1.7.2",
+  "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.7.2-10.12.2.1161-mc172/forge-1.7.2-10.12.2.1161-mc172-src.zip",
+  "sourceArchiveSha256": "7c05fc6eaf3520b97248203e2ae2eeeb372eb8fb9d65db7f9ad0f71aacd1ea33",
+  "overlaySha256": "708a1ff902b799b140598e7ce44fbb7766bef693270676c56cf3c990989f8c16",
+  "overlayFiles": [
+    {
+      "path": "src/main/java/org/pycodersmod/mmtlfixture/MmtlMarkerMod.java",
+      "sha256": "7e1e1dbd6bd8a2129ad8e93525ec3980187c21ef606f362cbe36f2a550ec3d1a"
+    },
+    {
+      "path": "src/main/resources/mcmod.info",
+      "sha256": "3a99926f5971966d684ad95cc6f30600073eba71bd4e596ad9aab11c9f8f0bc4"
+    }
+  ]
+}

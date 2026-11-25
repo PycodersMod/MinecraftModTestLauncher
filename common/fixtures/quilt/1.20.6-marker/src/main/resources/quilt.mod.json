@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "quilt_loader": {
+    "group": "org.pycodersmod.mmtlfixture",
+    "id": "mmtl_marker",
+    "version": "1.0.0",
+    "metadata": {
+      "name": "MMTL Quilt Marker",
+      "description": "Controlled Quilt compatibility build fixture.",
+      "contributors": {
+        "Your name here": "Owner"
+      },
+      "contact": {
+        "homepage": "https://example.com/",
+        "issues": "https://github.com/QuiltMC/quilt-template-mod/issues",
+        "sources": "https://github.com/QuiltMC/quilt-template-mod"
+      },
+      "icon": "assets/example_mod/icon.png"
+    },
+    "intermediate_mappings": "net.fabricmc:intermediary",
+    "entrypoints": {
+      "init": [
+        "org.pycodersmod.mmtlfixture.MmtlMarkerMod"
+      ]
+    },
+    "depends": [
+      {
+        "id": "quilt_loader",
+        "versions": "=0.26.3"
+      },
+      {
+        "id": "minecraft",
+        "versions": "=1.20.6"
+      },
+      {
+        "id": "quilted_fabric_api",
+        "versions": "=10.0.0-alpha.3+0.100.4-1.20.6"
+      }
+    ]
+  },
+  "mixin": "example_mod.mixins.json"
+}

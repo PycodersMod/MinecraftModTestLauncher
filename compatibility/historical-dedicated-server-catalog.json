@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "automaticDownloadAllowed": false,
+  "automaticExecutionAllowed": false,
+  "entries": [
+    {
+      "minecraftId": "1.2.5",
+      "minecraftType": "release",
+      "artifactRole": "VanillaBase",
+      "loaderId": null,
+      "metadataUrl": "https://piston-meta.mojang.com/v1/packages/5158765caf1ca14958cb6c45d52c8e09ed9b046c/1.2.5.json",
+      "metadataSnapshotPath": "1.2.5-version.json",
+      "metadataSha1": "5158765caf1ca14958cb6c45d52c8e09ed9b046c",
+      "metadataSha256": "7792a0085648b8cd37f71f863ddca2c413cde3a288420fbedd3a0b3456acc307",
+      "metadataByteLength": 8568,
+      "artifactUrl": "https://launcher.mojang.com/v1/objects/d8321edc9470e56b8ad5c67bbd16beba25843336/server.jar",
+      "sha1": "d8321edc9470e56b8ad5c67bbd16beba25843336",
+      "sha256": "19285d7d16aee740f5a0584f0d80a4940f273a97f5a3eaf251fc1c6c3f2982d1",
+      "byteLength": 1408470,
+      "sourceType": "OfficialManifest",
+      "exactLoaderServerReady": false
+    }
+  ]
+}

@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "auditStatus": "IN_PROGRESS",
-  "universeHash": "0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+  "universeHash": "c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
   "families": [
     {
-      "familyId": "fabric-loom-build-launch-plan-v1",
+      "familyId": "fabric-loom-remap-build-launch-plan-v1",
       "loaderId": "Fabric",
       "minecraftIds": [
         "1.14",
@@ -476,6 +476,79 @@
         "25w45a_unobfuscated",
         "25w46a",
         "25w46a_unobfuscated",
+        "26w14a",
+        "3D Shareware v1.34"
+      ],
+      "toolchainHash": "6c9de03abdd19fbe899fc897df82a1dae573c71963de4dc7dd7a09dfb0830377",
+      "toolchain": {
+        "id": "net.fabricmc.fabric-loom-remap",
+        "version": "project-resolved Loom version; exact plugin generation is family-bound"
+      },
+      "buildJava": {
+        "status": "PerProjectGradleWrapperAndCompilerEvidence",
+        "evidenceRef": "common/src/ProjectDetector.psm1"
+      },
+      "runtimeJava": {
+        "status": "PerTargetMojangMetadata",
+        "evidenceRef": "compatibility/runtime-java-catalog.json"
+      },
+      "projectDetectionStrategy": "识别 fabric.mod.json 与 Gradle Fabric Loom 项目；从项目配置读取精确 Minecraft ID / Loader 版本，并与 frozen Universe Available target 及官方候选逐字绑定。",
+      "buildStrategy": "精确目标绑定后生成 Gradle Wrapper build 计划；计划要求 MMTL managed session copy 与受控验证 runner，不代表构建成功或允许任意项目自动执行。",
+      "launchStrategy": "为精确目标生成 Loom runClient Single Client 计划；工作目录限定 MMTL managed session copy，LaunchCheck 未验证且计划不可直接执行。",
+      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
+      "evidence": [
+        "https://docs.fabricmc.net/develop/loader/fabric-mod-json",
+        "https://docs.fabricmc.net/develop/loom",
+        "https://docs.fabricmc.net/develop/getting-started/building-a-mod",
+        "plugin-generation:Minecraft 1.21.11 and older use the remap plugin ID",
+        "plugin-id:net.fabricmc.fabric-loom-remap",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+        "fabric-adapter-sha256:f21a4b0098cace1ddaff5bfb41ec9c2352752f739e01782412d8cee2c88e7829",
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+        "test:ProjectDetectorV2.Tests.ps1:detect-and-bind-all-exact-fabric-targets"
+      ],
+      "capabilities": {
+        "BuildJava": {
+          "status": "PartiallySupported",
+          "evidenceRefs": [
+            "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target"
+          ]
+        },
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "fabric-adapter-sha256:f21a4b0098cace1ddaff5bfb41ec9c2352752f739e01782412d8cee2c88e7829",
+            "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-fabric-targets"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.fabricmc.net/develop/loom",
+            "plugin-id:net.fabricmc.fabric-loom-remap",
+            "fabric-adapter-sha256:f21a4b0098cace1ddaff5bfb41ec9c2352752f739e01782412d8cee2c88e7829",
+            "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-fabric-targets"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.fabricmc.net/develop/loom",
+            "plugin-id:net.fabricmc.fabric-loom-remap",
+            "fabric-adapter-sha256:f21a4b0098cace1ddaff5bfb41ec9c2352752f739e01782412d8cee2c88e7829",
+            "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-fabric-targets"
+          ]
+        }
+      }
+    },
+    {
+      "familyId": "fabric-loom-unobfuscated-build-launch-plan-v1",
+      "loaderId": "Fabric",
+      "minecraftIds": [
         "26.1",
         "26.1-pre-1",
         "26.1-pre-2",
@@ -534,14 +607,12 @@
         "26.3-snapshot-9",
         "26.4-snapshot-1",
         "26.4-snapshot-2",
-        "26.4-snapshot-3",
-        "26w14a",
-        "3D Shareware v1.34"
+        "26.4-snapshot-3"
       ],
-      "toolchainHash": "f87a4880e3e0b6e0f03845c6bacf2de67fcea149b40b31bd465bcd36fc999371",
+      "toolchainHash": "f4233939159f1340ad5f2ad7a585b82cce7b2a2ae39bc8680eccf9ace1d0a37a",
       "toolchain": {
-        "id": "FabricLoomBuildLaunchPlan",
-        "version": "project-resolved Loom version; plan contract remains version-independent"
+        "id": "net.fabricmc.fabric-loom",
+        "version": "project-resolved Loom version; exact plugin generation is family-bound"
       },
       "buildJava": {
         "status": "PerProjectGradleWrapperAndCompilerEvidence",
@@ -559,16 +630,27 @@
         "https://docs.fabricmc.net/develop/loader/fabric-mod-json",
         "https://docs.fabricmc.net/develop/loom",
         "https://docs.fabricmc.net/develop/getting-started/building-a-mod",
-        "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
+        "plugin-generation:Minecraft 26.1 and newer use the non-remap plugin ID",
+        "plugin-id:net.fabricmc.fabric-loom",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
         "fabric-adapter-sha256:f21a4b0098cace1ddaff5bfb41ec9c2352752f739e01782412d8cee2c88e7829",
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
         "test:ProjectDetectorV2.Tests.ps1:detect-and-bind-all-exact-fabric-targets"
       ],
       "capabilities": {
+        "BuildJava": {
+          "status": "PartiallySupported",
+          "evidenceRefs": [
+            "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target"
+          ]
+        },
         "ProjectDetection": {
           "status": "Supported",
           "evidenceRefs": [
-            "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
             "fabric-adapter-sha256:f21a4b0098cace1ddaff5bfb41ec9c2352752f739e01782412d8cee2c88e7829",
             "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-fabric-targets"
           ]
@@ -577,7 +659,7 @@
           "status": "Supported",
           "evidenceRefs": [
             "https://docs.fabricmc.net/develop/loom",
-            "https://docs.fabricmc.net/develop/getting-started/building-a-mod",
+            "plugin-id:net.fabricmc.fabric-loom",
             "fabric-adapter-sha256:f21a4b0098cace1ddaff5bfb41ec9c2352752f739e01782412d8cee2c88e7829",
             "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-fabric-targets"
           ]
@@ -586,6 +668,7 @@
           "status": "Supported",
           "evidenceRefs": [
             "https://docs.fabricmc.net/develop/loom",
+            "plugin-id:net.fabricmc.fabric-loom",
             "fabric-adapter-sha256:f21a4b0098cace1ddaff5bfb41ec9c2352752f739e01782412d8cee2c88e7829",
             "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-fabric-targets"
           ]
@@ -593,16 +676,935 @@
       }
     },
     {
-      "familyId": "forge-project-metadata-detection-v1",
+      "familyId": "forge-gradle-source-62e60d191aa4",
       "loaderId": "Forge",
       "minecraftIds": [
-        "1.1",
+        "1.7.10"
+      ],
+      "toolchainHash": "34fa9ce5521f05df7114334104702147cb56df9fbafd62010dcd8f0077161583",
+      "toolchain": {
+        "id": "ForgeGradleSpec:1.2-SNAPSHOT",
+        "version": "1.2-SNAPSHOT|https://services.gradle.org/distributions/gradle-2.0-bin.zip"
+      },
+      "buildJava": {
+        "status": "PartiallySupported",
+        "evidenceRef": "common/src/BuildJavaResolver.psm1"
+      },
+      "runtimeJava": {
+        "status": "PerTargetMojangMetadata",
+        "evidenceRef": "compatibility/runtime-java-catalog.json"
+      },
+      "projectDetectionStrategy": "识别 ForgeGradle 项目标记与 Forge 运行依赖，并从项目配置读取精确 Minecraft ID / Forge 坐标版本；将目标逐字绑定到 frozen Universe Available target 和官方候选。",
+      "buildStrategy": "使用该项目 ForgeGradle Gradle Wrapper build task；只生成不可执行 plan，执行必须经过 MMTL managed session copy 与可信 validation runner。",
+      "launchStrategy": "为 exact Forge target 生成 Single Client runClient plan；LaunchCheck 未验证，plan 不可直接执行。",
+      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
+      "evidence": [
+        "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+        "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "forge-mdk-catalog-sha256:c4fea4f86f1ceb9c1033cd79a627de87c71296c912d117193804038533571ce0",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+        "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates",
+        "test:ProjectDetectorV2.Tests.ps1:detects-every-forge-source-overlay-minecraft-target-from-forge-api-imports-in-mcp-projects",
+        "forge-source-archive-target:Forge@1.7.10:coordinate=1.7.10-10.13.4.1614-1.7.10;archive-sha256=42acb31587d37ee2c87afef38a74e4ca6704bcdc609c68bd26e6216b204e4f71;type=GradleProject;build-gradle-sha256=5ee93bf2d4886c36fe117333da07ec55e04e1b505a5c0ce87c13978bb404ae7c;spec=1.2-SNAPSHOT;wrapper=https://services.gradle.org/distributions/gradle-2.0-bin.zip;build-java="
+      ],
+      "capabilities": {
+        "BuildJava": {
+          "status": "PartiallySupported",
+          "evidenceRefs": [
+            "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target"
+          ]
+        },
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        }
+      }
+    },
+    {
+      "familyId": "forge-gradle-source-715210c0156c",
+      "loaderId": "Forge",
+      "minecraftIds": [
+        "1.7.2"
+      ],
+      "toolchainHash": "ba09f079b153579660733d293377cc8c43be922a7ac543398f3d187ecb8ba7eb",
+      "toolchain": {
+        "id": "ForgeGradleSpec:1.2-SNAPSHOT",
+        "version": "1.2-SNAPSHOT|https://services.gradle.org/distributions/gradle-1.12-bin.zip"
+      },
+      "buildJava": {
+        "status": "PartiallySupported",
+        "evidenceRef": "common/src/BuildJavaResolver.psm1"
+      },
+      "runtimeJava": {
+        "status": "PerTargetMojangMetadata",
+        "evidenceRef": "compatibility/runtime-java-catalog.json"
+      },
+      "projectDetectionStrategy": "识别 ForgeGradle 项目标记与 Forge 运行依赖，并从项目配置读取精确 Minecraft ID / Forge 坐标版本；将目标逐字绑定到 frozen Universe Available target 和官方候选。",
+      "buildStrategy": "使用该项目 ForgeGradle Gradle Wrapper build task；只生成不可执行 plan，执行必须经过 MMTL managed session copy 与可信 validation runner。",
+      "launchStrategy": "为 exact Forge target 生成 Single Client runClient plan；LaunchCheck 未验证，plan 不可直接执行。",
+      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
+      "evidence": [
+        "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+        "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "forge-mdk-catalog-sha256:c4fea4f86f1ceb9c1033cd79a627de87c71296c912d117193804038533571ce0",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+        "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates",
+        "test:ProjectDetectorV2.Tests.ps1:detects-every-forge-source-overlay-minecraft-target-from-forge-api-imports-in-mcp-projects",
+        "forge-source-archive-target:Forge@1.7.2:coordinate=1.7.2-10.12.2.1161-mc172;archive-sha256=7c05fc6eaf3520b97248203e2ae2eeeb372eb8fb9d65db7f9ad0f71aacd1ea33;type=GradleProject;build-gradle-sha256=7bbc6bc7973fe2422effcce8c904531084a47d1d252284f5a16489bcc403aabc;spec=1.2-SNAPSHOT;wrapper=https://services.gradle.org/distributions/gradle-1.12-bin.zip;build-java="
+      ],
+      "capabilities": {
+        "BuildJava": {
+          "status": "PartiallySupported",
+          "evidenceRefs": [
+            "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target"
+          ]
+        },
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        }
+      }
+    },
+    {
+      "familyId": "forge-gradle-spec-05ce0c994cd4",
+      "loaderId": "Forge",
+      "minecraftIds": [
+        "1.16.5",
+        "1.18.2",
+        "1.19.2",
+        "1.19.4",
+        "1.20",
+        "1.20.1"
+      ],
+      "toolchainHash": "1dae6d2372e3f6158d47d9ec474972f897d33465622aa49192798902f6dab9e9",
+      "toolchain": {
+        "id": "ForgeGradleSpec:[6.0,6.2)",
+        "version": "[6.0,6.2)"
+      },
+      "buildJava": {
+        "status": "PartiallySupported",
+        "evidenceRef": "common/src/BuildJavaResolver.psm1"
+      },
+      "runtimeJava": {
+        "status": "PerTargetMojangMetadata",
+        "evidenceRef": "compatibility/runtime-java-catalog.json"
+      },
+      "projectDetectionStrategy": "识别 ForgeGradle 项目标记与 Forge 运行依赖，并从项目配置读取精确 Minecraft ID / Forge 坐标版本；将目标逐字绑定到 frozen Universe Available target 和官方候选。",
+      "buildStrategy": "使用该项目 ForgeGradle Gradle Wrapper build task；只生成不可执行 plan，执行必须经过 MMTL managed session copy 与可信 validation runner。",
+      "launchStrategy": "为 exact Forge target 生成 Single Client runClient plan；LaunchCheck 未验证，plan 不可直接执行。",
+      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
+      "evidence": [
+        "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+        "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "forge-mdk-catalog-sha256:c4fea4f86f1ceb9c1033cd79a627de87c71296c912d117193804038533571ce0",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+        "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates",
+        "test:ProjectDetectorV2.Tests.ps1:detects-every-forge-source-overlay-minecraft-target-from-forge-api-imports-in-mcp-projects",
+        "forge-mdk-target:Forge@1.16.5:coordinate=1.16.5-36.2.42;archive-sha256=02774cc07855111ee58936319bc39416c31df899b649748f089afd7ec51d5568;build-gradle-sha256=7d70ec0b3ed89dc4c66babcbb720f25afbd8d98343b783e2a41c06ab24f1ef54;spec=[6.0,6.2);wrapper=https://services.gradle.org/distributions/gradle-8.4-all.zip;build-java=8",
+        "forge-mdk-target:Forge@1.18.2:coordinate=1.18.2-40.3.11;archive-sha256=06dc30e30b148d33e36e1c24f47c985e46ae669556f2060d750a141264bcdc26;build-gradle-sha256=7e62af868e3859bf02282f63cc6015bff09232f66de3e4af7a6bc0487bdbdcec;spec=[6.0,6.2);wrapper=https://services.gradle.org/distributions/gradle-8.8-bin.zip;build-java=17",
+        "forge-mdk-target:Forge@1.19.2:coordinate=1.19.2-43.5.1;archive-sha256=145514b3e54c78c05fb7e6d8bbc22c5ab63b1155a31415478b454e53baffd90e;build-gradle-sha256=7e62af868e3859bf02282f63cc6015bff09232f66de3e4af7a6bc0487bdbdcec;spec=[6.0,6.2);wrapper=https://services.gradle.org/distributions/gradle-8.8-bin.zip;build-java=17",
+        "forge-mdk-target:Forge@1.19.4:coordinate=1.19.4-45.4.1;archive-sha256=9af67ea5ac56c0113dce53d879cbe4f38a0b1b45542e7488c8757b3509b963ae;build-gradle-sha256=5ccd5ffbd5d4066ac1a182bd37b12660ea3d26d9a9867ace94a3c56f7a7444ab;spec=[6.0,6.2);wrapper=https://services.gradle.org/distributions/gradle-8.8-bin.zip;build-java=17",
+        "forge-mdk-target:Forge@1.20:coordinate=1.20-46.0.14;archive-sha256=a7a0cc82e28092fc069dfecb689212a6e36203a6ce9e1548c871b3f445e36d7f;build-gradle-sha256=c46a31faaeca748c293923cd5a71db333ac55a6a4b4ece90f884e054d5a56559;spec=[6.0,6.2);wrapper=https://services.gradle.org/distributions/gradle-8.1.1-bin.zip;build-java=17",
+        "forge-mdk-target:Forge@1.20.1:coordinate=1.20.1-47.4.5;archive-sha256=3a55c4c6cb66420d69f5d99858da222272fea19592077cd60652143c188360fc;build-gradle-sha256=f50947b2af27e834f58860360a084825951fe987d9dd8ea180e7eee261629d77;spec=[6.0,6.2);wrapper=https://services.gradle.org/distributions/gradle-8.8-bin.zip;build-java=17"
+      ],
+      "capabilities": {
+        "BuildJava": {
+          "status": "PartiallySupported",
+          "evidenceRefs": [
+            "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target"
+          ]
+        },
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        }
+      }
+    },
+    {
+      "familyId": "forge-gradle-spec-0ae8d89b3c98",
+      "loaderId": "Forge",
+      "minecraftIds": [
+        "26.1"
+      ],
+      "toolchainHash": "a3fb5d7dbbfdea130225b02651ae9c0f1b6cc71aacebc772eb7fff17ca903acd",
+      "toolchain": {
+        "id": "ForgeGradleSpec:[7.0.3,8)",
+        "version": "[7.0.3,8)"
+      },
+      "buildJava": {
+        "status": "PartiallySupported",
+        "evidenceRef": "common/src/BuildJavaResolver.psm1"
+      },
+      "runtimeJava": {
+        "status": "PerTargetMojangMetadata",
+        "evidenceRef": "compatibility/runtime-java-catalog.json"
+      },
+      "projectDetectionStrategy": "识别 ForgeGradle 项目标记与 Forge 运行依赖，并从项目配置读取精确 Minecraft ID / Forge 坐标版本；将目标逐字绑定到 frozen Universe Available target 和官方候选。",
+      "buildStrategy": "使用该项目 ForgeGradle Gradle Wrapper build task；只生成不可执行 plan，执行必须经过 MMTL managed session copy 与可信 validation runner。",
+      "launchStrategy": "为 exact Forge target 生成 Single Client runClient plan；LaunchCheck 未验证，plan 不可直接执行。",
+      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
+      "evidence": [
+        "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+        "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "forge-mdk-catalog-sha256:c4fea4f86f1ceb9c1033cd79a627de87c71296c912d117193804038533571ce0",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+        "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates",
+        "test:ProjectDetectorV2.Tests.ps1:detects-every-forge-source-overlay-minecraft-target-from-forge-api-imports-in-mcp-projects",
+        "forge-mdk-target:Forge@26.1:coordinate=26.1-62.0.0;archive-sha256=449deeedf354819a63214c0d72d9192c474caa367d3c3572a22d39bc15c542a2;build-gradle-sha256=3c9cb6178d5df9ecfa3dc04898d23df9b082e7ccba6187b9e3203146f5288cb4;spec=[7.0.3,8);wrapper=https://services.gradle.org/distributions/gradle-9.3.1-bin.zip;build-java=25"
+      ],
+      "capabilities": {
+        "BuildJava": {
+          "status": "PartiallySupported",
+          "evidenceRefs": [
+            "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target"
+          ]
+        },
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        }
+      }
+    },
+    {
+      "familyId": "forge-gradle-spec-17f04f0d0094",
+      "loaderId": "Forge",
+      "minecraftIds": [
+        "1.21.11"
+      ],
+      "toolchainHash": "1b4a3e0539aa6c3d6034d66db8c5826c3be6633cc978dee8f69883f8bed3681e",
+      "toolchain": {
+        "id": "ForgeGradleSpec:[6.0.46,6.2)",
+        "version": "[6.0.46,6.2)"
+      },
+      "buildJava": {
+        "status": "PartiallySupported",
+        "evidenceRef": "common/src/BuildJavaResolver.psm1"
+      },
+      "runtimeJava": {
+        "status": "PerTargetMojangMetadata",
+        "evidenceRef": "compatibility/runtime-java-catalog.json"
+      },
+      "projectDetectionStrategy": "识别 ForgeGradle 项目标记与 Forge 运行依赖，并从项目配置读取精确 Minecraft ID / Forge 坐标版本；将目标逐字绑定到 frozen Universe Available target 和官方候选。",
+      "buildStrategy": "使用该项目 ForgeGradle Gradle Wrapper build task；只生成不可执行 plan，执行必须经过 MMTL managed session copy 与可信 validation runner。",
+      "launchStrategy": "为 exact Forge target 生成 Single Client runClient plan；LaunchCheck 未验证，plan 不可直接执行。",
+      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
+      "evidence": [
+        "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+        "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "forge-mdk-catalog-sha256:c4fea4f86f1ceb9c1033cd79a627de87c71296c912d117193804038533571ce0",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+        "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates",
+        "test:ProjectDetectorV2.Tests.ps1:detects-every-forge-source-overlay-minecraft-target-from-forge-api-imports-in-mcp-projects",
+        "forge-mdk-target:Forge@1.21.11:coordinate=1.21.11-61.0.0;archive-sha256=589426c06fa4a2aeb27bd69ff0e87c7b1936f3377fe46da74e524adf3584f205;build-gradle-sha256=74a559663f6182c0475b64b5b0cdcc2b4473049391d3fa0fdd5b1500fd38dd33;spec=[6.0.46,6.2);wrapper=https://services.gradle.org/distributions/gradle-8.12.1-bin.zip;build-java=21"
+      ],
+      "capabilities": {
+        "BuildJava": {
+          "status": "PartiallySupported",
+          "evidenceRefs": [
+            "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target"
+          ]
+        },
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        }
+      }
+    },
+    {
+      "familyId": "forge-gradle-spec-2f3dd725f0ba",
+      "loaderId": "Forge",
+      "minecraftIds": [
         "1.10",
         "1.10.2",
         "1.11",
         "1.11.2",
-        "1.12",
-        "1.12.1",
+        "1.9.4"
+      ],
+      "toolchainHash": "3451e5f8820583ed14faafced55578baa5a148010a1626ce2342d6a3abeb8633",
+      "toolchain": {
+        "id": "ForgeGradleSpec:2.2-SNAPSHOT",
+        "version": "2.2-SNAPSHOT"
+      },
+      "buildJava": {
+        "status": "PartiallySupported",
+        "evidenceRef": "common/src/BuildJavaResolver.psm1"
+      },
+      "runtimeJava": {
+        "status": "PerTargetMojangMetadata",
+        "evidenceRef": "compatibility/runtime-java-catalog.json"
+      },
+      "projectDetectionStrategy": "识别 ForgeGradle 项目标记与 Forge 运行依赖，并从项目配置读取精确 Minecraft ID / Forge 坐标版本；将目标逐字绑定到 frozen Universe Available target 和官方候选。",
+      "buildStrategy": "使用该项目 ForgeGradle Gradle Wrapper build task；只生成不可执行 plan，执行必须经过 MMTL managed session copy 与可信 validation runner。",
+      "launchStrategy": "为 exact Forge target 生成 Single Client runClient plan；LaunchCheck 未验证，plan 不可直接执行。",
+      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
+      "evidence": [
+        "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+        "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "forge-mdk-catalog-sha256:c4fea4f86f1ceb9c1033cd79a627de87c71296c912d117193804038533571ce0",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+        "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates",
+        "test:ProjectDetectorV2.Tests.ps1:detects-every-forge-source-overlay-minecraft-target-from-forge-api-imports-in-mcp-projects",
+        "forge-mdk-target:Forge@1.10:coordinate=1.10-12.18.0.2000-1.10.0;archive-sha256=4d74922bf13a7bc954d94324bf57bbed3d9d8beb00ed188b2c167de78bc40b69;build-gradle-sha256=dd640159ff4b5b7592cddb93ffe18e6b2ebf40083b3c0bc09f35c9d63ca759d5;spec=2.2-SNAPSHOT;wrapper=https://services.gradle.org/distributions/gradle-2.7-bin.zip;build-java=",
+        "forge-mdk-target:Forge@1.10.2:coordinate=1.10.2-12.18.3.2511;archive-sha256=0c39f46ec23598bd0078bfe9ba53c4d29a2123d9d7996bae9ecacadb5553629c;build-gradle-sha256=4db831d38a3fd7660a24094c9e1c539884592a45e4da66dea3ec56b8bd101fe9;spec=2.2-SNAPSHOT;wrapper=https://services.gradle.org/distributions/gradle-2.14-bin.zip;build-java=",
+        "forge-mdk-target:Forge@1.11:coordinate=1.11-13.19.1.2199;archive-sha256=dd66abacca35ac0d8598a577db20eb5d47951597901aba9cdbb9ca54b005f050;build-gradle-sha256=946d11ab2973d3072ce60708382051ff77b098f0511b551671b35c29d453caa4;spec=2.2-SNAPSHOT;wrapper=https://services.gradle.org/distributions/gradle-2.14-bin.zip;build-java=",
+        "forge-mdk-target:Forge@1.11.2:coordinate=1.11.2-13.20.1.2588;archive-sha256=ec0f197e6d2f7eecdeaac29756609aa3dbce7a2aa805db0f9ce7dce103d3b32b;build-gradle-sha256=170da72ab1bc8cacc149f9ab3015f74c7799b105a674464e94e64e3ce8dbc00c;spec=2.2-SNAPSHOT;wrapper=https://services.gradle.org/distributions/gradle-2.14-bin.zip;build-java=",
+        "forge-mdk-target:Forge@1.9.4:coordinate=1.9.4-12.17.0.2317-1.9.4;archive-sha256=f67f96e2ccd98f32987c0fb515f53ac51eac3235aff90ef97b2f9a6e0dd9132b;build-gradle-sha256=ffc486107444d5964d6c175e8b7bcdaa460bb64f01349d1acb7dccf758ac3299;spec=2.2-SNAPSHOT;wrapper=https://services.gradle.org/distributions/gradle-2.7-bin.zip;build-java="
+      ],
+      "capabilities": {
+        "BuildJava": {
+          "status": "PartiallySupported",
+          "evidenceRefs": [
+            "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target"
+          ]
+        },
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        }
+      }
+    },
+    {
+      "familyId": "forge-gradle-spec-31186721be50",
+      "loaderId": "Forge",
+      "minecraftIds": [
+        "1.8"
+      ],
+      "toolchainHash": "f4e4892aaeb7cedb669b0fa60f4d92b3ef08ac90c159b5c3924a2f0c570fb358",
+      "toolchain": {
+        "id": "ForgeGradleSpec:2.0.2",
+        "version": "2.0.2"
+      },
+      "buildJava": {
+        "status": "PartiallySupported",
+        "evidenceRef": "common/src/BuildJavaResolver.psm1"
+      },
+      "runtimeJava": {
+        "status": "PerTargetMojangMetadata",
+        "evidenceRef": "compatibility/runtime-java-catalog.json"
+      },
+      "projectDetectionStrategy": "识别 ForgeGradle 项目标记与 Forge 运行依赖，并从项目配置读取精确 Minecraft ID / Forge 坐标版本；将目标逐字绑定到 frozen Universe Available target 和官方候选。",
+      "buildStrategy": "使用该项目 ForgeGradle Gradle Wrapper build task；只生成不可执行 plan，执行必须经过 MMTL managed session copy 与可信 validation runner。",
+      "launchStrategy": "为 exact Forge target 生成 Single Client runClient plan；LaunchCheck 未验证，plan 不可直接执行。",
+      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
+      "evidence": [
+        "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+        "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "forge-mdk-catalog-sha256:c4fea4f86f1ceb9c1033cd79a627de87c71296c912d117193804038533571ce0",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+        "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates",
+        "test:ProjectDetectorV2.Tests.ps1:detects-every-forge-source-overlay-minecraft-target-from-forge-api-imports-in-mcp-projects",
+        "forge-mdk-target:Forge@1.8:coordinate=1.8-11.14.4.1577;archive-sha256=eb1dc2af59095d2743d99a990121b655962186b073ca557067da2b3da395adac;build-gradle-sha256=559ed31b31e08f5878925898f1244813eeb4ed24258de05e9c8ba209a61636bb;spec=2.0.2;wrapper=https://services.gradle.org/distributions/gradle-2.7-bin.zip;build-java="
+      ],
+      "capabilities": {
+        "BuildJava": {
+          "status": "PartiallySupported",
+          "evidenceRefs": [
+            "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target"
+          ]
+        },
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        }
+      }
+    },
+    {
+      "familyId": "forge-gradle-spec-48a56fbcbd06",
+      "loaderId": "Forge",
+      "minecraftIds": [
+        "1.21.10",
+        "1.21.4",
+        "1.21.5",
+        "1.21.6",
+        "1.21.7",
+        "1.21.8",
+        "1.21.9"
+      ],
+      "toolchainHash": "4764531bd0bd8e933b8a81804651f922ae2fb49c32117dc16cdc0d6f1845128c",
+      "toolchain": {
+        "id": "ForgeGradleSpec:[6.0.36,6.2)",
+        "version": "[6.0.36,6.2)"
+      },
+      "buildJava": {
+        "status": "PartiallySupported",
+        "evidenceRef": "common/src/BuildJavaResolver.psm1"
+      },
+      "runtimeJava": {
+        "status": "PerTargetMojangMetadata",
+        "evidenceRef": "compatibility/runtime-java-catalog.json"
+      },
+      "projectDetectionStrategy": "识别 ForgeGradle 项目标记与 Forge 运行依赖，并从项目配置读取精确 Minecraft ID / Forge 坐标版本；将目标逐字绑定到 frozen Universe Available target 和官方候选。",
+      "buildStrategy": "使用该项目 ForgeGradle Gradle Wrapper build task；只生成不可执行 plan，执行必须经过 MMTL managed session copy 与可信 validation runner。",
+      "launchStrategy": "为 exact Forge target 生成 Single Client runClient plan；LaunchCheck 未验证，plan 不可直接执行。",
+      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
+      "evidence": [
+        "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+        "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "forge-mdk-catalog-sha256:c4fea4f86f1ceb9c1033cd79a627de87c71296c912d117193804038533571ce0",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+        "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates",
+        "test:ProjectDetectorV2.Tests.ps1:detects-every-forge-source-overlay-minecraft-target-from-forge-api-imports-in-mcp-projects",
+        "forge-mdk-target:Forge@1.21.10:coordinate=1.21.10-60.0.0;archive-sha256=8825d02c16f965f12bd7b1dc0f3860ecc40fa0e13e72e0ef2f13cf8c582e71c6;build-gradle-sha256=dd8e34fb5f634e630a39c0a8d33748cab6ebb0d59f626b16cc8d1eb394792761;spec=[6.0.36,6.2);wrapper=https://services.gradle.org/distributions/gradle-8.12.1-bin.zip;build-java=21",
+        "forge-mdk-target:Forge@1.21.4:coordinate=1.21.4-54.1.6;archive-sha256=4c4b48e8d5ac5e0608022ccd228fa3f873b521b81f0ef8f69943b41e10ff5228;build-gradle-sha256=10490db8596b8896d208b9122fcda5c383e9ba28882e3a273920726b57d1d907;spec=[6.0.36,6.2);wrapper=https://services.gradle.org/distributions/gradle-8.12.1-bin.zip;build-java=21",
+        "forge-mdk-target:Forge@1.21.5:coordinate=1.21.5-55.0.24;archive-sha256=d77f63a9363fa733321305767056dbb7fcd0469be2cd4a3ab16e967829fdb1ac;build-gradle-sha256=10490db8596b8896d208b9122fcda5c383e9ba28882e3a273920726b57d1d907;spec=[6.0.36,6.2);wrapper=https://services.gradle.org/distributions/gradle-8.12.1-bin.zip;build-java=21",
+        "forge-mdk-target:Forge@1.21.6:coordinate=1.21.6-56.0.9;archive-sha256=a4c7e5d049418701de62c024a5dbe0cf370e9cc9e6ba08e21e40a815ffa9355f;build-gradle-sha256=f9c61d9b49d8567b30a953c0061d7971e85647f2e720081078c1eed637235167;spec=[6.0.36,6.2);wrapper=https://services.gradle.org/distributions/gradle-8.12.1-bin.zip;build-java=21",
+        "forge-mdk-target:Forge@1.21.7:coordinate=1.21.7-57.0.3;archive-sha256=042b687fac1db711c1024d6fd000e6f94700fdeda047c02eeac5d4c49661b269;build-gradle-sha256=f9c61d9b49d8567b30a953c0061d7971e85647f2e720081078c1eed637235167;spec=[6.0.36,6.2);wrapper=https://services.gradle.org/distributions/gradle-8.12.1-bin.zip;build-java=21",
+        "forge-mdk-target:Forge@1.21.8:coordinate=1.21.8-58.0.3;archive-sha256=14346d678f96dca4b9c89c374dac0b3fab1121f0e1513ee3da8b5e4f8680ea98;build-gradle-sha256=f9c61d9b49d8567b30a953c0061d7971e85647f2e720081078c1eed637235167;spec=[6.0.36,6.2);wrapper=https://services.gradle.org/distributions/gradle-8.12.1-bin.zip;build-java=21",
+        "forge-mdk-target:Forge@1.21.9:coordinate=1.21.9-59.0.0;archive-sha256=730037d045c18175e9e3f3d6034286b07d6be426eab2d3edd6c6c34622dc6c51;build-gradle-sha256=f9c61d9b49d8567b30a953c0061d7971e85647f2e720081078c1eed637235167;spec=[6.0.36,6.2);wrapper=https://services.gradle.org/distributions/gradle-8.12.1-bin.zip;build-java=21"
+      ],
+      "capabilities": {
+        "BuildJava": {
+          "status": "PartiallySupported",
+          "evidenceRefs": [
+            "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target"
+          ]
+        },
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        }
+      }
+    },
+    {
+      "familyId": "forge-gradle-spec-65b4e9ca0505",
+      "loaderId": "Forge",
+      "minecraftIds": [
+        "26.1.1",
+        "26.1.2",
+        "26.2",
+        "26.3"
+      ],
+      "toolchainHash": "cbc9d27332c574589078099d1066389b6c6102471a37758e6efa45d7d85cb821",
+      "toolchain": {
+        "id": "ForgeGradleSpec:[7.0.17,8)",
+        "version": "[7.0.17,8)"
+      },
+      "buildJava": {
+        "status": "PartiallySupported",
+        "evidenceRef": "common/src/BuildJavaResolver.psm1"
+      },
+      "runtimeJava": {
+        "status": "PerTargetMojangMetadata",
+        "evidenceRef": "compatibility/runtime-java-catalog.json"
+      },
+      "projectDetectionStrategy": "识别 ForgeGradle 项目标记与 Forge 运行依赖，并从项目配置读取精确 Minecraft ID / Forge 坐标版本；将目标逐字绑定到 frozen Universe Available target 和官方候选。",
+      "buildStrategy": "使用该项目 ForgeGradle Gradle Wrapper build task；只生成不可执行 plan，执行必须经过 MMTL managed session copy 与可信 validation runner。",
+      "launchStrategy": "为 exact Forge target 生成 Single Client runClient plan；LaunchCheck 未验证，plan 不可直接执行。",
+      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
+      "evidence": [
+        "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+        "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "forge-mdk-catalog-sha256:c4fea4f86f1ceb9c1033cd79a627de87c71296c912d117193804038533571ce0",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+        "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates",
+        "test:ProjectDetectorV2.Tests.ps1:detects-every-forge-source-overlay-minecraft-target-from-forge-api-imports-in-mcp-projects",
+        "forge-mdk-target:Forge@26.1.1:coordinate=26.1.1-63.0.0;archive-sha256=c49e9bf46c4bad786b4512a4c0d6baea2318b85fdaf4dfc32e54659c9dc354d1;build-gradle-sha256=221c25444e2235b5647ee76d6f3ea1705079a5a4d77eb9dede39c9782becc2c6;spec=[7.0.17,8);wrapper=https://services.gradle.org/distributions/gradle-9.3.1-bin.zip;build-java=25",
+        "forge-mdk-target:Forge@26.1.2:coordinate=26.1.2-64.0.0;archive-sha256=61bf68aacd286ff33c9993c96731d9e02a85c1b491ba422267716ba6b5f4efe2;build-gradle-sha256=e0e49d441f634e96ea829a62d026ff662011807660cbe4b8b1ad4030cb82f352;spec=[7.0.17,8);wrapper=https://services.gradle.org/distributions/gradle-9.3.1-bin.zip;build-java=25",
+        "forge-mdk-target:Forge@26.2:coordinate=26.2-65.0.0;archive-sha256=812efe4948f2b9560892cd4ae775358645ccb03a7c54adb61f1d2ab2b642c1cf;build-gradle-sha256=019820e777ed5222788dd45e666e49928995a2cd6e025b824497733e83a45622;spec=[7.0.17,8);wrapper=https://services.gradle.org/distributions/gradle-9.3.1-bin.zip;build-java=25",
+        "forge-mdk-target:Forge@26.3:coordinate=26.3-66.0.0;archive-sha256=00b86df0597632cebaa2d357cd9a5dcae0d958ce04c4733c70fc2b27bb0e61b8;build-gradle-sha256=9937f5f83f4398c9eea531b6665f57bf7433af6fd05ad20c8f416a600c080e31;spec=[7.0.17,8);wrapper=https://services.gradle.org/distributions/gradle-9.7.1-bin.zip;build-java=25"
+      ],
+      "capabilities": {
+        "BuildJava": {
+          "status": "PartiallySupported",
+          "evidenceRefs": [
+            "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target"
+          ]
+        },
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        }
+      }
+    },
+    {
+      "familyId": "forge-gradle-spec-8e7dfb3ed4e7",
+      "loaderId": "Forge",
+      "minecraftIds": [
+        "1.8.8",
+        "1.8.9",
+        "1.9"
+      ],
+      "toolchainHash": "ab112c71c6c34c68bca6b16700e2171810f85a312ba906e59f4bd0e982fc766a",
+      "toolchain": {
+        "id": "ForgeGradleSpec:2.1-SNAPSHOT",
+        "version": "2.1-SNAPSHOT"
+      },
+      "buildJava": {
+        "status": "PartiallySupported",
+        "evidenceRef": "common/src/BuildJavaResolver.psm1"
+      },
+      "runtimeJava": {
+        "status": "PerTargetMojangMetadata",
+        "evidenceRef": "compatibility/runtime-java-catalog.json"
+      },
+      "projectDetectionStrategy": "识别 ForgeGradle 项目标记与 Forge 运行依赖，并从项目配置读取精确 Minecraft ID / Forge 坐标版本；将目标逐字绑定到 frozen Universe Available target 和官方候选。",
+      "buildStrategy": "使用该项目 ForgeGradle Gradle Wrapper build task；只生成不可执行 plan，执行必须经过 MMTL managed session copy 与可信 validation runner。",
+      "launchStrategy": "为 exact Forge target 生成 Single Client runClient plan；LaunchCheck 未验证，plan 不可直接执行。",
+      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
+      "evidence": [
+        "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+        "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "forge-mdk-catalog-sha256:c4fea4f86f1ceb9c1033cd79a627de87c71296c912d117193804038533571ce0",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+        "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates",
+        "test:ProjectDetectorV2.Tests.ps1:detects-every-forge-source-overlay-minecraft-target-from-forge-api-imports-in-mcp-projects",
+        "forge-mdk-target:Forge@1.8.8:coordinate=1.8.8-11.15.0.1655;archive-sha256=17515602a2bd628cf328c9587178262908f49804b6ee9325d31c39fd342c42f5;build-gradle-sha256=cd14ec564dca1d938148e212ac8eee049997b0c98aeaf7ec55585992a06584b7;spec=2.1-SNAPSHOT;wrapper=https://services.gradle.org/distributions/gradle-2.7-bin.zip;build-java=",
+        "forge-mdk-target:Forge@1.8.9:coordinate=1.8.9-11.15.1.2318-1.8.9;archive-sha256=5a9a798b14676f9f8a5782aced4bbbca30f6ab5bca545fd2d320c356c1a9afae;build-gradle-sha256=ae40e3643066998808a20099c0f7b08e575eaefd0d44822079403100b16caf62;spec=2.1-SNAPSHOT;wrapper=https://services.gradle.org/distributions/gradle-2.7-bin.zip;build-java=",
+        "forge-mdk-target:Forge@1.9:coordinate=1.9-12.16.1.1938-1.9.0;archive-sha256=46edffa6b28b79ce99eee0b40665701b78fd5c882a331fd0255c18b9164f23cd;build-gradle-sha256=91f956211994d01f63f06acbbaaf01611526f942614d0912a84188eb7ccc3572;spec=2.1-SNAPSHOT;wrapper=https://services.gradle.org/distributions/gradle-2.7-bin.zip;build-java="
+      ],
+      "capabilities": {
+        "BuildJava": {
+          "status": "PartiallySupported",
+          "evidenceRefs": [
+            "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target"
+          ]
+        },
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        }
+      }
+    },
+    {
+      "familyId": "forge-gradle-spec-9a7956e5aea8",
+      "loaderId": "Forge",
+      "minecraftIds": [
+        "1.20.6",
+        "1.21",
+        "1.21.1",
+        "1.21.3"
+      ],
+      "toolchainHash": "e203fe1c8366e0252aaf2cd7d5d0f9cab7d0206afd087dcc0dfeccd1fd3f4140",
+      "toolchain": {
+        "id": "ForgeGradleSpec:[6.0.24,6.2)",
+        "version": "[6.0.24,6.2)"
+      },
+      "buildJava": {
+        "status": "PartiallySupported",
+        "evidenceRef": "common/src/BuildJavaResolver.psm1"
+      },
+      "runtimeJava": {
+        "status": "PerTargetMojangMetadata",
+        "evidenceRef": "compatibility/runtime-java-catalog.json"
+      },
+      "projectDetectionStrategy": "识别 ForgeGradle 项目标记与 Forge 运行依赖，并从项目配置读取精确 Minecraft ID / Forge 坐标版本；将目标逐字绑定到 frozen Universe Available target 和官方候选。",
+      "buildStrategy": "使用该项目 ForgeGradle Gradle Wrapper build task；只生成不可执行 plan，执行必须经过 MMTL managed session copy 与可信 validation runner。",
+      "launchStrategy": "为 exact Forge target 生成 Single Client runClient plan；LaunchCheck 未验证，plan 不可直接执行。",
+      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
+      "evidence": [
+        "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+        "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "forge-mdk-catalog-sha256:c4fea4f86f1ceb9c1033cd79a627de87c71296c912d117193804038533571ce0",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+        "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates",
+        "test:ProjectDetectorV2.Tests.ps1:detects-every-forge-source-overlay-minecraft-target-from-forge-api-imports-in-mcp-projects",
+        "forge-mdk-target:Forge@1.20.6:coordinate=1.20.6-50.2.1;archive-sha256=a439c3d29a83e4799aea791634b45d33b021925909e514831e00dde9c3c8d3ee;build-gradle-sha256=a947671abe8b9d8704e6effad4430afd7d35448e311026ca6e7cd4ab9aaa6b6f;spec=[6.0.24,6.2);wrapper=https://services.gradle.org/distributions/gradle-8.12.1-bin.zip;build-java=21",
+        "forge-mdk-target:Forge@1.21:coordinate=1.21-51.0.33;archive-sha256=868c90c6badd7ca8c910e72989faf2c1144ee589bf304c935a9882d76ab2706c;build-gradle-sha256=981c48e2cc41ba481211b2958cd9d36c0d758ff570a0305082028a394835a30a;spec=[6.0.24,6.2);wrapper=https://services.gradle.org/distributions/gradle-8.7-all.zip;build-java=21",
+        "forge-mdk-target:Forge@1.21.1:coordinate=1.21.1-52.1.2;archive-sha256=2680b760c20586c3b99105915b3712bc0d82f46d63b73721e4de5db63c9b8a70;build-gradle-sha256=a947671abe8b9d8704e6effad4430afd7d35448e311026ca6e7cd4ab9aaa6b6f;spec=[6.0.24,6.2);wrapper=https://services.gradle.org/distributions/gradle-8.12.1-bin.zip;build-java=21",
+        "forge-mdk-target:Forge@1.21.3:coordinate=1.21.3-53.1.2;archive-sha256=7c2f7d63afeb0a595171620ebd28b36280cf3b4840a391da9e9d13a32c00b685;build-gradle-sha256=a947671abe8b9d8704e6effad4430afd7d35448e311026ca6e7cd4ab9aaa6b6f;spec=[6.0.24,6.2);wrapper=https://services.gradle.org/distributions/gradle-8.12.1-bin.zip;build-java=21"
+      ],
+      "capabilities": {
+        "BuildJava": {
+          "status": "PartiallySupported",
+          "evidenceRefs": [
+            "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target"
+          ]
+        },
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        }
+      }
+    },
+    {
+      "familyId": "forge-gradle-spec-a443a7fd519d",
+      "loaderId": "Forge",
+      "minecraftIds": [
         "1.12.2",
         "1.13.2",
         "1.14.2",
@@ -614,37 +1616,357 @@
         "1.16.1",
         "1.16.2",
         "1.16.3",
-        "1.16.4",
-        "1.16.5",
+        "1.16.4"
+      ],
+      "toolchainHash": "c7118c8600681a0f34cda89d4f1226966798102ade0cd9d31875bef88de2350e",
+      "toolchain": {
+        "id": "ForgeGradleSpec:3.+",
+        "version": "3.+"
+      },
+      "buildJava": {
+        "status": "PartiallySupported",
+        "evidenceRef": "common/src/BuildJavaResolver.psm1"
+      },
+      "runtimeJava": {
+        "status": "PerTargetMojangMetadata",
+        "evidenceRef": "compatibility/runtime-java-catalog.json"
+      },
+      "projectDetectionStrategy": "识别 ForgeGradle 项目标记与 Forge 运行依赖，并从项目配置读取精确 Minecraft ID / Forge 坐标版本；将目标逐字绑定到 frozen Universe Available target 和官方候选。",
+      "buildStrategy": "使用该项目 ForgeGradle Gradle Wrapper build task；只生成不可执行 plan，执行必须经过 MMTL managed session copy 与可信 validation runner。",
+      "launchStrategy": "为 exact Forge target 生成 Single Client runClient plan；LaunchCheck 未验证，plan 不可直接执行。",
+      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
+      "evidence": [
+        "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+        "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "forge-mdk-catalog-sha256:c4fea4f86f1ceb9c1033cd79a627de87c71296c912d117193804038533571ce0",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+        "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates",
+        "test:ProjectDetectorV2.Tests.ps1:detects-every-forge-source-overlay-minecraft-target-from-forge-api-imports-in-mcp-projects",
+        "forge-mdk-target:Forge@1.12.2:coordinate=1.12.2-14.23.5.2860;archive-sha256=d0de63c4109becaacff68308720ff99edb2534877853d3e34165c04341826461;build-gradle-sha256=bd0c50d7b4042a64049665070b872a7015c81307d9e81fee7f1d4f910f8563f9;spec=3.+;wrapper=https://services.gradle.org/distributions/gradle-4.9-bin.zip;build-java=",
+        "forge-mdk-target:Forge@1.13.2:coordinate=1.13.2-25.0.223;archive-sha256=d13ab7a7a3fad9a64dc9a58a2dde4e57fdeab028feadfd25b210e5a8076abfbe;build-gradle-sha256=9f435a45331d8b265c660ba1ff0fba747ff3977e3506b0309960af5707f486da;spec=3.+;wrapper=https://services.gradle.org/distributions/gradle-4.9-bin.zip;build-java=",
+        "forge-mdk-target:Forge@1.14.2:coordinate=1.14.2-26.0.63;archive-sha256=fcd167ff0c959b518941c06afb349700ec120c3308578d46c608fe86868e93e2;build-gradle-sha256=6bd53205a06829185ec76a08c340fab84a897c4afcbd9de399da75539643f23c;spec=3.+;wrapper=https://services.gradle.org/distributions/gradle-4.9-bin.zip;build-java=",
+        "forge-mdk-target:Forge@1.14.3:coordinate=1.14.3-27.0.60;archive-sha256=868d2fe31d14807e6e53e7c83c304ea4c07f18a5ea9b9186e86c15ffb59b7a2e;build-gradle-sha256=cbfb3df0cd83b5415ba05dc41a90fe61bafa4f9ca023eea647af1e3a1e44795a;spec=3.+;wrapper=https://services.gradle.org/distributions/gradle-4.9-bin.zip;build-java=",
+        "forge-mdk-target:Forge@1.14.4:coordinate=1.14.4-28.2.26;archive-sha256=0fd8553d9fd72a37949708cdc6c208ffea955a0b4854e0725e7416d09a001948;build-gradle-sha256=beb661aee58bcb6fadac4869e5a3e34b3b18496a15a37a098d075178f55a3dc8;spec=3.+;wrapper=https://services.gradle.org/distributions/gradle-4.9-bin.zip;build-java=",
+        "forge-mdk-target:Forge@1.15:coordinate=1.15-29.0.4;archive-sha256=b90cd94af798bc078a5b2ae8eb3df10aba50476fd716926990ab30c8c23cd556;build-gradle-sha256=7f1d02f7a662bf3ff7ff80b026891ddaa2910aa78ae8206ffd0f7c71653ac638;spec=3.+;wrapper=https://services.gradle.org/distributions/gradle-4.9-bin.zip;build-java=",
+        "forge-mdk-target:Forge@1.15.1:coordinate=1.15.1-30.0.51;archive-sha256=4008c52d7e99d902138f8d187ce53c4858995cb02959992a0d376a3fa9a4b436;build-gradle-sha256=14b15519201cf87f08652d1aa424eba6b37998b4d548f606818619217e35f2be;spec=3.+;wrapper=https://services.gradle.org/distributions/gradle-4.9-bin.zip;build-java=",
+        "forge-mdk-target:Forge@1.15.2:coordinate=1.15.2-31.2.57;archive-sha256=383b1ce2a8512591ec292549b1cb620f00e2a2dd97b3b4b44e195c9b8ab73be2;build-gradle-sha256=dc2cdf204d71e51d626dbc7e0134328022c10d3f408dec12eca2888cd7e5d75a;spec=3.+;wrapper=https://services.gradle.org/distributions/gradle-4.10.3-bin.zip;build-java=",
+        "forge-mdk-target:Forge@1.16.1:coordinate=1.16.1-32.0.108;archive-sha256=8201ae624f6efe8b21b80cf64a526bcea1a9a98091ea65987fcafbc9180cb81e;build-gradle-sha256=02e38c4d52b55621c67718a4f1080680c4e699cd484b556d4df5d03b9be37a0f;spec=3.+;wrapper=https://services.gradle.org/distributions/gradle-4.10.3-bin.zip;build-java=",
+        "forge-mdk-target:Forge@1.16.2:coordinate=1.16.2-33.0.61;archive-sha256=05db470f79304f6aecc705407cfdc1b6c41d37eed4679a0cd6acf88f470c08ca;build-gradle-sha256=38c0f5b4c4d97ae39297b6a1c17099d9b5a0686cc61388da705738f0833c7e13;spec=3.+;wrapper=https://services.gradle.org/distributions/gradle-4.10.3-bin.zip;build-java=",
+        "forge-mdk-target:Forge@1.16.3:coordinate=1.16.3-34.1.42;archive-sha256=48e0bfe7360a51c28850d04d7be76275eca9b28abeca9bcfca9c7f6574815a9b;build-gradle-sha256=cefd57214cf840ee4f67f3f4fc4779afd6cfea10d38a216591570b24cbebcb3a;spec=3.+;wrapper=https://services.gradle.org/distributions/gradle-4.10.3-bin.zip;build-java=",
+        "forge-mdk-target:Forge@1.16.4:coordinate=1.16.4-35.1.37;archive-sha256=af49356944240ccab58f942a5cba9211153f8f04e3643718b3a3d6abada92b5a;build-gradle-sha256=2ec97238ae147881b6dec058c9eb1994c16182beb7676ed19f225b140b20f5bd;spec=3.+;wrapper=https://services.gradle.org/distributions/gradle-4.10.3-bin.zip;build-java="
+      ],
+      "capabilities": {
+        "BuildJava": {
+          "status": "PartiallySupported",
+          "evidenceRefs": [
+            "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target"
+          ]
+        },
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        }
+      }
+    },
+    {
+      "familyId": "forge-gradle-spec-bbb95b60ae70",
+      "loaderId": "Forge",
+      "minecraftIds": [
+        "1.20.2",
+        "1.20.3",
+        "1.20.4"
+      ],
+      "toolchainHash": "e7de99c121689400cbf792d0185fc5382d3c35d670c46050c852d4597f4c259f",
+      "toolchain": {
+        "id": "ForgeGradleSpec:[6.0.16,6.2)",
+        "version": "[6.0.16,6.2)"
+      },
+      "buildJava": {
+        "status": "PartiallySupported",
+        "evidenceRef": "common/src/BuildJavaResolver.psm1"
+      },
+      "runtimeJava": {
+        "status": "PerTargetMojangMetadata",
+        "evidenceRef": "compatibility/runtime-java-catalog.json"
+      },
+      "projectDetectionStrategy": "识别 ForgeGradle 项目标记与 Forge 运行依赖，并从项目配置读取精确 Minecraft ID / Forge 坐标版本；将目标逐字绑定到 frozen Universe Available target 和官方候选。",
+      "buildStrategy": "使用该项目 ForgeGradle Gradle Wrapper build task；只生成不可执行 plan，执行必须经过 MMTL managed session copy 与可信 validation runner。",
+      "launchStrategy": "为 exact Forge target 生成 Single Client runClient plan；LaunchCheck 未验证，plan 不可直接执行。",
+      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
+      "evidence": [
+        "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+        "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "forge-mdk-catalog-sha256:c4fea4f86f1ceb9c1033cd79a627de87c71296c912d117193804038533571ce0",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+        "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates",
+        "test:ProjectDetectorV2.Tests.ps1:detects-every-forge-source-overlay-minecraft-target-from-forge-api-imports-in-mcp-projects",
+        "forge-mdk-target:Forge@1.20.2:coordinate=1.20.2-48.1.0;archive-sha256=ac5abf70f05983ad356278d2fd82685502f5b52dd55a7b58af81e52e2549463b;build-gradle-sha256=0aa33a4e90b490e0c15bf872fb92f19ca4260139b5e1243ce56c0e256365a3e9;spec=[6.0.16,6.2);wrapper=https://services.gradle.org/distributions/gradle-8.4-all.zip;build-java=17",
+        "forge-mdk-target:Forge@1.20.3:coordinate=1.20.3-49.0.2;archive-sha256=78fa918e68c2a3324cae56a521c29dcea76db6054091ff5c0b377b24cc9544fc;build-gradle-sha256=51b59d3f151449341e69ebfcb828218ef279687cf72f067d8bd21934a4c5d1a6;spec=[6.0.16,6.2);wrapper=https://services.gradle.org/distributions/gradle-8.4-all.zip;build-java=17",
+        "forge-mdk-target:Forge@1.20.4:coordinate=1.20.4-49.2.0;archive-sha256=82db5950872220031f1f55f2392061759c7e52a907ff3bfe3439f513c1f524db;build-gradle-sha256=4c7f0dcb224e451904e2690a1ed4c65886340cd3e5b200b98e6cf0c8773367bd;spec=[6.0.16,6.2);wrapper=https://services.gradle.org/distributions/gradle-8.12.1-bin.zip;build-java=17"
+      ],
+      "capabilities": {
+        "BuildJava": {
+          "status": "PartiallySupported",
+          "evidenceRefs": [
+            "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target"
+          ]
+        },
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        }
+      }
+    },
+    {
+      "familyId": "forge-gradle-spec-db4f4dba8c40",
+      "loaderId": "Forge",
+      "minecraftIds": [
         "1.17.1",
         "1.18",
         "1.18.1",
-        "1.18.2",
         "1.19",
         "1.19.1",
-        "1.19.2",
-        "1.19.3",
-        "1.19.4",
+        "1.19.3"
+      ],
+      "toolchainHash": "9e56fa6c30361dcfeac1fd83bcef75a70b99d5cf1ed507ea5ff106662ba018d1",
+      "toolchain": {
+        "id": "ForgeGradleSpec:5.1.+",
+        "version": "5.1.+"
+      },
+      "buildJava": {
+        "status": "PartiallySupported",
+        "evidenceRef": "common/src/BuildJavaResolver.psm1"
+      },
+      "runtimeJava": {
+        "status": "PerTargetMojangMetadata",
+        "evidenceRef": "compatibility/runtime-java-catalog.json"
+      },
+      "projectDetectionStrategy": "识别 ForgeGradle 项目标记与 Forge 运行依赖，并从项目配置读取精确 Minecraft ID / Forge 坐标版本；将目标逐字绑定到 frozen Universe Available target 和官方候选。",
+      "buildStrategy": "使用该项目 ForgeGradle Gradle Wrapper build task；只生成不可执行 plan，执行必须经过 MMTL managed session copy 与可信 validation runner。",
+      "launchStrategy": "为 exact Forge target 生成 Single Client runClient plan；LaunchCheck 未验证，plan 不可直接执行。",
+      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
+      "evidence": [
+        "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+        "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "forge-mdk-catalog-sha256:c4fea4f86f1ceb9c1033cd79a627de87c71296c912d117193804038533571ce0",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+        "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates",
+        "test:ProjectDetectorV2.Tests.ps1:detects-every-forge-source-overlay-minecraft-target-from-forge-api-imports-in-mcp-projects",
+        "forge-mdk-target:Forge@1.17.1:coordinate=1.17.1-37.1.1;archive-sha256=65f2419c0670b2b7f1819032210c8180dc0538f3a9a4cf89d7d0b4bbd7d63a73;build-gradle-sha256=3159ff32b6152dab4aa890651291ca69ecfa638470dc3a896f4fbec57c43fef3;spec=5.1.+;wrapper=https://services.gradle.org/distributions/gradle-7.2-bin.zip;build-java=16",
+        "forge-mdk-target:Forge@1.18:coordinate=1.18-38.0.17;archive-sha256=e60d6744d24655d07243444ad56c69915f1ddcdb09d9921706b66e2688cc60bd;build-gradle-sha256=ca49f9fda341796d676dbc954b0f921d393071ea44d28448c25636722d1be90f;spec=5.1.+;wrapper=https://services.gradle.org/distributions/gradle-7.3-bin.zip;build-java=17",
+        "forge-mdk-target:Forge@1.18.1:coordinate=1.18.1-39.1.2;archive-sha256=9b943a11d0cf2f30f69c975382c0efb86b3198179c96bc24ab2f8133c102d250;build-gradle-sha256=a2a18dfac2734f2deb8c38c6410dfadbe49d7e884160adb457be47551ceeee31;spec=5.1.+;wrapper=https://services.gradle.org/distributions/gradle-7.3-bin.zip;build-java=17",
+        "forge-mdk-target:Forge@1.19:coordinate=1.19-41.1.0;archive-sha256=2b4c73b58cd81c43adccce4ca18e4653c74150bd8112e53830085a211e19dad3;build-gradle-sha256=0341bc4c7946565b4b2c4ec2278fcd044a45ac1b5a81ff935788c32d91b57ec0;spec=5.1.+;wrapper=https://services.gradle.org/distributions/gradle-7.4.2-bin.zip;build-java=17",
+        "forge-mdk-target:Forge@1.19.1:coordinate=1.19.1-42.0.9;archive-sha256=dd5cda489ee95d58734652d2bcaeeab978a7b722ace1454113852703d86b212a;build-gradle-sha256=86f3ced44b9b73d8ac69cc5c5c02cf2f9ea119315a3446dee817ef59ed6690cd;spec=5.1.+;wrapper=https://services.gradle.org/distributions/gradle-7.5-bin.zip;build-java=17",
+        "forge-mdk-target:Forge@1.19.3:coordinate=1.19.3-44.1.23;archive-sha256=c7af90a4b416485779a39f4bc05756201b4362f1e5a2bd68d16cca0b70a1529d;build-gradle-sha256=fb5828ebe94894f72cb550cbdca9c771d6bc27f3b9684cbc85f9044df6432e9d;spec=5.1.+;wrapper=https://services.gradle.org/distributions/gradle-7.5.1-bin.zip;build-java=17"
+      ],
+      "capabilities": {
+        "BuildJava": {
+          "status": "PartiallySupported",
+          "evidenceRefs": [
+            "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target"
+          ]
+        },
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        }
+      }
+    },
+    {
+      "familyId": "forge-gradle-spec-ea7d98532ca2",
+      "loaderId": "Forge",
+      "minecraftIds": [
+        "1.12",
+        "1.12.1"
+      ],
+      "toolchainHash": "e0462c546c3c0c0ff8a90ac8eabdb0b2908577c716813eb227495a1519b94b2b",
+      "toolchain": {
+        "id": "ForgeGradleSpec:2.3-SNAPSHOT",
+        "version": "2.3-SNAPSHOT"
+      },
+      "buildJava": {
+        "status": "PartiallySupported",
+        "evidenceRef": "common/src/BuildJavaResolver.psm1"
+      },
+      "runtimeJava": {
+        "status": "PerTargetMojangMetadata",
+        "evidenceRef": "compatibility/runtime-java-catalog.json"
+      },
+      "projectDetectionStrategy": "识别 ForgeGradle 项目标记与 Forge 运行依赖，并从项目配置读取精确 Minecraft ID / Forge 坐标版本；将目标逐字绑定到 frozen Universe Available target 和官方候选。",
+      "buildStrategy": "使用该项目 ForgeGradle Gradle Wrapper build task；只生成不可执行 plan，执行必须经过 MMTL managed session copy 与可信 validation runner。",
+      "launchStrategy": "为 exact Forge target 生成 Single Client runClient plan；LaunchCheck 未验证，plan 不可直接执行。",
+      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
+      "evidence": [
+        "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+        "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+        "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "forge-mdk-catalog-sha256:c4fea4f86f1ceb9c1033cd79a627de87c71296c912d117193804038533571ce0",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+        "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates",
+        "test:ProjectDetectorV2.Tests.ps1:detects-every-forge-source-overlay-minecraft-target-from-forge-api-imports-in-mcp-projects",
+        "forge-mdk-target:Forge@1.12:coordinate=1.12-14.21.1.2443;archive-sha256=cd7f0fabc103a78e762184af487073d9289fc29a2d2120430dc067c6ccf48fe9;build-gradle-sha256=befe03ffd96d6a8ae47d8e730056849bacacb337ac1cdf1d8d4e110ee9c219fe;spec=2.3-SNAPSHOT;wrapper=https://services.gradle.org/distributions/gradle-2.14-bin.zip;build-java=",
+        "forge-mdk-target:Forge@1.12.1:coordinate=1.12.1-14.22.1.2485;archive-sha256=efaf4baff6b7b26907dd222ec21c234e775efd07cbd01ebc338e007e73897233;build-gradle-sha256=4199c886f58b9e4d195081bd8aba30a618e3d2a851479654e29ca5ca0c805601;spec=2.3-SNAPSHOT;wrapper=https://services.gradle.org/distributions/gradle-2.14-bin.zip;build-java="
+      ],
+      "capabilities": {
+        "BuildJava": {
+          "status": "PartiallySupported",
+          "evidenceRefs": [
+            "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target"
+          ]
+        },
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "BuildPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        },
+        "LaunchPlan": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
+            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
+            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+          ]
+        }
+      }
+    },
+    {
+      "familyId": "forge-legacy-source-overlay-v1",
+      "loaderId": "Forge",
+      "minecraftIds": [
+        "1.1",
         "1.2.3",
         "1.2.4",
         "1.2.5",
-        "1.20",
-        "1.20.1",
-        "1.20.2",
-        "1.20.3",
-        "1.20.4",
-        "1.20.6",
-        "1.21",
-        "1.21.1",
-        "1.21.10",
-        "1.21.11",
-        "1.21.3",
-        "1.21.4",
-        "1.21.5",
-        "1.21.6",
-        "1.21.7",
-        "1.21.8",
-        "1.21.9",
         "1.3.2",
         "1.4.1",
         "1.4.2",
@@ -659,36 +1981,24 @@
         "1.6.1",
         "1.6.2",
         "1.6.3",
-        "1.6.4",
-        "1.7.10",
-        "1.7.2",
-        "1.8",
-        "1.8.8",
-        "1.8.9",
-        "1.9",
-        "1.9.4",
-        "26.1",
-        "26.1.1",
-        "26.1.2",
-        "26.2",
-        "26.3"
+        "1.6.4"
       ],
-      "toolchainHash": "6a8adbedee8b2afcc88d2e4d7f92b2381a1afac150d71d4ad8b0a8a1d512d886",
+      "toolchainHash": "caa744cb0c204f075ea1d84273b679ac5ba4f857cb2ce4ca27902b30a75cd897",
       "toolchain": {
-        "id": "ForgeGradleProjectPlans",
-        "version": "per-project ForgeGradle; Build and Launch planning only, execution requires trusted runner"
+        "id": "ForgeSourceOverlay",
+        "version": "Official Forge source overlay only; no Gradle project metadata in inspected source ZIP"
       },
       "buildJava": {
-        "status": "PerProjectWrapperAndCompilerEvidence",
-        "evidenceRef": "common/src/ProjectDetector.psm1"
+        "status": "PendingImplementation",
+        "evidenceRef": "common/src/BuildJavaResolver.psm1"
       },
       "runtimeJava": {
         "status": "PerTargetMojangMetadata",
         "evidenceRef": "compatibility/runtime-java-catalog.json"
       },
-      "projectDetectionStrategy": "识别 ForgeGradle 项目标记与 Forge 运行依赖，并从项目配置读取精确 Minecraft ID / Forge 坐标版本；将目标逐字绑定到 frozen Universe Available target 和官方候选。",
-      "buildStrategy": "ForgeGradle Gradle Wrapper build task；只生成不可执行 plan，执行必须经过 MMTL managed session copy 与可信 validation runner。",
-      "launchStrategy": "为 exact Forge target 生成 Single Client runClient plan；LaunchCheck 未验证，plan 不可直接执行。",
+      "projectDetectionStrategy": "对历史 MCP 项目，要求唯一精确 Minecraft 版本配置，并以 net.minecraftforge 专属 import/API 源码标记识别 Forge；不推断用户项目采用的 Forge build 版本。将检测结果逐字绑定到 frozen Universe Available target 与官方 source-overlay 目标。",
+      "buildStrategy": "官方 source overlay 不是独立 Mod build project；MCP/历史构建环境尚未适配，暂不生成构建计划。",
+      "launchStrategy": "仅有历史 MCP Forge 项目识别；MCP build/launch contract 尚未实现，不生成构建或启动计划。",
       "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
       "evidence": [
         "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
@@ -696,41 +2006,130 @@
         "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
         "https://docs.minecraftforge.net/en/latest/gettingstarted/",
         "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
-        "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "forge-mdk-catalog-sha256:c4fea4f86f1ceb9c1033cd79a627de87c71296c912d117193804038533571ce0",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
         "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
-        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates",
+        "test:ProjectDetectorV2.Tests.ps1:detects-every-forge-source-overlay-minecraft-target-from-forge-api-imports-in-mcp-projects",
+        "forge-source-archive-target:Forge@1.1:coordinate=1.1-1.3.4.29;archive-sha256=a252926ff5ba3992765ec0913c41461250813f039995efad16acf903775f8509;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+        "forge-source-archive-target:Forge@1.2.3:coordinate=1.2.3-1.4.1.64;archive-sha256=59e53527ad9c0b3033f5f96c3176cb33d81352463b97698612278991c4b4c1b3;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+        "forge-source-archive-target:Forge@1.2.4:coordinate=1.2.4-2.0.0.68;archive-sha256=03c05cdc8d8f1ae8b9feaa7dd07a8c79863e33fe9516dff452be3dff04adcb89;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+        "forge-source-archive-target:Forge@1.2.5:coordinate=1.2.5-3.4.9.171;archive-sha256=399e15513821a86b79e18cf863fad67f72f94afd92da5f8e7a6e146d793b4965;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+        "forge-source-archive-target:Forge@1.3.2:coordinate=1.3.2-4.3.5.318;archive-sha256=a3e9214a9d0f53e7dc43c6d2306d3fdf0d6a73f2709d896abc7e28456560b96e;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+        "forge-source-archive-target:Forge@1.4.1:coordinate=1.4.1-6.0.0.329;archive-sha256=c8a6aed565563dd1d83b9c7fec786a76b5631d7904a33a0cbba5a215ff9ead3c;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+        "forge-source-archive-target:Forge@1.4.2:coordinate=1.4.2-6.0.1.355;archive-sha256=a94107dc7fbbb84ac50cf6abc5c63ed8fb9c37e664f9e59b6585df8e7318dfc7;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+        "forge-source-archive-target:Forge@1.4.3:coordinate=1.4.3-6.2.1.358;archive-sha256=5497619d7141a61adfc7dad8ad1c1137627b2f02c1bba4db7b46e52eae5f97aa;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+        "forge-source-archive-target:Forge@1.4.4:coordinate=1.4.4-6.3.0.378;archive-sha256=5b4341d53adbdf51c3c0e9ecbe3ef6c2f9969c070177bb3910c639cd02b02ae6;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+        "forge-source-archive-target:Forge@1.4.5:coordinate=1.4.5-6.4.2.448;archive-sha256=4c2b4c9d882c9bccc209ab0c0d17ade2a27ac7cecbbf8cd1580c9e6b98a079ad;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+        "forge-source-archive-target:Forge@1.4.6:coordinate=1.4.6-6.5.0.489;archive-sha256=1a94df0890e0d40317ea37fc95def8495dbf01351c5aa8b749c1d81cd146b11c;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+        "forge-source-archive-target:Forge@1.4.7:coordinate=1.4.7-6.6.2.534;archive-sha256=237ec380a8b8f91a58c870f0c42c4aa5758a3e097cbbcd59f323a40b4eb27bc3;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+        "forge-source-archive-target:Forge@1.5:coordinate=1.5-7.7.0.598;archive-sha256=5c00e2f05e0bbde8ba1112bb9b9771f36c9e7b2f97d9cd844f2a4c5fc62aed69;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+        "forge-source-archive-target:Forge@1.5.1:coordinate=1.5.1-7.7.2.682;archive-sha256=1bab1051c21c0ec8bd937b072071beae42a2e7ba2252fd9a526ec8ff003832bc;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+        "forge-source-archive-target:Forge@1.5.2:coordinate=1.5.2-7.8.1.738;archive-sha256=e9f102df248db5db59a9d88d519b03c10d2b883fbadea8441ffd057395be10c7;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+        "forge-source-archive-target:Forge@1.6.1:coordinate=1.6.1-8.9.0.775;archive-sha256=c77532bc56ef46b2e214b90ba0b2e765f94aca17caef1e685eb580eb04e1da45;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+        "forge-source-archive-target:Forge@1.6.2:coordinate=1.6.2-9.10.1.871;archive-sha256=e2c1c00ff411f7c144f636f3593bb630d4c538d80d7a2a38fb137c7dda62a2ff;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+        "forge-source-archive-target:Forge@1.6.3:coordinate=1.6.3-9.11.0.878;archive-sha256=601f4eba90d2e7021f6e979494af6d99b1eda3cbfbe1add1c0a6a6ad084a2715;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+        "forge-source-archive-target:Forge@1.6.4:coordinate=1.6.4-9.11.1.1345;archive-sha256=8543c4bbc02ace1fc72b9a85b38c01276eef07080f86bae847c1696af5ee749f;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java="
       ],
       "capabilities": {
+        "BuildJava": {
+          "status": "PendingImplementation",
+          "evidenceRefs": [
+            "forge-source-archive-target:Forge@1.1:coordinate=1.1-1.3.4.29;archive-sha256=a252926ff5ba3992765ec0913c41461250813f039995efad16acf903775f8509;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.2.3:coordinate=1.2.3-1.4.1.64;archive-sha256=59e53527ad9c0b3033f5f96c3176cb33d81352463b97698612278991c4b4c1b3;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.2.4:coordinate=1.2.4-2.0.0.68;archive-sha256=03c05cdc8d8f1ae8b9feaa7dd07a8c79863e33fe9516dff452be3dff04adcb89;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.2.5:coordinate=1.2.5-3.4.9.171;archive-sha256=399e15513821a86b79e18cf863fad67f72f94afd92da5f8e7a6e146d793b4965;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.3.2:coordinate=1.3.2-4.3.5.318;archive-sha256=a3e9214a9d0f53e7dc43c6d2306d3fdf0d6a73f2709d896abc7e28456560b96e;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.1:coordinate=1.4.1-6.0.0.329;archive-sha256=c8a6aed565563dd1d83b9c7fec786a76b5631d7904a33a0cbba5a215ff9ead3c;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.2:coordinate=1.4.2-6.0.1.355;archive-sha256=a94107dc7fbbb84ac50cf6abc5c63ed8fb9c37e664f9e59b6585df8e7318dfc7;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.3:coordinate=1.4.3-6.2.1.358;archive-sha256=5497619d7141a61adfc7dad8ad1c1137627b2f02c1bba4db7b46e52eae5f97aa;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.4:coordinate=1.4.4-6.3.0.378;archive-sha256=5b4341d53adbdf51c3c0e9ecbe3ef6c2f9969c070177bb3910c639cd02b02ae6;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.5:coordinate=1.4.5-6.4.2.448;archive-sha256=4c2b4c9d882c9bccc209ab0c0d17ade2a27ac7cecbbf8cd1580c9e6b98a079ad;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.6:coordinate=1.4.6-6.5.0.489;archive-sha256=1a94df0890e0d40317ea37fc95def8495dbf01351c5aa8b749c1d81cd146b11c;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.7:coordinate=1.4.7-6.6.2.534;archive-sha256=237ec380a8b8f91a58c870f0c42c4aa5758a3e097cbbcd59f323a40b4eb27bc3;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.5:coordinate=1.5-7.7.0.598;archive-sha256=5c00e2f05e0bbde8ba1112bb9b9771f36c9e7b2f97d9cd844f2a4c5fc62aed69;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.5.1:coordinate=1.5.1-7.7.2.682;archive-sha256=1bab1051c21c0ec8bd937b072071beae42a2e7ba2252fd9a526ec8ff003832bc;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.5.2:coordinate=1.5.2-7.8.1.738;archive-sha256=e9f102df248db5db59a9d88d519b03c10d2b883fbadea8441ffd057395be10c7;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.6.1:coordinate=1.6.1-8.9.0.775;archive-sha256=c77532bc56ef46b2e214b90ba0b2e765f94aca17caef1e685eb580eb04e1da45;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.6.2:coordinate=1.6.2-9.10.1.871;archive-sha256=e2c1c00ff411f7c144f636f3593bb630d4c538d80d7a2a38fb137c7dda62a2ff;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.6.3:coordinate=1.6.3-9.11.0.878;archive-sha256=601f4eba90d2e7021f6e979494af6d99b1eda3cbfbe1add1c0a6a6ad084a2715;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.6.4:coordinate=1.6.4-9.11.1.1345;archive-sha256=8543c4bbc02ace1fc72b9a85b38c01276eef07080f86bae847c1696af5ee749f;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java="
+          ]
+        },
         "ProjectDetection": {
           "status": "Supported",
           "evidenceRefs": [
-            "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
-            "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
-            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
-            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+            "forge-source-archive-target:Forge@1.1:coordinate=1.1-1.3.4.29;archive-sha256=a252926ff5ba3992765ec0913c41461250813f039995efad16acf903775f8509;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.2.3:coordinate=1.2.3-1.4.1.64;archive-sha256=59e53527ad9c0b3033f5f96c3176cb33d81352463b97698612278991c4b4c1b3;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.2.4:coordinate=1.2.4-2.0.0.68;archive-sha256=03c05cdc8d8f1ae8b9feaa7dd07a8c79863e33fe9516dff452be3dff04adcb89;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.2.5:coordinate=1.2.5-3.4.9.171;archive-sha256=399e15513821a86b79e18cf863fad67f72f94afd92da5f8e7a6e146d793b4965;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.3.2:coordinate=1.3.2-4.3.5.318;archive-sha256=a3e9214a9d0f53e7dc43c6d2306d3fdf0d6a73f2709d896abc7e28456560b96e;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.1:coordinate=1.4.1-6.0.0.329;archive-sha256=c8a6aed565563dd1d83b9c7fec786a76b5631d7904a33a0cbba5a215ff9ead3c;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.2:coordinate=1.4.2-6.0.1.355;archive-sha256=a94107dc7fbbb84ac50cf6abc5c63ed8fb9c37e664f9e59b6585df8e7318dfc7;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.3:coordinate=1.4.3-6.2.1.358;archive-sha256=5497619d7141a61adfc7dad8ad1c1137627b2f02c1bba4db7b46e52eae5f97aa;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.4:coordinate=1.4.4-6.3.0.378;archive-sha256=5b4341d53adbdf51c3c0e9ecbe3ef6c2f9969c070177bb3910c639cd02b02ae6;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.5:coordinate=1.4.5-6.4.2.448;archive-sha256=4c2b4c9d882c9bccc209ab0c0d17ade2a27ac7cecbbf8cd1580c9e6b98a079ad;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.6:coordinate=1.4.6-6.5.0.489;archive-sha256=1a94df0890e0d40317ea37fc95def8495dbf01351c5aa8b749c1d81cd146b11c;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.7:coordinate=1.4.7-6.6.2.534;archive-sha256=237ec380a8b8f91a58c870f0c42c4aa5758a3e097cbbcd59f323a40b4eb27bc3;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.5:coordinate=1.5-7.7.0.598;archive-sha256=5c00e2f05e0bbde8ba1112bb9b9771f36c9e7b2f97d9cd844f2a4c5fc62aed69;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.5.1:coordinate=1.5.1-7.7.2.682;archive-sha256=1bab1051c21c0ec8bd937b072071beae42a2e7ba2252fd9a526ec8ff003832bc;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.5.2:coordinate=1.5.2-7.8.1.738;archive-sha256=e9f102df248db5db59a9d88d519b03c10d2b883fbadea8441ffd057395be10c7;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.6.1:coordinate=1.6.1-8.9.0.775;archive-sha256=c77532bc56ef46b2e214b90ba0b2e765f94aca17caef1e685eb580eb04e1da45;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.6.2:coordinate=1.6.2-9.10.1.871;archive-sha256=e2c1c00ff411f7c144f636f3593bb630d4c538d80d7a2a38fb137c7dda62a2ff;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.6.3:coordinate=1.6.3-9.11.0.878;archive-sha256=601f4eba90d2e7021f6e979494af6d99b1eda3cbfbe1add1c0a6a6ad084a2715;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.6.4:coordinate=1.6.4-9.11.1.1345;archive-sha256=8543c4bbc02ace1fc72b9a85b38c01276eef07080f86bae847c1696af5ee749f;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:ProjectDetectorV2.Tests.ps1:detects-every-forge-source-overlay-minecraft-target-from-forge-api-imports-in-mcp-projects"
           ]
         },
         "BuildPlan": {
-          "status": "Supported",
+          "status": "PendingImplementation",
           "evidenceRefs": [
-            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
-            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
-            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
-            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
-            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
-            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+            "forge-source-archive-target:Forge@1.1:coordinate=1.1-1.3.4.29;archive-sha256=a252926ff5ba3992765ec0913c41461250813f039995efad16acf903775f8509;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.2.3:coordinate=1.2.3-1.4.1.64;archive-sha256=59e53527ad9c0b3033f5f96c3176cb33d81352463b97698612278991c4b4c1b3;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.2.4:coordinate=1.2.4-2.0.0.68;archive-sha256=03c05cdc8d8f1ae8b9feaa7dd07a8c79863e33fe9516dff452be3dff04adcb89;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.2.5:coordinate=1.2.5-3.4.9.171;archive-sha256=399e15513821a86b79e18cf863fad67f72f94afd92da5f8e7a6e146d793b4965;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.3.2:coordinate=1.3.2-4.3.5.318;archive-sha256=a3e9214a9d0f53e7dc43c6d2306d3fdf0d6a73f2709d896abc7e28456560b96e;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.1:coordinate=1.4.1-6.0.0.329;archive-sha256=c8a6aed565563dd1d83b9c7fec786a76b5631d7904a33a0cbba5a215ff9ead3c;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.2:coordinate=1.4.2-6.0.1.355;archive-sha256=a94107dc7fbbb84ac50cf6abc5c63ed8fb9c37e664f9e59b6585df8e7318dfc7;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.3:coordinate=1.4.3-6.2.1.358;archive-sha256=5497619d7141a61adfc7dad8ad1c1137627b2f02c1bba4db7b46e52eae5f97aa;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.4:coordinate=1.4.4-6.3.0.378;archive-sha256=5b4341d53adbdf51c3c0e9ecbe3ef6c2f9969c070177bb3910c639cd02b02ae6;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.5:coordinate=1.4.5-6.4.2.448;archive-sha256=4c2b4c9d882c9bccc209ab0c0d17ade2a27ac7cecbbf8cd1580c9e6b98a079ad;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.6:coordinate=1.4.6-6.5.0.489;archive-sha256=1a94df0890e0d40317ea37fc95def8495dbf01351c5aa8b749c1d81cd146b11c;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.7:coordinate=1.4.7-6.6.2.534;archive-sha256=237ec380a8b8f91a58c870f0c42c4aa5758a3e097cbbcd59f323a40b4eb27bc3;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.5:coordinate=1.5-7.7.0.598;archive-sha256=5c00e2f05e0bbde8ba1112bb9b9771f36c9e7b2f97d9cd844f2a4c5fc62aed69;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.5.1:coordinate=1.5.1-7.7.2.682;archive-sha256=1bab1051c21c0ec8bd937b072071beae42a2e7ba2252fd9a526ec8ff003832bc;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.5.2:coordinate=1.5.2-7.8.1.738;archive-sha256=e9f102df248db5db59a9d88d519b03c10d2b883fbadea8441ffd057395be10c7;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.6.1:coordinate=1.6.1-8.9.0.775;archive-sha256=c77532bc56ef46b2e214b90ba0b2e765f94aca17caef1e685eb580eb04e1da45;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.6.2:coordinate=1.6.2-9.10.1.871;archive-sha256=e2c1c00ff411f7c144f636f3593bb630d4c538d80d7a2a38fb137c7dda62a2ff;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.6.3:coordinate=1.6.3-9.11.0.878;archive-sha256=601f4eba90d2e7021f6e979494af6d99b1eda3cbfbe1add1c0a6a6ad084a2715;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.6.4:coordinate=1.6.4-9.11.1.1345;archive-sha256=8543c4bbc02ace1fc72b9a85b38c01276eef07080f86bae847c1696af5ee749f;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java="
           ]
         },
         "LaunchPlan": {
-          "status": "Supported",
+          "status": "PendingImplementation",
           "evidenceRefs": [
-            "https://docs.minecraftforge.net/en/1.12.x/gettingstarted/",
-            "https://docs.minecraftforge.net/en/1.14.x/gettingstarted/",
-            "https://docs.minecraftforge.net/en/1.16.x/gettingstarted/",
-            "https://docs.minecraftforge.net/en/latest/gettingstarted/",
-            "forge-adapter-sha256:8158cb3404208ff7e3392266c03112dd43948980e767df2c3a1c1cd067d1c0e0",
-            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-forge-target-from-project-coordinates"
+            "forge-source-archive-target:Forge@1.1:coordinate=1.1-1.3.4.29;archive-sha256=a252926ff5ba3992765ec0913c41461250813f039995efad16acf903775f8509;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.2.3:coordinate=1.2.3-1.4.1.64;archive-sha256=59e53527ad9c0b3033f5f96c3176cb33d81352463b97698612278991c4b4c1b3;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.2.4:coordinate=1.2.4-2.0.0.68;archive-sha256=03c05cdc8d8f1ae8b9feaa7dd07a8c79863e33fe9516dff452be3dff04adcb89;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.2.5:coordinate=1.2.5-3.4.9.171;archive-sha256=399e15513821a86b79e18cf863fad67f72f94afd92da5f8e7a6e146d793b4965;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.3.2:coordinate=1.3.2-4.3.5.318;archive-sha256=a3e9214a9d0f53e7dc43c6d2306d3fdf0d6a73f2709d896abc7e28456560b96e;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.1:coordinate=1.4.1-6.0.0.329;archive-sha256=c8a6aed565563dd1d83b9c7fec786a76b5631d7904a33a0cbba5a215ff9ead3c;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.2:coordinate=1.4.2-6.0.1.355;archive-sha256=a94107dc7fbbb84ac50cf6abc5c63ed8fb9c37e664f9e59b6585df8e7318dfc7;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.3:coordinate=1.4.3-6.2.1.358;archive-sha256=5497619d7141a61adfc7dad8ad1c1137627b2f02c1bba4db7b46e52eae5f97aa;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.4:coordinate=1.4.4-6.3.0.378;archive-sha256=5b4341d53adbdf51c3c0e9ecbe3ef6c2f9969c070177bb3910c639cd02b02ae6;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.5:coordinate=1.4.5-6.4.2.448;archive-sha256=4c2b4c9d882c9bccc209ab0c0d17ade2a27ac7cecbbf8cd1580c9e6b98a079ad;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.6:coordinate=1.4.6-6.5.0.489;archive-sha256=1a94df0890e0d40317ea37fc95def8495dbf01351c5aa8b749c1d81cd146b11c;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.4.7:coordinate=1.4.7-6.6.2.534;archive-sha256=237ec380a8b8f91a58c870f0c42c4aa5758a3e097cbbcd59f323a40b4eb27bc3;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.5:coordinate=1.5-7.7.0.598;archive-sha256=5c00e2f05e0bbde8ba1112bb9b9771f36c9e7b2f97d9cd844f2a4c5fc62aed69;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.5.1:coordinate=1.5.1-7.7.2.682;archive-sha256=1bab1051c21c0ec8bd937b072071beae42a2e7ba2252fd9a526ec8ff003832bc;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.5.2:coordinate=1.5.2-7.8.1.738;archive-sha256=e9f102df248db5db59a9d88d519b03c10d2b883fbadea8441ffd057395be10c7;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.6.1:coordinate=1.6.1-8.9.0.775;archive-sha256=c77532bc56ef46b2e214b90ba0b2e765f94aca17caef1e685eb580eb04e1da45;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.6.2:coordinate=1.6.2-9.10.1.871;archive-sha256=e2c1c00ff411f7c144f636f3593bb630d4c538d80d7a2a38fb137c7dda62a2ff;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.6.3:coordinate=1.6.3-9.11.0.878;archive-sha256=601f4eba90d2e7021f6e979494af6d99b1eda3cbfbe1add1c0a6a6ad084a2715;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java=",
+            "forge-source-archive-target:Forge@1.6.4:coordinate=1.6.4-9.11.1.1345;archive-sha256=8543c4bbc02ace1fc72b9a85b38c01276eef07080f86bae847c1696af5ee749f;type=ForgeSourceOverlay;build-gradle-sha256=;spec=;wrapper=;build-java="
           ]
         }
       }
@@ -816,7 +2215,7 @@
         "2point0_purple",
         "2point0_red"
       ],
-      "toolchainHash": "b5822594c0a9afca1f7d45c9f690cef7007d0cbbea206038e75972dfea56159e",
+      "toolchainHash": "90e2cb5ff2f6369366235125f3de53e43ce64c85e1f482cce8338b045ebeada5",
       "toolchain": {
         "id": "LegacyLoomingBuildLaunchPlans",
         "version": "per-project resolved Legacy Looming; only non-executable Build/Launch plans, actual execution remains unverified"
@@ -840,20 +2239,29 @@
         "https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/build.gradle",
         "legacy-looming-commit:d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79",
         "legacyfabric-fixture-commit:422896c188108632da97825f801719f0015b1b32",
-        "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
         "legacyfabric-adapter-sha256:7e95e7c0ca628b437b93e6a3ea941bbe5424b078bcab378ca04564b52d9f96dc",
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
         "legacyfabric-plan-test-sha256:",
         "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates",
         "test:LegacyFabricAdapter.Tests.ps1:detects-and-plans-every-frozen-legacyfabric-target-without-making-plans-executable"
       ],
       "capabilities": {
+        "BuildJava": {
+          "status": "PartiallySupported",
+          "evidenceRefs": [
+            "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target"
+          ]
+        },
         "ProjectDetection": {
           "status": "Supported",
           "evidenceRefs": [
             "https://meta.legacyfabric.net/",
             "https://github.com/Legacy-Fabric/legacy-looming",
-            "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
             "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates"
           ]
         },
@@ -906,7 +2314,7 @@
         "1.9",
         "1.9.4"
       ],
-      "toolchainHash": "e8c0e47c3d012205d30c193e7e36fae5002004a495614f218c80fc25b290eb45",
+      "toolchainHash": "8eff28817b54ffd8e72d5aef75f2de103a8b2ca0a1e9d1861d38ccde4ebce7a4",
       "toolchain": {
         "id": "LiteLoaderProjectMetadata",
         "version": "per-project historical Gradle configuration; no Build support implied"
@@ -926,8 +2334,8 @@
       "evidence": [
         "https://dl.liteloader.com/versions/versions.json",
         "source-sha256:778a68d6c54bfe73f89204b0306cb004c04bcb8054dbbdaad861969f37210489",
-        "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
         "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
         "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
         "https://www.liteloader.com/explore/docs/user%3Ainstall%3Amanual%3A1.7.10",
@@ -939,161 +2347,9 @@
           "evidenceRefs": [
             "https://dl.liteloader.com/versions/versions.json",
             "https://www.liteloader.com/explore/docs/dev%3Alitemod.json",
-            "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
             "historical-adapter-contract-sha256:6b6ccd81d2ec918c9a2b97b70b59e5e0ea94834de9f3d875eb9457b8624b13a2",
             "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-liteloader-target-from-official-metadata-candidates"
-          ]
-        }
-      }
-    },
-    {
-      "familyId": "modloader-mcp-source-project-detection-v1",
-      "loaderId": "ModLoader",
-      "minecraftIds": [
-        "1.0.0",
-        "1.1",
-        "1.2.3",
-        "1.2.4",
-        "1.2.5",
-        "1.3.1",
-        "1.3.2",
-        "1.4.2",
-        "1.4.4",
-        "1.4.5",
-        "1.4.6",
-        "1.4.7",
-        "1.5",
-        "1.5.1",
-        "1.5.2",
-        "1.6.1",
-        "1.6.2",
-        "a1.1.2_01",
-        "a1.2.0_02",
-        "a1.2.1_01",
-        "a1.2.2",
-        "a1.2.3_04",
-        "a1.2.4_01",
-        "a1.2.5",
-        "a1.2.6",
-        "b1.0_01",
-        "b1.1_02",
-        "b1.2",
-        "b1.2_01",
-        "b1.2_02",
-        "b1.3",
-        "b1.3_01",
-        "b1.4",
-        "b1.4_01",
-        "b1.5_01",
-        "b1.6.4",
-        "b1.6.5",
-        "b1.6.6",
-        "b1.7.2",
-        "b1.7.3",
-        "b1.8.1",
-        "b1.9p5"
-      ],
-      "toolchainHash": "be51c0baf26d3e52d06d037c791e6a6edb208b0d3013f77f7ecf31f14c97a600",
-      "toolchain": {
-        "id": "ClassicMCPSourceDetection",
-        "version": "historical source/layout inspection only; Build and Launch remain unverified"
-      },
-      "buildJava": {
-        "status": "PerProjectConfigurationRequired",
-        "evidenceRef": "common/src/ProjectDetector.psm1"
-      },
-      "runtimeJava": {
-        "status": "PerTargetMojangMetadata",
-        "evidenceRef": "compatibility/runtime-java-catalog.json"
-      },
-      "projectDetectionStrategy": "识别经典 MCP 源码目录中的 ModLoader API 形态：ModLoader 需 mod_* 类及 BaseMod/ModLoader 标记；ModLoaderMP 需 BaseModMp/ModLoaderMp 标记。仅在 conf/version.cfg 等版本配置恰好给出 frozen Universe 中的精确 Minecraft ID 时绑定目标；Gradle-less 项目不产生 Build/Launch 计划。",
-      "buildStrategy": "尚未声明受支持的 Legacy MCP BuildPlan；不执行 MCP scripts、JAR patch 或未知构建工具。",
-      "launchStrategy": "尚未声明受支持的 Legacy MCP LaunchPlan；不执行 startclient/startserver 或修改游戏 JAR。",
-      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
-      "evidence": [
-        "https://mcarchive.net/mods/modloader",
-        "https://legacymcmodding.github.io/ModLoader-JavaDoc/",
-        "https://minecraft.fandom.com/ru/wiki/Создание_модификаций_с_помощью_ModLoader_(Beta_1.7.3)",
-        "https://github.com/MCPHackers/RetroMCP-Java",
-        "candidate-catalog:compatibility/candidate-catalogs/ModLoader.json",
-        "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
-        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-frozen-modloader-target-from-mcp-source-layout"
-      ],
-      "capabilities": {
-        "ProjectDetection": {
-          "status": "Supported",
-          "evidenceRefs": [
-            "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
-            "https://legacymcmodding.github.io/ModLoader-JavaDoc/",
-            "https://minecraft.fandom.com/ru/wiki/Создание_модификаций_с_помощью_ModLoader_(Beta_1.7.3)",
-            "https://github.com/MCPHackers/RetroMCP-Java",
-            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-frozen-modloader-target-from-mcp-source-layout"
-          ]
-        }
-      }
-    },
-    {
-      "familyId": "modloadermp-mcp-source-project-detection-v1",
-      "loaderId": "ModLoaderMP",
-      "minecraftIds": [
-        "1.0.0",
-        "1.1",
-        "1.2.3",
-        "1.2.4",
-        "1.2.5",
-        "1.3.1",
-        "1.3.2",
-        "b1.1_02",
-        "b1.2_02",
-        "b1.3",
-        "b1.3_01",
-        "b1.4_01",
-        "b1.5_01",
-        "b1.6.4",
-        "b1.6.5",
-        "b1.6.6",
-        "b1.7.2",
-        "b1.7.3",
-        "b1.8.1",
-        "b1.9p5"
-      ],
-      "toolchainHash": "9b490dc59624eb03f1d6fdb48b0265707bffea934a2c1e419a7c5789627f0a4a",
-      "toolchain": {
-        "id": "ClassicMCPSourceDetection",
-        "version": "historical source/layout inspection only; Build and Launch remain unverified"
-      },
-      "buildJava": {
-        "status": "PerProjectConfigurationRequired",
-        "evidenceRef": "common/src/ProjectDetector.psm1"
-      },
-      "runtimeJava": {
-        "status": "PerTargetMojangMetadata",
-        "evidenceRef": "compatibility/runtime-java-catalog.json"
-      },
-      "projectDetectionStrategy": "识别经典 MCP 源码目录中的 ModLoader API 形态：ModLoader 需 mod_* 类及 BaseMod/ModLoader 标记；ModLoaderMP 需 BaseModMp/ModLoaderMp 标记。仅在 conf/version.cfg 等版本配置恰好给出 frozen Universe 中的精确 Minecraft ID 时绑定目标；Gradle-less 项目不产生 Build/Launch 计划。",
-      "buildStrategy": "尚未声明受支持的 Legacy MCP BuildPlan；不执行 MCP scripts、JAR patch 或未知构建工具。",
-      "launchStrategy": "尚未声明受支持的 Legacy MCP LaunchPlan；不执行 startclient/startserver 或修改游戏 JAR。",
-      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
-      "evidence": [
-        "https://mcarchive.net/mods/modloadermp",
-        "https://legacymcmodding.github.io/ModLoader-JavaDoc/",
-        "https://minecraft.fandom.com/ru/wiki/Создание_модификаций_с_помощью_ModLoader_(Beta_1.7.3)",
-        "https://github.com/MCPHackers/RetroMCP-Java",
-        "candidate-catalog:compatibility/candidate-catalogs/ModLoaderMP.json",
-        "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
-        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-frozen-modloader-target-from-mcp-source-layout"
-      ],
-      "capabilities": {
-        "ProjectDetection": {
-          "status": "Supported",
-          "evidenceRefs": [
-            "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
-            "https://legacymcmodding.github.io/ModLoader-JavaDoc/",
-            "https://minecraft.fandom.com/ru/wiki/Создание_модификаций_с_помощью_ModLoader_(Beta_1.7.3)",
-            "https://github.com/MCPHackers/RetroMCP-Java",
-            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-frozen-modloader-target-from-mcp-source-layout"
           ]
         }
       }
@@ -1126,7 +2382,7 @@
         "26.2",
         "26.3"
       ],
-      "toolchainHash": "343faad108b9921bc4d03f9ae4a780089fe0a4f99d5d6685cc79ec2105f8c50e",
+      "toolchainHash": "7a4ed02030465f32088410142543388e378130991ec258ef97df1c9551cf6eda",
       "toolchain": {
         "id": "NeoGradleOrModDevGradle",
         "version": "project-resolved toolchain version; plan contract is version-independent"
@@ -1148,16 +2404,25 @@
         "https://github.com/neoforged/ModDevGradle",
         "https://github.com/neoforged/Documentation/blob/main/docs/gettingstarted/index.md",
         "https://github.com/NeoForgeMDKs",
-        "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
         "neoforge-adapter-sha256:444b863e9e7b10ac2f332c8e3300603ddfea8c1637b8b9ec4f48a47f20fba084",
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
         "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-neoforge-targets"
       ],
       "capabilities": {
+        "BuildJava": {
+          "status": "PartiallySupported",
+          "evidenceRefs": [
+            "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target"
+          ]
+        },
         "ProjectDetection": {
           "status": "Supported",
           "evidenceRefs": [
-            "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
             "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-neoforge-targets"
           ]
         },
@@ -1590,7 +2855,7 @@
         "b1.9-pre5",
         "b1.9-pre6"
       ],
-      "toolchainHash": "4dd6ef997359b1b6fefe456b5c434d25a0685f32a24bcfdcf0030c72b9caf71b",
+      "toolchainHash": "c466594b08864f9bd6fedcb53edb056f21aa9a4f3b79efb35b4b3f2aa37aba0f",
       "toolchain": {
         "id": "PloceusBuildLaunchPlans",
         "version": "per-project resolved Ploceus; only non-executable Build/Launch plans, actual execution remains unverified"
@@ -1613,19 +2878,28 @@
         "https://github.com/OrnitheMC/modmenu/blob/1.13/build.gradle",
         "https://docs.fabricmc.net/develop/loom",
         "https://github.com/FabricMC/fabric-docs/blob/main/versions/1.21.1/develop/getting-started/launching-the-game.md",
-        "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
         "ornithe-adapter-sha256:73af482457a93b1b977bb0be8450b3e52378836373db8b960edb6dcde8a0f36c",
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
         "ornithe-plan-test-sha256:bdde1dc03f2cc3393f95dd86cd334fe955d6a9837002a415f3547ad6111fe8d7",
         "test:OrnitheAdapter.Tests.ps1:detects-and-plans-every-frozen-ornithe-target-without-making-plans-executable"
       ],
       "capabilities": {
+        "BuildJava": {
+          "status": "PartiallySupported",
+          "evidenceRefs": [
+            "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target"
+          ]
+        },
         "ProjectDetection": {
           "status": "Supported",
           "evidenceRefs": [
             "https://meta.ornithemc.net/",
             "https://github.com/OrnitheMC/ploceus",
-            "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
             "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-ornithe-target-from-ploceus-coordinates"
           ]
         },
@@ -2100,7 +3374,7 @@
         "26.3-snapshot-9",
         "26w14a"
       ],
-      "toolchainHash": "8ed2791a845aa48c35093b296757bd907e324bbd2412ae1f360790116ea83989",
+      "toolchainHash": "5315673ae0947c5b44346704bceeb115e89af2f35f3e679bed4bae1321cba871",
       "toolchain": {
         "id": "QuiltLoomBuildLaunchPlan",
         "version": "project-resolved Quilt Loom version; plan contract remains version-independent"
@@ -2120,16 +3394,25 @@
       "evidence": [
         "https://github.com/QuiltMC/quilt-loom",
         "https://github.com/QuiltMC/quilt-loader",
-        "universe-sha256:0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
-        "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
         "quilt-adapter-sha256:374a319dcb5478ca2f0a5ef397fb2185f2c0c672353021417ec4997aaa12b3d8",
+        "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
         "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-quilt-targets"
       ],
       "capabilities": {
+        "BuildJava": {
+          "status": "PartiallySupported",
+          "evidenceRefs": [
+            "build-java-resolver-sha256:5c12c170ceadfe31b5e088d7abf453af8467ad92468fae810fbca677422d7c26",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target"
+          ]
+        },
         "ProjectDetection": {
           "status": "Supported",
           "evidenceRefs": [
-            "project-detector-sha256:f1dbfe3ab72e861651ca6e8e369e1a2c29aad04c912040875dc69940aca82d1c",
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
             "quilt-adapter-sha256:374a319dcb5478ca2f0a5ef397fb2185f2c0c672353021417ec4997aaa12b3d8",
             "test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-quilt-targets"
           ]
@@ -2189,16 +3472,16 @@
         "compatibility/rift-source-audit.json",
         "rift-source-commit:dfc75ff7254cbbea81535c02ddc5252e384ac806",
         "forgegradle-source-commit:70d441a286c6673dc0288c3ade5fb8568ca5ce7f",
-        "gradle-distribution-sha256:e66e69dce8173dd2004b39ba93586a184628bc6c28461bc771d6835f7f9b0d28",
+        "gradle-distribution-sha256:39e2d5803bbd5eaf6c8efe07067b0e5a00235e8c71318642b2ed262920b27721",
         "mcp-config-sha256:4e5462425274bb077dde79fe80d8f8e462e48087d7b8ae1afb7dc5c940bac13c",
         "mcp-snapshot-sha256:fd416b6520185d04dbd4f50ba508225f539b76b54edaabc4c976c4b155c98984",
-        "compatibility/rift-build-validation.json#sha256:4f54adb38894fb9ea6ac5d5b90c7974d902f2602eaa4409e4ca08bb12f2da7cc"
+        "compatibility/rift-build-validation.json#sha256:c5a38367233a290d64ed57947286bc9f6a9fdba66944e7915ff7d55c82ef19c1"
       ],
       "capabilities": {
         "ProjectDetection": {
           "status": "Supported",
           "evidenceRefs": [
-            "rift-source-sha256:b6f4f736adce2234149d450eaafb87cc5cf3c20c6e60ea22f9d99d22f1ff202b",
+            "source-sha256:438e8b29047f0834704891b0beb18ac5820e6c0ae0f6a496dbf3ae4f8dbb1f28",
             "test:HistoricalAdapters.Tests.ps1:Rift-1.13-detection"
           ]
         },
@@ -2223,14 +3506,14 @@
           "evidenceRefs": [
             "rift-output-sha256:5ec9ae72dc8a647dacc5fea65a16079d0b243d9f7590a567a72f3012e405d6cd",
             "forgegradle-artifact-sha256:7ad389d3a88e25f5a6e7cc24d9d2db8cd58f587cbb3f3fe2fdc2fc5ac72436d3",
-            "rift-build-validation-sha256:4f54adb38894fb9ea6ac5d5b90c7974d902f2602eaa4409e4ca08bb12f2da7cc"
+            "rift-build-validation-sha256:c5a38367233a290d64ed57947286bc9f6a9fdba66944e7915ff7d55c82ef19c1"
           ]
         },
         "EvidenceLevel": {
           "status": "Supported",
           "evidenceRefs": [
             "scope:CanonicalPinnedFixtureOnly",
-            "rift-build-validation-sha256:4f54adb38894fb9ea6ac5d5b90c7974d902f2602eaa4409e4ca08bb12f2da7cc"
+            "rift-build-validation-sha256:c5a38367233a290d64ed57947286bc9f6a9fdba66944e7915ff7d55c82ef19c1"
           ]
         },
         "LaunchPlan": {
@@ -2240,6 +3523,158 @@
             "mmtl-adapter-test-sha256:2eb15c92f9f109e3db0d059d604b3d21f91a3c57f7b77c53677d2066182efeaa",
             "run-task:ForgeGradle-2.3-SNAPSHOT:runClient",
             "rift-tweaker-class:org.dimdev.riftloader.launch.RiftLoaderClientTweaker"
+          ]
+        }
+      }
+    },
+    {
+      "familyId": "modloader-mcp-source-project-detection-v1",
+      "loaderId": "ModLoader",
+      "minecraftIds": [
+        "1.0.0",
+        "1.1",
+        "1.2.3",
+        "1.2.4",
+        "1.2.5",
+        "1.3.1",
+        "1.3.2",
+        "1.4.2",
+        "1.4.4",
+        "1.4.5",
+        "1.4.6",
+        "1.4.7",
+        "1.5",
+        "1.5.1",
+        "1.5.2",
+        "1.6.1",
+        "1.6.2",
+        "a1.1.2_01",
+        "a1.2.0_02",
+        "a1.2.1_01",
+        "a1.2.2",
+        "a1.2.3_04",
+        "a1.2.4_01",
+        "a1.2.5",
+        "a1.2.6",
+        "b1.0_01",
+        "b1.1_02",
+        "b1.2",
+        "b1.2_01",
+        "b1.2_02",
+        "b1.3",
+        "b1.3_01",
+        "b1.4",
+        "b1.4_01",
+        "b1.5_01",
+        "b1.6.4",
+        "b1.6.5",
+        "b1.6.6",
+        "b1.7.2",
+        "b1.7.3",
+        "b1.8.1",
+        "b1.9p5"
+      ],
+      "toolchainHash": "e356dbff70e484a895cb6b36d4bc6f3be1a50aef721a4933af71bfa071c33d99",
+      "toolchain": {
+        "id": "ClassicMCPSourceDetection",
+        "version": "historical source/layout inspection only; Build and Launch remain unverified"
+      },
+      "buildJava": {
+        "status": "PerProjectConfigurationRequired",
+        "evidenceRef": "common/src/ProjectDetector.psm1"
+      },
+      "runtimeJava": {
+        "status": "PerTargetMojangMetadata",
+        "evidenceRef": "compatibility/runtime-java-catalog.json"
+      },
+      "projectDetectionStrategy": "识别经典 MCP 源码目录中的 ModLoader API 形态：ModLoader 需 mod_* 类及 BaseMod/ModLoader 标记；ModLoaderMP 需 BaseModMp/ModLoaderMp 标记。仅在 conf/version.cfg 等版本配置恰好给出 frozen Universe 中的精确 Minecraft ID 时绑定目标；Gradle-less 项目不产生 Build/Launch 计划。",
+      "buildStrategy": "尚未声明受支持的 Legacy MCP BuildPlan；不执行 MCP scripts、JAR patch 或未知构建工具。",
+      "launchStrategy": "尚未声明受支持的 Legacy MCP LaunchPlan；不执行 startclient/startserver 或修改游戏 JAR。",
+      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
+      "evidence": [
+        "https://mcarchive.net/mods/modloader",
+        "https://legacymcmodding.github.io/ModLoader-JavaDoc/",
+        "https://minecraft.fandom.com/ru/wiki/Создание_модификаций_с_помощью_ModLoader_(Beta_1.7.3)",
+        "https://github.com/MCPHackers/RetroMCP-Java",
+        "candidate-catalog:compatibility/candidate-catalogs/ModLoader.json",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-frozen-modloader-target-from-mcp-source-layout"
+      ],
+      "capabilities": {
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "https://legacymcmodding.github.io/ModLoader-JavaDoc/",
+            "https://minecraft.fandom.com/ru/wiki/Создание_модификаций_с_помощью_ModLoader_(Beta_1.7.3)",
+            "https://github.com/MCPHackers/RetroMCP-Java",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-frozen-modloader-target-from-mcp-source-layout"
+          ]
+        }
+      }
+    },
+    {
+      "familyId": "modloadermp-mcp-source-project-detection-v1",
+      "loaderId": "ModLoaderMP",
+      "minecraftIds": [
+        "1.0.0",
+        "1.1",
+        "1.2.3",
+        "1.2.4",
+        "1.2.5",
+        "1.3.1",
+        "1.3.2",
+        "b1.1_02",
+        "b1.2_02",
+        "b1.3",
+        "b1.3_01",
+        "b1.4_01",
+        "b1.5_01",
+        "b1.6.4",
+        "b1.6.5",
+        "b1.6.6",
+        "b1.7.2",
+        "b1.7.3",
+        "b1.8.1",
+        "b1.9p5"
+      ],
+      "toolchainHash": "c51ca5f9351b3d091b54ced79a677f8b32d8f152ad5b2020fe77077725cc9faa",
+      "toolchain": {
+        "id": "ClassicMCPSourceDetection",
+        "version": "historical source/layout inspection only; Build and Launch remain unverified"
+      },
+      "buildJava": {
+        "status": "PerProjectConfigurationRequired",
+        "evidenceRef": "common/src/ProjectDetector.psm1"
+      },
+      "runtimeJava": {
+        "status": "PerTargetMojangMetadata",
+        "evidenceRef": "compatibility/runtime-java-catalog.json"
+      },
+      "projectDetectionStrategy": "识别经典 MCP 源码目录中的 ModLoader API 形态：ModLoader 需 mod_* 类及 BaseMod/ModLoader 标记；ModLoaderMP 需 BaseModMp/ModLoaderMp 标记。仅在 conf/version.cfg 等版本配置恰好给出 frozen Universe 中的精确 Minecraft ID 时绑定目标；Gradle-less 项目不产生 Build/Launch 计划。",
+      "buildStrategy": "尚未声明受支持的 Legacy MCP BuildPlan；不执行 MCP scripts、JAR patch 或未知构建工具。",
+      "launchStrategy": "尚未声明受支持的 Legacy MCP LaunchPlan；不执行 startclient/startserver 或修改游戏 JAR。",
+      "agentBridge": "本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。",
+      "evidence": [
+        "https://mcarchive.net/mods/modloadermp",
+        "https://legacymcmodding.github.io/ModLoader-JavaDoc/",
+        "https://minecraft.fandom.com/ru/wiki/Создание_модификаций_с_помощью_ModLoader_(Beta_1.7.3)",
+        "https://github.com/MCPHackers/RetroMCP-Java",
+        "candidate-catalog:compatibility/candidate-catalogs/ModLoaderMP.json",
+        "universe-sha256:c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+        "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+        "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-frozen-modloader-target-from-mcp-source-layout"
+      ],
+      "capabilities": {
+        "ProjectDetection": {
+          "status": "Supported",
+          "evidenceRefs": [
+            "project-detector-sha256:259fdee61bff75c424f184de7b331f689d87d05685e4c842a98b0490f5ef7dac",
+            "https://legacymcmodding.github.io/ModLoader-JavaDoc/",
+            "https://minecraft.fandom.com/ru/wiki/Создание_модификаций_с_помощью_ModLoader_(Beta_1.7.3)",
+            "https://github.com/MCPHackers/RetroMCP-Java",
+            "test:ProjectDetectorV2.Tests.ps1:detect-every-exact-frozen-modloader-target-from-mcp-source-layout"
           ]
         }
       }

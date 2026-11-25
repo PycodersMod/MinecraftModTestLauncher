@@ -25,6 +25,7 @@ if ($ProxyUri) {
 
 Import-Module (Join-Path $RepositoryRoot 'common/src/Catalog/JavaRuntimeResolver.psm1') -Force
 Import-Module (Join-Path $RepositoryRoot 'common/src/Catalog/MojangMetadataBatchPlanner.psm1') -Force
+Import-Module (Join-Path $RepositoryRoot 'common/src/Catalog/MojangRuntimeJavaSnapshots.psm1') -Force
 Import-Module (Join-Path $RepositoryRoot 'common/src/Compatibility/EvidenceTimestamp.psm1') -Force
 
 function Write-MmtlRuntimeJavaJson {
@@ -89,6 +90,30 @@ $manifestById = [Collections.Generic.Dictionary[string, object]]::new([StringCom
 foreach ($entry in @($manifest.versions)) { $manifestById.Add([string]$entry.id, $entry) }
 $targetEntries = [Collections.Generic.List[object]]::new()
 foreach ($id in $targetIds) { if ($manifestById.ContainsKey($id)) { $targetEntries.Add($manifestById[$id]) } }
+
+$existingRuntimeCatalog = if (Test-Path -LiteralPath $catalogPath -PathType Leaf) { Get-Content -LiteralPath $catalogPath -Raw | ConvertFrom-Json -ErrorAction Stop } else { $null }
+$recoveredVersionSources = if ($existingRuntimeCatalog) { @(Get-MmtlMojangVersionSnapshotIndexRecords -Catalog $existingRuntimeCatalog -SnapshotRoot $snapshotRoot) } else { @() }
+$indexedVersionSources = @($sourceIndex.sources | Where-Object { [string]$_.providerId -ceq 'MojangVersion' })
+$indexedById = [Collections.Generic.Dictionary[string, object]]::new([StringComparer]::Ordinal)
+foreach ($source in $indexedVersionSources) {
+    if (-not $source.PSObject.Properties['minecraftId'] -or $indexedById.ContainsKey([string]$source.minecraftId)) { throw "MOJANG_VERSION_SOURCE_DUPLICATE:$($source.minecraftId)" }
+    $indexedById.Add([string]$source.minecraftId, $source)
+}
+$indexChanged = $false
+foreach ($source in $recoveredVersionSources) {
+    $id = [string]$source.minecraftId
+    if ($indexedById.ContainsKey($id)) {
+        $indexed = $indexedById[$id]
+        if ([string]$indexed.sourceUrl -cne [string]$source.sourceUrl -or [string]$indexed.manifestSha1 -cne [string]$source.manifestSha1 -or [string]$indexed.sha256 -cne [string]$source.sha256 -or [string]$indexed.relativePath -cne [string]$source.relativePath) {
+            throw "MOJANG_VERSION_SOURCE_INDEX_CATALOG_CONFLICT:$id"
+        }
+        continue
+    }
+    $sourceIndex.sources = @($sourceIndex.sources) + @($source)
+    $indexedById.Add($id, $source)
+    $indexChanged = $true
+}
+if ($indexChanged) { Write-MmtlRuntimeJavaSourceIndex -Path $sourceIndexPath -Index $sourceIndex }
 
 $existingVersionSources = [Collections.Generic.List[object]]::new()
 foreach ($source in @($sourceIndex.sources | Where-Object { [string]$_.providerId -ceq 'MojangVersion' })) { $existingVersionSources.Add($source) }

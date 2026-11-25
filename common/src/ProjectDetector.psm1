@@ -5,15 +5,16 @@ function Get-MmtlMcpProject {
     if(-not $sourceRoots.Count){return $null}
     $javaFiles=@(foreach($sourceRoot in $sourceRoots){Get-ChildItem -LiteralPath $sourceRoot -Filter '*.java' -File -Recurse -ErrorAction SilentlyContinue})
     if(-not $javaFiles.Count){return $null}
-    $modLoaderMatch=$false;$modLoaderMpMatch=$false;$modFiles=[Collections.Generic.List[string]]::new();$modLoaderMpFile=$null
+    $modLoaderMatch=$false;$modLoaderMpMatch=$false;$forgeMatch=$false;$modFiles=[Collections.Generic.List[string]]::new();$modLoaderMpFile=$null;$forgeFile=$null
     foreach($javaFile in $javaFiles){
         $text=Get-Content -LiteralPath $javaFile.FullName -Raw -ErrorAction SilentlyContinue
+        if($text -match '(?im)^\s*import\s+(?:static\s+)?net\.minecraftforge(?:\.|;)' -or $text -match '(?i)\b(?:MinecraftForge|ForgeHooks(?:Client)?|ForgeSubscribe)\b'){$forgeMatch=$true;if(-not $forgeFile){$forgeFile=$javaFile.FullName}}
         if($text -match '(?i)\b(?:BaseModMp|ModLoaderMp)\b'){$modLoaderMpMatch=$true;if(-not $modLoaderMpFile){$modLoaderMpFile=$javaFile.FullName}}
         if($text -match '(?i)\b(?:BaseMod|ModLoader)\b'){$modLoaderMatch=$true}
         if($javaFile.BaseName -match '^mod_.+'){$modFiles.Add($javaFile.FullName)}
     }
-    if(-not $modLoaderMpMatch -and -not ($modLoaderMatch -and $modFiles.Count)){return $null}
-    $loaderId=if($modLoaderMpMatch){'ModLoaderMP'}else{'ModLoader'}
+    if(-not $forgeMatch -and -not $modLoaderMpMatch -and -not ($modLoaderMatch -and $modFiles.Count)){return $null}
+    $loaderId=if($forgeMatch){'Forge'}elseif($modLoaderMpMatch){'ModLoaderMP'}else{'ModLoader'}
     $versionFiles=@('conf/version.cfg','conf/mcp.cfg','version.cfg','mcp.cfg')|ForEach-Object{Join-Path $Root $_}|Where-Object{Test-Path -LiteralPath $_ -PathType Leaf}
     $versions=[Collections.Generic.List[string]]::new()
     foreach($versionFile in $versionFiles){
@@ -25,8 +26,8 @@ function Get-MmtlMcpProject {
     }
     $uniqueVersions=@($versions|Select-Object -Unique)
     $minecraftVersion=if($uniqueVersions.Count -eq 1){$uniqueVersions[0]}else{$null}
-    $evidenceFile=if($loaderId -eq 'ModLoaderMP'){$modLoaderMpFile}else{$modFiles[0]}
-    $evidence=[pscustomobject]@{loaderId=$loaderId;source='LegacyJavaSource';path=[IO.Path]::GetRelativePath($Root,$evidenceFile);confidence='High';detail=if($loaderId -eq 'ModLoaderMP'){'MCP Java source 引用了 BaseModMp/ModLoaderMp'}else{'mod_* Java 类引用了 BaseMod/ModLoader'}}
+    $evidenceFile=if($loaderId -eq 'Forge'){$forgeFile}elseif($loaderId -eq 'ModLoaderMP'){$modLoaderMpFile}else{$modFiles[0]}
+    $evidence=[pscustomobject]@{loaderId=$loaderId;source='LegacyJavaSource';path=[IO.Path]::GetRelativePath($Root,$evidenceFile);confidence='High';detail=if($loaderId -eq 'Forge'){'MCP Java source 引用了 Forge 专属 API'}elseif($loaderId -eq 'ModLoaderMP'){'MCP Java source 引用了 BaseModMp/ModLoaderMp'}else{'mod_* Java 类引用了 BaseMod/ModLoader'}}
     Import-Module (Join-Path $PSScriptRoot 'Adapters/ContractV2.psm1') -Force
     $stack=Resolve-MmtlProjectStack -Evidence @($evidence)
     $repositoryRoot=$Root;$ancestor=Get-Item -LiteralPath $Root
@@ -67,14 +68,17 @@ function Get-MmtlProject {
     $hasOrnitheLoader=$allBuildText -match '(?i)net\.ornithemc:ornithe-loader'
     $hasRift=$allBuildText -match '(?i)(org\.dimdev:ForgeGradle|org\.dimdev\.riftloader|RiftLoaderClientTweaker|rift-loader)'
     $hasLiteLoaderMetadata=$files.Name -contains 'litemod.json'
-    $hasLiteLoaderPlugin=$allBuildText -match '(?i)(com\.mumfrey:liteloader|net\.minecraftforge\.gradle\.liteloader|liteloader-gradle)'
+    $hasLiteLoaderPlugin=$allBuildText -match '(?i)(com\.mumfrey:liteloader|net\.minecraftforge\.gradle\.liteloader|liteloader-gradle|(?:apply\s+plugin\s*:\s*|id\s*\(?\s*)[''"]liteloader[''"])'
     $hasLiteLoader=$hasLiteLoaderMetadata -or $hasLiteLoaderPlugin
+    $hasNeoForgeLegacyModDevMarker=$allBuildText -match '(?i)net\.neoforged\.moddev\.legacyforge'
+    $hasNeoForgeGradleMarker=$allBuildText -match '(?i)(net\.neoforged\.gradle|NeoGradle)'
+    $hasNeoForgeProjectMarker=$hasNeoForgeGradleMarker -or $hasNeoForgeLegacyModDevMarker
     $forgeToolchainMarker=$allBuildText -match '(?i)(net\.minecraftforge\.gradle|ForgeGradle)'
     $hasForgeRuntime=($files.Name -contains 'mods.toml') -or ($allBuildText -match '(?i)net\.minecraftforge:forge(?::|@)') -or ($forgeToolchainMarker -and -not $hasLiteLoaderPlugin)
-    $forgeMarker=(-not $hasRift) -and $hasForgeRuntime
+    $forgeMarker=(-not $hasRift) -and $hasForgeRuntime -and (-not $hasNeoForgeProjectMarker)
     if($hasQuiltLoom){$evidence.Add([pscustomobject]@{loaderId='Quilt';source='GradlePlugin';path=$gradle;confidence='High';detail='Quilt Loom 插件'})}
     if($files.Name -contains 'fabric.mod.json' -and -not ($hasQuiltLoom -or $hasOrnitheLoader -or $hasLegacyLooming)){$evidence.Add([pscustomobject]@{loaderId='Fabric';source='ModMetadata';path='src/main/resources/fabric.mod.json';confidence='High';detail='Fabric 模组元数据'})}
-    if($files.Name -contains 'neoforge.mods.toml'){$evidence.Add([pscustomobject]@{loaderId='NeoForge';source='ModMetadata';path='src/main/resources/META-INF/neoforge.mods.toml';confidence='High';detail='NeoForge 模组元数据'})}
+    if($files.Name -contains 'neoforge.mods.toml' -or ($hasNeoForgeProjectMarker -and $files.Name -contains 'mods.toml') -or $hasNeoForgeLegacyModDevMarker){$evidence.Add([pscustomobject]@{loaderId='NeoForge';source=if($files.Name -contains 'neoforge.mods.toml'){'ModMetadata'}elseif($hasNeoForgeLegacyModDevMarker){'GradlePlugin'}else{'GradlePluginAndModMetadata'};path=if($files.Name -contains 'neoforge.mods.toml'){'src/main/resources/META-INF/neoforge.mods.toml'}elseif($hasNeoForgeLegacyModDevMarker){$gradle}else{'src/main/resources/META-INF/mods.toml'};confidence='High';detail=if($hasNeoForgeLegacyModDevMarker){'NeoForge legacyforge ModDevGradle 插件'}else{'NeoForge 项目标记'}})}
     if($forgeMarker){$evidence.Add([pscustomobject]@{loaderId='Forge';source=if($files.Name -contains 'mods.toml'){'ModMetadata'}else{'GradlePlugin'};path=if($files.Name -contains 'mods.toml'){'src/main/resources/META-INF/mods.toml'}else{$gradle};confidence='High';detail='Forge 项目标记'})}
     if($hasLegacyLooming){$evidence.Add([pscustomobject]@{loaderId='LegacyFabric';source='GradlePlugin';path=$gradle;confidence='High';detail='Legacy Fabric Looming 插件';toolchainId='LegacyLooming'})}
     if($hasOrnitheLoader){$evidence.Add([pscustomobject]@{loaderId='OrnitheLoader';source='GradleDependency';path=$gradle;confidence='High';detail='Ornithe Loader 运行时制品';toolchainId=if($hasPloceus){'Ploceus'}else{$null}})}
@@ -89,6 +93,14 @@ function Get-MmtlProject {
     if (-not $mc.Success) { $mc=[regex]::Match($allBuildText,'(?i)(?:net\.minecraftforge:forge:|com\.mojang:minecraft:|minecraft\s*\(\s*["''])(\d+\.\d+(?:\.\d+)?)') }
     if(-not $mc.Success){$mc=[regex]::Match($versionCatalog,'(?m)^\s*minecraft\s*=\s*["'']([^"''\r\n]+)["'']')}
     if(-not $mc.Success -and $hasRift){$mc=[regex]::Match($allBuildText,'(?i)version\s*=\s*["''](1\.13(?:\.\d+)?)["'']')}
+    $legacyForgeVersion=$null
+    if(-not $mc.Success -and $forgeMarker){
+        $minecraftBlock=[regex]::Match($allBuildText,'(?is)\bminecraft\s*\{(?<body>[^}]*)\}')
+        if($minecraftBlock.Success){
+            $legacyVersionMatch=[regex]::Match($minecraftBlock.Groups['body'].Value,'(?im)\bversion\s*=\s*["''](?<value>\d+\.\d+(?:\.\d+)?-[^"''\s]+)["'']')
+            if($legacyVersionMatch.Success){$legacyForgeVersion=$legacyVersionMatch.Groups['value'].Value;$mc=[regex]::Match($legacyForgeVersion,'^(\d+\.\d+(?:\.\d+)?)')}
+        }
+    }
     $java=[regex]::Match($props,'(?m)^java_version\s*=\s*(\d+)')
     if (-not $java.Success) { $java=[regex]::Match($allBuildText,'(?i)(?:JavaLanguageVersion\.of\(|VERSION_|languageVersion\.set\([^\d]*)(\d{2})') }
     $compilerTargetMatch=[regex]::Match($allBuildText,'(?i)(?:sourceCompatibility|targetCompatibility)\s*=\s*(?:1\.(\d+)|JavaVersion\.VERSION_1_(\d+))')
@@ -99,9 +111,10 @@ function Get-MmtlProject {
     $javaSource=if($java.Success){'ProjectConfiguration'}else{'Unknown'}
     $fallback=$null
     if(-not $major -and $mcVersion){$fallback=Get-MmtlBuildJavaCompatibilityFallback -MinecraftId $mcVersion;$major=$fallback.major;$javaSource=$fallback.source}
-    $loaderVersionKey=switch($loader){'Forge'{'forge_version'}'NeoForge'{'neo_version'}'Fabric'{'loader_version'}'LegacyFabric'{'loader_version'}'OrnitheLoader'{'loader_version'}'LiteLoader'{'liteloader_version'}'Quilt'{'quilt_loader'}default{$null}}
+    $loaderVersionKey=switch($loader){'Forge'{'forge_version'}'NeoForge'{if($hasNeoForgeLegacyModDevMarker){'forge_version'}else{'neo_version'}}'Fabric'{'loader_version'}'LegacyFabric'{'loader_version'}'OrnitheLoader'{'loader_version'}'LiteLoader'{'liteloader_version'}'Quilt'{'quilt_loader'}default{$null}}
     $loaderVersionMatch=if($loaderVersionKey -and $loader -eq 'Quilt'){[regex]::Match($versionCatalog,'(?m)^\s*'+$loaderVersionKey+'\s*=\s*["'']?([^"''\s#]+)')}elseif($loaderVersionKey){[regex]::Match($props,"(?m)^$loaderVersionKey\s*=\s*([^\r\n]+)")}else{[regex]::Match('','a^')}
     $loaderVersion=if($loaderVersionMatch.Success){$loaderVersionMatch.Groups[1].Value.Trim()}else{$null}
+    if($loader -ceq 'NeoForge' -and $hasNeoForgeLegacyModDevMarker -and $loaderVersion -and $mcVersion -and -not $loaderVersion.StartsWith($mcVersion+'-',[StringComparison]::Ordinal)){$loaderVersion=$mcVersion+'-'+$loaderVersion}
     if(-not $loaderVersion){
         $coordinatePattern=switch($loader){'Forge'{'net\.minecraftforge:forge:'}'NeoForge'{'net\.neoforged:neoforge:'}'Fabric'{'net\.fabricmc:fabric-loader:'}'Quilt'{'org\.quiltmc:quilt-loader:'}default{$null}}
         if($coordinatePattern){
@@ -113,6 +126,7 @@ function Get-MmtlProject {
             }
         }
     }
+    if(-not $loaderVersion -and $legacyForgeVersion -and $mcVersion -and $legacyForgeVersion.StartsWith($mcVersion+'-',[StringComparison]::Ordinal)){$loaderVersion=$legacyForgeVersion}
     if($loader -eq 'Rift'){$riftVersion=[regex]::Match($allBuildText,'(?im)^version\s+["''](\d+\.\d+\.\d+)');if($riftVersion.Success){$loaderVersion=$riftVersion.Groups[1].Value}}
     $gradleRuntimeJavaRequirement=Get-MmtlGradleWrapperRuntimeJavaRequirement -ProjectRoot $root
     $compilerTargetMajor=if($compilerTargetMatch.Success){[int]$(if($compilerTargetMatch.Groups[1].Success){$compilerTargetMatch.Groups[1].Value}else{$compilerTargetMatch.Groups[2].Value})}else{$null}

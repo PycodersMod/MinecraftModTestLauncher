@@ -55,6 +55,26 @@ Describe 'ProcessManager 模块依赖' {
         }
     }
 
+    It '把 Host PID 与唯一离线身份、GameDir 和 Runtime Java 写入同一 registry 记录' -Skip:(-not $script:supportsProcessManagement) {
+        $runtime=Join-Path $TestDrive 'runtime-identity-pid';$session=Join-Path $runtime 'sessions/identity-pid';$logs=Join-Path $session 'logs';$gameDir=Join-Path $session 'Host'
+        New-Item -ItemType Directory -Path $logs,$gameDir -Force|Out-Null
+        '[]'|Set-Content -LiteralPath (Join-Path $session 'pids.json')
+        [pscustomobject]@{scenarioIdentityPlan=[pscustomobject]@{schemaVersion=1};testIdentities=@([pscustomobject]@{role='Host';username='TestHost';identityId='offline:12345678-1234-3123-8123-123456789abc';instanceId='client-00';gameDir=$gameDir;runtimeJavaMajor=21;runtimeJavaPath='C:/Java/21/bin/java.exe'})}|ConvertTo-Json -Depth 8|Set-Content -LiteralPath (Join-Path $session 'session.json')
+
+        $powerShell=(Get-Process -Id $PID).Path
+        $tracked=Start-MmtlTrackedProcess -SessionPath $session -FilePath $powerShell -ArgumentList @('-NoProfile','-Command','Start-Sleep -Seconds 30') -WorkingDirectory $TestDrive -LogPath (Join-Path $logs 'host.log') -Role Host -Username TestHost -RuntimeDirectory $gameDir -PassThru
+        try {
+            $entry=Get-Content -LiteralPath (Join-Path $session 'pids.json') -Raw|ConvertFrom-Json|Where-Object PID -eq $tracked.ProcessId
+            $entry.IdentityId | Should -BeExactly 'offline:12345678-1234-3123-8123-123456789abc'
+            $entry.InstanceId | Should -BeExactly 'client-00'
+            $entry.GameDir | Should -BeExactly $gameDir
+            $entry.RuntimeJavaMajor | Should -Be 21
+            $entry.RuntimeJavaPath | Should -BeExactly 'C:/Java/21/bin/java.exe'
+        } finally {
+            if(Get-Process -Id $tracked.ProcessId -ErrorAction SilentlyContinue){Stop-MmtlTrackedProcess -SessionPath $session -ProcessId $tracked.ProcessId|Out-Null}
+        }
+    }
+
     It '登记失败且 PID 身份已变化时不会终止新进程' {
         $runtime=Join-Path $TestDrive 'runtime-identity-change'
         $session=Join-Path $runtime 'sessions/identity-change'

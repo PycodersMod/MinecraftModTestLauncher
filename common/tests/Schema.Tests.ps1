@@ -89,7 +89,7 @@ Describe 'MMTL v2 JSON Schemas' {
         (Test-Json -Json ($invalid | ConvertTo-Json -Depth 20 -Compress) -SchemaFile $script:exceptionSchema -ErrorAction SilentlyContinue) | Should -BeFalse
     }
 
-    It 'Config Schema 兼容旧 v1、v2 任意 Java major、平台映射和未知字段' {
+    It 'Config Schema 兼容 v1、v2、v3 任意 Java major、平台映射和扩展字段' {
         $old = @{ defaultProfile = 'test'; javaHomes = @{ '17' = 'C:/jdk-17'; '26' = 'C:/jdk-26' }; profiles = @{ test = @{ project = 'demo'; mode = 'Single'; players = 1 } } }
         (Test-Json -Json ($old | ConvertTo-Json -Depth 10 -Compress) -SchemaFile $script:configSchema) | Should -BeTrue
         $v2 = @{
@@ -98,6 +98,11 @@ Describe 'MMTL v2 JSON Schemas' {
             profiles = @{ test = @{ project = 'demo'; mode = 'Single'; players = 1 } }; futureExtension = @{ keep = $true }
         }
         (Test-Json -Json ($v2 | ConvertTo-Json -Depth 10 -Compress) -SchemaFile $script:configSchema) | Should -BeTrue
+        $v3 = @{
+            configVersion = 3; defaultProfile = 'matrix'; javaHomes = @{}
+            profiles = @{ matrix = @{ project = 'demo'; clientCount = 2; identity = @{ kind = 'Offline'; hostName = 'MMTL_Host'; guestNamePattern = 'MMTL_G{index}' }; multiplayer = @{ transport = 'Auto' } } }
+        }
+        (Test-Json -Json ($v3 | ConvertTo-Json -Depth 10 -Compress) -SchemaFile $script:configSchema) | Should -BeTrue
         $v2.javaHomesByPlatform = @{ Ubuntu = @{ '21' = '/opt/jdk-21' } }
         (Test-Json -Json ($v2 | ConvertTo-Json -Depth 10 -Compress) -SchemaFile $script:configSchema -ErrorAction SilentlyContinue) | Should -BeFalse
         $v2.javaHomesByPlatform = @{ GitHubHostedMacOS = @{ '21' = '/opt/jdk-21' } }
@@ -125,7 +130,7 @@ Describe 'MMTL v2 JSON Schemas' {
 
     It 'Config Reader 拒绝未知 schema 版本和非正整数 Java major' {
         $path = Join-Path $TestDrive 'invalid-config.json'
-        $config = @{ configVersion = 3; defaultProfile = 'test'; javaHomes = @{ '17' = '/jdk-17' }; profiles = @{ test = @{ project = 'demo'; mode = 'Single'; players = 1 } } }
+        $config = @{ configVersion = 4; defaultProfile = 'test'; javaHomes = @{ '17' = '/jdk-17' }; profiles = @{ test = @{ project = 'demo'; mode = 'Single'; players = 1 } } }
         $config | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $path
         { Read-MmtlConfig -Path $path } | Should -Throw '*Config Schema 版本*'
         $config.configVersion = 2
@@ -152,6 +157,17 @@ Describe 'MMTL v2 JSON Schemas' {
         $config.profiles.test.runtimeJavaOverride.major=0
         $config|ConvertTo-Json -Depth 10|Set-Content -LiteralPath $path
         { Read-MmtlConfig -Path $path } | Should -Throw '*runtimeJavaOverride*'
+    }
+
+    It 'Config v2 的 Build Java override 可选、可读且要求正整数 major' {
+        $path=Join-Path $TestDrive 'build-java-override.json'
+        $config=@{configVersion=2;defaultProfile='test';javaHomes=@{'21'='/jdk-21';'25'='/jdk-25'};profiles=@{test=@{project='demo';mode='Single';players=1;buildJavaOverride=@{major=25}}}}
+        $config|ConvertTo-Json -Depth 10|Set-Content -LiteralPath $path
+        (Test-Json -Json (Get-Content $path -Raw) -SchemaFile $script:configSchema) | Should -BeTrue
+        (Read-MmtlConfig -Path $path).profiles.test.buildJavaOverride.major | Should -Be 25
+        $config.profiles.test.buildJavaOverride.major=0
+        $config|ConvertTo-Json -Depth 10|Set-Content -LiteralPath $path
+        { Read-MmtlConfig -Path $path } | Should -Throw '*buildJavaOverride*'
     }
 
     It 'normalized Mojang Catalog schema accepts canonical release metadata and provenance' {

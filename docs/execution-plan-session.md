@@ -20,7 +20,7 @@ Plan 分别记录 Build Java 与 Minecraft Runtime Java 的 requirement 和本�
 
 `--validate` 验证 Execution Plan 和 Build Java 门禁；`--launch-check` 执行完整启动前检查，但不运行 `runClient`/`runServer`。输出包括项目、Minecraft、Loader、模式、Build/Runtime Java、binding、内存、端口策略、平台能力和阻塞原因。
 
-Planner 分别计算 `BuildReady`、`LaunchReady`、`LaunchBlockingReasons[]` 与 `LaunchWarnings[]`。启动门禁还会检查项目和 Adapter 解析、必需任务、平台 Launch 能力、Profile、内存、端口策略及 Runtime Root。Dedicated 的 `acceptEula=false` 会阻塞 Launch；MMTL 不替用户接受 EULA。IntegratedLAN 的 Host/Guest 按角色分别记录 readiness；缺少合法认证时 Guest 为 `AUTH_REQUIRED`。
+Planner 分别计算 `BuildReady`、`LaunchReady`、`LaunchBlockingReasons[]` 与 `LaunchWarnings[]`。启动门禁还会检查项目和 Adapter 解析、必需任务、平台 Launch 能力、Profile、内存、端口策略及 Runtime Root。Dedicated 的 `acceptEula=false` 会阻塞 Launch；MMTL 不替用户接受 EULA。IntegratedLAN 的 Host/Guest 按角色分别记录 readiness；离线身份、精确 Agent capability 或实际联机能力尚未验证时，Guest 应标为相应的本地身份/能力阻塞状态。MMTL 不读取在线账号凭据，Session nonce 仅用于事件归属校验。
 
 Runtime Java Binding 只能由 Adapter/Probe evidence 决定，详见 [Runtime Java Binding](runtime-binding.md)。`LaunchReady` 表示本机所需启动前检查通过；`CLIENT_LAUNCH_VERIFIED` 则要求真实 Minecraft 客户端完成初始化并取得规定 marker。两者不等价。
 
@@ -39,6 +39,6 @@ Runtime Java Binding 只能由 Adapter/Probe evidence 决定，详见 [Runtime J
 ./windows/launcher.ps1 --session-validate <Session-ID>
 ```
 
-Linux/macOS 当前提供 CLI 与 Gradle Build 基础能力；不由 WSL/CI 结果推断 GUI Client、IntegratedLAN 或 Dedicated Server 实机通过。Dedicated Server 仍要求用户本机配置明确接受 EULA；IntegratedLAN 仍要求可用的合法认证会话。
+Linux/macOS 当前提供 CLI 与 Gradle Build 基础能力；不由 WSL/CI 结果推断 GUI Client、IntegratedLAN 或 Dedicated Server 实机通过。Dedicated Server 仍要求用户本机配置明确接受 EULA。IntegratedLAN 使用 MMTL 本地离线身份；按精确目标确认离线 Host/Guest 身份行为与 Agent capability，不读取 Microsoft/Mojang 凭据或令牌。
 
 Session 锁、崩溃检测和保守恢复规则见 [Session 生命周期与安全恢复](session-lifecycle.md)。环境诊断与 Java 候选发现见 [Doctor](doctor.md)。

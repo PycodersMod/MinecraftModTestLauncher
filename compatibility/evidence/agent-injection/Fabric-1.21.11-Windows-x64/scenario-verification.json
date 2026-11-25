@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "targetId": "Fabric@1.21.11",
+  "scenarioState": "Completed",
+  "sessionState": "Stopped",
+  "mode": "Single",
+  "roles": [
+    "Client"
+  ],
+  "agentEventTypes": [
+    "AGENT_STARTED",
+    "CLIENT_READY"
+  ],
+  "clientReadyObserved": true,
+  "handshakeAccepted": true,
+  "managedSessionJarSha256": "24830f818d2ef21c941017511472ea76f05fd73aaef43214e52ba394186a13b7",
+  "managedSessionJarMatchesProvider": true,
+  "stopPolicyCompleted": true,
+  "processExitCodeRecorded": false
+}

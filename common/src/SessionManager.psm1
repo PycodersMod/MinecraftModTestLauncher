@@ -12,12 +12,13 @@ function New-MmtlSession {
     try{
         $hostName=if($Metadata.hostUsername){[string]$Metadata.hostUsername}else{'Dev'}
         $clientPrefix=if($Metadata.clientPrefix){[string]$Metadata.clientPrefix}else{'Dev_'}
-        $identityRoles=$null
-        if ($Metadata.mode -in @('Single','IntegratedLAN','Dedicated') -and [int]$Metadata.players -ge 1) {
+        $identityRoles=$null;$scenarioIdentityPlan=$null
+        $scenarioV3=($null -ne $Metadata.PSObject.Properties['clientCount'] -and $null -ne $Metadata.PSObject.Properties['identity'] -and $null -ne $Metadata.PSObject.Properties['transport'])
+        if (-not $scenarioV3 -and $Metadata.mode -in @('Single','IntegratedLAN','Dedicated') -and [int]$Metadata.players -ge 1) {
             $profile=[pscustomobject]@{mode=[string]$Metadata.mode;players=[int]$Metadata.players;hostUsername=$hostName;clientPrefix=$clientPrefix;runtimeJavaMajor=$(if($Metadata.PSObject.Properties['runtimeJavaMajor']){$Metadata.runtimeJavaMajor}else{$null});runtimeJavaPath=$(if($Metadata.PSObject.Properties['runtimeJavaPath']){$Metadata.runtimeJavaPath}else{$null})}
             $identityRoles=@(New-MmtlTestIdentityRolePlan -Profile $profile)
             $players=@($identityRoles|Where-Object username|ForEach-Object username|Select-Object -Unique)
-        } else {
+        } elseif (-not $scenarioV3) {
             $players=@($hostName)
             for($i=1;$i -lt [int]$Metadata.players;$i++){$players+=("$clientPrefix$i")}
         }
@@ -25,11 +26,17 @@ function New-MmtlSession {
         $path=Join-Path $sessions $id
         New-Item -ItemType Directory -Path (Join-Path $path 'logs') -Force | Out-Null
         New-Item -ItemType Directory -Path (Join-Path $path 'mods') -Force | Out-Null
-        foreach($player in $players){New-Item -ItemType Directory -Path (Join-Path $path $player) -Force | Out-Null}
+        if (-not $scenarioV3) { foreach($player in $players){New-Item -ItemType Directory -Path (Join-Path $path $player) -Force | Out-Null} }
         Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1');$platform=Get-MmtlPlatformProvider
+        if($scenarioV3){
+            $effective=[pscustomobject]@{mode=[string]$Metadata.mode;clientCount=[int]$Metadata.clientCount;transport=[string]$Metadata.transport;identity=$Metadata.identity;sessionPath=$path;sessionId=$id;runtimeJavaMajor=$(if($Metadata.PSObject.Properties['runtimeJavaMajor']){$Metadata.runtimeJavaMajor}else{$null});runtimeJavaPath=$(if($Metadata.PSObject.Properties['runtimeJavaPath']){$Metadata.runtimeJavaPath}else{$null})}
+            $scenarioIdentityPlan=New-MmtlScenarioIdentityPlan -EffectiveConfig $effective -MinecraftVersion ([string]$Metadata.minecraft)
+            $identityRoles=@($scenarioIdentityPlan.clients);if($scenarioIdentityPlan.server){$identityRoles+=,$scenarioIdentityPlan.server}
+            $players=@($scenarioIdentityPlan.clients|ForEach-Object username)
+        }
         $identities=if($identityRoles){@(Initialize-MmtlTestIdentityDirectories -SessionId $id -SessionPath $path -AllowedRoot $sessions -Roles $identityRoles)}else{@()}
         if($Metadata -is [System.Collections.IDictionary]){$Metadata['platform']=$platform.OS;$Metadata['arch']=$platform.Arch;$Metadata['isWSL']=$platform.IsWSL}else{$Metadata|Add-Member -NotePropertyName platform -NotePropertyValue $platform.OS -Force;$Metadata|Add-Member -NotePropertyName arch -NotePropertyValue $platform.Arch -Force;$Metadata|Add-Member -NotePropertyName isWSL -NotePropertyValue $platform.IsWSL -Force}
-        $record=[ordered]@{sessionId=$id;createdUtc=(Get-Date).ToUniversalTime().ToString('o');metadata=$Metadata;players=$players;testIdentities=$identities;ports=@();processes=@()}
+        $record=[ordered]@{sessionId=$id;createdUtc=(Get-Date).ToUniversalTime().ToString('o');metadata=$Metadata;scenarioIdentityPlan=$scenarioIdentityPlan;players=$players;testIdentities=$identities;ports=@();processes=@()}
         Write-MmtlAtomicTextFile -Path (Join-Path $path 'session.json') -Content (($record|ConvertTo-Json -Depth 20)+"`n")
         Write-MmtlAtomicTextFile -Path (Join-Path $path 'pids.json') -Content "[]`n"
         Write-MmtlAtomicTextFile -Path (Join-Path $path 'report.md') -Content "# Session $id`n`n状态：已创建`n"

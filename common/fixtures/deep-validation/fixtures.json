@@ -5,14 +5,14 @@
       "fixtureId": "fabric-263",
       "type": "OfficialFixture",
       "source": "https://github.com/FabricMC/fabric-example-mod",
-      "commit": "44465cb0eb83932c72ece5934d32ddfc758802ed",
+      "commit": "1685ed178a113092f8aa002c4f7d78181643d75b",
       "license": "CC0-1.0",
       "trust": "TrustedOfficial",
       "minecraftId": "26.3",
       "loaderId": "Fabric",
       "loaderVersion": "0.19.5",
       "toolchain": "FabricLoom",
-      "toolchainVersion": "1.18-SNAPSHOT",
+      "toolchainVersion": "1.18.4",
       "buildJava": 25,
       "scopes": [
         "P0",
@@ -25,15 +25,38 @@
       ]
     },
     {
+      "fixtureId": "fabric-1210",
+      "type": "GeneratedOfficialFixture",
+      "source": "https://github.com/FabricMC/fabric-example-mod",
+      "commit": "40d278b93501e8019e2eab169465d34efc61865a",
+      "archiveSha256": "d0741395e99f235a31ef29bc4c2a04098b91e9313f188b09158531be4e870618",
+      "license": "CC0-1.0",
+      "trust": "TrustedOfficial",
+      "minecraftId": "1.21.10",
+      "loaderId": "Fabric",
+      "loaderVersion": "0.19.5",
+      "toolchain": "FabricLoom",
+      "toolchainVersion": "1.17.21",
+      "buildJava": 25,
+      "scopes": [
+        "P0"
+      ],
+      "currentStable": false,
+      "allowedTasks": [
+        "clean",
+        "build"
+      ]
+    },
+    {
       "fixtureId": "forge-1122",
       "type": "OfficialArtifactFixture",
-      "source": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.12.2-14.23.5.2864/forge-1.12.2-14.23.5.2864-mdk.zip",
-      "commit": "bed660e5f8deab6de687d2e894fb489501f00e7a47a9bea260c84a460f8f6733",
+      "source": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.12.2-14.23.5.2860/forge-1.12.2-14.23.5.2860-mdk.zip",
+      "commit": "d0de63c4109becaacff68308720ff99edb2534877853d3e34165c04341826461",
       "license": "LGPL-2.1",
       "trust": "TrustedOfficial",
       "minecraftId": "1.12.2",
       "loaderId": "Forge",
-      "loaderVersion": "14.23.5.2864",
+      "loaderVersion": "1.12.2-14.23.5.2860",
       "toolchain": "ForgeGradle",
       "toolchainVersion": null,
       "buildJava": 8,
@@ -45,22 +68,22 @@
         "clean",
         "build"
       ],
-      "officialChecksum": "380b34b382c06bc3bf4aa36383a84bee",
-      "officialChecksumAlgorithm": "MD5"
+      "officialChecksum": "d0de63c4109becaacff68308720ff99edb2534877853d3e34165c04341826461",
+      "officialChecksumAlgorithm": "SHA256"
     },
     {
       "fixtureId": "forge-1165",
       "type": "OfficialArtifactFixture",
-      "source": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.16.5-36.2.8/forge-1.16.5-36.2.8-mdk.zip",
-      "commit": "3784604953780060c2177c1f003205356d89c09c990486eb7ee1dd400a68ca5c",
+      "source": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.16.5-36.2.42/forge-1.16.5-36.2.42-mdk.zip",
+      "commit": "02774cc07855111ee58936319bc39416c31df899b649748f089afd7ec51d5568",
       "license": "LGPL-2.1",
       "trust": "TrustedOfficial",
       "minecraftId": "1.16.5",
       "loaderId": "Forge",
-      "loaderVersion": "36.2.8",
+      "loaderVersion": "1.16.5-36.2.42",
       "toolchain": "ForgeGradle",
       "toolchainVersion": null,
-      "buildJava": 8,
+      "buildJava": 17,
       "scopes": [
         "P0"
       ],
@@ -69,8 +92,8 @@
         "clean",
         "build"
       ],
-      "officialChecksum": "074b8ed3688c8baa863b201f6bf6850d4b715b19",
-      "officialChecksumAlgorithm": "SHA1"
+      "officialChecksum": "02774cc07855111ee58936319bc39416c31df899b649748f089afd7ec51d5568",
+      "officialChecksumAlgorithm": "SHA256"
     },
     {
       "fixtureId": "neoforge-1204",
@@ -118,9 +141,10 @@
     },
     {
       "fixtureId": "quilt-1206",
-      "type": "OfficialFixture",
+      "type": "GeneratedOfficialFixture",
       "source": "https://github.com/QuiltMC/quilt-template-mod",
       "commit": "9a6f89cd481e3f58f128596b5b043353bee6b3f2",
+      "archiveSha256": "a2afaa5ab8037021c4538fc8f1bbcca6e30b713c57359245c7eec315e0aaf849",
       "license": "CC0-1.0",
       "trust": "TrustedOfficial",
       "minecraftId": "1.20.6",
@@ -129,6 +153,29 @@
       "toolchain": "QuiltLoom",
       "toolchainVersion": "1.7.4",
       "buildJava": 21,
+      "scopes": [
+        "P0"
+      ],
+      "currentStable": false,
+      "allowedTasks": [
+        "clean",
+        "build"
+      ]
+    },
+    {
+      "fixtureId": "quilt-1204",
+      "type": "GeneratedOfficialFixture",
+      "source": "https://github.com/QuiltMC/quilt-template-mod",
+      "commit": "9480b2e90b255309c21d19bcdd4646760c66dc2b",
+      "archiveSha256": "78ae90ef2873eea6b1a278bb34b2b89b0ba2c8ddfa3a6712e893c9c135b04005",
+      "license": "CC0-1.0",
+      "trust": "TrustedOfficial",
+      "minecraftId": "1.20.4",
+      "loaderId": "Quilt",
+      "loaderVersion": "0.25.0",
+      "toolchain": "QuiltLoom",
+      "toolchainVersion": "1.6.5",
+      "buildJava": 17,
       "scopes": [
         "P0"
       ],

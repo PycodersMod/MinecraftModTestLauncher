@@ -1,0 +1,598 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pinned ForgeGradle build classpath artifacts",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "targetId",
+    "rootCoordinate",
+    "resolver",
+    "artifactStatus",
+    "mcpVersions",
+    "mcpMapping",
+    "mojangVersion",
+    "forgeUserdev",
+    "mcpArtifacts",
+    "dependencies",
+    "artifacts",
+    "requiredLibraries",
+    "catalogHash"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "targetId": {
+      "enum": [
+        "Forge@1.8.8",
+        "Forge@1.8.9",
+        "Forge@1.9",
+        "Forge@1.10.2",
+        "Forge@1.10",
+        "Forge@1.11",
+        "Forge@1.11.2",
+        "Forge@1.12",
+        "Forge@1.12.1",
+        "Forge@1.12.2"
+      ]
+    },
+    "rootCoordinate": {
+      "enum": [
+        "net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT",
+        "net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT",
+        "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT",
+        "net.minecraftforge.gradle:ForgeGradle:3.0.197"
+      ]
+    },
+    "resolver": {
+      "type": "string",
+      "pattern": "^ForgeGradle (2\\.1 POM compile dependency union plus pinned Mojang (1\\.8\\.[89]|1\\.9) and Forge UserDev development libraries|2\\.2 POM compile dependency union plus pinned Mojang 1\\.(10(\\.2)?|11(\\.2)?), Forge UserDev development libraries and exact ForgeGradle Minecraft compile classpath|2\\.3 POM compile dependency union plus pinned Mojang 1\\.12, Forge UserDev development libraries and exact ForgeGradle Minecraft compile classpath|3\\.0\\.197 POM compile dependency union plus pinned Mojang 1\\.12\\.2 and Forge UserDev development libraries and exact ForgeGradle Minecraft compile classpath)$"
+    },
+    "artifactStatus": {
+      "const": "HashesVerified"
+    },
+    "mcpMapping": {
+      "enum": [
+        "stable_20",
+        "stable_22",
+        "stable_24",
+        "stable_29",
+        "snapshot_20160518",
+        "snapshot_20161220",
+        "snapshot_20170624"
+      ]
+    },
+    "mcpVersions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "url",
+        "bytes",
+        "sha256"
+      ],
+      "properties": {
+        "url": {
+          "const": "https://maven.minecraftforge.net/de/oceanlabs/mcp/versions.json"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "mojangVersion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "url",
+        "bytes",
+        "sha256",
+        "sha1",
+        "snapshotSha256"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://piston-meta\\.mojang\\.com/v1/packages/[a-f0-9]{40,64}/(1\\.8\\.[89]|1\\.9|1\\.(10(\\.2)?|11(\\.2)?|12|12\\.1|12\\.2))\\.json$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "sha1": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "snapshotSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "forgeUserdev": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coordinate",
+        "version",
+        "pom",
+        "userdev",
+        "universal",
+        "devJson",
+        "devLibraries"
+      ],
+      "properties": {
+        "coordinate": {
+          "const": "net.minecraftforge:forge"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^(1\\.8\\.[89]-11\\.15\\.[01]\\.[0-9]+(-1\\.8\\.9)?|1\\.9-12\\.16\\.1\\.1938-1\\.9\\.0|1\\.10-12\\.18\\.0\\.2000-1\\.10\\.0|1\\.10\\.2-12\\.18\\.3\\.2511|1\\.11-13\\.19\\.1\\.2199|1\\.11\\.2-13\\.20\\.1\\.2588|1\\.11-13\\.19\\.1\\.2199|1\\.11\\.2-13\\.20\\.1\\.2588|1\\.12-14\\.21\\.1\\.2443|1\\.12\\.1-14\\.22\\.1\\.2485|1\\.12\\.2-14\\.23\\.5\\.2860)$"
+        },
+        "pom": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "bytes",
+            "sha256",
+            "url"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "pattern": "^forge-(1\\.8\\.[89]-11\\.15\\.[01]\\.[0-9]+(-1\\.8\\.9)?|1\\.9-12\\.16\\.1\\.1938-1\\.9\\.0|1\\.10-12\\.18\\.0\\.2000-1\\.10\\.0|1\\.10\\.2-12\\.18\\.3\\.2511|1\\.11-13\\.19\\.1\\.2199|1\\.11\\.2-13\\.20\\.1\\.2588|1\\.12-14\\.21\\.1\\.2443|1\\.12\\.1-14\\.22\\.1\\.2485|1\\.12\\.2-14\\.23\\.5\\.2860)\\.pom$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://maven\\.minecraftforge\\.net/net/minecraftforge/forge/[^/]+/[^/]+\\.pom$"
+            }
+          }
+        },
+        "userdev": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "bytes",
+            "sha256",
+            "url"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "pattern": "^forge-(1\\.8\\.[89]-11\\.15\\.[01]\\.[0-9]+(-1\\.8\\.9)?|1\\.9-12\\.16\\.1\\.1938-1\\.9\\.0|1\\.10-12\\.18\\.0\\.2000-1\\.10\\.0|1\\.10\\.2-12\\.18\\.3\\.2511|1\\.11-13\\.19\\.1\\.2199|1\\.11\\.2-13\\.20\\.1\\.2588|1\\.12-14\\.21\\.1\\.2443|1\\.12\\.1-14\\.22\\.1\\.2485|1\\.12\\.2-14\\.23\\.5\\.2860)-userdev\\.jar$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://maven\\.minecraftforge\\.net/net/minecraftforge/forge/[^/]+/[^/]+-userdev\\.jar$"
+            }
+          }
+        },
+        "universal": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "bytes",
+            "sha256",
+            "url"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "pattern": "^forge-(1\\.8\\.[89]-11\\.15\\.[01]\\.[0-9]+(-1\\.8\\.9)?|1\\.9-12\\.16\\.1\\.1938-1\\.9\\.0|1\\.10-12\\.18\\.0\\.2000-1\\.10\\.0|1\\.10\\.2-12\\.18\\.3\\.2511|1\\.11-13\\.19\\.1\\.2199|1\\.11\\.2-13\\.20\\.1\\.2588|1\\.12-14\\.21\\.1\\.2443|1\\.12\\.1-14\\.22\\.1\\.2485|1\\.12\\.2-14\\.23\\.5\\.2860)-universal\\.jar$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://maven\\.minecraftforge\\.net/net/minecraftforge/forge/[^/]+/[^/]+-universal\\.jar$"
+            }
+          }
+        },
+        "devJson": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entry",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "entry": {
+              "const": "dev.json"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "devLibraries": {
+          "type": "array",
+          "minItems": 18,
+          "maxItems": 54,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.+-]+$"
+          }
+        }
+      }
+    },
+    "mcpArtifacts": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "coordinate",
+          "version",
+          "file",
+          "bytes",
+          "sha256",
+          "url"
+        ],
+        "properties": {
+          "coordinate": {
+            "enum": [
+              "de.oceanlabs.mcp:mcp",
+              "de.oceanlabs.mcp:mcp_stable",
+              "de.oceanlabs.mcp:mcp_snapshot"
+            ]
+          },
+          "version": {
+            "type": "string",
+            "enum": [
+              "1.8.8",
+              "1.8.9",
+              "1.9",
+              "1.10.2",
+              "20-1.8.8",
+              "22-1.8.9",
+              "24-1.9",
+              "29-1.10.2",
+              "20151122-1.8",
+              "20160312-1.9",
+              "20161111-1.10.2",
+              "1.10",
+              "26-1.9.4",
+              "20160518-1.9.4",
+              "1.11",
+              "32-1.11",
+              "20161220-1.11",
+              "1.11.2",
+              "1.12",
+              "39-1.12",
+              "20170624-1.12",
+              "1.12.1",
+              "39-1.12",
+              "20170624-1.12",
+              "1.12.2",
+              "20171003-1.12"
+            ]
+          },
+          "file": {
+            "type": "string",
+            "enum": [
+              "mcp-1.8.8-srg.zip",
+              "mcp-1.8.9-srg.zip",
+              "mcp-1.9-srg.zip",
+              "mcp-1.10.2-srg.zip",
+              "mcp_stable-20-1.8.8.zip",
+              "mcp_stable-22-1.8.9.zip",
+              "mcp_stable-24-1.9.zip",
+              "mcp_stable-29-1.10.2.zip",
+              "mcp_snapshot-20151122-1.8.zip",
+              "mcp_snapshot-20160312-1.9.zip",
+              "mcp_snapshot-20161111-1.10.2.zip",
+              "mcp-1.10-srg.zip",
+              "mcp_stable-26-1.9.4.zip",
+              "mcp_snapshot-20160518-1.9.4.zip",
+              "mcp-1.11-srg.zip",
+              "mcp-1.11.2-srg.zip",
+              "mcp_stable-32-1.11.zip",
+              "mcp_snapshot-20161220-1.11.zip",
+              "mcp-1.12-srg.zip",
+              "mcp_stable-39-1.12.zip",
+              "mcp_snapshot-20170624-1.12.zip",
+              "mcp-1.12.1-srg.zip",
+              "mcp-1.12.2-srg.zip",
+              "mcp_stable-39-1.12.zip",
+              "mcp_snapshot-20170624-1.12.zip",
+              "mcp_snapshot-20171003-1.12.zip"
+            ]
+          },
+          "bytes": {
+            "type": "integer",
+            "enum": [
+              473788,
+              471509,
+              665494,
+              682739,
+              336350,
+              336513,
+              270192,
+              282686,
+              334162,
+              278552,
+              307451,
+              683341,
+              330968,
+              329977,
+              708468,
+              708724,
+              350621,
+              342912,
+              708724,
+              650427,
+              378607,
+              365094,
+              652347,
+              653744
+            ]
+          },
+          "sha256": {
+            "type": "string",
+            "enum": [
+              "c52c6479413a3779fc745553fa1ca5de17ac0982a6cb1accfff841f93ccc93eb",
+              "ea6fdd37e68569a378fd149b0ab7cfede1de7fa3e794f4ed81f9018366fbdc51",
+              "706f479571c79dd662319c449901fdf3ff17b1e65b78ba322302b9223f21c890",
+              "dce44b85a3c1d731cfc4ad7325d55497515137641c4a9148c6fca9f1664cfb71",
+              "0de05247bcce00378654420acc41a18bf8a634a6596c5113c4d41a38880859c6",
+              "aeed0aaba9d159b7ce60a21e2dcc36adb249fade65ce2f76c730dd0ec7270763",
+              "41e4a56901b39df2db48c4f22332b9a2c365737ce7e75466117b3609098386a3",
+              "d81da4f9c200930eef565e8ef1d7a1ac869dba157ca22de9988365aa60bfa592",
+              "f2ce9e7cdc3e3598390a495a07cc18aa930a8b9e1480d97bfae31f29e1e75a19",
+              "0df1f289ed8417db736ee36406204309ab65e516998fa8f4139235b9127c2b7b",
+              "912bc85953e769198afbc52ac1b7f324a86990529706b36d4771415cab5f3a3d",
+              "1068b0fbaae07d10c4848606c835ad4deca90a4f2629d09bfa6ca266dbd05712",
+              "79c17c99e5a6a9ce92b4e2677abdec8ef5a13a6c38d89300aa29fd124504a005",
+              "16f933fe337c265ed20fd616a2acadbd119a0b1d1fb186ca26fc8964aeebe0c2",
+              "9346e52ec542a990ea18722a7ff61a208b14796ba4a117bf0a1a043dee3cfc7c",
+              "be95745a7052c11e232fe1b307e5e75444d8408b4d4127c32660e07fea338511",
+              "a4878373319ec0b86c53305001c251637570b3673c9c1f4e643405533cac9014",
+              "755416d68281e0c6998fc743929f36e14563510467d1c749d4bf66ba5bf82b19",
+              "be95745a7052c11e232fe1b307e5e75444d8408b4d4127c32660e07fea338511",
+              "82cdc6283bc0842bdfa243c1eb807338d1f106db8aef73d26bc908649c586d36",
+              "13a31f28c11f8f395ffe7e8563ade459f5a0ee46493abbbde3ce6e9493ac4152",
+              "6c571b05af4326d29e528d7451e5aa67406b537af417e06be6e6f72fd316d81e",
+              "a95c958f0c052e0a94d20de1d30a9151f68e66b19bdbea60a58cd41539558874"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://maven\\.minecraftforge\\.net/de/oceanlabs/mcp/(mcp|mcp_stable|mcp_snapshot)/[^/]+/[^/]+\\.zip$"
+          }
+        }
+      }
+    },
+    "catalogHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "dependencies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "group",
+          "artifact",
+          "version"
+        ],
+        "properties": {
+          "group": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "artifact": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.+-]+$"
+          }
+        }
+      }
+    },
+    "dynamicVersionResolutions": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "group",
+          "artifact",
+          "selector",
+          "resolvedVersion"
+        ],
+        "properties": {
+          "group": {
+            "const": "net.minecraftforge"
+          },
+          "artifact": {
+            "enum": [
+              "artifactural",
+              "legacydev"
+            ]
+          },
+          "selector": {
+            "enum": [
+              "1.0.+",
+              "0.2.3.+"
+            ]
+          },
+          "resolvedVersion": {
+            "enum": [
+              "1.0.13",
+              "0.2.3.1"
+            ]
+          }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "group",
+          "artifact",
+          "version",
+          "file",
+          "extension",
+          "bytes",
+          "sha256",
+          "url"
+        ],
+        "properties": {
+          "group": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "artifact": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.+-]+$"
+          },
+          "file": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.+-]+\\.(jar|pom)$"
+          },
+          "extension": {
+            "enum": [
+              "jar",
+              "pom"
+            ]
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://(plugins\\.gradle\\.org|plugins-artifacts\\.gradle\\.org|maven\\.minecraftforge\\.net|repo\\.maven\\.apache\\.org)/[A-Za-z0-9_./+-]+$"
+          }
+        }
+      }
+    },
+    "requiredLibraries": {
+      "type": "array",
+      "minItems": 45,
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "coordinate",
+          "source",
+          "file",
+          "bytes",
+          "sha1",
+          "sha1Source",
+          "sha256",
+          "url"
+        ],
+        "properties": {
+          "coordinate": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.+-]+$"
+          },
+          "source": {
+            "enum": [
+              "MojangVersionJson",
+              "ForgeUserdevDevJson",
+              "ForgeGradleMinecraftClasspath"
+            ]
+          },
+          "file": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.+-]+\\.jar$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha1": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "sha1Source": {
+            "enum": [
+              "MojangVersionJson",
+              "MavenCentralSha1",
+              "ComputedPinnedSource"
+            ]
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://(libraries\\.minecraft\\.net|repo\\.maven\\.apache\\.org)/[A-Za-z0-9_./+-]+$"
+          }
+        }
+      }
+    }
+  }
+}

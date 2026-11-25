@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "universeHash": "0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606",
+  "universeHash": "c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
   "backendId": "retromcp-java",
   "backendSource": {
     "repositoryUrl": "https://github.com/MCPHackers/RetroMCP-Java",

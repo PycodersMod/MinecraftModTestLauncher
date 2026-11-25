@@ -33,6 +33,26 @@ Describe 'Session 生命周期 v2' {
         {Set-MmtlSessionV2State -SessionPath $session -State Running} | Should -Throw '*SESSION_STATE_TRANSITION_INVALID*'
     }
 
+    It '将离线身份快照写入 Session manifest 并校验 PID、GameDir 和 Runtime Java 一一对应' {
+        $plan=New-TestSessionPlan
+        $session=Join-Path $TestDrive 'runtime/identity-bound-session';New-Item -ItemType Directory -Path $session -Force|Out-Null
+        $gameDir=Join-Path $session 'TestHost';New-Item -ItemType Directory -Path $gameDir -Force|Out-Null
+        $identity=[pscustomobject]@{identityId='offline:12345678-1234-3123-8123-123456789abc';instanceId='client-00';role='Host';username='TestHost';gameDir=$gameDir;runtimeJavaMajor=21;runtimeJavaPath='C:/Java/21/bin/java.exe';minecraftVersion='1.20.1';offline=$true}
+        [pscustomobject]@{scenarioIdentityPlan=[pscustomobject]@{schemaVersion=1};testIdentities=@($identity)}|ConvertTo-Json -Depth 8|Set-Content (Join-Path $session 'session.json')
+        '[]'|Set-Content (Join-Path $session 'pids.json')
+
+        Initialize-MmtlSessionV2 -SessionPath $session -ExecutionPlan $plan|Out-Null
+        $manifest=Get-Content (Join-Path $session 'session.v2.json') -Raw|ConvertFrom-Json
+        $manifest.identityBindingRequired | Should -BeTrue
+        $manifest.identityBindings[0].identityId | Should -BeExactly $identity.identityId
+        (Test-MmtlSessionV2 -SessionPath $session).valid | Should -BeTrue
+
+        @([pscustomobject]@{PID=123;Role='Host';Username='TestHost';IdentityId=$identity.identityId;InstanceId='client-00';GameDir=$gameDir;RuntimeJavaMajor=21;RuntimeJavaPath='C:/Java/21/bin/java.exe'})|ConvertTo-Json -Depth 5|Set-Content (Join-Path $session 'pids.json')
+        (Test-MmtlSessionV2 -SessionPath $session).valid | Should -BeTrue
+        $pidEntry=Get-Content (Join-Path $session 'pids.json') -Raw|ConvertFrom-Json;$pidEntry.GameDir=Join-Path $TestDrive 'outside';$pidEntry|ConvertTo-Json|Set-Content (Join-Path $session 'pids.json')
+        (Test-MmtlSessionV2 -SessionPath $session).errors | Should -Contain 'SESSION_PID_IDENTITY_BINDING_MISMATCH'
+    }
+
     It '區分缺失的 Plan 工件與摘要损坏' {
         $plan=New-TestSessionPlan
         $session=Join-Path $TestDrive 'runtime/sessions/missing-session';New-Item -ItemType Directory -Path $session -Force|Out-Null

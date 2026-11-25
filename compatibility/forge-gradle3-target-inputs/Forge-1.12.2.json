@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "targetId": "Forge@1.12.2",
+  "forgeVersion": "1.12.2-14.23.5.2860",
+  "resolver": "ForgeGradle 3.0.197 official userdev3, MCP Config, MCP snapshot, Forge and BinaryPatcher inputs captured from the official MDK build",
+  "artifactStatus": "HashesVerified",
+  "artifacts": [
+    {
+      "kind": "userdev3",
+      "group": "net.minecraftforge",
+      "artifact": "forge",
+      "version": "1.12.2-14.23.5.2860",
+      "file": "forge-1.12.2-14.23.5.2860-userdev3.jar",
+      "bytes": 2146657,
+      "sha256": "9040f8f95d7296eb2f4ae9dd638021b6af43cedfa1ca4d30a2beae5491e9f3e2",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.12.2-14.23.5.2860/forge-1.12.2-14.23.5.2860-userdev3.jar"
+    },
+    {
+      "kind": "mcpConfig",
+      "group": "de.oceanlabs.mcp",
+      "artifact": "mcp_config",
+      "version": "1.12.2-20200226.224830",
+      "file": "mcp_config-1.12.2-20200226.224830.zip",
+      "bytes": 421086,
+      "sha256": "e2ddd3a7bb65618ad0de1d8fc0334527e5c346180300d94bfc7d3727b1976b42",
+      "url": "https://maven.minecraftforge.net/de/oceanlabs/mcp/mcp_config/1.12.2-20200226.224830/mcp_config-1.12.2-20200226.224830.zip"
+    },
+    {
+      "kind": "mcpSnapshot",
+      "group": "de.oceanlabs.mcp",
+      "artifact": "mcp_snapshot",
+      "version": "20171003-1.12",
+      "file": "mcp_snapshot-20171003-1.12.zip",
+      "bytes": 371642,
+      "sha256": "b346508f8d25e7b2bcf7484b3b1d2e549be1b8e1ba477665153ea64fd138f50c",
+      "url": "https://maven.minecraftforge.net/de/oceanlabs/mcp/mcp_snapshot/20171003-1.12/mcp_snapshot-20171003-1.12.zip"
+    },
+    {
+      "kind": "forgeSources",
+      "group": "net.minecraftforge",
+      "artifact": "forge",
+      "version": "1.12.2-14.23.5.2860",
+      "file": "forge-1.12.2-14.23.5.2860-sources.jar",
+      "bytes": 1873505,
+      "sha256": "52c1f22b56a936d62108d6c0d752c8ccd9cea90bdd190f3e344d6b0c698a4f57",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.12.2-14.23.5.2860/forge-1.12.2-14.23.5.2860-sources.jar"
+    },
+    {
+      "kind": "forgeUniversal",
+      "group": "net.minecraftforge",
+      "artifact": "forge",
+      "version": "1.12.2-14.23.5.2860",
+      "file": "forge-1.12.2-14.23.5.2860-universal.jar",
+      "bytes": 4466148,
+      "sha256": "cd3fbf85d7ca744507fd6a37a41b90122d43e616a4f8962332b1b658655e8a64",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.12.2-14.23.5.2860/forge-1.12.2-14.23.5.2860-universal.jar"
+    },
+    {
+      "kind": "binarypatcher",
+      "group": "net.minecraftforge",
+      "artifact": "binarypatcher",
+      "version": "1.1.1",
+      "file": "binarypatcher-1.1.1-fatjar.jar",
+      "bytes": 3814811,
+      "sha256": "0b035c849666cdd839b2c44deebf488736bdb19c1d588e8adf0bc9e15a5541cd",
+      "url": "https://maven.minecraftforge.net/net/minecraftforge/binarypatcher/1.1.1/binarypatcher-1.1.1-fatjar.jar"
+    }
+  ],
+  "mcpConfig": {
+    "coordinate": "de.oceanlabs.mcp:mcp_config:1.12.2-20200226.224830@zip",
+    "configEntry": "config.json",
+    "configBytes": 6445,
+    "configSha256": "9c0ffd237a4eadef9d1dafbd3a312ab80eb71a58fbcf6f82c0a4b2d2c6ce3a92",
+    "mappingsEntry": "config/joined.tsrg",
+    "mappingsBytes": 1073337,
+    "mappingsSha256": "57527913c5bea02e110aa0d1fa929da6f995f1a7836b0e46d891014b94779f4e"
+  },
+  "userdev3": {
+    "configEntry": "config.json",
+    "configBytes": 3162,
+    "configSha256": "35258198cb1a3a0ad65da8cc734ac0702f660aa656c75bd2e5274a751db1e6c0",
+    "mcpCoordinate": "de.oceanlabs.mcp:mcp_config:1.12.2-20200226.224830@zip",
+    "libraries": [
+      "org.ow2.asm:asm-debug-all:5.2",
+      "net.minecraft:launchwrapper:1.12",
+      "org.jline:jline:3.5.1",
+      "com.typesafe.akka:akka-actor_2.11:2.3.3",
+      "com.typesafe:config:1.2.1",
+      "org.scala-lang:scala-actors-migration_2.11:1.1.0",
+      "org.scala-lang:scala-compiler:2.11.1",
+      "org.scala-lang.plugins:scala-continuations-library_2.11:1.0.2_mc",
+      "org.scala-lang.plugins:scala-continuations-plugin_2.11.1:1.0.2_mc",
+      "org.scala-lang:scala-library:2.11.1",
+      "org.scala-lang:scala-parser-combinators_2.11:1.0.1",
+      "org.scala-lang:scala-reflect:2.11.1",
+      "org.scala-lang:scala-swing_2.11:1.0.1",
+      "org.scala-lang:scala-xml_2.11:1.0.2",
+      "lzma:lzma:0.0.1",
+      "java3d:vecmath:1.5.2",
+      "net.sf.trove4j:trove4j:3.0.3",
+      "org.apache.maven:maven-artifact:3.5.3",
+      "net.sf.jopt-simple:jopt-simple:5.0.3",
+      "org.apache.logging.log4j:log4j-api:2.15.0",
+      "org.apache.logging.log4j:log4j-core:2.15.0",
+      "net.minecraftforge:legacydev:0.2.3.+:fatjar"
+    ],
+    "processors": [
+      "net.minecraftforge:mcpcleanup:2.3.2:fatjar",
+      "net.minecraftforge:binarypatcher:1.1.1:fatjar"
+    ]
+  },
+  "mojangVersion": {
+    "url": "https://piston-meta.mojang.com/v1/packages/832d95b9f40699d4961394dcf6cf549e65f15dc5/1.12.2.json",
+    "sha1": "832d95b9f40699d4961394dcf6cf549e65f15dc5",
+    "bytes": 18416,
+    "sha256": "56dac2e1caa872d7e37a7b5523056cd812dca94f912ad2bd652817bee60edca4"
+  },
+  "catalogHash": "c3c8db56014f86e2ef1bc06fba648ee09a88641b76c3f558f44a8bafc72113b3"
+}

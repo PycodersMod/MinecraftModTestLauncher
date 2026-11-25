@@ -1,0 +1,832 @@
+{
+  "schemaVersion": 1,
+  "universeHash": "c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c",
+  "entries": [
+    {
+      "targetId": "Fabric@1.21.11",
+      "dimension": "AgentBuild",
+      "targetSpecHash": "9a07500c88819e2b7398f5b5ba2c292f0db457794d5bf76da59fc884f428671a",
+      "evidencePath": "compatibility/evidence/agent-build/Fabric-1.21.11-Windows-x64.json",
+      "evidenceSha256": "ce444379fb04b4f9fd9e9d7d03f18e4eda4985a11d98417f79e120684f1f63ac"
+    },
+    {
+      "targetId": "Fabric@1.21.11",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "9a07500c88819e2b7398f5b5ba2c292f0db457794d5bf76da59fc884f428671a",
+      "evidencePath": "compatibility/evidence/build/Fabric-1.21.11-Windows-x64.json",
+      "evidenceSha256": "4906a76d43d25e4234425f6ee4d64434675d4c62651d888258fff2289b58af40"
+    },
+    {
+      "targetId": "Fabric@1.21.11",
+      "dimension": "LaunchCheck",
+      "targetSpecHash": "9a07500c88819e2b7398f5b5ba2c292f0db457794d5bf76da59fc884f428671a",
+      "evidencePath": "compatibility/evidence/launch-check/Fabric-1.21.11-Windows-x64.json",
+      "evidenceSha256": "5fb3b0ceed86dce10debf1a3453dd3e70e7d3a3f390f587c42ec1a67ec14037a"
+    },
+    {
+      "targetId": "Fabric@1.21.11",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "9a07500c88819e2b7398f5b5ba2c292f0db457794d5bf76da59fc884f428671a",
+      "evidencePath": "compatibility/evidence/runtime-binding/Fabric-1.21.11-Windows-x64.json",
+      "evidenceSha256": "cbace5ff8a3f87234baa7fb6e701fd8da67ca15756c7fab65466fd9e63b32a3d"
+    },
+    {
+      "targetId": "Fabric@1.21.7",
+      "dimension": "AgentBuild",
+      "targetSpecHash": "94d29878861da80c9b9ed9ea504591620e53944b85c0a90e710c4275daa913e5",
+      "evidencePath": "compatibility/evidence/agent-build/Fabric-1.21.7-Windows-x64.json",
+      "evidenceSha256": "ada1467022dac09c5a3d487d6468afab71e29f3b7a1ca5612f5e0a19b685ca41"
+    },
+    {
+      "targetId": "Fabric@1.21.8",
+      "dimension": "AgentBuild",
+      "targetSpecHash": "6da89065457127220ebf47c17dc318ab00340f563c91f97b43a688ac6e3df241",
+      "evidencePath": "compatibility/evidence/agent-build/Fabric-1.21.8-Windows-x64.json",
+      "evidenceSha256": "73fd60e115cef1596d565127bc2bb74e3e5ba6f3edc82b0be6c4836d5df60b0c"
+    },
+    {
+      "targetId": "Fabric@1.21.8",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "6da89065457127220ebf47c17dc318ab00340f563c91f97b43a688ac6e3df241",
+      "evidencePath": "compatibility/evidence/build/Fabric-1.21.8-Windows-x64.json",
+      "evidenceSha256": "ee383f525429d15793275e7675f03a0e5b0e7e2d7b76078abd38dd607d53062d"
+    },
+    {
+      "targetId": "Fabric@1.21.8",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "6da89065457127220ebf47c17dc318ab00340f563c91f97b43a688ac6e3df241",
+      "evidencePath": "compatibility/evidence/runtime-binding/Fabric-1.21.8-Windows-x64.json",
+      "evidenceSha256": "3a8424e1edd2da6c8b25d40e2ed9e30c9e4790e4ae6be26292eccdeee6cd986c"
+    },
+    {
+      "targetId": "Fabric@26.3",
+      "dimension": "AgentBuild",
+      "targetSpecHash": "4cd6c662e0596bd0d36ce78085deba01f6ecf36d91687edee75e7bb671151384",
+      "evidencePath": "compatibility/evidence/agent-build/Fabric-26.3-Windows-x64.json",
+      "evidenceSha256": "b4149e50e2a004cbd82a151cf3afcc78a33990b66e331a285f121f112b069be5"
+    },
+    {
+      "targetId": "Fabric@26.3",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "4cd6c662e0596bd0d36ce78085deba01f6ecf36d91687edee75e7bb671151384",
+      "evidencePath": "compatibility/evidence/build/Fabric-26.3-Windows-x64.json",
+      "evidenceSha256": "a626cda83476df6320c518bd9ddf7e029f3acea166160f24062bdc3278885888"
+    },
+    {
+      "targetId": "Fabric@26.3",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "4cd6c662e0596bd0d36ce78085deba01f6ecf36d91687edee75e7bb671151384",
+      "evidencePath": "compatibility/evidence/runtime-binding/Fabric-26.3-Windows-x64.json",
+      "evidenceSha256": "240b71bbe5c61d3256995afa1e57cf806c91e238b0afc7c35ecec17ba61475e7"
+    },
+    {
+      "targetId": "Forge@1.10",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "ffe89f3808bf3dc89e9c5a4b44f0d92fa47cd346f2cf0aa3f20d182ce23f5c01",
+      "evidencePath": "compatibility/evidence/build/Forge-1.10-Windows-x64-offline/result.json",
+      "evidenceSha256": "e4589d4f02a0c674a0a5bd0d2acc1f357e4af2a6ab82e2cf97e8742f8939434c"
+    },
+    {
+      "targetId": "Forge@1.10",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "ffe89f3808bf3dc89e9c5a4b44f0d92fa47cd346f2cf0aa3f20d182ce23f5c01",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.10-Windows-x64.json",
+      "evidenceSha256": "e56bb572332bb675a5b7bcfa5a058e60c94c5f41ab9a6caaa5a6426930c8d048"
+    },
+    {
+      "targetId": "Forge@1.10.2",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "2ef63878c70f87eec57839af5a411840930fb5621004e154637e60877465f4d9",
+      "evidencePath": "compatibility/evidence/build/Forge-1.10.2-Windows-x64-offline/result.json",
+      "evidenceSha256": "c9cdf51351603c24ad36811582af35fcf977f4fe239a47f44d552f3e235c0718"
+    },
+    {
+      "targetId": "Forge@1.10.2",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "2ef63878c70f87eec57839af5a411840930fb5621004e154637e60877465f4d9",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.10.2-Windows-x64.json",
+      "evidenceSha256": "dfaa052a326b441d533534ac6987fb28214531e0596885814958382c061ec758"
+    },
+    {
+      "targetId": "Forge@1.11",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "ade5833911811efce86fd34b79301b843d644608530b8a609cf5e6bdff1008fa",
+      "evidencePath": "compatibility/evidence/build/Forge-1.11-Windows-x64-offline/result.json",
+      "evidenceSha256": "8716478f2c82852debe678c09b81a1834176c638261c66060d7a26a0b4b14a07"
+    },
+    {
+      "targetId": "Forge@1.11",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "ade5833911811efce86fd34b79301b843d644608530b8a609cf5e6bdff1008fa",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.11-Windows-x64.json",
+      "evidenceSha256": "267d52bad47d58b28a332dc018cf35f5dd00d039d2a19d82dd688278d730fac7"
+    },
+    {
+      "targetId": "Forge@1.11.2",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "87369509ac99a7e617616074c424ac3f3b52695e2fdfe8da5fa27663be979a1a",
+      "evidencePath": "compatibility/evidence/build/Forge-1.11.2-Windows-x64-offline/result.json",
+      "evidenceSha256": "48ba17855daace4196d75689273222e563793eff62115df77d2988af48011569"
+    },
+    {
+      "targetId": "Forge@1.11.2",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "87369509ac99a7e617616074c424ac3f3b52695e2fdfe8da5fa27663be979a1a",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.11.2-Windows-x64.json",
+      "evidenceSha256": "42cb07898a6eee7dd576e26c2f0bc7ea725cf94ff7f0e5211f6161b636cda9b5"
+    },
+    {
+      "targetId": "Forge@1.12",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "e0df50772fe00db5b4479a8c4eff935a65b33a2e4df03f7f3b950d80eb7832a5",
+      "evidencePath": "compatibility/evidence/build/Forge-1.12-Windows-x64-offline/result.json",
+      "evidenceSha256": "8dc941b9b9c9bf6221276b853577cf388ca956e09efcecd76ec80c1a8d02cbc5"
+    },
+    {
+      "targetId": "Forge@1.12",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "e0df50772fe00db5b4479a8c4eff935a65b33a2e4df03f7f3b950d80eb7832a5",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.12-Windows-x64.json",
+      "evidenceSha256": "c542d711bf056b2477d066ccc9dd4aded309f638912d39a05f90e5e38f1d5554"
+    },
+    {
+      "targetId": "Forge@1.12.1",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "99dff14d0019412ef80bedac3d6526b2bede29953a2c0b4cf8f0699f047fa65d",
+      "evidencePath": "compatibility/evidence/build/Forge-1.12.1-Windows-x64-offline/result.json",
+      "evidenceSha256": "6dbee95e851d26b3de7e055f37d692b517915ac78bd0d31711e64ddd136cec23"
+    },
+    {
+      "targetId": "Forge@1.12.1",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "99dff14d0019412ef80bedac3d6526b2bede29953a2c0b4cf8f0699f047fa65d",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.12.1-Windows-x64.json",
+      "evidenceSha256": "c619139a8c46b895b48d04db84ad537527f163278c1b6f9e9aaaad7583bc3fa9"
+    },
+    {
+      "targetId": "Forge@1.12.2",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "3edcf8eeabeed6a8f2982d5d15e8245a988da82633f5608277647997329e3996",
+      "evidencePath": "compatibility/evidence/build/Forge-1.12.2-Windows-x64-offline/result.json",
+      "evidenceSha256": "b5647ef1d84a10d3fabace187dbf16435d6444b9d4639cf74c9711cf3aedf932"
+    },
+    {
+      "targetId": "Forge@1.12.2",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "3edcf8eeabeed6a8f2982d5d15e8245a988da82633f5608277647997329e3996",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.12.2-Windows-x64.json",
+      "evidenceSha256": "ceb96e843d2e9d8243ebfba2f91f6a201058a36553300ba85430d92459fffabc"
+    },
+    {
+      "targetId": "Forge@1.13.2",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "604abf90c688ff06d84d5632ce4237861f43299ef325f9e8ee2c3fcec101e315",
+      "evidencePath": "compatibility/evidence/build/Forge-1.13.2-Windows-x64-offline/result.json",
+      "evidenceSha256": "88f2378ee79f04d920d1986e1fa399a0a9cd2d8fbcc88d613822b0de5e0c50da"
+    },
+    {
+      "targetId": "Forge@1.13.2",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "604abf90c688ff06d84d5632ce4237861f43299ef325f9e8ee2c3fcec101e315",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.13.2-Windows-x64.json",
+      "evidenceSha256": "edc6223042da227ed918429a7d08984d2dff97b35fc63389e21f0dc7ce3f3412"
+    },
+    {
+      "targetId": "Forge@1.14.2",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "eecb7b03ae7e16cf44490ede983cdefe6fcbb0089fee2314e9b3be2e86cd45e8",
+      "evidencePath": "compatibility/evidence/build/Forge-1.14.2-Windows-x64-offline/result.json",
+      "evidenceSha256": "f28f38605bba76a7378ce66555b9157e6048a9350dacc504427ea6f65d0c8807"
+    },
+    {
+      "targetId": "Forge@1.14.2",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "eecb7b03ae7e16cf44490ede983cdefe6fcbb0089fee2314e9b3be2e86cd45e8",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.14.2-Windows-x64.json",
+      "evidenceSha256": "b5d4155badfea81da1ad0198b37b8f62b2420d1f1656e899a430e2e23aec25da"
+    },
+    {
+      "targetId": "Forge@1.14.3",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "658b4f461b88a3ddfd3929edb683274c81b922f92d4691a04846fecb8b1252ad",
+      "evidencePath": "compatibility/evidence/build/Forge-1.14.3-Windows-x64-offline/result.json",
+      "evidenceSha256": "d1d07e3ca40b719d957d12ad0ccf3403b43aeafea121ce6fc3d69124310d04c0"
+    },
+    {
+      "targetId": "Forge@1.14.3",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "658b4f461b88a3ddfd3929edb683274c81b922f92d4691a04846fecb8b1252ad",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.14.3-Windows-x64.json",
+      "evidenceSha256": "3b2fcaaa54f44153714c02597613754be668b1b814a9ea5a8e343f0f41b19a31"
+    },
+    {
+      "targetId": "Forge@1.14.4",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "6c66db2ca05645fe2c5102653c0354d64d9de8204337af6a9f4c99f373d58d98",
+      "evidencePath": "compatibility/evidence/build/Forge-1.14.4-Windows-x64-offline/result.json",
+      "evidenceSha256": "1e8cb50776c20f8bd6469e2735df424844485d7cdcba9d796c0a91bb33cfbe7a"
+    },
+    {
+      "targetId": "Forge@1.14.4",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "6c66db2ca05645fe2c5102653c0354d64d9de8204337af6a9f4c99f373d58d98",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.14.4-Windows-x64.json",
+      "evidenceSha256": "d7f4606b3dfbea3d8fd9309fc412c633b8387f0217e5e1cc6f727edc8bf584a1"
+    },
+    {
+      "targetId": "Forge@1.15.1",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "991c5aedf955759289a4404b84c09662bac04d548ff176c2c30d3ca7e6c92952",
+      "evidencePath": "compatibility/evidence/build/Forge-1.15.1-Windows-x64-offline/result.json",
+      "evidenceSha256": "0bc9b04959880158695cfecf30674246bd1dd4668f9b9b81f174d5f38a99a247"
+    },
+    {
+      "targetId": "Forge@1.15.1",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "991c5aedf955759289a4404b84c09662bac04d548ff176c2c30d3ca7e6c92952",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.15.1-Windows-x64.json",
+      "evidenceSha256": "167066079b990b7ddf160f4eb745db03fbf4564ae47c975e21c733d15f5ab4ff"
+    },
+    {
+      "targetId": "Forge@1.15.2",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "bded23a70da149be3f36f148e7a43f3a89dbc4c4e677ecbbc91559c4cbc5826d",
+      "evidencePath": "compatibility/evidence/build/Forge-1.15.2-Windows-x64-offline/result.json",
+      "evidenceSha256": "3b2cbf55d1e5483532d36141bc1ecb0d7503877b86c092e292376e7f5eb98303"
+    },
+    {
+      "targetId": "Forge@1.15.2",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "bded23a70da149be3f36f148e7a43f3a89dbc4c4e677ecbbc91559c4cbc5826d",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.15.2-Windows-x64.json",
+      "evidenceSha256": "7dc333409110206f80468316f124e381d833f927e54a500d6ffedf29b73a5fdc"
+    },
+    {
+      "targetId": "Forge@1.16.1",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "dbeb8f3d3e9024ad190a343aa5467cb059b55691487d10cbf76c3fba816ed145",
+      "evidencePath": "compatibility/evidence/build/Forge-1.16.1-Windows-x64-offline/result.json",
+      "evidenceSha256": "bfef8479b4585178b81bb0601837155a4a5bbb15cbe05289bfc358f3e6c758e1"
+    },
+    {
+      "targetId": "Forge@1.16.1",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "dbeb8f3d3e9024ad190a343aa5467cb059b55691487d10cbf76c3fba816ed145",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.16.1-Windows-x64.json",
+      "evidenceSha256": "4ee704578789092b85a4b476c09bdb09f7fb53ca57d199a5f05e3c491e20a6e5"
+    },
+    {
+      "targetId": "Forge@1.16.2",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "2a6a1af4a93b9cbc30e8f519a3557ed3a152f2dcd0a90f2d49b1eba25274b026",
+      "evidencePath": "compatibility/evidence/build/Forge-1.16.2-Windows-x64-offline/result.json",
+      "evidenceSha256": "cf0586440431c35fb6d646b56d4a20cfacc288fefbef2ed45f44f41830d43ce0"
+    },
+    {
+      "targetId": "Forge@1.16.2",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "2a6a1af4a93b9cbc30e8f519a3557ed3a152f2dcd0a90f2d49b1eba25274b026",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.16.2-Windows-x64.json",
+      "evidenceSha256": "f9c06d4e4fa5ffe711840741fb09fb6ed8c94e6454b43ab785c860745c62b477"
+    },
+    {
+      "targetId": "Forge@1.16.3",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "319390085306053247846ba01d173078159d0be4ef7f9d9dbb745dc821ee215e",
+      "evidencePath": "compatibility/evidence/build/Forge-1.16.3-Windows-x64-offline/result.json",
+      "evidenceSha256": "92d5db48f1435480f3d39468afb6f01d5fb2da39795c65ebf8370d3c9d0e0307"
+    },
+    {
+      "targetId": "Forge@1.16.3",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "319390085306053247846ba01d173078159d0be4ef7f9d9dbb745dc821ee215e",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.16.3-Windows-x64.json",
+      "evidenceSha256": "ef05eed40b60cddd8157899efcd23b9597b5e12654c9106d5abaf70a45412731"
+    },
+    {
+      "targetId": "Forge@1.16.4",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "7401bfcafea6b6a4db4af5d1a1a55782bbb11d21b29580e619db0450ee97e839",
+      "evidencePath": "compatibility/evidence/build/Forge-1.16.4-Windows-x64-offline/result.json",
+      "evidenceSha256": "77eaacb88f7fd2763b8ce48354d7dc7fde3d54204bf124b3791d6a10653dc0bb"
+    },
+    {
+      "targetId": "Forge@1.16.4",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "7401bfcafea6b6a4db4af5d1a1a55782bbb11d21b29580e619db0450ee97e839",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.16.4-Windows-x64.json",
+      "evidenceSha256": "6872e4e081b7980166ade360cd4e5d50ca01a4ee7907fccb206acecd932792ea"
+    },
+    {
+      "targetId": "Forge@1.16.5",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "6b9106150563c390979617c3e2f4c5851f051492b6c80ac501651b26d80c9259",
+      "evidencePath": "compatibility/evidence/build/Forge-1.16.5-Windows-x64-offline/result.json",
+      "evidenceSha256": "2ae014ffd2a0914c2aaf89c17a716e0624b880ea7cf9f5d6ad1bd7744b14569e"
+    },
+    {
+      "targetId": "Forge@1.16.5",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "6b9106150563c390979617c3e2f4c5851f051492b6c80ac501651b26d80c9259",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.16.5-Windows-x64.json",
+      "evidenceSha256": "a543ed4a3df5b9455eb45bd507055dd6c2273d4f0b7cba3cdd35e9505670caef"
+    },
+    {
+      "targetId": "Forge@1.20.1",
+      "dimension": "AgentBuild",
+      "targetSpecHash": "c8495c9c7caf2192c14aba726d82b1b975563e1f2dbe441c83bc04b32ae452a7",
+      "evidencePath": "compatibility/evidence/agent-build/Forge-1.20.1-Windows-x64.json",
+      "evidenceSha256": "c847ebc04cd289a2f6356b3ddc757ab933cd2cbb836987064b5398a16431476c"
+    },
+    {
+      "targetId": "Forge@1.7.10",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "f2b120c0e7bd89da0a79cae56cc500d117a9d1113f89a7befc0bcaacb61ef7f1",
+      "evidencePath": "compatibility/evidence/build/Forge-1.7.10-Windows-x64.json",
+      "evidenceSha256": "8665648a3050bac4df90c09ccc0e38801b7eeeef6fe8a16b5a2f8408d6417fea"
+    },
+    {
+      "targetId": "Forge@1.7.10",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "f2b120c0e7bd89da0a79cae56cc500d117a9d1113f89a7befc0bcaacb61ef7f1",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.7.10-Windows-x64.json",
+      "evidenceSha256": "dad5d7e53f7729210d14176801263b8541dcc7d70eaba3a2e98c54778c61b0bf"
+    },
+    {
+      "targetId": "Forge@1.7.2",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "57d6aad2b275ece0ad8c8a9ddf50b464218ea06b569857a41aae97a720ec2297",
+      "evidencePath": "compatibility/evidence/build/Forge-1.7.2-Windows-x64.json",
+      "evidenceSha256": "aba041a7c48d0b86d48ae8d292a9a644a3a71a8b402e9a8c444b042950faabc2"
+    },
+    {
+      "targetId": "Forge@1.7.2",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "57d6aad2b275ece0ad8c8a9ddf50b464218ea06b569857a41aae97a720ec2297",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.7.2-Windows-x64.json",
+      "evidenceSha256": "38310ba1c384b1b396b5792a1e98bc2fe6b98d39dc1703d5b3291c35cdad30aa"
+    },
+    {
+      "targetId": "Forge@1.8",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "db4c3fed7d7a6d75486cce03bdf82e352b092efc53f5863512fa083b37d3f9c1",
+      "evidencePath": "compatibility/evidence/build/Forge-1.8-Windows-x64.json",
+      "evidenceSha256": "76436f11d09009d2520efd865bed12d4d238dbca2d3564023ed2a8fd5e0c4e07"
+    },
+    {
+      "targetId": "Forge@1.8",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "db4c3fed7d7a6d75486cce03bdf82e352b092efc53f5863512fa083b37d3f9c1",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.8-Windows-x64.json",
+      "evidenceSha256": "4e545c98bb4f747e8fbbde653360cd4c87b4a69864f3eb2ff7b8397be2c591c7"
+    },
+    {
+      "targetId": "Forge@1.8.8",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "53b82463c5c5af2ebed3b35ab6d964430db15c278a36f16329ebf325437a5a60",
+      "evidencePath": "compatibility/evidence/build/Forge-1.8.8-Windows-x64.json",
+      "evidenceSha256": "3968d19b7b309a69e1d5d5e97074232a9a08cf298fea8e9523f817c5eb8c0ac7"
+    },
+    {
+      "targetId": "Forge@1.8.8",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "53b82463c5c5af2ebed3b35ab6d964430db15c278a36f16329ebf325437a5a60",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.8.8-Windows-x64.json",
+      "evidenceSha256": "c2186e1a1577641c917f0267875907247edf4b3cf9f5a1691b8a1d946a492dc3"
+    },
+    {
+      "targetId": "Forge@1.8.9",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "79290a762ef8a8ce9e18e09905718878692baf202708477cd41e6307bfa2292c",
+      "evidencePath": "compatibility/evidence/build/Forge-1.8.9-Windows-x64.json",
+      "evidenceSha256": "31b89af1c94ec9dd40ab012472e76d478a28c3f1d95e64286412ba9271202bd6"
+    },
+    {
+      "targetId": "Forge@1.8.9",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "79290a762ef8a8ce9e18e09905718878692baf202708477cd41e6307bfa2292c",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.8.9-Windows-x64.json",
+      "evidenceSha256": "5a832c1f34a03f9e111885fafe40095345eaa6dfd1900590dcd0fbb675b52fba"
+    },
+    {
+      "targetId": "Forge@1.9",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "5ab9fe4e472508f36d7d65ec8785d3274dca5ffd29836af55090f286bba1a8a6",
+      "evidencePath": "compatibility/evidence/build/Forge-1.9-Windows-x64-offline/result.json",
+      "evidenceSha256": "0aa981d736dd5ccaeecc6dc54539edf11d741c53f41398ab83e94b7d3000cc6a"
+    },
+    {
+      "targetId": "Forge@1.9",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "5ab9fe4e472508f36d7d65ec8785d3274dca5ffd29836af55090f286bba1a8a6",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.9-Windows-x64.json",
+      "evidenceSha256": "d516fabf772d151347c3c9837ef611d5e07f9fdd089aba95b45526250529289e"
+    },
+    {
+      "targetId": "NeoForge@1.20.1",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "4477922ea50c104fe03be29c09e73a104dcbba2ca7474985948c74d993c22190",
+      "evidencePath": "compatibility/evidence/build/NeoForge-1.20.1-Windows-x64/result.json",
+      "evidenceSha256": "fa9e09f09455d097bb3c0e11ab921304b0d863361769b2ad961fddf3a82b1fa4"
+    },
+    {
+      "targetId": "NeoForge@1.20.1",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "4477922ea50c104fe03be29c09e73a104dcbba2ca7474985948c74d993c22190",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-1.20.1-Windows-x64.json",
+      "evidenceSha256": "f99119374d52aed9eed6164824eff186c27e3bd96dcce29832d95ca5c77c16c9"
+    },
+    {
+      "targetId": "NeoForge@1.20.2",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "089600edd34aea6d20b3d60779c1da3def95a65a291a9789bbaab204b1a6c094",
+      "evidencePath": "compatibility/evidence/build/NeoForge-1.20.2-Windows-x64/result.json",
+      "evidenceSha256": "ea03f6e239006c23740cf83afe3ec74163efc32c6ce702522272cee7ec3837f5"
+    },
+    {
+      "targetId": "NeoForge@1.20.2",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "089600edd34aea6d20b3d60779c1da3def95a65a291a9789bbaab204b1a6c094",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-1.20.2-Windows-x64.json",
+      "evidenceSha256": "33066fc75bb937dda0b4037f45891fb0e7fbc3f0dcb1c8294ac97b9c28666611"
+    },
+    {
+      "targetId": "NeoForge@1.20.3",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "ec75555fcc836ee444e35ff5f4692a4e2bc9f45f0a4a03846c0c6efeabeb4394",
+      "evidencePath": "compatibility/evidence/build/NeoForge-1.20.3-Windows-x64/result.json",
+      "evidenceSha256": "6a5a6bb71a38f41fb2312cb8e20fa4c7357a5fe0f205e3d694224c75f98ba7d7"
+    },
+    {
+      "targetId": "NeoForge@1.20.3",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "ec75555fcc836ee444e35ff5f4692a4e2bc9f45f0a4a03846c0c6efeabeb4394",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-1.20.3-Windows-x64.json",
+      "evidenceSha256": "84270986f4697310be379cbf52c7241a5aab2a725919f57178616171a1f616b1"
+    },
+    {
+      "targetId": "NeoForge@1.20.4",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "53c08eaf52c921792ca538d24b7fa93f836ce66563bca425f99b43c948a13229",
+      "evidencePath": "compatibility/evidence/build/NeoForge-1.20.4-Windows-x64/result.json",
+      "evidenceSha256": "2c87033ee53b7ba66da67cb39132d330b6928830804ca57f35d6c46a802023f7"
+    },
+    {
+      "targetId": "NeoForge@1.20.4",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "53c08eaf52c921792ca538d24b7fa93f836ce66563bca425f99b43c948a13229",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-1.20.4-Windows-x64.json",
+      "evidenceSha256": "77e0d60cd379381f951dc3d08fe6361a4adc5614019d39520b48a3af31c1405b"
+    },
+    {
+      "targetId": "NeoForge@1.20.5",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "6e1e394164981d7774383257b87c4e73c4f3bad76f9c90b71597e6c2de85ef76",
+      "evidencePath": "compatibility/evidence/build/NeoForge-1.20.5-Windows-x64-run2/result.json",
+      "evidenceSha256": "b76210ffe964fccbd6c4f47d8c8ffb127075b14846cf55332ae6d624eb9cfd36"
+    },
+    {
+      "targetId": "NeoForge@1.20.5",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "6e1e394164981d7774383257b87c4e73c4f3bad76f9c90b71597e6c2de85ef76",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-1.20.5-Windows-x64.json",
+      "evidenceSha256": "4c03c3ca6f8e849ecf44e983d132cc921eb0698d6835b32017dcc156f8305235"
+    },
+    {
+      "targetId": "NeoForge@1.20.6",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "bccb12fd2c6a5317f5d62d2bd06be07b4d0d95622009913883c549401e480864",
+      "evidencePath": "compatibility/evidence/build/NeoForge-1.20.6-Windows-x64/result.json",
+      "evidenceSha256": "c8970c1bac21e333c3ea1fb9b1116ede5e9bec7ed6e67b81c07928820875179d"
+    },
+    {
+      "targetId": "NeoForge@1.20.6",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "bccb12fd2c6a5317f5d62d2bd06be07b4d0d95622009913883c549401e480864",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-1.20.6-Windows-x64.json",
+      "evidenceSha256": "c0203489de9d0c2e0208b01e041c1bf8d5b2b86147e88f287f52058cb1358dac"
+    },
+    {
+      "targetId": "NeoForge@1.21",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "0ff68d38ff11bfb05b377006f4e637052dda560b6fa6e59e9a3b45c4d8f1baa8",
+      "evidencePath": "compatibility/evidence/build/NeoForge-1.21-Windows-x64/result.json",
+      "evidenceSha256": "ca3f48ba4eba922be74dce721240c5028ad82eaf59e9b8e8a8c4abf2f5a75222"
+    },
+    {
+      "targetId": "NeoForge@1.21",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "0ff68d38ff11bfb05b377006f4e637052dda560b6fa6e59e9a3b45c4d8f1baa8",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-1.21-Windows-x64.json",
+      "evidenceSha256": "ef54200f4e0112db1c6f69c8270b74ca547882699525f2f60f3b39120b23c98f"
+    },
+    {
+      "targetId": "NeoForge@1.21.1",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "6b85786192e9709b6e0398a22832d828e510c35c23ca9968e6c673fd92b00354",
+      "evidencePath": "compatibility/evidence/build/NeoForge-1.21.1-Windows-x64/result.json",
+      "evidenceSha256": "4075d9f29da2a29dbaf17f386ad00b230a8fa44087c53dd7f222fcf4e4f71bb9"
+    },
+    {
+      "targetId": "NeoForge@1.21.1",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "6b85786192e9709b6e0398a22832d828e510c35c23ca9968e6c673fd92b00354",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-1.21.1-Windows-x64.json",
+      "evidenceSha256": "b8c01e0cc4853decc10159173726980bd73c1110b605bc235ff463eeb71f2736"
+    },
+    {
+      "targetId": "NeoForge@1.21.10",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "2fdfbea2cd7f781175c976ce0643ab49ff1c0f1e4f46155181c539ebf820199c",
+      "evidencePath": "compatibility/evidence/build/NeoForge-1.21.10-Windows-x64/result.json",
+      "evidenceSha256": "e1d58b7d7f195526db0259796d5b0fc1a0bcdaf526f3c934331a5c07705d2166"
+    },
+    {
+      "targetId": "NeoForge@1.21.10",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "2fdfbea2cd7f781175c976ce0643ab49ff1c0f1e4f46155181c539ebf820199c",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-1.21.10-Windows-x64.json",
+      "evidenceSha256": "81be68c13e7756303e57b0fa4baa65e0e482fa867bc14a00995144d28359ad99"
+    },
+    {
+      "targetId": "NeoForge@1.21.11",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "2554f62e3a61a1b47c8ed1a262b524ef12859878c914d121c6244ea8a880e836",
+      "evidencePath": "compatibility/evidence/build/NeoForge-1.21.11-Windows-x64/result.json",
+      "evidenceSha256": "c3877ad80598aa6faac21c58f5a8381fac9d4715e1d266ee28ae38fd4a544435"
+    },
+    {
+      "targetId": "NeoForge@1.21.11",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "2554f62e3a61a1b47c8ed1a262b524ef12859878c914d121c6244ea8a880e836",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-1.21.11-Windows-x64.json",
+      "evidenceSha256": "92a0dabc8cbc73eb5e6f63166cccf8186df36314de6e5b59122f4217835761a8"
+    },
+    {
+      "targetId": "NeoForge@1.21.2",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "13046ef926c798d65b3dc29c73b1ac97d31d50658ebe5296c6cf4e26a8f98371",
+      "evidencePath": "compatibility/evidence/build/NeoForge-1.21.2-Windows-x64/result.json",
+      "evidenceSha256": "4e22318d22c4dd62b1fbe1c5cf1a346f74798cbb85bd722ef6d2021a197abca5"
+    },
+    {
+      "targetId": "NeoForge@1.21.2",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "13046ef926c798d65b3dc29c73b1ac97d31d50658ebe5296c6cf4e26a8f98371",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-1.21.2-Windows-x64.json",
+      "evidenceSha256": "d86a2483026d4fce56e53ffbf6acfb5e443dce049cf0bb7a88976015572c293d"
+    },
+    {
+      "targetId": "NeoForge@1.21.3",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "98357bf21c7d37c027a1f61863f47fd66a3cdc3edd72bb9258f617dd7544c6dd",
+      "evidencePath": "compatibility/evidence/build/NeoForge-1.21.3-Windows-x64/result.json",
+      "evidenceSha256": "5e10cf15b74890a99cf5d1e2553d661d23411b53476be30d2e9b20b7f3903541"
+    },
+    {
+      "targetId": "NeoForge@1.21.3",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "98357bf21c7d37c027a1f61863f47fd66a3cdc3edd72bb9258f617dd7544c6dd",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-1.21.3-Windows-x64.json",
+      "evidenceSha256": "9a677a2b99574ddfbe6626e4576db5f9fe69b8f8555acf687159e29f6c25faca"
+    },
+    {
+      "targetId": "NeoForge@1.21.4",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "74634f9f9de2eff2b0a40fdee2bd7a1cced56713cc29227f9eefaf45e3c192d0",
+      "evidencePath": "compatibility/evidence/build/NeoForge-1.21.4-Windows-x64/result.json",
+      "evidenceSha256": "942d0ad517cbac2c20a7b5197e315575a0b24460076585e4f73dfaa1c57a647c"
+    },
+    {
+      "targetId": "NeoForge@1.21.4",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "74634f9f9de2eff2b0a40fdee2bd7a1cced56713cc29227f9eefaf45e3c192d0",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-1.21.4-Windows-x64.json",
+      "evidenceSha256": "b70e43038263cf00ca9c28d574a116e5772cb2be979dd570c44afc2a827b3663"
+    },
+    {
+      "targetId": "NeoForge@1.21.5",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "cf64ccabe8465accbac16553a3ec7823c74d6d1fb5653a0694006ee0f25d9fd7",
+      "evidencePath": "compatibility/evidence/build/NeoForge-1.21.5-Windows-x64/result.json",
+      "evidenceSha256": "b996e5706c49845d55931a1b39e45c03cb6566165e0ea996ac3b858dafd2e1d0"
+    },
+    {
+      "targetId": "NeoForge@1.21.5",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "cf64ccabe8465accbac16553a3ec7823c74d6d1fb5653a0694006ee0f25d9fd7",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-1.21.5-Windows-x64.json",
+      "evidenceSha256": "95ee217599ee972332accdfe8e416dda526f0296e0e5413e362912c7639beaaf"
+    },
+    {
+      "targetId": "NeoForge@1.21.6",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "152c26f79b5de367bb3e6b4621268ab5f25b36c6d603a02805374adb99aefb41",
+      "evidencePath": "compatibility/evidence/build/NeoForge-1.21.6-Windows-x64/result.json",
+      "evidenceSha256": "2222f2a488fd9b93b058e71cc834809c4da571a9eb89ab733265b35781a090d3"
+    },
+    {
+      "targetId": "NeoForge@1.21.6",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "152c26f79b5de367bb3e6b4621268ab5f25b36c6d603a02805374adb99aefb41",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-1.21.6-Windows-x64.json",
+      "evidenceSha256": "697ae86b7c4846275100074667b8896bbdd5d8625ded917042c57b3863c7d89b"
+    },
+    {
+      "targetId": "NeoForge@1.21.7",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "b5a4e55fff5497405314c2da36e820934d5b5d2637b03733d1076215b8216d27",
+      "evidencePath": "compatibility/evidence/build/NeoForge-1.21.7-Windows-x64/result.json",
+      "evidenceSha256": "91d71fec217b43d8b877174287fd17609700502e39fcc71f3389275d733c99b7"
+    },
+    {
+      "targetId": "NeoForge@1.21.7",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "b5a4e55fff5497405314c2da36e820934d5b5d2637b03733d1076215b8216d27",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-1.21.7-Windows-x64.json",
+      "evidenceSha256": "5605c9135a2f22ba30f48f3ca8386ba129171e873ddaa2a200b50d1bf80317a2"
+    },
+    {
+      "targetId": "NeoForge@1.21.8",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "6863443ab0d305ef554ea1a271d76d30b45f81fd9f7511abd095e0a48699ab6c",
+      "evidencePath": "compatibility/evidence/build/NeoForge-1.21.8-Windows-x64/result.json",
+      "evidenceSha256": "9d918c7a7ed971fe0b50d77a61f99ea6e83664c85f226cf00f8a282957eae531"
+    },
+    {
+      "targetId": "NeoForge@1.21.8",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "6863443ab0d305ef554ea1a271d76d30b45f81fd9f7511abd095e0a48699ab6c",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-1.21.8-Windows-x64.json",
+      "evidenceSha256": "fee116a47bd466608fbc3442cbba7a01dbfeabb27080f85e232aeaef6bc3f2cd"
+    },
+    {
+      "targetId": "NeoForge@1.21.9",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "cc97f86d0bc0df28a3de812d7dc1b1e042943a639a53f2a1423b8f8db7425859",
+      "evidencePath": "compatibility/evidence/build/NeoForge-1.21.9-Windows-x64/result.json",
+      "evidenceSha256": "fabb2f29d4a2bad770ed0fb17f9a82849b5d2d2e33c65ab2c649c1a7823b135c"
+    },
+    {
+      "targetId": "NeoForge@1.21.9",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "cc97f86d0bc0df28a3de812d7dc1b1e042943a639a53f2a1423b8f8db7425859",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-1.21.9-Windows-x64.json",
+      "evidenceSha256": "ef9552a1327ec7dc5fea1a3d19ccde6866f860825f281a75dfbbed1483fdadfd"
+    },
+    {
+      "targetId": "NeoForge@26.1",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "db9bd5110e56832d079a6582650ee38207a7869a9a63e998ccdb25efaa009eea",
+      "evidencePath": "compatibility/evidence/build/NeoForge-26.1-Windows-x64/result.json",
+      "evidenceSha256": "c4116ac9d3200054fa13092bcaa48ca01b9131fc2d6d0afaf230fb5e72dbfa0e"
+    },
+    {
+      "targetId": "NeoForge@26.1",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "db9bd5110e56832d079a6582650ee38207a7869a9a63e998ccdb25efaa009eea",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-26.1-Windows-x64.json",
+      "evidenceSha256": "fc984e89d3a5d31a2ab0afcfae38985a334d78e2f0f44cb234a7aa08dc09023f"
+    },
+    {
+      "targetId": "NeoForge@26.1.1",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "5b665813ce28b942ce900c9c15dafcf64e817648aa4db730fc05f871cfcfb7eb",
+      "evidencePath": "compatibility/evidence/build/NeoForge-26.1.1-Windows-x64/result.json",
+      "evidenceSha256": "1a8fede32894ae366346d9b299c846bcbde3740433d594de17778643a3c51c7b"
+    },
+    {
+      "targetId": "NeoForge@26.1.1",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "5b665813ce28b942ce900c9c15dafcf64e817648aa4db730fc05f871cfcfb7eb",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-26.1.1-Windows-x64.json",
+      "evidenceSha256": "02aa6e32d587c779e62b726439eb64b2588f8ba20dce27f943e520d2bc2a2a3b"
+    },
+    {
+      "targetId": "NeoForge@26.1.2",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "de26c249cc9055fdf75da82bb688bd21d128bbdb29f89b74fedf785f5ac5e2c1",
+      "evidencePath": "compatibility/evidence/build/NeoForge-26.1.2-Windows-x64/result.json",
+      "evidenceSha256": "21b2f0425c57cba12e2c7382282f7490aa5c0bec22f12ec1fae88b52c5167505"
+    },
+    {
+      "targetId": "NeoForge@26.1.2",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "de26c249cc9055fdf75da82bb688bd21d128bbdb29f89b74fedf785f5ac5e2c1",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-26.1.2-Windows-x64.json",
+      "evidenceSha256": "594175dc7a5b483d3e7c4e4eff917b1a32b43d434173228f8c256e64a2ba8575"
+    },
+    {
+      "targetId": "NeoForge@26.2",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "001d7a6f679e095db3319625bdf2c5c2e212430ee42d6917521d7c7c6a9ca974",
+      "evidencePath": "compatibility/evidence/build/NeoForge-26.2-Windows-x64/result.json",
+      "evidenceSha256": "85b7ae849e0a13c58f04b8d94a652c911778940f410a315160e39ddfafdba6b0"
+    },
+    {
+      "targetId": "NeoForge@26.2",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "001d7a6f679e095db3319625bdf2c5c2e212430ee42d6917521d7c7c6a9ca974",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-26.2-Windows-x64.json",
+      "evidenceSha256": "2f5c73bae1b6e63028b435a1da1c6facf379890ae7b79066d7cd38a51ce2162a"
+    },
+    {
+      "targetId": "NeoForge@26.3",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "b75aba975512e7ab47db0340b0859bdedbb39a4ab10ec7d44bf4d0d6d66c5ba8",
+      "evidencePath": "compatibility/evidence/build/NeoForge-26.3-Windows-x64/result.json",
+      "evidenceSha256": "48b7f4a645cf86f52a6b8f10e17f59936c46c6bd4a1e03fadd0219572cdae70f"
+    },
+    {
+      "targetId": "NeoForge@26.3",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "b75aba975512e7ab47db0340b0859bdedbb39a4ab10ec7d44bf4d0d6d66c5ba8",
+      "evidencePath": "compatibility/evidence/runtime-binding/NeoForge-26.3-Windows-x64.json",
+      "evidenceSha256": "a765ad949e2708318d72d45c3e5f06904ac719e503fb52f56f95221de77d511d"
+    },
+    {
+      "targetId": "Quilt@1.20.4",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "a17014f6a46045f4ce0b525767ad11c21504e05a51be7db5dae973e8b5263df1",
+      "evidencePath": "compatibility/evidence/build/Quilt-1.20.4-Windows-x64/result.json",
+      "evidenceSha256": "4fe6580a976e346ba54b07387bae13a6c070f9ce0011c1750fcb4660e2308e00"
+    },
+    {
+      "targetId": "Quilt@1.20.6",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "d43dbdae74f3264b50f2eda0e1246c1e490cfdacfbd937f0e14ffdc0f1136aa4",
+      "evidencePath": "compatibility/evidence/build/Quilt-1.20.6-Windows-x64/result.json",
+      "evidenceSha256": "d80c5b216c6b9fe167675b6b36b1eeba88e5270ae2340ae00dde7ef18b8dcd75"
+    },
+    {
+      "targetId": "Rift@1.13",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "19d5fd79b8a59b6aba2f117cda1f5a4c9d4ed85f66548c242a6b959b016806cf",
+      "evidencePath": "compatibility/evidence/build/Rift-1.13-Windows-x64/result.json",
+      "evidenceSha256": "2e7f6f4151682e3f9c8ad40df19374582459d59a9b755ec30e481c3d0e85b5a0"
+    },
+    {
+      "targetId": "Rift@1.13",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "19d5fd79b8a59b6aba2f117cda1f5a4c9d4ed85f66548c242a6b959b016806cf",
+      "evidencePath": "compatibility/evidence/runtime-binding/Rift-1.13-Windows-x64.json",
+      "evidenceSha256": "64d045652b69c4eb7bd5dfdc6a2a64fc0b0db5f1da52f03b9ef83b9bd440b10a"
+    },
+    {
+      "targetId": "Quilt@1.20.4",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "a17014f6a46045f4ce0b525767ad11c21504e05a51be7db5dae973e8b5263df1",
+      "evidencePath": "compatibility/evidence/runtime-binding/Quilt-1.20.4-Windows-x64.json",
+      "evidenceSha256": "5787d07f26ed930f476e316659674d1e801e745832f05e9aed8ed329416be788"
+    },
+    {
+      "targetId": "Quilt@1.20.6",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "d43dbdae74f3264b50f2eda0e1246c1e490cfdacfbd937f0e14ffdc0f1136aa4",
+      "evidencePath": "compatibility/evidence/runtime-binding/Quilt-1.20.6-Windows-x64.json",
+      "evidenceSha256": "03e963c33660dc148d5e07a34d4b08a9dfef8b793156dc766c1bb5b582ef75a4"
+    },
+    {
+      "targetId": "Forge@1.9.4",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "ee0c82907cb5fe630c0e56c5fd8c8eb860829ae09206d9f962a2afebbce1f026",
+      "evidencePath": "compatibility/evidence/build/Forge-1.9.4-Windows-x64.json",
+      "evidenceSha256": "ffd99876957ac4eb78c6e17461243d3d79f38165c58f16f10daf3894aecd6f1f"
+    },
+    {
+      "targetId": "Forge@1.9.4",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "ee0c82907cb5fe630c0e56c5fd8c8eb860829ae09206d9f962a2afebbce1f026",
+      "evidencePath": "compatibility/evidence/runtime-binding/Forge-1.9.4-Windows-x64.json",
+      "evidenceSha256": "47cc658fca3474c58dd05aa8bac699a8a8c435604d7f5f2b76a5e49d3a24575f"
+    },
+    {
+      "targetId": "Quilt@1.20.5",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "765ea5db9fbc390a358a9851229fd07f8b47b67e5bd1111a7e346b37e239e16a",
+      "evidencePath": "compatibility/evidence/build/Quilt-1.20.5-Windows-x64-preview-20261018/result.json",
+      "evidenceSha256": "a5477564c4e5f9743d4c66b8e0ac86616a03da1458de45723db48655f598693d"
+    },
+    {
+      "targetId": "Quilt@1.20.5",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "765ea5db9fbc390a358a9851229fd07f8b47b67e5bd1111a7e346b37e239e16a",
+      "evidencePath": "compatibility/evidence/runtime-binding/Quilt-1.20.5-Windows-x64-preview-20261018.json",
+      "evidenceSha256": "3b04a0643f3e797b50004f86eaca7f18cc349361a004e3b2be77bfbe6da9c6a4"
+    },
+    {
+      "targetId": "Fabric@1.21.10",
+      "dimension": "BuildVerified",
+      "targetSpecHash": "0113d165fac5e031cb4c624d0f9ac247edf8af13c58ad65e3c81aa82792323f1",
+      "evidencePath": "compatibility/evidence/build/Fabric-1.21.10-Windows-x64-preview-20261018/result.json",
+      "evidenceSha256": "bee40958a9a334a078bcb15ac8c1e6dba03d630e9fae4d9f0354ec0d90dfd5e8"
+    },
+    {
+      "targetId": "Fabric@1.21.10",
+      "dimension": "RuntimeBinding",
+      "targetSpecHash": "0113d165fac5e031cb4c624d0f9ac247edf8af13c58ad65e3c81aa82792323f1",
+      "evidencePath": "compatibility/evidence/runtime-binding/Fabric-1.21.10-Windows-x64-preview-20261018.json",
+      "evidenceSha256": "f8d18e429de6fc9f3e4ccb8a87654b804e00e5ab956dc7aebd5594e4a5688f3b"
+    }
+  ]
+}

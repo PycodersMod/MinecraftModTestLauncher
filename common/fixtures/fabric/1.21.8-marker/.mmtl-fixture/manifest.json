@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "fixtureId": "MMTLFabricMarkerFixtureV1",
+  "targetId": "Fabric@1.21.8",
+  "sourceRepository": "https://github.com/FabricMC/fabric-example-mod",
+  "sourceCommit": "f4ce800446b82ddb05720ed542bb19a79802ae04",
+  "sourceArchiveUrl": "https://codeload.github.com/FabricMC/fabric-example-mod/zip/f4ce800446b82ddb05720ed542bb19a79802ae04",
+  "sourceArchiveSha256": "afe9b4e45204e4874f75e0d119bf88950bbfb98ce86ca746da00a0947b237d90",
+  "sourceWrapperJarSha256": "7a9ce74cff467ca1bf60a4fcd9f05185acceda4d0f382434d393e17864262c5d",
+  "verificationMetadataSha256": "99a722a8918f14096081fa810df05149c27aa6a72e69db48a9e3c6df215c2115",
+  "verificationComponentCount": 256,
+  "verificationArtifactCount": 569,
+  "loomVersion": "1.18.4",
+  "gradleVersion": "9.7.1",
+  "buildJavaMajor": 25,
+  "runtimeJavaMajor": 21,
+  "verificationStatus": "PinnedInputsVerified",
+  "overlaySha256": "a33dd23714bfeda1d14a37f53446d0c2ae5a7d35bd9fad0b4d7a2425977e9905",
+  "overlayFiles": [
+    {
+      "path": "build.gradle",
+      "sha256": "abaef2f3b4b191421c5c60ac72f26c74c59abe1ece64920546ea0318c9b80137"
+    },
+    {
+      "path": "settings.gradle",
+      "sha256": "750f7a20dcff68332f0d5cb9cc5ee2eda9893b221409d666a2b9753cbed8a1b9"
+    },
+    {
+      "path": "gradle.properties",
+      "sha256": "9bedb2ff8c5ac2eacbaccc85959ce2d97d81dca6b10beb53aec0c223422fb4ca"
+    },
+    {
+      "path": "gradle/wrapper/gradle-wrapper.properties",
+      "sha256": "78d0d4a2d0d35132ce8f7d86849af45477f6095860d311ec5cc6f617202b61b4"
+    },
+    {
+      "path": "gradle/verification-metadata.xml",
+      "sha256": "99a722a8918f14096081fa810df05149c27aa6a72e69db48a9e3c6df215c2115"
+    },
+    {
+      "path": "src/main/java/org/pycodersmod/mmtlfixture/MmtlMarkerMod.java",
+      "sha256": "4501f4c457f12f9f7d9b0bf108cd24cf75600e4b6c01ec0b5fe9bbd5910a4ac8"
+    },
+    {
+      "path": "src/main/resources/fabric.mod.json",
+      "sha256": "7dd1b89667fe89246264ccc52d155b7a93c772687aa3e29f507d38d71758642f"
+    }
+  ],
+  "trustedArtifactCount": 68
+}

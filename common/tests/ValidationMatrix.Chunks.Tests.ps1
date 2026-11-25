@@ -24,6 +24,7 @@ Describe 'Frozen compatibility matrix chunks' {
                 $sourceRow.Count | Should -Be 1
                 $chunk.loaderId | Should -BeExactly $sourceRow[0].loaderId
                 $chunk.familyId | Should -BeExactly $sourceRow[0].familyId
+                $target.toolchainHash | Should -BeExactly $sourceRow[0].toolchainHash
             }
         }
     }
@@ -55,6 +56,29 @@ Describe 'Frozen compatibility matrix chunks' {
 
     It 'rejects a non-positive chunk size' {
         { New-MmtlValidationMatrixChunks -Ledger $script:ledger -Universe $script:universe -FamilyManifest $script:families -ChunkSize 0 } | Should -Throw '*CHUNK_SIZE_INVALID*'
+    }
+
+    It 'assigns every planned chunk to exactly one deterministic shard' {
+        $manifest = New-MmtlValidationMatrixChunks -Ledger $script:ledger -Universe $script:universe -FamilyManifest $script:families -ChunkSize 64
+        $shards = @(0..3 | ForEach-Object { Get-MmtlValidationMatrixShard -Manifest $manifest -Ledger $script:ledger -Universe $script:universe -FamilyManifest $script:families -ShardIndex $_ -ShardCount 4 })
+        $assigned = @($shards | ForEach-Object { $_.chunks } | ForEach-Object chunkId)
+        $expected = @($manifest.chunks | ForEach-Object chunkId)
+
+        @($assigned | Sort-Object -CaseSensitive) | Should -Be @($expected | Sort-Object -CaseSensitive)
+        @($assigned | Select-Object -Unique).Count | Should -Be $manifest.chunkCount
+        foreach ($index in 0..3) {
+            $again = Get-MmtlValidationMatrixShard -Manifest $manifest -Ledger $script:ledger -Universe $script:universe -FamilyManifest $script:families -ShardIndex $index -ShardCount 4
+            @($again.chunks | ForEach-Object chunkId) | Should -Be @($shards[$index].chunks | ForEach-Object chunkId)
+        }
+    }
+
+    It 'rejects invalid shard coordinates and altered chunk manifests' {
+        $manifest = New-MmtlValidationMatrixChunks -Ledger $script:ledger -Universe $script:universe -FamilyManifest $script:families -ChunkSize 100
+        { Get-MmtlValidationMatrixShard -Manifest $manifest -Ledger $script:ledger -Universe $script:universe -FamilyManifest $script:families -ShardIndex 4 -ShardCount 4 } | Should -Throw '*SHARD_INDEX_INVALID*'
+        { Get-MmtlValidationMatrixShard -Manifest $manifest -Ledger $script:ledger -Universe $script:universe -FamilyManifest $script:families -ShardIndex 0 -ShardCount 0 } | Should -Throw '*SHARD_COUNT_INVALID*'
+        $tampered = $manifest | ConvertTo-Json -Depth 40 | ConvertFrom-Json
+        $tampered.chunks[0].targetCount++
+        { Get-MmtlValidationMatrixShard -Manifest $tampered -Ledger $script:ledger -Universe $script:universe -FamilyManifest $script:families -ShardIndex 0 -ShardCount 1 } | Should -Throw '*CHUNK_MANIFEST_INVALID*'
     }
 
     It 'rejects a ledger that omits an available exact target' {

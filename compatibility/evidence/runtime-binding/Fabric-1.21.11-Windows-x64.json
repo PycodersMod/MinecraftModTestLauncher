@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-15T02:38:50.0000000+00:00",
+  "targetId": "Fabric@1.21.11",
+  "targetSpecHash": "9a07500c88819e2b7398f5b5ba2c292f0db457794d5bf76da59fc884f428671a",
+  "loaderId": "Fabric",
+  "minecraftId": "1.21.11",
+  "loaderVersion": "0.19.5",
+  "status": "Observed",
+  "probeStrategy": "GradleJavaExecTaskInspection",
+  "evidenceSource": "GradleInitScriptJavaExecInspection",
+  "confidence": "High",
+  "mode": "Direct",
+  "runtimeJavaControllable": true,
+  "requiresBuildJvmMatch": false,
+  "runtimeJavaMajor": 21,
+  "observedBuildJavaMajor": 25,
+  "observedBuildJavaVersion": "25.0.1",
+  "buildSystem": {
+    "id": "Gradle",
+    "version": "9.7.1"
+  },
+  "toolchain": {
+    "id": "FabricLoom",
+    "version": "1.18.4"
+  },
+  "tasks": [
+    {
+      "task": "runClient",
+      "taskType": "JavaExec",
+      "isJavaExec": true,
+      "launcherSource": "javaLauncher",
+      "executable": "<RUNTIME_JAVA_HOME>/bin/java.exe"
+    },
+    {
+      "task": "runServer",
+      "taskType": "JavaExec",
+      "isJavaExec": true,
+      "launcherSource": "javaLauncher",
+      "executable": "<RUNTIME_JAVA_HOME>/bin/java.exe"
+    }
+  ],
+  "probeSourceSha256": "03daeb4d46ed96e557cc198eabde086eab28d424bf4ee8bf483eb0d4715326d8",
+  "buildEvidenceSha256": "4906a76d43d25e4234425f6ee4d64434675d4c62651d888258fff2289b58af40",
+  "rawProbeEvidenceSha256": "2bfc0511deb7c59186d57ed12d21951fb883b90d19f5c5f3b65197e80efed2ac",
+  "platform": {
+    "os": "Windows",
+    "arch": "x64"
+  }
+}

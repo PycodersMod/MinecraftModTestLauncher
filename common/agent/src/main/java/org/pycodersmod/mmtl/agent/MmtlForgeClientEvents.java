@@ -52,7 +52,11 @@ final class MmtlForgeClientEvents {
         }
         reportClientReady("Managed client reached its login event");
         if ("Guest".equals(context.role)) events.emit("GUEST_CONNECTED", "Offline Guest joined the managed local session", context.expectedLoopbackPort);
-        events.emit("WORLD_JOINED", "Client player entered the joined world");
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.level != null && minecraft.player != null) {
+            events.emitWorldJoined(context.sessionId, minecraft.level.dimension().location().toString(),
+                    minecraft.player.getUUID().toString());
+        }
     }
 
     @SubscribeEvent
@@ -113,7 +117,21 @@ final class MmtlForgeClientEvents {
                 result = invoker.mmtl$publishServer(server.getDefaultGameType(), worldCreationPolicy != null && worldCreationPolicy.allowCommands,
                         context.integratedLanPort);
             } finally { MmtlForgeAgent.setManagedPublishInProgress(false); }
-            if (result) events.emit("LAN_PUBLISHED", "Managed IntegratedLAN listener is ready on loopback", context.integratedLanPort);
+            if (result) {
+                Minecraft client = Minecraft.getInstance();
+                if (client.level == null || client.player == null) {
+                    events.emit("LAN_PUBLISH_FAILED", "Host world identity was unavailable after LAN publish", context.integratedLanPort);
+                    return;
+                }
+                String dimensionKey = client.level.dimension().location().toString();
+                String playerIdentity = client.player.getUUID().toString();
+                if (!events.emitLanPublished(context.integratedLanPort, "127.0.0.1", context.sessionId,
+                        dimensionKey, playerIdentity)) {
+                    events.emit("LAN_PUBLISH_FAILED", "LAN listener evidence failed world identity validation", context.integratedLanPort);
+                    return;
+                }
+                events.emitWorldJoined(context.sessionId, dimensionKey, playerIdentity);
+            }
             else events.emit("LAN_PUBLISH_FAILED", "IntegratedLAN publish returned false", context.integratedLanPort);
         } catch (RuntimeException failure) {
             MmtlForgeAgent.setManagedPublishInProgress(false);

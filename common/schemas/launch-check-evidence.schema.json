@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pycodersmod.github.io/minecraftmodtestlauncher/schemas/launch-check-evidence.schema.json",
+  "title": "MMTL 精确目标 LaunchCheck 证据",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "targetId", "minecraftId", "loaderId", "loaderVersion", "targetSpecHash", "status", "observedAt", "executionPlanDigest", "profileMode", "buildReady", "launchReady", "buildJavaStatus", "runtimeJavaStatus", "runtimeBindingMode", "blockingReasonCodes", "platform"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "targetId": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._@+() -]{1,179}$"},
+    "minecraftId": {"type": "string", "minLength": 1},
+    "loaderId": {"type": "string", "minLength": 1},
+    "loaderVersion": {"type": "string", "minLength": 1},
+    "targetSpecHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "status": {"const": "Ready"},
+    "observedAt": {"type": "string", "format": "date-time"},
+    "executionPlanDigest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "profileMode": {"enum": ["Single", "IntegratedLAN", "Dedicated"]},
+    "buildReady": {"const": true},
+    "launchReady": {"const": true},
+    "buildJavaStatus": {"const": "Resolved"},
+    "runtimeJavaStatus": {"const": "Resolved"},
+    "runtimeBindingMode": {"enum": ["Direct", "SameAsBuildJvm", "ToolchainManaged"]},
+    "blockingReasonCodes": {"type": "array", "maxItems": 0},
+    "platform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["os", "arch"],
+      "properties": {
+        "os": {"enum": ["Windows", "Linux", "macOS"]},
+        "arch": {"enum": ["x64", "arm64", "x86"]}
+      }
+    }
+  }
+}

@@ -3,28 +3,76 @@ Import-Module (Join-Path $PSScriptRoot 'LogManager.psm1')
 Import-Module (Join-Path $PSScriptRoot 'ProcessManager.psm1')
 Import-Module (Join-Path $PSScriptRoot 'AtomicFile.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot 'Platform/Platform.psm1') -Force
+Import-Module (Join-Path $PSScriptRoot 'RunTaskJvmBinding.psm1') -Force
+Import-Module (Join-Path $PSScriptRoot 'Compatibility/LiteLoaderRuntimeDependencies.psm1') -Force
+Import-Module (Join-Path $PSScriptRoot 'Compatibility/LiteLoaderRunInitScript.psm1') -Force
+Import-Module (Join-Path $PSScriptRoot 'ProjectArtifactResolver.psm1') -Force
+
+function Get-MmtlGradleUserHomeForSession {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][string]$SessionPath)
+    if(-not [string]::IsNullOrWhiteSpace($env:MMTL_GRADLE_USER_HOME)){
+        if(-not [IO.Path]::IsPathRooted($env:MMTL_GRADLE_USER_HOME)){throw 'MMTL_GRADLE_USER_HOME_MUST_BE_ABSOLUTE'}
+        return [IO.Path]::GetFullPath($env:MMTL_GRADLE_USER_HOME)
+    }
+    $session=[IO.Path]::GetFullPath($SessionPath)
+    $sessions=[IO.Path]::GetFullPath((Split-Path $session -Parent))
+    if([IO.Path]::GetFileName($sessions) -cne 'sessions'){throw 'SESSION_PATH_INVALID_FOR_GRADLE_HOME'}
+    $runtime=[IO.Path]::GetFullPath((Split-Path $sessions -Parent))
+    return Join-Path $runtime 'gradle-home'
+}
+
+function Initialize-MmtlLiteLoaderSession {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)]$Project,[Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][string]$GradleUserHome,[Parameter(Mandatory)][ValidateSet('runClient','runServer')][string]$TaskName,[Parameter(Mandatory)]$LoaderLaunchPlan)
+    if([string]$Project.Loader -cne 'LiteLoader' -or [string]$LoaderLaunchPlan.targetId -cne ("LiteLoader@"+[string]$Project.MinecraftVersion) -or [string]$LoaderLaunchPlan.loaderVersion -cne [string]$Project.LoaderVersion -or [string]$LoaderLaunchPlan.minecraftId -cne [string]$Project.MinecraftVersion){throw 'LITELOADER_RUN_TARGET_MISMATCH'}
+    $session=[IO.Path]::GetFullPath($SessionPath);$gradleHome=[IO.Path]::GetFullPath($GradleUserHome)
+    Assert-MmtlNoReparsePath -Path $session|Out-Null;Assert-MmtlNoReparsePath -Path $gradleHome|Out-Null
+    $stagedArtifacts=@(Save-MmtlLiteLoaderRuntimeArtifacts -SessionPath $session -LoaderLaunchPlan $LoaderLaunchPlan)
+    if($TaskName -eq 'runClient'){$null=Save-MmtlLiteLoaderClientArtifact -SessionPath $session -LoaderLaunchPlan $LoaderLaunchPlan}
+    $assetCacheEvidence=Save-MmtlMojangAssets -GradleUserHome $gradleHome -LoaderLaunchPlan $LoaderLaunchPlan
+    if([int]$assetCacheEvidence.assetCount -le 0 -or [string]$assetCacheEvidence.indexSha1 -cne [string]$LoaderLaunchPlan.assetIndex.sha1){throw 'LITELOADER_ASSET_CACHE_EVIDENCE_INVALID'}
+    $evidenceDirectory=Join-Path $session 'evidence';New-Item -ItemType Directory -Path $evidenceDirectory -Force|Out-Null;Assert-MmtlNoReparsePath -Path $evidenceDirectory|Out-Null
+    $assetCacheEvidencePath=Join-Path $evidenceDirectory 'mojang-assets-cache.json';Assert-MmtlNoReparsePath -Path $assetCacheEvidencePath|Out-Null
+    $evidence=[ordered]@{schemaVersion=1;targetId=[string]$LoaderLaunchPlan.targetId;verifiedAtUtc=[DateTimeOffset]::UtcNow.ToString('o');gradleUserHome=$gradleHome;assetCount=[int]$assetCacheEvidence.assetCount;cachedAssetCount=[int]$assetCacheEvidence.cachedAssetCount;downloadedAssetCount=[int]$assetCacheEvidence.downloadedAssetCount;assetBytes=[long]$assetCacheEvidence.assetBytes;assetIndexSha1=[string]$assetCacheEvidence.indexSha1;status='VerifiedByPinnedSha1AndSize'}|ConvertTo-Json -Depth 5
+    [IO.File]::WriteAllText($assetCacheEvidencePath,$evidence,[Text.UTF8Encoding]::new($false))
+    $initDirectory=Join-Path $session 'gradle-loader';New-Item -ItemType Directory -Path $initDirectory -Force|Out-Null;Assert-MmtlNoReparsePath -Path $initDirectory|Out-Null
+    $initScript=New-MmtlLiteLoaderRunInitScript -SessionPath $session -TaskName $TaskName -LoaderLaunchPlan $LoaderLaunchPlan -Artifacts $stagedArtifacts
+    $initScriptPath=Join-Path $initDirectory ('liteloader-'+[guid]::NewGuid().ToString('N')+'.gradle');Assert-MmtlNoReparsePath -Path $initScriptPath|Out-Null
+    [IO.File]::WriteAllText($initScriptPath,$initScript,[Text.UTF8Encoding]::new($false))
+    return [pscustomobject]@{InitScriptPath=$initScriptPath;AssetCacheEvidencePath=$assetCacheEvidencePath;AssetCache=$assetCacheEvidence}
+}
 
 function Invoke-MmtlGradleBuild {
     [CmdletBinding()]
-    param([Parameter(Mandatory)]$Project,[Parameter(Mandatory)][string]$JavaPath,[Parameter(Mandatory)][string]$SessionPath,[switch]$Clean)
+    param([Parameter(Mandatory)]$Project,[Parameter(Mandatory)][string]$JavaPath,[Parameter(Mandatory)][string]$SessionPath,[switch]$Clean,[AllowNull()]$LoaderLaunchPlan=$null)
     if(-not(Test-Path -LiteralPath $JavaPath -PathType Leaf)){throw "Java 不存在：$JavaPath"}
     $name=[IO.Path]::GetFileName($Project.Root)-replace '[^A-Za-z0-9_-]','_'
     $log=New-MmtlLogPath -RuntimeRoot (Split-Path (Split-Path $SessionPath -Parent) -Parent) -SessionPath $SessionPath -Name "build-$name"
     $cmd=Get-MmtlGradleCommand -Project $Project -Task build -Clean:$Clean
-    $oldHome=$env:JAVA_HOME;$oldPath=$env:Path;$javaHome=Split-Path (Split-Path $JavaPath -Parent) -Parent
+    $liteLoaderBootstrap=$null
+    if([string]$Project.Loader -ceq 'LiteLoader'){
+        if(-not $LoaderLaunchPlan){throw 'LITELOADER_BUILD_LAUNCH_PLAN_REQUIRED'}
+        $gradleHome=Get-MmtlGradleUserHomeForSession -SessionPath $SessionPath
+        New-Item -ItemType Directory -Path $gradleHome -Force|Out-Null;Assert-MmtlNoReparsePath -Path $gradleHome|Out-Null
+        $liteLoaderBootstrap=Initialize-MmtlLiteLoaderSession -Project $Project -SessionPath $SessionPath -GradleUserHome $gradleHome -TaskName runClient -LoaderLaunchPlan $LoaderLaunchPlan
+    }elseif($LoaderLaunchPlan){throw 'LITELOADER_BUILD_PROJECT_MISMATCH'}
+    $oldHome=$env:JAVA_HOME;$oldPath=$env:Path;$oldGradleHome=$env:GRADLE_USER_HOME;$javaHome=Split-Path (Split-Path $JavaPath -Parent) -Parent
+    $gradleHome=Get-MmtlGradleUserHomeForSession -SessionPath $SessionPath
+    New-Item -ItemType Directory -Path $gradleHome -Force|Out-Null;Assert-MmtlNoReparsePath -Path $gradleHome|Out-Null
     $pathSeparator=[string]$global:MmtlPlatformProvider.PathListSeparator
     $started=[DateTimeOffset]::UtcNow
     try{
-        $env:JAVA_HOME=$javaHome;$env:Path=(Join-Path $javaHome 'bin')+$pathSeparator+$oldPath
+        $env:JAVA_HOME=$javaHome;$env:Path=(Join-Path $javaHome 'bin')+$pathSeparator+$oldPath;$env:GRADLE_USER_HOME=$gradleHome
         Push-Location -LiteralPath $cmd.WorkingDirectory
-        try{$args=@($cmd.Arguments)+@('--console=plain');$cmdOutputPreference=$PSNativeCommandUseErrorActionPreference;$PSNativeCommandUseErrorActionPreference=$false;& $cmd.File @args *> $log;$exitCode=$LASTEXITCODE;$PSNativeCommandUseErrorActionPreference=$cmdOutputPreference}
+        try{$args=if($liteLoaderBootstrap){@('--init-script',$liteLoaderBootstrap.InitScriptPath)+@($cmd.Arguments)}else{@($cmd.Arguments)};$cmdOutputPreference=$PSNativeCommandUseErrorActionPreference;$PSNativeCommandUseErrorActionPreference=$false;& $cmd.File @args *> $log;$exitCode=$LASTEXITCODE;$PSNativeCommandUseErrorActionPreference=$cmdOutputPreference}
         finally{Pop-Location}
-    }finally{$env:JAVA_HOME=$oldHome;$env:Path=$oldPath}
+    }finally{$env:JAVA_HOME=$oldHome;$env:Path=$oldPath;$env:GRADLE_USER_HOME=$oldGradleHome}
     if($exitCode -ne 0){throw "Gradle 构建失败（退出码 $exitCode），日志：$log"}
-    $jars=@(Get-ChildItem -LiteralPath (Join-Path $Project.Root 'build/libs') -Filter '*.jar' -File -ErrorAction SilentlyContinue|Where-Object{$_.Name -notmatch '(?i)(sources|javadoc|dev)(?:[-.]|\.jar$)'})
-    if($jars.Count -ne 1){throw "构建结束后应找到唯一正式 JAR，实际找到 $($jars.Count) 个：$($Project.Root)"}
+    $artifact=Get-MmtlProjectOutputArtifact -Project $Project
+    $artifactPath=[IO.Path]::GetFullPath([string]$artifact.path)
     $gitSha=(& git -C $Project.Root rev-parse HEAD 2>$null);if($LASTEXITCODE -ne 0){$gitSha=$null}
-    [pscustomobject]@{Project=$Project.Root;JavaPath=$JavaPath;BuildStartedUtc=$started.ToString('o');BuildFinishedUtc=[DateTimeOffset]::UtcNow.ToString('o');ExitCode=$exitCode;JarPath=$jars[0].FullName;JarSha256=(Get-FileHash -LiteralPath $jars[0].FullName -Algorithm SHA256).Hash;GitSha=([string]$gitSha).Trim();LogPath=$log}
+    [pscustomobject]@{Project=$Project.Root;JavaPath=$JavaPath;BuildStartedUtc=$started.ToString('o');BuildFinishedUtc=[DateTimeOffset]::UtcNow.ToString('o');ExitCode=$exitCode;ArtifactPath=$artifactPath;ArtifactExtension=[string]$artifact.extension;JarPath=$(if([string]$artifact.extension -ceq '.jar'){$artifactPath}else{$null});JarSha256=(Get-FileHash -LiteralPath $artifactPath -Algorithm SHA256).Hash;GitSha=([string]$gitSha).Trim();LogPath=$log;AssetCacheEvidencePath=$(if($liteLoaderBootstrap){$liteLoaderBootstrap.AssetCacheEvidencePath}else{$null})}
 }
 
 function Invoke-MmtlProjectBuildPipeline {
@@ -36,6 +84,7 @@ function Invoke-MmtlProjectBuildPipeline {
         [Parameter(Mandatory)][string]$SessionPath,
         [switch]$AutoBuild,
         [switch]$Clean,
+        [AllowNull()]$LoaderLaunchPlan=$null,
         [scriptblock]$BuildAction,
         [scriptblock]$ArtifactResolver
     )
@@ -43,16 +92,20 @@ function Invoke-MmtlProjectBuildPipeline {
     $allProjects=@($Primary)+@($LinkedProjects)
     if($AutoBuild){
         foreach($candidate in $allProjects){
-            $build=if($BuildAction){& $BuildAction -Project $candidate -JavaPath $JavaPath -SessionPath $SessionPath -Clean:$Clean}else{Invoke-MmtlGradleBuild -Project $candidate -JavaPath $JavaPath -SessionPath $SessionPath -Clean:$Clean}
+            $candidateLoaderPlan=if([IO.Path]::GetFullPath([string]$candidate.Root) -ceq [IO.Path]::GetFullPath([string]$Primary.Root)){$LoaderLaunchPlan}else{$null}
+            if($BuildAction){if($candidateLoaderPlan){$build=& $BuildAction -Project $candidate -JavaPath $JavaPath -SessionPath $SessionPath -Clean:$Clean -LoaderLaunchPlan $candidateLoaderPlan}else{$build=& $BuildAction -Project $candidate -JavaPath $JavaPath -SessionPath $SessionPath -Clean:$Clean}}
+            else{$build=Invoke-MmtlGradleBuild -Project $candidate -JavaPath $JavaPath -SessionPath $SessionPath -Clean:$Clean -LoaderLaunchPlan $candidateLoaderPlan}
             if(-not $build -or [int]$build.ExitCode -ne 0){throw "PROJECT_BUILD_FAILED: $($candidate.Root)"}
-            $jarPath=[IO.Path]::GetFullPath([string]$build.JarPath)
-            if([IO.Path]::GetExtension($jarPath) -cne '.jar' -or -not(Test-Path -LiteralPath $jarPath -PathType Leaf)){throw "PROJECT_BUILD_ARTIFACT_MISSING: $($candidate.Root)"}
-            $relative=[IO.Path]::GetRelativePath([IO.Path]::GetFullPath([string]$candidate.Root),$jarPath)
+            $artifactPath=[IO.Path]::GetFullPath([string]$(if($build.PSObject.Properties['ArtifactPath'] -and $build.ArtifactPath){$build.ArtifactPath}else{$build.JarPath}))
+            $isPrimary=[IO.Path]::GetFullPath([string]$candidate.Root) -ceq [IO.Path]::GetFullPath([string]$Primary.Root)
+            $allowedExtensions=if($isPrimary -and [string]$candidate.Loader -ceq 'LiteLoader'){@('.jar','.litemod')}else{@('.jar')}
+            if([IO.Path]::GetExtension($artifactPath) -cnotin $allowedExtensions -or -not(Test-Path -LiteralPath $artifactPath -PathType Leaf)){throw "PROJECT_BUILD_ARTIFACT_MISSING: $($candidate.Root)"}
+            $relative=[IO.Path]::GetRelativePath([IO.Path]::GetFullPath([string]$candidate.Root),$artifactPath)
             if([IO.Path]::IsPathRooted($relative) -or $relative -eq '..' -or $relative.StartsWith('..'+[IO.Path]::DirectorySeparatorChar,[StringComparison]::Ordinal)){throw "PROJECT_BUILD_ARTIFACT_OUTSIDE_ROOT: $($candidate.Root)"}
-            $actualHash=(Get-FileHash -LiteralPath $jarPath -Algorithm SHA256).Hash
+            $actualHash=(Get-FileHash -LiteralPath $artifactPath -Algorithm SHA256).Hash
             if(-not $build.JarSha256 -or [string]$build.JarSha256 -cne $actualHash){throw "LINKED_ARTIFACT_HASH_MISMATCH: $($candidate.Root)"}
             $builds.Add($build)
-            if($candidate.Root -ne $Primary.Root){$artifacts.Add([pscustomobject]@{project=[string]$candidate.Root;path=$jarPath;sha256=$actualHash;source='BuildEvidence'})}
+            if(-not $isPrimary){$artifacts.Add([pscustomobject]@{project=[string]$candidate.Root;path=$artifactPath;sha256=$actualHash;source='BuildEvidence'})}
         }
     }else{
         foreach($candidate in $LinkedProjects){
@@ -139,7 +192,7 @@ function Set-MmtlClientGuiScale {
 
 function Copy-MmtlRuntimeMods {
     [CmdletBinding()]
-    param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][string]$RuntimeDirectory,[string[]]$ModJars=@(),[Parameter(Mandatory)][ValidateSet('Client','Host','Guest','Server')][string]$Role,[string]$Username='',[hashtable]$ExpectedHashes=@{})
+    param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][string]$RuntimeDirectory,[string[]]$ModJars=@(),[Parameter(Mandatory)][ValidateSet('Client','Host','Guest','Server')][string]$Role,[string]$Username='',[hashtable]$ExpectedHashes=@{},[string[]]$AllowedExtensions=@('.jar'))
     $session=[IO.Path]::GetFullPath($SessionPath);$runtime=[IO.Path]::GetFullPath($RuntimeDirectory)
     if(-not(Test-MmtlInsideRoot -Root $session -Target $runtime)){throw 'MOD_JAR_RUNTIME_OUTSIDE_SESSION'}
     Assert-MmtlNoReparsePath -Path $session|Out-Null;Assert-MmtlNoReparsePath -Path $runtime|Out-Null
@@ -154,7 +207,7 @@ function Copy-MmtlRuntimeMods {
     foreach($sourceValue in $ModJars){
         if(-not $sourceValue){continue}
         $source=[IO.Path]::GetFullPath([string]$sourceValue)
-        if(-not(Test-Path -LiteralPath $source -PathType Leaf) -or [IO.Path]::GetExtension($source) -ine '.jar'){throw 'MOD_JAR_SOURCE_INVALID'}
+        if(-not(Test-Path -LiteralPath $source -PathType Leaf) -or [IO.Path]::GetExtension($source).ToLowerInvariant() -notin @($AllowedExtensions|ForEach-Object{$_.ToLowerInvariant()})){throw 'MOD_JAR_SOURCE_INVALID'}
         Assert-MmtlNoReparsePath -Path $source|Out-Null
         $name=[IO.Path]::GetFileName($source);$destination=[IO.Path]::GetFullPath((Join-Path $mods $name))
         if(-not(Test-MmtlInsideRoot -Root $mods -Target $destination)){throw 'MOD_JAR_DESTINATION_OUTSIDE_RUNTIME'}
@@ -180,7 +233,7 @@ function Copy-MmtlRuntimeMods {
             $copiedHash=(Get-FileHash -LiteralPath $temporary -Algorithm SHA256 -ErrorAction Stop).Hash.ToLowerInvariant()
             if($copiedHash -cne $item.sha256 -or [long]([IO.FileInfo]::new($temporary).Length) -ne $item.sizeBytes){throw "MOD_JAR_COPY_INTEGRITY_MISMATCH: $($item.name)"}
             [IO.File]::Move($temporary,$item.destination);$null=$temporaries.Remove($temporary);$created.Add($item.destination)
-            $records.Add([pscustomobject][ordered]@{filename=$item.name;sizeBytes=$item.sizeBytes;sha256=$copiedHash;role=$Role;username=$Username})
+            $records.Add([pscustomobject][ordered]@{filename=$item.name;extension=[IO.Path]::GetExtension($item.name).ToLowerInvariant();sizeBytes=$item.sizeBytes;sha256=$copiedHash;role=$Role;username=$Username})
         }
         $manifest=[ordered]@{schemaVersion=1;artifacts=@($records.ToArray())}
         Write-MmtlAtomicTextFile -Path $manifestPath -Content (($manifest|ConvertTo-Json -Depth 8)+"`n")
@@ -193,9 +246,13 @@ function Copy-MmtlRuntimeMods {
 }
 function Start-MmtlGradleInstance {
     [CmdletBinding()]
-    param([Parameter(Mandatory)]$Project,[Parameter(Mandatory)]$Plan,[Parameter(Mandatory)][string]$JavaPath,[Parameter(Mandatory)][string]$SessionPath,[string[]]$ModJars=@(),[hashtable]$ExpectedModHashes=@{})
+    param([Parameter(Mandatory)]$Project,[Parameter(Mandatory)]$Plan,[Parameter(Mandatory)][string]$BuildJavaPath,[Parameter(Mandatory)][string]$RuntimeJavaPath,[Parameter(Mandatory)][ValidateRange(1,100)][int]$RuntimeJavaMajor,[Parameter(Mandatory)][string]$SessionPath,[string[]]$ModJars=@(),[hashtable]$ExpectedModHashes=@{},[AllowNull()]$LoaderLaunchPlan=$null)
+    if(-not(Test-Path -LiteralPath $BuildJavaPath -PathType Leaf)){throw 'BUILD_JAVA_CANDIDATE_UNAVAILABLE'}
+    if(-not(Test-Path -LiteralPath $RuntimeJavaPath -PathType Leaf)){throw 'RUNTIME_JAVA_CANDIDATE_UNAVAILABLE'}
     $session=[IO.Path]::GetFullPath($SessionPath);$runtime=[IO.Path]::GetFullPath([string]$Plan.RuntimeDirectory)
     if(-not(Test-MmtlInsideRoot -Root $session -Target $runtime)){throw '实例 Runtime 必须位于当前 Session。'}
+    $gradleHome=Get-MmtlGradleUserHomeForSession -SessionPath $session
+    New-Item -ItemType Directory -Path $gradleHome -Force|Out-Null;Assert-MmtlNoReparsePath -Path $gradleHome|Out-Null
     Assert-MmtlNoReparsePath -Path $session|Out-Null
     New-Item -ItemType Directory -Path $runtime -Force|Out-Null
     Assert-MmtlNoReparsePath -Path $runtime|Out-Null
@@ -204,13 +261,26 @@ function Start-MmtlGradleInstance {
     $mods=Join-Path $runtime 'mods';New-Item -ItemType Directory -Path $mods -Force|Out-Null
     Assert-MmtlNoReparsePath -Path $mods|Out-Null
     if($Plan.Role -ne 'Server' -and $null -ne $Plan.GuiScale -and [string]$Plan.GuiScale -ne ''){Set-MmtlClientGuiScale -SessionPath $session -RuntimeDirectory $runtime -GuiScale $Plan.GuiScale|Out-Null}
-    $null=Copy-MmtlRuntimeMods -SessionPath $session -RuntimeDirectory $runtime -ModJars $ModJars -Role ([string]$Plan.Role) -Username ([string]$Plan.Username) -ExpectedHashes $ExpectedModHashes
+    $allowedModExtensions=if([string]$Project.Loader -ceq 'LiteLoader'){@('.jar','.litemod')}else{@('.jar')}
+    $null=Copy-MmtlRuntimeMods -SessionPath $session -RuntimeDirectory $runtime -ModJars $ModJars -Role ([string]$Plan.Role) -Username ([string]$Plan.Username) -ExpectedHashes $ExpectedModHashes -AllowedExtensions $allowedModExtensions
     $logName=if($Plan.Role -eq 'Server'){'server'}else{"$($Plan.Role)-$($Plan.Username)"}
     $helper=[string]$global:MmtlPlatformProvider.GradleTaskEntrypoint
     if(-not(Test-Path -LiteralPath $helper -PathType Leaf)){throw '缺少 Gradle Session Runner。'}
+    $bindingDirectory=Join-Path $session 'gradle-runtime-binding'
+    New-Item -ItemType Directory -Path $bindingDirectory -Force|Out-Null
+    Assert-MmtlNoReparsePath -Path $bindingDirectory|Out-Null
+    $bindingInitScript=Join-Path $bindingDirectory ('runtime-'+[guid]::NewGuid().ToString('N')+'.gradle')
+    $bindingScript=New-MmtlRunTaskJvmBindingInitScript -RuntimeJavaMajor $RuntimeJavaMajor
+    [IO.File]::WriteAllText($bindingInitScript,$bindingScript,[Text.UTF8Encoding]::new($false))
     $powerShellHost=Get-Command pwsh -ErrorAction SilentlyContinue
     if(-not $powerShellHost){$powerShellHost=Get-Command powershell.exe -ErrorAction Stop}
-    $runtimeLink=$null;$arguments=@($Plan.Arguments)
+    $runtimeLink=$null;$arguments=@();$liteLoaderScriptPath=$null;$assetCacheEvidencePath=$null
+    if($Project.Loader -ceq 'LiteLoader'){
+        if(-not $LoaderLaunchPlan){throw 'LITELOADER_RUN_LAUNCH_PLAN_REQUIRED'}
+        $liteLoaderBootstrap=Initialize-MmtlLiteLoaderSession -Project $Project -SessionPath $session -GradleUserHome $gradleHome -TaskName ([string]$Plan.Task) -LoaderLaunchPlan $LoaderLaunchPlan
+        $liteLoaderScriptPath=[string]$liteLoaderBootstrap.InitScriptPath;$assetCacheEvidencePath=[string]$liteLoaderBootstrap.AssetCacheEvidencePath
+    }elseif($LoaderLaunchPlan){throw 'LITELOADER_RUN_PROJECT_MISMATCH'}
+    $arguments+=@($Plan.Arguments)
     if($Project.Loader -eq 'Fabric'){
         $runtimeLink=New-MmtlFabricRuntimeLink -ProjectRoot $Project.Root -SessionPath $session -TargetPath $runtime -Name $logName
         $runtimeArgumentIndex=-1
@@ -218,18 +288,21 @@ function Start-MmtlGradleInstance {
         if($runtimeArgumentIndex -lt 0){Remove-MmtlFabricRuntimeLink -ProjectRoot $Project.Root -LinkPath $runtimeLink -TargetPath $runtime|Out-Null;throw 'Gradle 计划缺少 Runtime 参数。'}
         $arguments[$runtimeArgumentIndex]="-PpycodersRuntimeDir=$runtimeLink"
     }
-    $payload=[ordered]@{projectRoot=$Project.Root;sessionPath=$session;arguments=$arguments;runtimeLinkPath=$runtimeLink;runtimeTargetPath=$(if($runtimeLink){$runtime}else{$null})}|ConvertTo-Json -Depth 8 -Compress
+    $payload=[ordered]@{projectRoot=$Project.Root;sessionPath=$session;arguments=$arguments;runtimeBindingInitScriptPath=$bindingInitScript;liteLoaderInitScriptPath=$liteLoaderScriptPath;runtimeLinkPath=$runtimeLink;runtimeTargetPath=$(if($runtimeLink){$runtime}else{$null})}|ConvertTo-Json -Depth 8 -Compress
     $payloadB64=[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($payload))
     $log=New-MmtlLogPath -RuntimeRoot (Split-Path (Split-Path $session -Parent) -Parent) -SessionPath $session -Name $logName
-    $oldHome=$env:JAVA_HOME;$oldPath=$env:Path;$javaHome=Split-Path (Split-Path $JavaPath -Parent) -Parent
+    $oldHome=$env:JAVA_HOME;$oldPath=$env:Path;$oldGradleHome=$env:GRADLE_USER_HOME;$oldRuntimeHome=$env:MMTL_RUNTIME_JAVA_HOME;$oldRuntimeExecutable=$env:MMTL_RUNTIME_JAVA_EXECUTABLE;$oldRuntimeMajor=$env:MMTL_RUNTIME_JAVA_MAJOR
+    $buildJavaHome=Split-Path (Split-Path $BuildJavaPath -Parent) -Parent
+    $runtimeJavaHome=Split-Path (Split-Path $RuntimeJavaPath -Parent) -Parent
     $pathSeparator=[string]$global:MmtlPlatformProvider.PathListSeparator
     try{
-        $env:JAVA_HOME=$javaHome;$env:Path=(Join-Path $javaHome 'bin')+$pathSeparator+$oldPath
+        $env:JAVA_HOME=$buildJavaHome;$env:Path=(Join-Path $buildJavaHome 'bin')+$pathSeparator+$oldPath;$env:GRADLE_USER_HOME=$gradleHome
+        $env:MMTL_RUNTIME_JAVA_HOME=$runtimeJavaHome;$env:MMTL_RUNTIME_JAVA_EXECUTABLE=[IO.Path]::GetFullPath($RuntimeJavaPath);$env:MMTL_RUNTIME_JAVA_MAJOR=[string]$RuntimeJavaMajor
         $args=@('-NoProfile','-NonInteractive','-File',('"'+$helper+'"'),'-LaunchPlanB64',$payloadB64)
         $processId=Start-MmtlTrackedProcess -SessionPath $session -FilePath $powerShellHost.Source -ArgumentList $args -WorkingDirectory $Project.Root -LogPath $log -Role $Plan.Role -Username $Plan.Username -RuntimeDirectory $runtime -RuntimeLinkPath $runtimeLink -RuntimeTargetPath $(if($runtimeLink){$runtime}else{''})
     }catch{if($runtimeLink){Remove-MmtlFabricRuntimeLink -ProjectRoot $Project.Root -LinkPath $runtimeLink -TargetPath $runtime|Out-Null};throw
-    }finally{$env:JAVA_HOME=$oldHome;$env:Path=$oldPath}
-    [pscustomobject]@{ProcessId=[int]$processId;Role=$Plan.Role;Username=$Plan.Username;Project=$Project.Root;Task=$Plan.Task;RuntimeDirectory=$runtime;LogPath=$log;ErrorLogPath=($log+'.err')}
+    }finally{$env:JAVA_HOME=$oldHome;$env:Path=$oldPath;$env:GRADLE_USER_HOME=$oldGradleHome;$env:MMTL_RUNTIME_JAVA_HOME=$oldRuntimeHome;$env:MMTL_RUNTIME_JAVA_EXECUTABLE=$oldRuntimeExecutable;$env:MMTL_RUNTIME_JAVA_MAJOR=$oldRuntimeMajor}
+    [pscustomobject]@{ProcessId=[int]$processId;Role=$Plan.Role;Username=$Plan.Username;Project=$Project.Root;Task=$Plan.Task;RuntimeDirectory=$runtime;LogPath=$log;ErrorLogPath=($log+'.err');AssetCacheEvidencePath=$assetCacheEvidencePath}
 }
 function Initialize-MmtlDedicatedServerRuntime {
     [CmdletBinding()]
@@ -283,4 +356,4 @@ function Set-MmtlDedicatedServerPort {
     Write-MmtlAtomicTextFile -Path $properties -Content $content
     return $true
 }
-Export-ModuleMember -Function Invoke-MmtlGradleBuild,Invoke-MmtlProjectBuildPipeline,Get-MmtlMemoryBudget,Assert-MmtlMemoryBudget,Start-MmtlGradleInstance,Initialize-MmtlDedicatedServerRuntime,Set-MmtlDedicatedServerPort,New-MmtlFabricRuntimeLink,Remove-MmtlFabricRuntimeLink,Set-MmtlClientGuiScale,Copy-MmtlRuntimeMods
+Export-ModuleMember -Function Get-MmtlGradleUserHomeForSession,Invoke-MmtlGradleBuild,Invoke-MmtlProjectBuildPipeline,Get-MmtlMemoryBudget,Assert-MmtlMemoryBudget,Start-MmtlGradleInstance,Initialize-MmtlDedicatedServerRuntime,Set-MmtlDedicatedServerPort,New-MmtlFabricRuntimeLink,Remove-MmtlFabricRuntimeLink,Set-MmtlClientGuiScale,Copy-MmtlRuntimeMods

@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "status": "PARTIAL",
+  "targets": [
+    {
+      "targetId": "Forge@1.8",
+      "minecraftId": "1.8",
+      "forgeVersion": "1.8-11.14.4.1577",
+      "sourceArchiveUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.8-11.14.4.1577/forge-1.8-11.14.4.1577-mdk.zip",
+      "sourceArchiveSha256": "eb1dc2af59095d2743d99a990121b655962186b073ca557067da2b3da395adac",
+      "buildGradleSha256": "559ed31b31e08f5878925898f1244813eeb4ed24258de05e9c8ba209a61636bb",
+      "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-2.7-bin.zip",
+      "gradleDistributionSha256": "cde43b90945b5304c43ee36e58aab4cc6fb3a3d5f9bd9449bb1709a68371cb06",
+      "buildJavaMajor": 8,
+      "pluginId": "net.minecraftforge.gradle.forge",
+      "pluginVersion": "2.0.2",
+      "pluginArtifactCatalogHash": "bf0887d64c8488f47929c2056c42ce3578902b43ceeb8a976023ea982c840bee",
+      "buildArtifactCatalogHash": "d4911ccbe0a53262ec9045c69dc7f76abd8a632ab555729592e1c47879da2dc5",
+      "mcpVersions": {
+        "url": "https://maven.minecraftforge.net/de/oceanlabs/mcp/versions.json",
+        "bytes": 26705,
+        "sha256": "df5875099a4191293a4d36df5cc95086eb95eed4d4549a7a976e847ee3ae5156",
+        "mapping": "snapshot_20141130"
+      },
+      "versionJson": {
+        "url": "https://piston-meta.mojang.com/v1/packages/9eb165eef46294062d8698c8a78e8ac914949e7a/1.8.json",
+        "bytes": 17224,
+        "sha1": "9eb165eef46294062d8698c8a78e8ac914949e7a",
+        "sha256": "8be392d3e8b3e61500b60eb141de56519299069c9169081483ea5aae9fa9d593"
+      },
+      "fernflowerArchive": {
+        "url": "https://files.minecraftforge.net/fernflower-fix-1.0.zip",
+        "bytes": 230445,
+        "sha256": "7b18843dec340463a7e00c49325d7a6a8621a1de6ae64a4a282d629b0263d0ac"
+      },
+      "fernflowerJar": {
+        "entry": "fernflower.jar",
+        "bytes": 248683,
+        "sha256": "f857d0a5dc440e9576a099ffe2dcf0f57f62ec6a9a90cdd7e8a27d4573e0504b"
+      },
+      "mojangMetadataSnapshot": "8be392d3e8b3e61500b60eb141de56519299069c9169081483ea5aae9fa9d593",
+      "client": {
+        "url": "https://launcher.mojang.com/v1/objects/d722504db9de2b47f46cc592b8528446272ae648/client.jar",
+        "sha1": "d722504db9de2b47f46cc592b8528446272ae648",
+        "sizeBytes": 7746841
+      },
+      "server": {
+        "url": "https://launcher.mojang.com/v1/objects/a028f00e678ee5c6aef0e29656dca091b5df11c7/server.jar",
+        "sha1": "a028f00e678ee5c6aef0e29656dca091b5df11c7",
+        "sizeBytes": 10375504
+      },
+      "status": "PinnedInputsVerified"
+    }
+  ]
+}

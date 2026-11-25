@@ -21,17 +21,19 @@ foreach($target in $targets){
 }
 $detectorPath=Join-Path $RepositoryRoot 'common/src/ProjectDetector.psm1'
 $adapterPath=Join-Path $RepositoryRoot 'common/src/Adapters/LegacyFabric.psm1'
+$buildJavaResolverPath=Join-Path $RepositoryRoot 'common/src/BuildJavaResolver.psm1'
 $testPath=Join-Path $RepositoryRoot 'common/tests/LegacyFabricAdapter.Tests.ps1'
-foreach($requiredPath in @($detectorPath,$adapterPath,$testPath)){if(-not(Test-Path -LiteralPath $requiredPath -PathType Leaf)){throw "LEGACYFABRIC_DETECTION_EVIDENCE_FILE_MISSING:$requiredPath"}}
+foreach($requiredPath in @($detectorPath,$adapterPath,$buildJavaResolverPath,$testPath)){if(-not(Test-Path -LiteralPath $requiredPath -PathType Leaf)){throw "LEGACYFABRIC_DETECTION_EVIDENCE_FILE_MISSING:$requiredPath"}}
 $detectorHash=(Get-FileHash -LiteralPath $detectorPath -Algorithm SHA256).Hash.ToLowerInvariant()
 $adapterHash=(Get-FileHash -LiteralPath $adapterPath -Algorithm SHA256).Hash.ToLowerInvariant()
+$buildJavaResolverHash=(Get-FileHash -LiteralPath $buildJavaResolverPath -Algorithm SHA256).Hash.ToLowerInvariant()
 $universeHash=[string]$universe.catalogHash
 if($universeHash -notmatch '^(?i:[a-f0-9]{64})$'){throw 'UNIVERSE_HASH_INVALID'}
 $familyId='legacyfabric-looming-build-launch-plan-v1'
 $fixtureCommit='422896c188108632da97825f801719f0015b1b32'
 $loomingCommit='d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79'
 $lf=[string][char]10
-$basis=(@($familyId,$universeHash,$detectorHash,$adapterHash,$fixtureCommit,$loomingCommit)+$orderedIds) -join $lf
+$basis=(@($familyId,$universeHash,$detectorHash,$adapterHash,$buildJavaResolverHash,$fixtureCommit,$loomingCommit)+$orderedIds) -join $lf
 $toolchainHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($basis))).ToLowerInvariant()
 $family=[ordered]@{
     familyId=$familyId
@@ -45,8 +47,9 @@ $family=[ordered]@{
     buildStrategy='Legacy Looming 官方示例使用 Gradle Wrapper，并声明 ./gradlew build；对 exact detected target 仅生成非执行式 build 计划，执行仍要求 MMTL managed Session copy 与 trusted validation runner。'
     launchStrategy='Legacy Looming 官方示例声明 ./gradlew runClient；对 exact detected target 仅生成非执行式 Single Client 计划，LaunchCheck 保持未验证。'
     agentBridge='本 family 不声明 Agent、Single、LAN 或 Dedicated 能力。'
-    evidence=@('https://meta.legacyfabric.net/','https://github.com/Legacy-Fabric/legacy-looming/tree/d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79','https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/README.md','https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/build.gradle',"legacy-looming-commit:$loomingCommit","legacyfabric-fixture-commit:$fixtureCommit","universe-sha256:$universeHash","project-detector-sha256:$detectorHash","legacyfabric-adapter-sha256:$adapterHash","legacyfabric-plan-test-sha256:$testHash",'test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates','test:LegacyFabricAdapter.Tests.ps1:detects-and-plans-every-frozen-legacyfabric-target-without-making-plans-executable')
+    evidence=@('https://meta.legacyfabric.net/','https://github.com/Legacy-Fabric/legacy-looming/tree/d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79','https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/README.md','https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/build.gradle',"legacy-looming-commit:$loomingCommit","legacyfabric-fixture-commit:$fixtureCommit","universe-sha256:$universeHash","project-detector-sha256:$detectorHash","legacyfabric-adapter-sha256:$adapterHash","build-java-resolver-sha256:$buildJavaResolverHash","legacyfabric-plan-test-sha256:$testHash",'test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates','test:LegacyFabricAdapter.Tests.ps1:detects-and-plans-every-frozen-legacyfabric-target-without-making-plans-executable')
     capabilities=[ordered]@{
+        BuildJava=[ordered]@{status='PartiallySupported';evidenceRefs=@("build-java-resolver-sha256:$buildJavaResolverHash","project-detector-sha256:$detectorHash",'test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target')}
         ProjectDetection=[ordered]@{status='Supported';evidenceRefs=@('https://meta.legacyfabric.net/', 'https://github.com/Legacy-Fabric/legacy-looming',"project-detector-sha256:$detectorHash",'test:ProjectDetectorV2.Tests.ps1:detect-every-exact-legacyfabric-target-from-legacy-looming-coordinates')}
         BuildPlan=[ordered]@{status='Supported';evidenceRefs=@('https://github.com/Legacy-Fabric/legacy-looming/tree/d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79','https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/README.md','https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/build.gradle',"legacy-looming-commit:$loomingCommit","legacyfabric-fixture-commit:$fixtureCommit","legacyfabric-adapter-sha256:$adapterHash","legacyfabric-plan-test-sha256:$testHash",'test:LegacyFabricAdapter.Tests.ps1:detects-and-plans-every-frozen-legacyfabric-target-without-making-plans-executable')}
         LaunchPlan=[ordered]@{status='Supported';evidenceRefs=@('https://github.com/Legacy-Fabric/legacy-looming/tree/d0842b87a7fa6c1a74a0f16f7be6aaaa9bee4c79','https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/README.md','https://github.com/Legacy-Fabric/fabric-example-mod/blob/422896c188108632da97825f801719f0015b1b32/build.gradle',"legacy-looming-commit:$loomingCommit","legacyfabric-fixture-commit:$fixtureCommit","legacyfabric-adapter-sha256:$adapterHash","legacyfabric-plan-test-sha256:$testHash",'test:LegacyFabricAdapter.Tests.ps1:detects-and-plans-every-frozen-legacyfabric-target-without-making-plans-executable')}

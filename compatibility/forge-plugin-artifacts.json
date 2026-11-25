@@ -1,0 +1,562 @@
+{
+  "schemaVersion": 1,
+  "targetId": "Forge@1.8",
+  "pluginId": "net.minecraftforge.gradle.forge",
+  "pluginVersion": "2.0.2",
+  "implementationCoordinate": "gradle.plugin.net.minecraftforge.gradle:ForgeGradle:2.0.2",
+  "sourceRepository": "https://plugins.gradle.org/m2",
+  "resolver": "Gradle 2.7",
+  "javaMajor": 8,
+  "artifactStatus": "HashesVerified",
+  "targetBuildStatus": "PendingRunnerValidation",
+  "mcpVersions": {
+    "url": "https://maven.minecraftforge.net/de/oceanlabs/mcp/versions.json",
+    "bytes": 26705,
+    "sha256": "df5875099a4191293a4d36df5cc95086eb95eed4d4549a7a976e847ee3ae5156"
+  },
+  "mcpMapping": "snapshot_20141130",
+  "forgeVersionMetadataFallback": "ExactPinnedTargetOnly",
+  "artifacts": [
+    {
+      "group": "com.cloudbees",
+      "artifact": "cloudbees-oss-parent",
+      "version": "1",
+      "file": "cloudbees-oss-parent-1.pom",
+      "extension": "pom",
+      "bytes": 5933,
+      "sha256": "0ab7e4217b2702316adceabd4c1dfca0250dbe33c22e08c98b433939207edfc0",
+      "url": "https://plugins.gradle.org/m2/com/cloudbees/cloudbees-oss-parent/1/cloudbees-oss-parent-1.pom"
+    },
+    {
+      "group": "com.cloudbees",
+      "artifact": "diff4j",
+      "version": "1.1",
+      "file": "diff4j-1.1.jar",
+      "extension": "jar",
+      "bytes": 53068,
+      "sha256": "e6509db2167c983d254d3530c66a060443e91a6ca38df9fdc4ef2a88ad813fa5",
+      "url": "https://plugins.gradle.org/m2/com/cloudbees/diff4j/1.1/diff4j-1.1.jar"
+    },
+    {
+      "group": "com.cloudbees",
+      "artifact": "diff4j",
+      "version": "1.1",
+      "file": "diff4j-1.1.pom",
+      "extension": "pom",
+      "bytes": 3212,
+      "sha256": "a09a4ac520f9ec5ccd16195272fd8ed4c667285f9e129da5acf633bb21a7d174",
+      "url": "https://plugins.gradle.org/m2/com/cloudbees/diff4j/1.1/diff4j-1.1.pom"
+    },
+    {
+      "group": "com.github.abrarsyed.jastyle",
+      "artifact": "jAstyle",
+      "version": "1.2",
+      "file": "jAstyle-1.2.jar",
+      "extension": "jar",
+      "bytes": 72606,
+      "sha256": "95a925c9cff6c10061b2a7b225b5b470327163f18bae1c3db37375cfba8ae308",
+      "url": "https://plugins.gradle.org/m2/com/github/abrarsyed/jastyle/jAstyle/1.2/jAstyle-1.2.jar"
+    },
+    {
+      "group": "com.github.abrarsyed.jastyle",
+      "artifact": "jAstyle",
+      "version": "1.2",
+      "file": "jAstyle-1.2.pom",
+      "extension": "pom",
+      "bytes": 2002,
+      "sha256": "f4d71983e5d2fbc8dda6d86439993a871feb599ad0b8e2904f0b9d179ca8e6a5",
+      "url": "https://plugins.gradle.org/m2/com/github/abrarsyed/jastyle/jAstyle/1.2/jAstyle-1.2.pom"
+    },
+    {
+      "group": "com.github.jponge",
+      "artifact": "lzma-java",
+      "version": "1.3",
+      "file": "lzma-java-1.3.jar",
+      "extension": "jar",
+      "bytes": 51041,
+      "sha256": "75ccc0e24d37ed5b8916e1bcffad1e067c2b1cfa21b635287f968db5c3c1963a",
+      "url": "https://plugins.gradle.org/m2/com/github/jponge/lzma-java/1.3/lzma-java-1.3.jar"
+    },
+    {
+      "group": "com.github.jponge",
+      "artifact": "lzma-java",
+      "version": "1.3",
+      "file": "lzma-java-1.3.pom",
+      "extension": "pom",
+      "bytes": 5297,
+      "sha256": "fbcba81b21a8bc3c0761e4798fa05285444b43d681c03c9af49f9b2e1ecb0184",
+      "url": "https://plugins.gradle.org/m2/com/github/jponge/lzma-java/1.3/lzma-java-1.3.pom"
+    },
+    {
+      "group": "com.github.tony19",
+      "artifact": "named-regexp",
+      "version": "0.2.3",
+      "file": "named-regexp-0.2.3.jar",
+      "extension": "jar",
+      "bytes": 8798,
+      "sha256": "c6ebd74cd6108b8c372c95b842725ee5bd6d3303ba26cb00f18bc92f80b47956",
+      "url": "https://plugins.gradle.org/m2/com/github/tony19/named-regexp/0.2.3/named-regexp-0.2.3.jar"
+    },
+    {
+      "group": "com.github.tony19",
+      "artifact": "named-regexp",
+      "version": "0.2.3",
+      "file": "named-regexp-0.2.3.pom",
+      "extension": "pom",
+      "bytes": 6812,
+      "sha256": "7cdd89a892927998beab59398ef073232588f6e83e411cf4f0905833bf300487",
+      "url": "https://plugins.gradle.org/m2/com/github/tony19/named-regexp/0.2.3/named-regexp-0.2.3.pom"
+    },
+    {
+      "group": "com.google.code.gson",
+      "artifact": "gson",
+      "version": "2.2.4",
+      "file": "gson-2.2.4.jar",
+      "extension": "jar",
+      "bytes": 190432,
+      "sha256": "c0328cd07ca9e363a5acd00c1cf4afe8cf554bd6d373834981ba05cebec687fb",
+      "url": "https://plugins.gradle.org/m2/com/google/code/gson/gson/2.2.4/gson-2.2.4.jar"
+    },
+    {
+      "group": "com.google.code.gson",
+      "artifact": "gson",
+      "version": "2.2.4",
+      "file": "gson-2.2.4.pom",
+      "extension": "pom",
+      "bytes": 8038,
+      "sha256": "ae984d5d19894ce6dc4689866eaa12f8fc31409113e60ee3b44853b8ac4fd380",
+      "url": "https://plugins.gradle.org/m2/com/google/code/gson/gson/2.2.4/gson-2.2.4.pom"
+    },
+    {
+      "group": "com.google.guava",
+      "artifact": "guava-parent",
+      "version": "18.0",
+      "file": "guava-parent-18.0.pom",
+      "extension": "pom",
+      "bytes": 7686,
+      "sha256": "a4accc8895e757f6a33f087e4fd0b661c5638ffe5e0728f298efe7d80551b166",
+      "url": "https://plugins.gradle.org/m2/com/google/guava/guava-parent/18.0/guava-parent-18.0.pom"
+    },
+    {
+      "group": "com.google.guava",
+      "artifact": "guava",
+      "version": "18.0",
+      "file": "guava-18.0.jar",
+      "extension": "jar",
+      "bytes": 2256213,
+      "sha256": "d664fbfc03d2e5ce9cab2a44fb01f1d0bf9dfebeccc1a473b1f9ea31f79f6f99",
+      "url": "https://plugins.gradle.org/m2/com/google/guava/guava/18.0/guava-18.0.jar"
+    },
+    {
+      "group": "com.google.guava",
+      "artifact": "guava",
+      "version": "18.0",
+      "file": "guava-18.0.pom",
+      "extension": "pom",
+      "bytes": 5666,
+      "sha256": "e743d61d76f76b5dc060d6f7914fdd41c4418b3529062556920116a716719836",
+      "url": "https://plugins.gradle.org/m2/com/google/guava/guava/18.0/guava-18.0.pom"
+    },
+    {
+      "group": "com.nothome",
+      "artifact": "javaxdelta",
+      "version": "2.0.1",
+      "file": "javaxdelta-2.0.1.jar",
+      "extension": "jar",
+      "bytes": 38995,
+      "sha256": "a661dfcb749053fc26eada2a0a8e619a8ead1ca9eda29e1698687aa2cdd80152",
+      "url": "https://plugins.gradle.org/m2/com/nothome/javaxdelta/2.0.1/javaxdelta-2.0.1.jar"
+    },
+    {
+      "group": "com.nothome",
+      "artifact": "javaxdelta",
+      "version": "2.0.1",
+      "file": "javaxdelta-2.0.1.pom",
+      "extension": "pom",
+      "bytes": 4389,
+      "sha256": "93bbe8babc70e175d406ac689b90e689f4915c6e39e738eb6406fa5b529ce36c",
+      "url": "https://plugins.gradle.org/m2/com/nothome/javaxdelta/2.0.1/javaxdelta-2.0.1.pom"
+    },
+    {
+      "group": "commons-codec",
+      "artifact": "commons-codec",
+      "version": "1.6",
+      "file": "commons-codec-1.6.jar",
+      "extension": "jar",
+      "bytes": 232771,
+      "sha256": "54b34e941b8e1414bd3e40d736efd3481772dc26db3296f6aa45cec9f6203d86",
+      "url": "https://plugins.gradle.org/m2/commons-codec/commons-codec/1.6/commons-codec-1.6.jar"
+    },
+    {
+      "group": "commons-codec",
+      "artifact": "commons-codec",
+      "version": "1.6",
+      "file": "commons-codec-1.6.pom",
+      "extension": "pom",
+      "bytes": 11157,
+      "sha256": "a06e35d3fff3a6b813d94894ebf3e498f9540c864c5b39ae783907e3a6c72889",
+      "url": "https://plugins.gradle.org/m2/commons-codec/commons-codec/1.6/commons-codec-1.6.pom"
+    },
+    {
+      "group": "commons-io",
+      "artifact": "commons-io",
+      "version": "1.4",
+      "file": "commons-io-1.4.jar",
+      "extension": "jar",
+      "bytes": 109043,
+      "sha256": "a7f713593007813bf07d19bd1df9f81c86c0719e9a0bb2ef1b98b78313fc940d",
+      "url": "https://plugins.gradle.org/m2/commons-io/commons-io/1.4/commons-io-1.4.jar"
+    },
+    {
+      "group": "commons-io",
+      "artifact": "commons-io",
+      "version": "1.4",
+      "file": "commons-io-1.4.pom",
+      "extension": "pom",
+      "bytes": 13166,
+      "sha256": "2dae496a19c82b8e9985a1246aa80cf98082b1ae2217cf4b2d4d5ff13a365af2",
+      "url": "https://plugins.gradle.org/m2/commons-io/commons-io/1.4/commons-io-1.4.pom"
+    },
+    {
+      "group": "commons-logging",
+      "artifact": "commons-logging",
+      "version": "1.1.3",
+      "file": "commons-logging-1.1.3.jar",
+      "extension": "jar",
+      "bytes": 62050,
+      "sha256": "70903f6fc82e9908c8da9f20443f61d90f0870a312642991fe8462a0b9391784",
+      "url": "https://plugins.gradle.org/m2/commons-logging/commons-logging/1.1.3/commons-logging-1.1.3.jar"
+    },
+    {
+      "group": "commons-logging",
+      "artifact": "commons-logging",
+      "version": "1.1.3",
+      "file": "commons-logging-1.1.3.pom",
+      "extension": "pom",
+      "bytes": 18353,
+      "sha256": "3250ac3ac6bd60ed0631f5cd0335032b2993d63e405a6ae0555d27a7e4865849",
+      "url": "https://plugins.gradle.org/m2/commons-logging/commons-logging/1.1.3/commons-logging-1.1.3.pom"
+    },
+    {
+      "group": "gradle.plugin.net.minecraftforge.gradle",
+      "artifact": "ForgeGradle",
+      "version": "2.0.2",
+      "file": "ForgeGradle-2.0.2.jar",
+      "extension": "jar",
+      "bytes": 13680837,
+      "sha256": "e586a5ed1b2041e089aede03ff299eb2e278b07a24d4421e41d9bdc1f32996fe",
+      "url": "https://plugins.gradle.org/m2/gradle/plugin/net/minecraftforge/gradle/ForgeGradle/2.0.2/ForgeGradle-2.0.2.jar"
+    },
+    {
+      "group": "gradle.plugin.net.minecraftforge.gradle",
+      "artifact": "ForgeGradle",
+      "version": "2.0.2",
+      "file": "ForgeGradle-2.0.2.pom",
+      "extension": "pom",
+      "bytes": 2557,
+      "sha256": "2fcd99817438d35c798e5332dfd5c17f1933aded115ff8210bdda4874682dc00",
+      "url": "https://plugins.gradle.org/m2/gradle/plugin/net/minecraftforge/gradle/ForgeGradle/2.0.2/ForgeGradle-2.0.2.pom"
+    },
+    {
+      "group": "net.minecraftforge.gradle.forge",
+      "artifact": "net.minecraftforge.gradle.forge.gradle.plugin",
+      "version": "2.0.2",
+      "file": "net.minecraftforge.gradle.forge.gradle.plugin-2.0.2.pom",
+      "extension": "pom",
+      "bytes": 695,
+      "sha256": "d92b7f1a6c84796f4d23715691b815acf4f451136fc44ff17938bd4011daf2b6",
+      "url": "https://plugins.gradle.org/m2/net/minecraftforge/gradle/forge/net.minecraftforge.gradle.forge.gradle.plugin/2.0.2/net.minecraftforge.gradle.forge.gradle.plugin-2.0.2.pom"
+    },
+    {
+      "group": "net.sf.opencsv",
+      "artifact": "opencsv",
+      "version": "2.3",
+      "file": "opencsv-2.3.jar",
+      "extension": "jar",
+      "bytes": 19827,
+      "sha256": "dc0ba5bff6140dc92339973026a0ecbddc2a3b01bdd46ed9d16becc2f6d78de6",
+      "url": "https://plugins.gradle.org/m2/net/sf/opencsv/opencsv/2.3/opencsv-2.3.jar"
+    },
+    {
+      "group": "net.sf.opencsv",
+      "artifact": "opencsv",
+      "version": "2.3",
+      "file": "opencsv-2.3.pom",
+      "extension": "pom",
+      "bytes": 5445,
+      "sha256": "57f5607565d6a90dee6722801d4524813d9d2785046f2954a18861dfbf4a2149",
+      "url": "https://plugins.gradle.org/m2/net/sf/opencsv/opencsv/2.3/opencsv-2.3.pom"
+    },
+    {
+      "group": "net.sf.trove4j",
+      "artifact": "trove4j",
+      "version": "2.1.0",
+      "file": "trove4j-2.1.0.jar",
+      "extension": "jar",
+      "bytes": 820834,
+      "sha256": "294fb88c272598b9a5dcae15f13d228e64134256de941fbc28917a994beeb075",
+      "url": "https://plugins.gradle.org/m2/net/sf/trove4j/trove4j/2.1.0/trove4j-2.1.0.jar"
+    },
+    {
+      "group": "net.sf.trove4j",
+      "artifact": "trove4j",
+      "version": "2.1.0",
+      "file": "trove4j-2.1.0.pom",
+      "extension": "pom",
+      "bytes": 1199,
+      "sha256": "6d486c048a84c90ad9239b7b06a7d686d43eda28f827fac08d4f4ea942d21d0a",
+      "url": "https://plugins.gradle.org/m2/net/sf/trove4j/trove4j/2.1.0/trove4j-2.1.0.pom"
+    },
+    {
+      "group": "org.apache",
+      "artifact": "apache",
+      "version": "13",
+      "file": "apache-13.pom",
+      "extension": "pom",
+      "bytes": 13974,
+      "sha256": "ff513db0361fd41237bef4784968bc15aae478d4ec0a9496f811072ccaf3841d",
+      "url": "https://plugins.gradle.org/m2/org/apache/apache/13/apache-13.pom"
+    },
+    {
+      "group": "org.apache",
+      "artifact": "apache",
+      "version": "4",
+      "file": "apache-4.pom",
+      "extension": "pom",
+      "bytes": 4495,
+      "sha256": "9e9323a26ba8eb2394efef0c96d31b70df570808630dc147cab1e73541cc5194",
+      "url": "https://plugins.gradle.org/m2/org/apache/apache/4/apache-4.pom"
+    },
+    {
+      "group": "org.apache",
+      "artifact": "apache",
+      "version": "9",
+      "file": "apache-9.pom",
+      "extension": "pom",
+      "bytes": 15160,
+      "sha256": "4946e60a547c8eda69f3bc23c5b6f0dadcf8469ea49b1d1da7de34aecfcf18dd",
+      "url": "https://plugins.gradle.org/m2/org/apache/apache/9/apache-9.pom"
+    },
+    {
+      "group": "org.apache.commons",
+      "artifact": "commons-parent",
+      "version": "22",
+      "file": "commons-parent-22.pom",
+      "extension": "pom",
+      "bytes": 41918,
+      "sha256": "fb8c5e55e30a7addb4ff210858a0e8d2494ed6757bbe19012da99d51586c3cbb",
+      "url": "https://plugins.gradle.org/m2/org/apache/commons/commons-parent/22/commons-parent-22.pom"
+    },
+    {
+      "group": "org.apache.commons",
+      "artifact": "commons-parent",
+      "version": "28",
+      "file": "commons-parent-28.pom",
+      "extension": "pom",
+      "bytes": 50149,
+      "sha256": "14733a68e8b120b69de60cd96d222146dcf32f03c1c6cc6a750b1269bafe86c7",
+      "url": "https://plugins.gradle.org/m2/org/apache/commons/commons-parent/28/commons-parent-28.pom"
+    },
+    {
+      "group": "org.apache.commons",
+      "artifact": "commons-parent",
+      "version": "7",
+      "file": "commons-parent-7.pom",
+      "extension": "pom",
+      "bytes": 17496,
+      "sha256": "01e97067a1f9bd0e0a34f2f32bbf43fe6e9b11910f3b0dfe77fd7fb418619105",
+      "url": "https://plugins.gradle.org/m2/org/apache/commons/commons-parent/7/commons-parent-7.pom"
+    },
+    {
+      "group": "org.apache.httpcomponents",
+      "artifact": "httpclient",
+      "version": "4.3.3",
+      "file": "httpclient-4.3.3.jar",
+      "extension": "jar",
+      "bytes": 589512,
+      "sha256": "9844cc9b5440d65a88d28bcba9d771374d2dfdab898848cda164611091633013",
+      "url": "https://plugins.gradle.org/m2/org/apache/httpcomponents/httpclient/4.3.3/httpclient-4.3.3.jar"
+    },
+    {
+      "group": "org.apache.httpcomponents",
+      "artifact": "httpclient",
+      "version": "4.3.3",
+      "file": "httpclient-4.3.3.pom",
+      "extension": "pom",
+      "bytes": 5373,
+      "sha256": "03f7d67d6547083a38413c0da921d194a6010236f8980c7585c0c8f3019c0aa8",
+      "url": "https://plugins.gradle.org/m2/org/apache/httpcomponents/httpclient/4.3.3/httpclient-4.3.3.pom"
+    },
+    {
+      "group": "org.apache.httpcomponents",
+      "artifact": "httpcomponents-client",
+      "version": "4.3.3",
+      "file": "httpcomponents-client-4.3.3.pom",
+      "extension": "pom",
+      "bytes": 15849,
+      "sha256": "15c27734dbcedc6af2cf18fa72a8c6e248477144a3d936a0fc228aaa74a02b00",
+      "url": "https://plugins.gradle.org/m2/org/apache/httpcomponents/httpcomponents-client/4.3.3/httpcomponents-client-4.3.3.pom"
+    },
+    {
+      "group": "org.apache.httpcomponents",
+      "artifact": "httpcomponents-core",
+      "version": "4.3.2",
+      "file": "httpcomponents-core-4.3.2.pom",
+      "extension": "pom",
+      "bytes": 12154,
+      "sha256": "aa3ec31c7dd2161cfe3a3975645ea8703db0a6d6adb7d5b1766b32764c5c1806",
+      "url": "https://plugins.gradle.org/m2/org/apache/httpcomponents/httpcomponents-core/4.3.2/httpcomponents-core-4.3.2.pom"
+    },
+    {
+      "group": "org.apache.httpcomponents",
+      "artifact": "httpcore",
+      "version": "4.3.2",
+      "file": "httpcore-4.3.2.jar",
+      "extension": "jar",
+      "bytes": 282269,
+      "sha256": "abd02320e2356f89d054dae4cf02306bef20a9cf7865b3ac94ec7552b4f1528b",
+      "url": "https://plugins.gradle.org/m2/org/apache/httpcomponents/httpcore/4.3.2/httpcore-4.3.2.jar"
+    },
+    {
+      "group": "org.apache.httpcomponents",
+      "artifact": "httpcore",
+      "version": "4.3.2",
+      "file": "httpcore-4.3.2.pom",
+      "extension": "pom",
+      "bytes": 4597,
+      "sha256": "dfe5335f45b9466af820368b95c543d7542fcfcbe5f5d379e91cf0432e2df489",
+      "url": "https://plugins.gradle.org/m2/org/apache/httpcomponents/httpcore/4.3.2/httpcore-4.3.2.pom"
+    },
+    {
+      "group": "org.apache.httpcomponents",
+      "artifact": "httpmime",
+      "version": "4.3.3",
+      "file": "httpmime-4.3.3.jar",
+      "extension": "jar",
+      "bytes": 37274,
+      "sha256": "61434dbb2314cbb8d28025feb6ae53bbc45d1042daa34371d8911e1e7f570b36",
+      "url": "https://plugins.gradle.org/m2/org/apache/httpcomponents/httpmime/4.3.3/httpmime-4.3.3.jar"
+    },
+    {
+      "group": "org.apache.httpcomponents",
+      "artifact": "httpmime",
+      "version": "4.3.3",
+      "file": "httpmime-4.3.3.pom",
+      "extension": "pom",
+      "bytes": 4933,
+      "sha256": "30e52abf8461a7ab254f20ec2c28e01865721ad9fbdb3baf14f32251623a1f87",
+      "url": "https://plugins.gradle.org/m2/org/apache/httpcomponents/httpmime/4.3.3/httpmime-4.3.3.pom"
+    },
+    {
+      "group": "org.apache.httpcomponents",
+      "artifact": "project",
+      "version": "7",
+      "file": "project-7.pom",
+      "extension": "pom",
+      "bytes": 27243,
+      "sha256": "3d6eba428555a558de046b5d76eacc1f5a54b4f5f20b84d636ed7aff18aa48c3",
+      "url": "https://plugins.gradle.org/m2/org/apache/httpcomponents/project/7/project-7.pom"
+    },
+    {
+      "group": "org.jvnet.localizer",
+      "artifact": "localizer-parent",
+      "version": "1.12",
+      "file": "localizer-parent-1.12.pom",
+      "extension": "pom",
+      "bytes": 1707,
+      "sha256": "e21488c2fe8db4b23a00c3cfdeab3b600e84c1647e08fb7bee442f5fc1f83990",
+      "url": "https://plugins.gradle.org/m2/org/jvnet/localizer/localizer-parent/1.12/localizer-parent-1.12.pom"
+    },
+    {
+      "group": "org.jvnet.localizer",
+      "artifact": "localizer",
+      "version": "1.12",
+      "file": "localizer-1.12.jar",
+      "extension": "jar",
+      "bytes": 6732,
+      "sha256": "212f6eaa0491dd7359dc33c3a72e82a23b096e1890d984b4d92395abc9a6bf7f",
+      "url": "https://plugins.gradle.org/m2/org/jvnet/localizer/localizer/1.12/localizer-1.12.jar"
+    },
+    {
+      "group": "org.jvnet.localizer",
+      "artifact": "localizer",
+      "version": "1.12",
+      "file": "localizer-1.12.pom",
+      "extension": "pom",
+      "bytes": 690,
+      "sha256": "313b5700337e773a68eeab64ec6952c61b5e7a51839d46bcf77376887fe92f02",
+      "url": "https://plugins.gradle.org/m2/org/jvnet/localizer/localizer/1.12/localizer-1.12.pom"
+    },
+    {
+      "group": "org.ow2.asm",
+      "artifact": "asm-debug-all",
+      "version": "5.0.3",
+      "file": "asm-debug-all-5.0.3.jar",
+      "extension": "jar",
+      "bytes": 378662,
+      "sha256": "2969356ac1e40fe4141948c563690238f5d79d76aec7fd873536867a331ede81",
+      "url": "https://plugins.gradle.org/m2/org/ow2/asm/asm-debug-all/5.0.3/asm-debug-all-5.0.3.jar"
+    },
+    {
+      "group": "org.ow2.asm",
+      "artifact": "asm-debug-all",
+      "version": "5.0.3",
+      "file": "asm-debug-all-5.0.3.pom",
+      "extension": "pom",
+      "bytes": 1983,
+      "sha256": "9c99d7a555725bc2f8379977935cdba16d687d9c93b6e0725e196180d490c995",
+      "url": "https://plugins.gradle.org/m2/org/ow2/asm/asm-debug-all/5.0.3/asm-debug-all-5.0.3.pom"
+    },
+    {
+      "group": "org.ow2.asm",
+      "artifact": "asm-parent",
+      "version": "5.0.3",
+      "file": "asm-parent-5.0.3.pom",
+      "extension": "pom",
+      "bytes": 5495,
+      "sha256": "c2edabf4128a534df4b8b4b0b9b562e94f242ba95ac24dc61485432b8a188e32",
+      "url": "https://plugins.gradle.org/m2/org/ow2/asm/asm-parent/5.0.3/asm-parent-5.0.3.pom"
+    },
+    {
+      "group": "org.ow2",
+      "artifact": "ow2",
+      "version": "1.3",
+      "file": "ow2-1.3.pom",
+      "extension": "pom",
+      "bytes": 9509,
+      "sha256": "51215c67d2c068d8b7d2f6f80f51372a098075deccc448d4bdd7b987ba8328fb",
+      "url": "https://plugins.gradle.org/m2/org/ow2/ow2/1.3/ow2-1.3.pom"
+    },
+    {
+      "group": "org.sonatype.oss",
+      "artifact": "oss-parent",
+      "version": "7",
+      "file": "oss-parent-7.pom",
+      "extension": "pom",
+      "bytes": 4824,
+      "sha256": "b51f8867c92b6a722499557fc3a1fdea77bdf9ef574722fe90ce436a29559454",
+      "url": "https://plugins.gradle.org/m2/org/sonatype/oss/oss-parent/7/oss-parent-7.pom"
+    },
+    {
+      "group": "trove",
+      "artifact": "trove",
+      "version": "1.0.2",
+      "file": "trove-1.0.2.jar",
+      "extension": "jar",
+      "bytes": 361155,
+      "sha256": "ad68a86cfd0255a2bc0525ce11ec49640caea7e34ff91eb89c3193dcccd77f05",
+      "url": "https://plugins.gradle.org/m2/trove/trove/1.0.2/trove-1.0.2.jar"
+    },
+    {
+      "group": "trove",
+      "artifact": "trove",
+      "version": "1.0.2",
+      "file": "trove-1.0.2.pom",
+      "extension": "pom",
+      "bytes": 144,
+      "sha256": "83f2682bd3ded1fe417b7e98e7ac86510cd747378eae7e3a5d1d35c7c7f0d2ea",
+      "url": "https://plugins.gradle.org/m2/trove/trove/1.0.2/trove-1.0.2.pom"
+    }
+  ],
+  "catalogHash": "bf0887d64c8488f47929c2056c42ce3578902b43ceeb8a976023ea982c840bee"
+}

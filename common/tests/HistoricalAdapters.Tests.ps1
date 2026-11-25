@@ -91,6 +91,21 @@ Describe 'Historical adapters, detection, overlay, and manual mode' {
         { New-MmtlRiftAdapterBuildPlan -Project ([pscustomobject]@{Loader='Rift';MinecraftVersion='1.13.2';Toolchain=[pscustomobject]@{id='ForgeGradle';version='2.3-SNAPSHOT'}}) } | Should -Throw
         { New-MmtlRiftAdapterLaunchPlan -Project ([pscustomobject]@{Loader='Rift';MinecraftVersion='1.13.2';Toolchain=[pscustomobject]@{id='ForgeGradle';version='2.3-SNAPSHOT'}}) } | Should -Throw
     }
+    It 'pins the Gradle 4.9 all distribution checksum for the verified Rift build' {
+        $repoRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $record=Get-Content (Join-Path $repoRoot 'compatibility/rift-build-validation.json') -Raw | ConvertFrom-Json
+        $record.toolchain.gradleDistributionUrl | Should -BeExactly 'https://services.gradle.org/distributions/gradle-4.9-all.zip'
+        $record.toolchain.gradleDistributionSha256 | Should -BeExactly '39e2d5803bbd5eaf6c8efe07067b0e5a00235e8c71318642b2ed262920b27721'
+        @($record.toolchain.sourceBuildDistributions | Where-Object version -eq '4.9').sha256 | Should -Contain '39e2d5803bbd5eaf6c8efe07067b0e5a00235e8c71318642b2ed262920b27721'
+    }
+    It 'records the raw Rift HTML as private and links the public REST metadata replacement' {
+        $repoRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $record=Get-Content (Join-Path $repoRoot 'compatibility/rift-build-validation.json') -Raw | ConvertFrom-Json
+        $riftSource=$record.sources | Where-Object role -eq 'Rift'
+        $riftSource.sourceSnapshotDisposition | Should -BeExactly 'PrivateLocalArchive'
+        $riftSource.publicSourceSnapshotSha256 | Should -BeExactly '438e8b29047f0834704891b0beb18ac5820e6c0ae0f6a496dbf3ae4f8dbb1f28'
+        $riftSource.sourceSnapshotSha256 | Should -BeExactly 'b6f4f736adce2234149d450eaafb87cc5cf3c20c6e60ea22f9d99d22f1ff202b'
+    }
     It 'creates non-executable historical BuildPlans with independent build/runtime Java requirements' {
         $project=Join-Path $TestDrive 'build-plan';New-Item -ItemType Directory -Path $project -Force|Out-Null
         "plugins { id 'legacy-looming' version '1.16-SNAPSHOT' }"|Set-Content (Join-Path $project 'build.gradle')

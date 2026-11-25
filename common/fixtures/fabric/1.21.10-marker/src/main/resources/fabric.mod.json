@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "mmtl_marker",
+  "version": "${version}",
+  "name": "MMTL Fabric Marker Fixture",
+  "description": "Minimal MMTL-owned marker mod for exact-target validation.",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "org.pycodersmod.mmtlfixture.MmtlMarkerMod"
+    ]
+  },
+  "depends": {
+    "minecraft": "=1.21.10",
+    "fabricloader": "=0.19.5",
+    "fabric-api": "=0.138.4+1.21.10",
+    "java": ">=21"
+  }
+}

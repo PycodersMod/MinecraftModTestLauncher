@@ -46,7 +46,13 @@ function Initialize-MmtlSessionV2 {
         $json=ConvertTo-Json -InputObject $ExecutionPlan -Depth 100
         Write-MmtlAtomicTextFile -Path $paths.plan -Content ($json+"`n")
         $hash=(Get-FileHash -LiteralPath $paths.plan -Algorithm SHA256).Hash.ToLowerInvariant()
-        $manifest=[ordered]@{schemaVersion=2;sessionId=[IO.Path]::GetFileName($paths.session);state='Created';createdUtc=[DateTimeOffset]::UtcNow.ToString('o');updatedUtc=[DateTimeOffset]::UtcNow.ToString('o');planFile='execution-plan.json';planDigest=[string]$ExecutionPlan.semanticDigest;planSha256="sha256:$hash";artifacts=@([pscustomobject]@{path='execution-plan.json';sha256="sha256:$hash";kind='ExecutionPlan'})}
+        $identityBindings=@();$identityBindingRequired=$false;$sessionStatePath=Join-Path $paths.session 'session.json'
+        if(Test-Path -LiteralPath $sessionStatePath -PathType Leaf){
+            $sessionState=Get-Content -LiteralPath $sessionStatePath -Raw|ConvertFrom-Json -ErrorAction Stop
+            $identityBindingRequired=[bool]$sessionState.scenarioIdentityPlan
+            foreach($identity in @($sessionState.testIdentities)){$identityBindings+=,[pscustomobject][ordered]@{identityId=[string]$identity.identityId;instanceId=[string]$identity.instanceId;role=[string]$identity.role;username=$identity.username;gameDir=[string]$identity.gameDir;runtimeJavaMajor=$identity.runtimeJavaMajor;runtimeJavaPath=$identity.runtimeJavaPath;minecraftVersion=$identity.minecraftVersion;offline=[bool]$identity.offline}}
+        }
+        $manifest=[ordered]@{schemaVersion=2;sessionId=[IO.Path]::GetFileName($paths.session);state='Created';createdUtc=[DateTimeOffset]::UtcNow.ToString('o');updatedUtc=[DateTimeOffset]::UtcNow.ToString('o');planFile='execution-plan.json';planDigest=[string]$ExecutionPlan.semanticDigest;planSha256="sha256:$hash";artifacts=@([pscustomobject]@{path='execution-plan.json';sha256="sha256:$hash";kind='ExecutionPlan'});identityBindingRequired=$identityBindingRequired;identityBindings=@($identityBindings)}
         Write-MmtlAtomicTextFile -Path $paths.manifest -Content ((ConvertTo-Json -InputObject $manifest -Depth 20)+"`n")
         return [pscustomobject]$manifest
     }finally{Remove-MmtlSessionLock -Lock $lock}
@@ -90,6 +96,20 @@ function Test-MmtlSessionV2 {
     $hash=(Get-FileHash -LiteralPath $paths.plan -Algorithm SHA256).Hash.ToLowerInvariant()
     if("sha256:$hash" -cne [string]$manifest.planSha256){$errors.Add('SESSION_ARTIFACT_HASH_MISMATCH')}
     try{$plan=Get-Content -LiteralPath $paths.plan -Raw|ConvertFrom-Json -ErrorAction Stop;$planCheck=Test-MmtlExecutionPlan -Plan $plan;if(-not $planCheck.valid){$errors.AddRange([string[]]$planCheck.errors)};if([string]$plan.semanticDigest -cne [string]$manifest.planDigest){$errors.Add('SESSION_PLAN_DIGEST_MISMATCH')}}catch{$errors.Add('SESSION_ARTIFACT_CORRUPT')}
+    if($manifest.PSObject.Properties['identityBindings']){
+        $identityBindings=@($manifest.identityBindings);$identityIds=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal);$instanceIds=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal);$gameDirs=[Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+        foreach($binding in $identityBindings){
+            if(-not $identityIds.Add([string]$binding.identityId) -or -not $instanceIds.Add([string]$binding.instanceId)){$errors.Add('SESSION_IDENTITY_BINDING_DUPLICATE')}
+            try{$gameDir=[IO.Path]::GetFullPath([string]$binding.gameDir);$relative=[IO.Path]::GetRelativePath($paths.session,$gameDir);if([IO.Path]::IsPathRooted($relative) -or $relative -eq '..' -or $relative.StartsWith('..'+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase) -or $relative.StartsWith('..'+[IO.Path]::AltDirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){$errors.Add('SESSION_IDENTITY_GAME_DIR_OUTSIDE_SESSION')}else{Assert-MmtlSessionV2PathNoReparse -Path $gameDir|Out-Null;if(-not $gameDirs.Add($gameDir)){$errors.Add('SESSION_IDENTITY_GAME_DIR_DUPLICATE')}}}catch{$errors.Add('SESSION_IDENTITY_GAME_DIR_UNSAFE')}
+        }
+        if($manifest.identityBindingRequired){
+            if(-not $identityBindings.Count){$errors.Add('SESSION_IDENTITY_BINDING_REQUIRED_MISSING')}
+            $pidPath=Join-Path $paths.session 'pids.json'
+            if(Test-Path -LiteralPath $pidPath -PathType Leaf){
+                try{$pidEntries=@(Get-Content -LiteralPath $pidPath -Raw|ConvertFrom-Json -ErrorAction Stop);foreach($entry in $pidEntries){if([string]$entry.Role -in @('Client','Host','Guest','Server')){$binding=$identityBindings|Where-Object{[string]$_.instanceId -ceq [string]$entry.InstanceId}|Select-Object -First 1;if(-not $binding -or [string]$entry.IdentityId -cne [string]$binding.identityId -or [string]$entry.GameDir -cne [string]$binding.gameDir -or [int]$entry.RuntimeJavaMajor -ne [int]$binding.runtimeJavaMajor -or [string]$entry.RuntimeJavaPath -cne [string]$binding.runtimeJavaPath){$errors.Add('SESSION_PID_IDENTITY_BINDING_MISMATCH');break};if([string]$entry.Role -cne [string]$binding.role -or ([string]$entry.Role -cne 'Server' -and [string]$entry.Username -cne [string]$binding.username)){$errors.Add('SESSION_PID_IDENTITY_BINDING_MISMATCH');break}}}}catch{$errors.Add('SESSION_PID_REGISTRY_INVALID')}
+            }
+        }
+    }
     $statePath=Join-Path $paths.session 'session.json'
     if(Test-Path -LiteralPath $statePath -PathType Leaf){
         try{$state=Get-Content -LiteralPath $statePath -Raw|ConvertFrom-Json -ErrorAction Stop}catch{$errors.Add('SESSION_STATE_CORRUPT');$state=$null}

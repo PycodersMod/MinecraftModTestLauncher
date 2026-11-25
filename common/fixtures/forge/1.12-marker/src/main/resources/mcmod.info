@@ -1,0 +1,9 @@
+[
+  {
+    "modid": "mmtl_marker_fixture",
+    "name": "MMTL Marker Fixture",
+    "description": "MMTL-owned historical Forge build and runtime marker fixture.",
+    "version": "1.0.0",
+    "mcversion": "1.12"
+  }
+]

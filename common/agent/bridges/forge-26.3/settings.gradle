@@ -1,0 +1,10 @@
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+
+rootProject.name = 'mmtl-agent-forge-26.3'
+includeBuild('../../core') {
+    dependencySubstitution {
+        substitute(module('org.pycodersmod.mmtl:mmtl-agent-core')).using(project(':'))
+    }
+}

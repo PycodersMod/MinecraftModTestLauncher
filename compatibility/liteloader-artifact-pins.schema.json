@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pycodersmod.github.io/minecraftmodtestlauncher/schemas/liteloader-artifact-pins.schema.json",
+  "title": "Frozen exact LiteLoader artifact pins",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "status", "generatedAt", "universeHash", "sourceUrl", "sourceSha256", "verifiedArtifactCount", "pins", "unresolvedTargets"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "status": {"enum": ["PARTIAL", "COMPLETE"]},
+    "generatedAt": {"type": "string", "format": "date-time"},
+    "universeHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "sourceUrl": {"const": "https://dl.liteloader.com/versions/versions.json"},
+    "sourceSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "verifiedArtifactCount": {"type": "integer", "minimum": 0},
+    "pins": {"type": "array", "items": {"$ref": "#/$defs/pin"}},
+    "unresolvedTargets": {"type": "array", "items": {"$ref": "#/$defs/unresolved"}}
+  },
+  "allOf": [
+    {"if": {"properties": {"status": {"const": "PARTIAL"}}, "required": ["status"]}, "then": {"properties": {"unresolvedTargets": {"minItems": 1}}}},
+    {"if": {"properties": {"status": {"const": "COMPLETE"}}, "required": ["status"]}, "then": {"properties": {"unresolvedTargets": {"maxItems": 0}}}}
+  ],
+  "$defs": {
+    "pin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["targetId", "minecraftId", "loaderVersion", "artifactUrl", "officialMd5", "sha256", "bytes", "sourceSha256"],
+      "properties": {
+        "targetId": {"type": "string", "pattern": "^LiteLoader@.+$"},
+        "minecraftId": {"type": "string", "minLength": 1},
+        "loaderVersion": {"type": "string", "minLength": 1},
+        "artifactUrl": {"type": "string", "format": "uri", "pattern": "^https://(dl\\.liteloader\\.com|repo\\.mumfrey\\.com)/"},
+        "officialMd5": {"type": "string", "pattern": "^[a-f0-9]{32}$"},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "sourceSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "unresolved": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["targetId", "loaderVersion", "artifactUrl", "officialMd5", "observedMd5", "observedSha256", "reasonCode"],
+      "properties": {
+        "targetId": {"type": "string", "pattern": "^LiteLoader@.+$"},
+        "loaderVersion": {"type": "string", "minLength": 1},
+        "artifactUrl": {"type": "string", "format": "uri", "pattern": "^https://(dl\\.liteloader\\.com|repo\\.mumfrey\\.com)/"},
+        "officialMd5": {"type": "string", "pattern": "^[a-f0-9]{32}$"},
+        "observedMd5": {"type": "string", "pattern": "^[a-f0-9]{32}$"},
+        "observedSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "reasonCode": {"const": "FROZEN_OFFICIAL_MD5_MISMATCH"}
+      }
+    }
+  }
+}

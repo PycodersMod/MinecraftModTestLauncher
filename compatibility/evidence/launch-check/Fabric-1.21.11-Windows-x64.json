@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "targetId": "Fabric@1.21.11",
+  "minecraftId": "1.21.11",
+  "loaderId": "Fabric",
+  "loaderVersion": "0.19.5",
+  "targetSpecHash": "9a07500c88819e2b7398f5b5ba2c292f0db457794d5bf76da59fc884f428671a",
+  "status": "Ready",
+  "observedAt": "10/15/2026 10:39:58",
+  "executionPlanDigest": "sha256:54a6ac111bd3d32ccfa4052a6e455646b07415d59ff51d9df8db863834f7c04d",
+  "profileMode": "Single",
+  "buildReady": true,
+  "launchReady": true,
+  "buildJavaStatus": "Resolved",
+  "runtimeJavaStatus": "Resolved",
+  "runtimeBindingMode": "Direct",
+  "blockingReasonCodes": [],
+  "platform": {
+    "os": "Windows",
+    "arch": "x64"
+  }
+}

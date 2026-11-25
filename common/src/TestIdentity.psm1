@@ -39,6 +39,52 @@ function Get-MmtlOfflinePlayerUuid {
     return '{0}-{1}-{2}-{3}-{4}' -f $hex.Substring(0,8),$hex.Substring(8,4),$hex.Substring(12,4),$hex.Substring(16,4),$hex.Substring(20,12)
 }
 
+function New-MmtlScenarioIdentityPlan {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)]$EffectiveConfig,[Parameter(Mandatory)][string]$MinecraftVersion)
+    if ($MinecraftVersion -notmatch '^[A-Za-z0-9][A-Za-z0-9._+-]{0,63}$') { throw 'IDENTITY_MINECRAFT_VERSION_INVALID' }
+    $count=0
+    if (-not [int]::TryParse([string]$EffectiveConfig.clientCount,[ref]$count) -or $count -lt 1) { throw 'IDENTITY_CLIENT_COUNT_INVALID' }
+    $mode=[string]$EffectiveConfig.mode
+    $transport=[string]$EffectiveConfig.transport
+    if ($mode -notin @('Single','IntegratedLAN','Dedicated','HistoricalDedicatedEquivalent')) { throw 'IDENTITY_PROFILE_INVALID' }
+    if (($transport -eq 'None' -and ($mode -ne 'Single' -or $count -ne 1)) -or
+        ($transport -eq 'IntegratedLAN' -and ($mode -ne 'IntegratedLAN' -or $count -lt 2)) -or
+        ($transport -in @('Dedicated','HistoricalDedicatedEquivalent') -and $mode -ne $transport)) { throw 'IDENTITY_PROFILE_INVALID' }
+    $sessionPath=$null
+    if ($EffectiveConfig.PSObject.Properties['sessionPath'] -and $EffectiveConfig.sessionPath) { $sessionPath=[IO.Path]::GetFullPath([string]$EffectiveConfig.sessionPath) }
+    if (-not $sessionPath) { throw 'IDENTITY_SESSION_PATH_REQUIRED' }
+    $sessionId=if($EffectiveConfig.PSObject.Properties['sessionId'] -and $EffectiveConfig.sessionId){[string]$EffectiveConfig.sessionId}else{Split-Path -Leaf $sessionPath}
+    Assert-MmtlIdentityNoReparsePath -Path $sessionPath | Out-Null
+    $identity=$EffectiveConfig.identity
+    if (-not $identity -or ($identity.kind -and [string]$identity.kind -cne 'Offline')) { throw 'IDENTITY_KIND_UNSUPPORTED' }
+    $hostName=if($identity.hostName){[string]$identity.hostName}else{'MMTL_Host'}
+    $pattern=if($identity.guestNamePattern){[string]$identity.guestNamePattern}else{'MMTL_G{index}'}
+    if (($pattern -replace '\{index\}','') -match '[{}]' -or ([regex]::Matches($pattern,'\{index\}')).Count -ne 1) { throw 'IDENTITY_GUEST_PATTERN_INVALID' }
+    $used=[Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+    $clients=[Collections.Generic.List[object]]::new()
+    $runtimeMajor=if($EffectiveConfig.PSObject.Properties['runtimeJavaMajor']){$EffectiveConfig.runtimeJavaMajor}else{$null}
+    $runtimePath=if($EffectiveConfig.PSObject.Properties['runtimeJavaPath']){$EffectiveConfig.runtimeJavaPath}else{$null}
+    for($index=0;$index -lt $count;$index++){
+        $role=if($mode -eq 'Single'){'Client'}elseif($mode -eq 'IntegratedLAN' -and $index -eq 0){'Host'}elseif($mode -in @('Dedicated','HistoricalDedicatedEquivalent')){'Client'}else{'Guest'}
+        $username=if($index -eq 0){$hostName}else{$pattern.Replace('{index}',[string]$index)}
+        if($username -notmatch '^[A-Za-z0-9_]{1,16}$'){throw 'IDENTITY_USERNAME_INVALID'}
+        if(-not $used.Add($username)){throw 'IDENTITY_USERNAME_COLLISION'}
+        $uuid=Get-MmtlOfflinePlayerUuid -Username $username
+        $clients.Add([pscustomobject][ordered]@{
+            role=$role;username=$username;identityId=('offline:'+$uuid);offlineUuid=$uuid
+            instanceId=('client-{0:d2}' -f $index);gameDir=(Join-Path $sessionPath $username)
+            networkRole=$(if($mode -eq 'Single'){'SingleplayerClient'}elseif($mode -eq 'IntegratedLAN' -and $index -eq 0){'IntegratedServerHost'}elseif($role -eq 'Guest' -and $mode -eq 'IntegratedLAN'){'LoopbackClient'}else{'DedicatedClient'})
+            runtimeJavaMajor=$runtimeMajor;runtimeJavaPath=$runtimePath;minecraftVersion=$MinecraftVersion;offline=$true
+        })
+    }
+    $server=$null
+    if($mode -in @('Dedicated','HistoricalDedicatedEquivalent')){
+        $server=[pscustomobject][ordered]@{role='Server';username=$null;identityId=('server:'+$sessionId);offlineUuid=$null;instanceId='server-00';gameDir=(Join-Path $sessionPath 'Server');networkRole='DedicatedServer';runtimeJavaMajor=$runtimeMajor;runtimeJavaPath=$runtimePath;minecraftVersion=$MinecraftVersion;offline=$true}
+    }
+    return [pscustomobject][ordered]@{schemaVersion=1;minecraftVersion=$MinecraftVersion;mode=$mode;transport=$transport;clientCount=$count;clients=@($clients.ToArray());server=$server}
+}
+
 function New-MmtlTestIdentityRolePlan {
     [CmdletBinding()]
     param([Parameter(Mandatory)]$Profile)
@@ -105,9 +151,11 @@ function Initialize-MmtlTestIdentityDirectories {
         elseif ($username -notmatch '^[A-Za-z0-9_]{1,16}$') { throw 'IDENTITY_USERNAME_INVALID' }
         if ($username -and -not $names.Add($username)) { throw 'IDENTITY_USERNAME_COLLISION' }
         $directoryName = if ($isServer) { 'Server' } else { $username }
-        $gameDir = Join-Path $session $directoryName
+        $gameDir = if ($role.PSObject.Properties['gameDir'] -and $role.gameDir) { [IO.Path]::GetFullPath([string]$role.gameDir) } else { Join-Path $session $directoryName }
         if (-not (Test-MmtlIdentityInsideRoot -Root $session -Target $gameDir)) { throw 'IDENTITY_PATH_ESCAPE' }
-        $prepared.Add([pscustomobject]@{role=$roleName;username=$username;directoryName=$directoryName;gameDir=$gameDir;instanceId=('{0}-{1:d2}' -f $roleName,$index);source=$role;isServer=$isServer})
+        if (-not (Test-MmtlIdentityInsideRoot -Root $session -Target $gameDir)) { throw 'IDENTITY_PATH_ESCAPE' }
+        $instanceId=if($role.PSObject.Properties['instanceId'] -and $role.instanceId){[string]$role.instanceId}else{('{0}-{1:d2}' -f $roleName,$index)}
+        $prepared.Add([pscustomobject]@{role=$roleName;username=$username;directoryName=$directoryName;gameDir=$gameDir;instanceId=$instanceId;source=$role;isServer=$isServer})
     }
 
     $identities = [Collections.Generic.List[object]]::new()
@@ -133,6 +181,7 @@ function Initialize-MmtlTestIdentityDirectories {
         $identities.Add([pscustomobject][ordered]@{
             identityId = if ($uuid) { 'offline:' + $uuid } else { 'server:' + $SessionId }
             offlineUuid = $uuid
+            minecraftVersion = if ($source.PSObject.Properties['minecraftVersion']) { [string]$source.minecraftVersion } else { $null }
             username = if ($item.isServer) { $null } else { $item.username }
             role = $item.role
             sessionId = $SessionId
@@ -185,4 +234,4 @@ function Copy-MmtlArtifactToTestIdentity {
     return [pscustomobject][ordered]@{sourceName=[IO.Path]::GetFileName($source);destination=$destination;sha256=$destinationHash;role=[string]$Identity.role;username=$Identity.username;readOnly=$true}
 }
 
-Export-ModuleMember -Function Get-MmtlOfflinePlayerUuid,New-MmtlTestIdentityRolePlan,Initialize-MmtlTestIdentityDirectories,Copy-MmtlArtifactToTestIdentity
+Export-ModuleMember -Function Get-MmtlOfflinePlayerUuid,New-MmtlTestIdentityRolePlan,New-MmtlScenarioIdentityPlan,Initialize-MmtlTestIdentityDirectories,Copy-MmtlArtifactToTestIdentity

@@ -23,12 +23,29 @@ function Get-MmtlWindowsProcessSnapshot {
     [CmdletBinding()]
     param([Parameter(Mandatory)][int]$RootProcessId)
     $all=@(Get-CimInstance -ClassName Win32_Process -ErrorAction Stop)
-    $root=$all|Where-Object{[int]$_.ProcessId -eq $RootProcessId}|Select-Object -First 1
+    return Get-MmtlWindowsProcessSnapshotFromRecords -Processes $all -RootProcessId $RootProcessId
+}
+
+function Get-MmtlWindowsProcessSnapshotFromRecords {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][AllowEmptyCollection()][object[]]$Processes,[Parameter(Mandatory)][int]$RootProcessId)
+    $byId=@{};$childrenByParent=@{}
+    foreach($process in $Processes){
+        $processId=[int]$process.ProcessId;$byId[$processId]=$process
+        $parentId=[int]$process.ParentProcessId
+        if(-not $childrenByParent.ContainsKey($parentId)){$childrenByParent[$parentId]=[Collections.Generic.List[object]]::new()}
+        $childrenByParent[$parentId].Add($process)
+    }
+    $root=$byId[$RootProcessId]
     if(-not $root){throw "找不到登记进程 PID $RootProcessId。"}
     $result=[Collections.Generic.List[object]]::new();$queue=[Collections.Generic.Queue[object]]::new();$seen=[Collections.Generic.HashSet[int]]::new()
     $rootRecord=ConvertTo-MmtlWindowsProcessRecord -Process $root -Depth 0
     $result.Add($rootRecord);$queue.Enqueue($rootRecord);[void]$seen.Add($RootProcessId)
-    while($queue.Count){$parent=$queue.Dequeue();foreach($child in @($all|Where-Object{[int]$_.ParentProcessId -eq [int]$parent.PID})){$childId=[int]$child.ProcessId;if(-not $seen.Add($childId)){continue};$record=ConvertTo-MmtlWindowsProcessRecord -Process $child -Depth ([int]$parent.Depth+1);$result.Add($record);$queue.Enqueue($record)}}
+    while($queue.Count){
+        $parent=$queue.Dequeue();$parentId=[int]$parent.PID
+        if(-not $childrenByParent.ContainsKey($parentId)){continue}
+        foreach($child in $childrenByParent[$parentId]){$childId=[int]$child.ProcessId;if(-not $seen.Add($childId)){continue};$record=ConvertTo-MmtlWindowsProcessRecord -Process $child -Depth ([int]$parent.Depth+1);$result.Add($record);$queue.Enqueue($record)}
+    }
     return @($result)
 }
 

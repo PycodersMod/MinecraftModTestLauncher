@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "fixtureId": "MMTLFabricMarkerFixtureV1",
+  "targetId": "Fabric@26.3",
+  "sourceRepository": "https://github.com/FabricMC/fabric-example-mod",
+  "sourceCommit": "1685ed178a113092f8aa002c4f7d78181643d75b",
+  "sourceArchiveUrl": "https://codeload.github.com/FabricMC/fabric-example-mod/zip/1685ed178a113092f8aa002c4f7d78181643d75b",
+  "sourceArchiveSha256": "3478254c04d8b9953a5fee21628a35d2bdf00ce2f20c567cedf0409152a4d0d5",
+  "sourceWrapperJarSha256": "7a9ce74cff467ca1bf60a4fcd9f05185acceda4d0f382434d393e17864262c5d",
+  "verificationMetadataSha256": "61422b1ae4a3263315615e87db295da11f63e584d6a610eee33550090fc41e8e",
+  "verificationComponentCount": 174,
+  "verificationArtifactCount": 375,
+  "trustedArtifactCount": 2,
+  "loomVersion": "1.18.4",
+  "gradleVersion": "9.7.1",
+  "buildJavaMajor": 25,
+  "runtimeJavaMajor": 25,
+  "verificationStatus": "PinnedInputsVerified",
+  "overlaySha256": "4148fe40d341a471a38fb572da502e2c0ceb706acdcf38d731974770185b0c49",
+  "overlayFiles": [
+    {
+      "path": "build.gradle",
+      "sha256": "fc6ed7f29f57267b8f0b794535f33432058fa23cb27377db3cde7a3b7c270aaa"
+    },
+    {
+      "path": "settings.gradle",
+      "sha256": "750f7a20dcff68332f0d5cb9cc5ee2eda9893b221409d666a2b9753cbed8a1b9"
+    },
+    {
+      "path": "gradle.properties",
+      "sha256": "6ee86382338d920567213c387785b144149b1b651668e4a542483d09f95db208"
+    },
+    {
+      "path": "gradle/wrapper/gradle-wrapper.properties",
+      "sha256": "78d0d4a2d0d35132ce8f7d86849af45477f6095860d311ec5cc6f617202b61b4"
+    },
+    {
+      "path": "gradle/verification-metadata.xml",
+      "sha256": "61422b1ae4a3263315615e87db295da11f63e584d6a610eee33550090fc41e8e"
+    },
+    {
+      "path": "src/main/java/org/pycodersmod/mmtlfixture/MmtlMarkerMod.java",
+      "sha256": "4501f4c457f12f9f7d9b0bf108cd24cf75600e4b6c01ec0b5fe9bbd5910a4ac8"
+    },
+    {
+      "path": "src/main/resources/fabric.mod.json",
+      "sha256": "f4377781165ea6969876f414778240b158282a312487effaceabfe2a742fd402"
+    }
+  ]
+}

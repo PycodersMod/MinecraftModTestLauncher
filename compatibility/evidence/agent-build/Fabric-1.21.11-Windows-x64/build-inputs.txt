@@ -1,0 +1,12 @@
+targetId=Fabric@1.21.11
+loaderVersion=0.19.5
+loomPluginId=net.fabricmc.fabric-loom-remap
+mappingStrategy=officialMojang
+agentMinimumJava=21
+gradleVersion=9.7.1
+gradleWrapperSha256=7a9ce74cff467ca1bf60a4fcd9f05185acceda4d0f382434d393e17864262c5d
+fabricBuildPinsSha256=6b67342121539416f145be6dd891d97a940dd85bdf91cd693b123c0fa6783875
+buildJdk=Oracle JDK 25.0.1 x64
+gradleVerificationMetadataSha256=8184729c118ea202d435c7fc6cfe346dcb15be01b862ad67f62a3b03091ec9e5
+loomGeneratedArtifactsSha256=d87871c409e9b7dd40d88a8e342f60e6ffaea258691281d663c84fa5605f63d3
+execution=Gradle 9.7.1; Oracle JDK 25.0.1 x64; --no-daemon test verifyMmtlAgentJar stageMmtlAgent; exit 0; D drive Gradle home; strict dependency metadata plus exact canonical-content gates

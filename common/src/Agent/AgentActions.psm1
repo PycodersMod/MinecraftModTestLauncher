@@ -19,9 +19,36 @@ function Get-MmtlAgentActionSignature {
     try{return [Convert]::ToHexString($hmac.ComputeHash([Text.Encoding]::UTF8.GetBytes($Payload))).ToLowerInvariant()}finally{$hmac.Dispose()}
 }
 
+function Get-MmtlSharedBlockMarkerStateHash {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)][ValidatePattern('^[A-Za-z0-9._-]{1,80}$')][string]$SessionId,
+        [Parameter(Mandatory)][ValidatePattern('^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$')][string]$MarkerId,
+        [Parameter(Mandatory)][ValidatePattern('^[A-Za-z0-9][A-Za-z0-9._:/-]{0,127}$')][string]$DimensionKey,
+        [Parameter(Mandatory)][int]$X,
+        [Parameter(Mandatory)][ValidateRange(-64,320)][int]$Y,
+        [Parameter(Mandatory)][int]$Z
+    )
+    if($X -lt -64 -or $X -gt 64 -or $Z -lt -64 -or $Z -gt 64){throw 'SCENARIO_SHARED_MARKER_COORDINATES_INVALID'}
+    $canonical="mmtl-block-marker-v1|$SessionId|$MarkerId|$DimensionKey|$X|$Y|$Z|minecraft:gold_block"
+    return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($canonical))).ToLowerInvariant()
+}
+
 function New-MmtlAgentActionRequest {
     [CmdletBinding()]
-    param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][string]$Role,[Parameter(Mandatory)][ValidateSet('SEND_COMMAND','SCREENSHOT')][string]$Action,[string]$Command,[switch]$PermissionGranted)
+    param(
+        [Parameter(Mandatory)][string]$SessionPath,
+        [Parameter(Mandatory)][string]$Role,
+        [Parameter(Mandatory)][ValidateSet('SEND_COMMAND','SCREENSHOT','PLACE_BLOCK_MARKER','OBSERVE_BLOCK_MARKER')][string]$Action,
+        [string]$Command,
+        [string]$ActorActionId,
+        [string]$MarkerId,
+        [string]$DimensionKey,
+        [int]$X,
+        [int]$Y,
+        [int]$Z,
+        [switch]$PermissionGranted
+    )
     $session=[IO.Path]::GetFullPath($SessionPath)
     $status=Get-MmtlScenarioStatus -SessionPath $session
     if($Role -notin @('Host','Guest','Client')){throw 'SCENARIO_AGENT_ACTION_ROLE_INVALID'}
@@ -32,15 +59,27 @@ function New-MmtlAgentActionRequest {
     $guestNames=@($status.plan.roles|Where-Object role -eq $Role|ForEach-Object username)
     $entry=@($entries|Where-Object{[string]$_.Role -ceq $processRole -and ($Role -ne 'Guest' -or [string]$_.Username -in $guestNames)})|Select-Object -First 1
     if(-not $entry -or [int]$entry.PID -lt 1){throw 'SCENARIO_ACTION_TARGET_NOT_MANAGED'}
-    if($Action -eq 'SEND_COMMAND'){$null=Assert-MmtlScenarioAction -Action $Action -Role $Role -Command $Command -TargetManaged -PermissionGranted:$PermissionGranted.IsPresent}
+    $isSharedMarker=$Action -in @('PLACE_BLOCK_MARKER','OBSERVE_BLOCK_MARKER')
+    if($isSharedMarker){
+        if(($Action -eq 'PLACE_BLOCK_MARKER' -and $Role -cne 'Host') -or ($Action -eq 'OBSERVE_BLOCK_MARKER' -and $Role -cne 'Guest')){throw 'SCENARIO_SHARED_MARKER_ROLE_INVALID'}
+        foreach($coordinate in @('X','Y','Z')){if(-not $PSBoundParameters.ContainsKey($coordinate)){throw 'SCENARIO_SHARED_MARKER_COORDINATES_REQUIRED'}}
+    }elseif($Action -eq 'SEND_COMMAND'){$null=Assert-MmtlScenarioAction -Action $Action -Role $Role -Command $Command -TargetManaged -PermissionGranted:$PermissionGranted.IsPresent}
     $tokenPath=Assert-MmtlAgentActionPath -Session $session -Path (Join-Path $session 'agent/session-token.txt')
     if(-not(Test-Path -LiteralPath $tokenPath -PathType Leaf)){throw 'SCENARIO_AGENT_TOKEN_MISSING'}
     $tokenItem=Get-Item -LiteralPath $tokenPath -Force;if($tokenItem.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'SCENARIO_AGENT_ACTION_REPARSE_POINT'}
     $token=[IO.File]::ReadAllText($tokenPath)
     if($token -notmatch '^[A-Za-z0-9._-]{32,128}$'){throw 'SCENARIO_AGENT_TOKEN_INVALID'}
-    $id=[guid]::NewGuid().ToString('N');$command64=[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes([string]$Command));$output=if($Action -eq 'SCREENSHOT'){"screenshots/$Role/$id.png"}else{''}
-    $signed="$($status.sessionId)|$Role|$id|$Action|$command64|$output"
-    $request=[ordered]@{schemaVersion=1;sessionId=[string]$status.sessionId;role=$Role;actionId=$id;action=$Action;commandBase64=$command64;outputRelativePath=$output;signature=(Get-MmtlAgentActionSignature -Token $token -Payload $signed)}
+    $id=[guid]::NewGuid().ToString('N');$command64=if($isSharedMarker){''}else{[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes([string]$Command))};$output=if($Action -eq 'SCREENSHOT'){"screenshots/$Role/$id.png"}else{''}
+    if($isSharedMarker){
+        $stateHash=Get-MmtlSharedBlockMarkerStateHash -SessionId ([string]$status.sessionId) -MarkerId $MarkerId -DimensionKey $DimensionKey -X $X -Y $Y -Z $Z
+        $actorId=if($Action -eq 'PLACE_BLOCK_MARKER'){$id}else{$ActorActionId}
+        if([string]$actorId -notmatch '^[a-f0-9]{32}$'){throw 'SCENARIO_SHARED_MARKER_ACTOR_ACTION_INVALID'}
+        $signed="$($status.sessionId)|$Role|$id|$Action|||$actorId|$MarkerId|$DimensionKey|$X|$Y|$Z|$stateHash"
+        $request=[ordered]@{schemaVersion=1;sessionId=[string]$status.sessionId;role=$Role;actionId=$id;action=$Action;commandBase64='';outputRelativePath='';actorActionId=$actorId;markerId=$MarkerId;dimensionKey=$DimensionKey;x=$X;y=$Y;z=$Z;stateSha256=$stateHash;signature=(Get-MmtlAgentActionSignature -Token $token -Payload $signed)}
+    }else{
+        $signed="$($status.sessionId)|$Role|$id|$Action|$command64|$output"
+        $request=[ordered]@{schemaVersion=1;sessionId=[string]$status.sessionId;role=$Role;actionId=$id;action=$Action;commandBase64=$command64;outputRelativePath=$output;signature=(Get-MmtlAgentActionSignature -Token $token -Payload $signed)}
+    }
     $directory=Assert-MmtlAgentActionPath -Session $session -Path (Join-Path $session 'agent-actions')
     if(-not(Test-Path -LiteralPath $directory)){$null=New-Item -ItemType Directory -Path $directory}
     $queue=Assert-MmtlAgentActionPath -Session $session -Path (Join-Path $directory ($Role.ToLowerInvariant()+'.jsonl'))
@@ -72,4 +111,4 @@ function Invoke-MmtlAgentAction {
     Wait-MmtlAgentAction -Request $request -TimeoutSeconds $TimeoutSeconds
 }
 
-Export-ModuleMember -Function Get-MmtlAgentActionSignature,New-MmtlAgentActionRequest,Wait-MmtlAgentAction,Invoke-MmtlAgentAction
+Export-ModuleMember -Function Get-MmtlAgentActionSignature,Get-MmtlSharedBlockMarkerStateHash,New-MmtlAgentActionRequest,Wait-MmtlAgentAction,Invoke-MmtlAgentAction

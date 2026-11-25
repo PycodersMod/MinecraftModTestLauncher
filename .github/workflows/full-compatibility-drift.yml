@@ -1,0 +1,57 @@
+name: MMTL Compatibility Universe Drift
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 8 1 * *'
+
+permissions:
+  contents: read
+
+jobs:
+  compatibility-drift:
+    runs-on: windows-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Preserve the frozen Universe baseline
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $baseline = Join-Path $env:RUNNER_TEMP 'frozen-compatibility-universe.json'
+          Copy-Item -LiteralPath 'compatibility/compatibility-universe.json' -Destination $baseline
+          $hash = (Get-FileHash -LiteralPath $baseline -Algorithm SHA256).Hash.ToLowerInvariant()
+          "MMTL_FROZEN_UNIVERSE_PATH=$baseline" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "MMTL_FROZEN_UNIVERSE_SHA256=$hash" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: Refresh official loader candidate snapshots
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          foreach ($loader in @('Fabric','Quilt','LegacyFabric','OrnitheLoader','LiteLoader')) {
+            & ./tools/Collect-CompatibilityCandidates.ps1 -LoaderId $loader
+            if ($LASTEXITCODE -ne 0) { throw "CANDIDATE_COLLECTION_FAILED:$loader" }
+          }
+
+      - name: Build a fresh candidate Universe and compare without changing the frozen baseline
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & ./tools/Refresh-CompatibilityUniverse.ps1 -RepositoryRoot (Get-Location).Path
+          if ($LASTEXITCODE -ne 0) { throw 'COMPATIBILITY_UNIVERSE_REFRESH_FAILED' }
+          $actualBaselineHash = (Get-FileHash -LiteralPath $env:MMTL_FROZEN_UNIVERSE_PATH -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actualBaselineHash -cne $env:MMTL_FROZEN_UNIVERSE_SHA256) { throw 'FROZEN_UNIVERSE_BASELINE_CHANGED' }
+          & ./tools/Compare-CompatibilityUniverseDrift.ps1 `
+            -FrozenUniversePath $env:MMTL_FROZEN_UNIVERSE_PATH `
+            -CurrentUniversePath './compatibility/universe-preview.json' `
+            -OutputPath './compatibility-drift.json'
+          if ($LASTEXITCODE -ne 0) { throw 'COMPATIBILITY_DRIFT_COMPARISON_FAILED' }
+
+      - name: Upload the drift report only
+        if: always()
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: mmtl-compatibility-drift-${{ github.run_id }}
+          if-no-files-found: warn
+          path: compatibility-drift.json

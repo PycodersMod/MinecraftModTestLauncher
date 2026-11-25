@@ -30,7 +30,7 @@ function Get-MmtlJavaDiscovery {
     }
     foreach($root in $AdditionalRoots){$roots.Add([pscustomobject]@{home=$root;source='StandardLocation';rank=2})}
     $standardRoots=switch([string]$Platform.OS){
-        'Windows' {@('D:\java','C:\Program Files\Java','C:\Program Files\Eclipse Adoptium','C:\Program Files\Microsoft')}
+        'Windows' {@('D:\java','C:\Program Files\Java','C:\Program Files\Eclipse Adoptium','C:\Program Files\Microsoft')} # public-hygiene: allow-generic-platform-location
         'Linux' {@('/usr/lib/jvm','/usr/java','/opt/java',(Join-Path ([Environment]::GetFolderPath([Environment+SpecialFolder]::UserProfile)) '.sdkman/candidates/java'))}
         'MacOS' {@('/Library/Java/JavaVirtualMachines')}
     }

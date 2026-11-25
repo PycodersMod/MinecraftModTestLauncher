@@ -10,7 +10,10 @@
       "url": "https://github.com/DimensionalDevelopment/Rift",
       "commit": "dfc75ff7254cbbea81535c02ddc5252e384ac806",
       "license": "MIT",
-      "sourceSnapshotSha256": "b6f4f736adce2234149d450eaafb87cc5cf3c20c6e60ea22f9d99d22f1ff202b"
+      "sourceSnapshotSha256": "b6f4f736adce2234149d450eaafb87cc5cf3c20c6e60ea22f9d99d22f1ff202b",
+      "sourceSnapshotDisposition": "PrivateLocalArchive",
+      "publicSourceSnapshotSha256": "438e8b29047f0834704891b0beb18ac5820e6c0ae0f6a496dbf3ae4f8dbb1f28",
+      "sourceSnapshotPrivateManifestSha256": "df8f2c6e60c08196984ef33bf02c1767728b33561ce36af3793bc645d1c03dcf"
     },
     {
       "role": "ForgeGradle",
@@ -38,7 +41,7 @@
   ],
   "toolchain": {
     "gradleVersion": "4.9",
-    "gradleDistributionSha256": "e66e69dce8173dd2004b39ba93586a184628bc6c28461bc771d6835f7f9b0d28",
+    "gradleDistributionSha256": "39e2d5803bbd5eaf6c8efe07067b0e5a00235e8c71318642b2ed262920b27721",
     "javaVersion": "1.8.0_503",
     "javaVendor": "Oracle",
     "javaArchitecture": "x86_64",
@@ -47,13 +50,14 @@
     "sourceBuildDistributions": [
       {
         "version": "4.9",
-        "sha256": "e66e69dce8173dd2004b39ba93586a184628bc6c28461bc771d6835f7f9b0d28"
+        "sha256": "39e2d5803bbd5eaf6c8efe07067b0e5a00235e8c71318642b2ed262920b27721"
       },
       {
         "version": "2.11",
         "sha256": "8d7437082356c9fd6309a4479c8db307673965546daea445c6c72759cd6b1ed6"
       }
-    ]
+    ],
+    "gradleDistributionUrl": "https://services.gradle.org/distributions/gradle-4.9-all.zip"
   },
   "fixtureOnlyAdjustments": [
     {

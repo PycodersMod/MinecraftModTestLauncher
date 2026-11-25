@@ -14,7 +14,7 @@ Describe 'Public Alpha 能力清单' {
 
     It '每条 Supported Agent 声明必须有对应版本 manifest 和 SHA-256 正确的 artifact' {
         foreach($declaration in @($script:capabilities.agentProviders|Where-Object status -CEQ 'Supported')){
-            $matches=@($script:manifests|Where-Object{$_.manifest.providerId -ceq $declaration.providerId -and $_.manifest.loaderId -ceq $declaration.loader -and @($_.manifest.minecraftVersions) -contains $declaration.minecraft})
+            $matches=@($script:manifests|Where-Object{$_.manifest.providerId -ceq $declaration.providerId -and $_.manifest.loaderId -ceq $declaration.loader -and @($_.manifest.minecraftVersions) -contains $declaration.minecraft -and @($_.manifest.loaderVersions) -ccontains [string]$declaration.loaderVersion})
             $matches.Count | Should -Be 1
             $artifact=Join-Path $script:repoRoot (Join-Path 'common/agent' $matches[0].manifest.artifact)
             (Test-Path -LiteralPath $artifact -PathType Leaf) | Should -BeTrue

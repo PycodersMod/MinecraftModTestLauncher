@@ -10,7 +10,7 @@
 
 ## 全局约束
 
-- 固定 Universe SHA-256：`0b394322e696d12e393a02baacdf42f164de563e2a9d936f706fbe1ff89c7606`。
+- 固定 Universe SHA-256：`c15c01a750f74971a1b322cd3d5c2366a2ac05394a3ad56563fde0f75764241c`。
 - 固定 RetroMCP-Java source commit：`ec16b2a8c5907429ac59f7ebe13f28c4cf8052bd`。
 - Registry snapshot SHA-256：`0513d84d885acbfcca81e820410bac8c8dbca90aa73e1b7434bd3c9ddd3a61fa`。
 - 解析必须离线、精确匹配；自动下载/执行均为 false。

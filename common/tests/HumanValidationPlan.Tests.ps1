@@ -43,6 +43,22 @@ Describe '人工实机验证计划' {
         $allSingles.tiers[3].enabled | Should -BeFalse
     }
 
+    It 'IntegratedLAN 门禁描述本地离线身份就绪性而非在线账号认证' {
+        $plan = New-MmtlHumanValidationPlan -Portfolio $script:portfolio -WorkspaceIdentity 'fixture-workspace' -CompletedSingleTargetIds @($script:portfolio.targetId) -CompletedDedicatedTargetIds @($script:portfolio.targetId)
+        $targetId = $plan.representatives[0].targetId
+        $lanRow = $plan.matrix | Where-Object { $_.mode -eq 'IntegratedLAN' -and $_.targetId -eq $targetId } | Select-Object -First 1
+        $lanRow.status | Should -BeExactly 'OFFLINE_IDENTITY_READINESS_REQUIRED'
+        $plan.limits -join ' ' | Should -Not -Match 'AUTH_REQUIRED|合法认证准备|认证由用户负责'
+
+        $readyPlan = New-MmtlHumanValidationPlan -Portfolio $script:portfolio -WorkspaceIdentity 'fixture-workspace' -CompletedSingleTargetIds @($script:portfolio.targetId) -CompletedDedicatedTargetIds @($script:portfolio.targetId) -IntegratedLanIdentityReadyTargetIds @($targetId)
+        $readyRow = $readyPlan.matrix | Where-Object { $_.mode -eq 'IntegratedLAN' -and $_.targetId -eq $targetId } | Select-Object -First 1
+        $readyRow.status | Should -BeExactly 'READY_AFTER_PRIOR_TIERS_AND_OFFLINE_IDENTITY'
+        $readyRow.enabled | Should -BeTrue
+
+        $legacyAliasPlan = New-MmtlHumanValidationPlan -Portfolio $script:portfolio -WorkspaceIdentity 'fixture-workspace' -CompletedSingleTargetIds @($script:portfolio.targetId) -CompletedDedicatedTargetIds @($script:portfolio.targetId) -IntegratedLanAuthReadyTargetIds @($targetId)
+        ($legacyAliasPlan.matrix | Where-Object { $_.mode -eq 'IntegratedLAN' -and $_.targetId -eq $targetId } | Select-Object -First 1).enabled | Should -BeTrue
+    }
+
     It '生成的本地 helper 默认只展示计划，真实 Launch 需要显式双重确认' {
         $plan=New-MmtlHumanValidationPlan -Portfolio $script:portfolio -WorkspaceIdentity 'fixture-workspace'
         $output=Join-Path $TestDrive 'manual-validation'

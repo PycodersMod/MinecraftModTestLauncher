@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-14T04:21:28.0000000+00:00",
+  "targetId": "NeoForge@1.20.5",
+  "targetSpecHash": "6e1e394164981d7774383257b87c4e73c4f3bad76f9c90b71597e6c2de85ef76",
+  "loaderId": "NeoForge",
+  "minecraftId": "1.20.5",
+  "loaderVersion": "20.5.21-beta",
+  "status": "Observed",
+  "probeStrategy": "GradleJavaExecTaskInspection",
+  "evidenceSource": "GradleInitScriptJavaExecInspection",
+  "confidence": "High",
+  "mode": "SameAsBuildJvm",
+  "runtimeJavaControllable": false,
+  "requiresBuildJvmMatch": true,
+  "runtimeJavaMajor": 21,
+  "observedBuildJavaMajor": 21,
+  "observedBuildJavaVersion": "21.0.9",
+  "buildSystem": {
+    "id": "GradleWrapper",
+    "version": "9.2.1"
+  },
+  "toolchain": {
+    "id": "NeoGradle",
+    "version": "7.1.39"
+  },
+  "tasks": [
+    {
+      "task": "runClient",
+      "taskType": "JavaExec",
+      "isJavaExec": true,
+      "launcherSource": "javaLauncher",
+      "executable": "<BUILD_JAVA_HOME>/bin/java.exe"
+    }
+  ],
+  "probeSourceSha256": "031aa68d14831c5dc7bf6d6c90618bf39c5c138c17f795b1a966a8bff4160e87",
+  "buildEvidenceSha256": "b76210ffe964fccbd6c4f47d8c8ffb127075b14846cf55332ae6d624eb9cfd36",
+  "rawProbeEvidenceSha256": "88db97677648c304eafb3048889f7dc1f80cbb88b7aa6a31af0c917432d19091",
+  "platform": {
+    "os": "Windows",
+    "arch": "x64"
+  }
+}

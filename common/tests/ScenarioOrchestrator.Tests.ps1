@@ -24,8 +24,13 @@ Describe 'MMTL 通用 Scenario plan 与 Action contract' {
         $initialized.analysisStatus | Should -BeNullOrEmpty
         $initialized.analysisFindingCount | Should -BeNullOrEmpty
         $initialized.analysisErrorCode | Should -BeNullOrEmpty
+        $initialized.singleWorldEvidence | Should -BeNullOrEmpty
         $initialized.scenarioState | Should -BeNullOrEmpty
         $initialized.sessionState | Should -BeNullOrEmpty
+        $initialized.PSObject.Properties.Name | Should -Contain 'runtimeProcessInventory'
+        $initialized.runtimeProcessInventory | Should -BeNullOrEmpty
+        $initialized.runtimeProcessInventory=[pscustomobject]@{expectedRoleCount=1;actualRoleCount=1}
+        $initialized.runtimeProcessInventory.actualRoleCount | Should -Be 1
         $initialized.analysisStatus='Complete'
         $initialized.scenarioState='Completed'
         $initialized.analysisStatus | Should -Be 'Complete'
@@ -39,6 +44,98 @@ Describe 'MMTL 通用 Scenario plan 与 Action contract' {
         $plan.steps.IndexOf('WaitAgentLanReady') | Should -BeLessThan $plan.steps.IndexOf('StartGuests')
         $plan.loopbackOnly | Should -BeTrue
         $plan.nonInteractive | Should -BeTrue
+    }
+
+    It '按 clientCount 和完整 Guest 名称模板生成 Single 或 Host 加 N 个 Guest' {
+        $single=New-MmtlScenarioPlan -Mode Single -ClientCount 1 -HostUsername 'Solo'
+        @($single.roles).Count | Should -Be 1
+        $single.roles[0].username | Should -BeExactly 'Solo'
+        @($single.roles|Where-Object role -eq 'Guest').Count | Should -Be 0
+
+        $lan=New-MmtlScenarioPlan -Mode IntegratedLAN -ClientCount 4 -HostUsername 'Host' -GuestNamePattern 'G{index}X'
+        @($lan.roles).Count | Should -Be 4
+        $lan.roles.role | Should -Be @('Host','Guest','Guest','Guest')
+        $lan.roles.username | Should -Be @('Host','G1X','G2X','G3X')
+        $lan.clientCount | Should -Be 4
+    }
+
+    It '依据受管 PID 清单断言 Single 运行时恰好登记一个匹配的 Client' {
+        $session=Join-Path $TestDrive 'single-runtime-inventory'
+        New-Item -ItemType Directory -Path $session -Force|Out-Null
+        $plan=New-MmtlScenarioPlan -Mode Single -ClientCount 1 -HostUsername 'Solo'
+        @([pscustomobject]@{PID=101;Role='Build';Username='';StatePath='build.exit.json'},[pscustomobject]@{PID=202;Role='Client';Username='Solo';StatePath='client.exit.json'})|ConvertTo-Json -Depth 8|Set-Content -LiteralPath (Join-Path $session 'pids.json')
+        $inventory=Assert-MmtlScenarioProcessInventory -SessionPath $session -Plan $plan -StartedProcessIds @(202)
+        $inventory.expectedRoleCount | Should -Be 1
+        $inventory.actualRoleCount | Should -Be 1
+        $inventory.processes[0].PID | Should -Be 202
+
+        @([pscustomobject]@{PID=101;Role='Build';Username='';StatePath='build.exit.json'},[pscustomobject]@{PID=202;Role='Client';Username='Solo';StatePath='client.exit.json'},[pscustomobject]@{PID=303;Role='Guest';Username='Guest_1';StatePath='guest.exit.json'})|ConvertTo-Json -Depth 8|Set-Content -LiteralPath (Join-Path $session 'pids.json')
+        {Assert-MmtlScenarioProcessInventory -SessionPath $session -Plan $plan -StartedProcessIds @(202)}|Should -Throw '*SCENARIO_RUNTIME_PROCESS_INVENTORY_MISMATCH*'
+        @([pscustomobject]@{PID=101;Role='Build';Username='';StatePath='build.exit.json'},[pscustomobject]@{PID=202;Role='Client';Username='Solo';StatePath='client.exit.json'})|ConvertTo-Json -Depth 8|Set-Content -LiteralPath (Join-Path $session 'pids.json')
+        {Assert-MmtlScenarioProcessInventory -SessionPath $session -Plan $plan -StartedProcessIds @(909)}|Should -Throw '*SCENARIO_RUNTIME_PROCESS_INVENTORY_MISMATCH*'
+    }
+
+    It '为 IntegratedLAN 暴露可恢复的 Host、世界、发布、逐 Guest 与断言阶段' {
+        $plan=New-MmtlScenarioPlan -Mode IntegratedLAN -ClientCount 3
+        $plan.lifecycleStages | Should -Be @('HostStarting','HostReady','WorldReady','LanPublishing','LanReady','GuestsStarting','GuestsReady','Asserting','Stopping')
+        (Test-MmtlScenarioTransition -Current HostReady -Next WorldReady) | Should -BeTrue
+        (Test-MmtlScenarioTransition -Current WorldReady -Next LanPublishing) | Should -BeTrue
+        (Test-MmtlScenarioTransition -Current LanPublishing -Next LanReady) | Should -BeTrue
+        (Test-MmtlScenarioTransition -Current LanReady -Next GuestsStarting) | Should -BeTrue
+        (Test-MmtlScenarioTransition -Current GuestsStarting -Next GuestsReady) | Should -BeTrue
+        (Test-MmtlScenarioTransition -Current GuestsReady -Next Asserting) | Should -BeTrue
+        (Test-MmtlScenarioTransition -Current HostReady -Next GuestsStarting) | Should -BeFalse
+        (Test-MmtlScenarioTransition -Current LanPublishing -Next GuestsStarting) | Should -BeFalse
+        (Test-MmtlScenarioTransition -Current GuestsStarting -Next Asserting) | Should -BeFalse
+    }
+
+    It '依据精确目标能力区分 Native LAN、Single 和明确不支持状态' {
+        $single=Resolve-MmtlScenarioMode -EffectiveConfig ([pscustomobject]@{mode='Single';clientCount=1;transport='None'}) -TargetCapabilities ([pscustomobject]@{})
+        $single.status | Should -BeExactly 'Supported'
+        $single.mode | Should -BeExactly 'Single'
+        $single.multiplayer | Should -BeExactly 'NotRequested'
+
+        $supported=Resolve-MmtlScenarioMode -EffectiveConfig ([pscustomobject]@{mode='IntegratedLAN';clientCount=2;transport='IntegratedLAN'}) -TargetCapabilities ([pscustomobject]@{nativeIntegratedLAN=$true;agentIntegratedLAN=$true})
+        $supported.status | Should -BeExactly 'Supported'
+        $supported.mode | Should -BeExactly 'IntegratedLAN'
+
+        $unsupported=Resolve-MmtlScenarioMode -EffectiveConfig ([pscustomobject]@{mode='IntegratedLAN';clientCount=2;transport='IntegratedLAN'}) -TargetCapabilities ([pscustomobject]@{nativeIntegratedLAN=$false;agentIntegratedLAN=$true})
+        $unsupported.status | Should -BeExactly 'Unsupported'
+        $unsupported.reason | Should -BeExactly 'NATIVE_INTEGRATED_LAN_UNSUPPORTED'
+    }
+
+    It '历史 Dedicated 等价路径要求精确的旧版本与可信服务器制品证明' {
+        $config=[pscustomobject]@{mode='HistoricalDedicatedEquivalent';clientCount=2;transport='HistoricalDedicatedEquivalent';targetId='Forge@1.2.5'}
+        $capabilities=[pscustomobject]@{minecraftId='1.2.5';minecraftType='release';historicalDedicatedEquivalent=$true}
+        $nativeConfig=[pscustomobject]@{mode='IntegratedLAN';clientCount=2;transport='IntegratedLAN';targetId='Forge@1.2.5';minecraftId='1.2.5';minecraftType='release'}
+        $nativeResult=Resolve-MmtlScenarioMode -EffectiveConfig $nativeConfig -TargetCapabilities ([pscustomobject]@{nativeIntegratedLAN=$true;agentIntegratedLAN=$true})
+        $nativeResult.dimensionStatus.NativeIntegratedLAN | Should -BeExactly 'UnsupportedByMinecraftVersion'
+
+        $missing=Resolve-MmtlScenarioMode -EffectiveConfig $config -TargetCapabilities $capabilities
+        $missing.status | Should -BeExactly 'Unsupported'
+        $missing.reason | Should -BeExactly 'HISTORICAL_SERVER_ARTIFACT_NOT_TRUSTED'
+        $missing.dimensionStatus.NativeIntegratedLAN | Should -BeExactly 'UnsupportedByMinecraftVersion'
+
+        $forgedArtifact=[pscustomobject]@{
+            targetId='Forge@1.2.5';minecraftId='1.2.5';minecraftType='release';trust='VerifiedHistorical'
+            artifactSha256=('a' * 64);catalogSha256=('b' * 64);sourceType='VerifiedLocalArchive';sourceEvidenceSha256=('c' * 64)
+        }
+        $forgedCapabilities=[pscustomobject]@{minecraftId='1.2.5';minecraftType='release';historicalDedicatedEquivalent=$true;historicalServerArtifact=$forgedArtifact}
+        $forged=Resolve-MmtlScenarioMode -EffectiveConfig $config -TargetCapabilities $forgedCapabilities
+        $forged.status | Should -BeExactly 'Unsupported'
+        $forged.reason | Should -BeExactly 'HISTORICAL_SERVER_ARTIFACT_NOT_TRUSTED'
+
+        $baseCapabilities=[pscustomobject]@{minecraftId='1.2.5';minecraftType='release';historicalDedicatedEquivalent=$true;historicalServerArtifactPath=(Join-Path $TestDrive 'untrusted-server.jar')}
+        $baseArtifact=Resolve-MmtlScenarioMode -EffectiveConfig $config -TargetCapabilities $baseCapabilities
+        $baseArtifact.status | Should -BeExactly 'Unsupported'
+        $baseArtifact.reason | Should -BeExactly 'HISTORICAL_SERVER_ARTIFACT_NOT_TRUSTED'
+
+        $modern=[pscustomobject]@{mode='HistoricalDedicatedEquivalent';clientCount=2;transport='HistoricalDedicatedEquivalent';targetId='Forge@1.3.1'}
+        $modernArtifact=[pscustomobject]@{targetId='Forge@1.3.1';minecraftId='1.3.1';minecraftType='release';trust='VerifiedHistorical';artifactSha256=('a' * 64);catalogSha256=('b' * 64);sourceType='VerifiedLocalArchive';sourceEvidenceSha256=('c' * 64)}
+        $modernCapabilities=[pscustomobject]@{minecraftId='1.3.1';minecraftType='release';historicalDedicatedEquivalent=$true;historicalServerArtifact=$modernArtifact}
+        $modernResult=Resolve-MmtlScenarioMode -EffectiveConfig $modern -TargetCapabilities $modernCapabilities
+        $modernResult.status | Should -BeExactly 'Unsupported'
+        $modernResult.reason | Should -BeExactly 'HISTORICAL_EQUIVALENT_NOT_APPLICABLE_TO_MODERN_VERSION'
     }
 
     It '限制单人/联机人数、并发数、用户名长度和身份冲突' {
@@ -85,10 +182,23 @@ Describe 'MMTL 通用 Scenario plan 与 Action contract' {
 }
 
 Describe 'Scenario plan CLI' {
+    It 'v3 配置仅使用 clientCount 时计划人数和身份模板保持一致' {
+        $repoRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $config=Get-Content -LiteralPath (Join-Path $repoRoot 'common/config/launcher.config.example.json') -Raw|ConvertFrom-Json
+        $profile=$config.profiles.'single-example';$profile.mode='IntegratedLAN';$profile.clientCount=3;$profile.multiplayer.transport='IntegratedLAN';$profile.identity.hostName='LanHost';$profile.identity.guestNamePattern='Guest_{index}';$profile.project='';$profile.PSObject.Properties.Remove('players')
+        $config.profiles.'single-example'=$profile
+        $configPath=Join-Path $TestDrive 'scenario-v3-count.json';$config|ConvertTo-Json -Depth 20|Set-Content -LiteralPath $configPath -Encoding utf8
+        $output=@(& (Get-Command pwsh).Source -NoProfile -File $script:platformLauncher --config-file $configPath --scenario-plan --json 2>&1)
+        if($LASTEXITCODE -ne 0){throw "Scenario plan CLI failed ($LASTEXITCODE): $($output -join [Environment]::NewLine)"}
+        $result=($output -join "`n")|ConvertFrom-Json
+        $result.plan.clientCount | Should -Be 3
+        $result.plan.roles.username | Should -Be @('LanHost','Guest_1','Guest_2')
+    }
+
     It '在陌生空项目字段下仍输出纯净 JSON 且不触发项目导入或启动' {
         $repoRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
         $config=Get-Content -LiteralPath (Join-Path $repoRoot 'common/config/launcher.config.example.json') -Raw|ConvertFrom-Json
-        $profile=$config.profiles.'single-example';$profile.mode='IntegratedLAN';$profile.players=3;$profile.project=''
+        $profile=$config.profiles.'single-example';$profile.mode='IntegratedLAN';$profile.players=3;$profile.clientCount=3;$profile.multiplayer.transport='IntegratedLAN';$profile.project=''
         $config.profiles.'single-example'=$profile
         $config.defaultProfile='single-example'
         $configPath=Join-Path $TestDrive 'scenario-cli.json';$config|ConvertTo-Json -Depth 20|Set-Content -LiteralPath $configPath -Encoding utf8
@@ -162,11 +272,47 @@ Describe 'Scenario plan CLI' {
     It 'STOP_ALL 按 Session 登记回收进程并把 Scenario 转到 Stopped' {
         $session=Join-Path $TestDrive 'stop-all-session';New-Item -ItemType Directory -Path $session -Force|Out-Null
         $plan=New-MmtlScenarioPlan -Mode IntegratedLAN -Players 2;Initialize-MmtlScenarioState -SessionPath $session -SessionId 'stop_all_session' -Plan $plan|Out-Null
-        Set-MmtlScenarioState $session -NextState Building -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState SessionReady -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState HostStarting -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState HostReady -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState GuestsStarting -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState GuestsReady -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState Observing -EventCode TEST_STEP|Out-Null
-        [IO.File]::WriteAllText((Join-Path $session 'pids.json'),(@([pscustomobject]@{PID=1;Role='Client';Username='MMTL_C1'},[pscustomobject]@{PID=2;Role='Host';Username='MMTL_Host'})|ConvertTo-Json -Compress),[Text.UTF8Encoding]::new($false))
+        Set-MmtlScenarioState $session -NextState Building -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState SessionReady -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState HostStarting -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState HostReady -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState WorldReady -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState LanPublishing -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState LanReady -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState GuestsStarting -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState GuestsReady -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState Asserting -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState Observing -EventCode TEST_STEP|Out-Null
+        [IO.File]::WriteAllText((Join-Path $session 'pids.json'),(@([pscustomobject]@{PID=3;Role='Server';Username=''},[pscustomobject]@{PID=2;Role='Host';Username='MMTL_Host'},[pscustomobject]@{PID=1;Role='Client';Username='MMTL_G1'})|ConvertTo-Json -Compress),[Text.UTF8Encoding]::new($false))
         $script:stoppedRoles=@();$result=Invoke-MmtlScenarioAction -SessionPath $session -Action STOP_ALL -StopProcess {param($path,$pidValue)$script:stoppedRoles+= $pidValue;$true}
-        $result.result.stoppedCount | Should -Be 2;(Get-MmtlScenarioStatus $session).state | Should -Be 'Stopped';$script:stoppedRoles | Should -Be @(1,2)
+        $result.result.stoppedCount | Should -Be 3;(Get-MmtlScenarioStatus $session).state | Should -Be 'Stopped';$script:stoppedRoles | Should -Be @(1,2,3)
         $events=@(Get-Content (Join-Path $session 'scenario-events.jsonl')|ForEach-Object{$_|ConvertFrom-Json});$events.eventCode | Should -Contain 'SCENARIO_SAFE_STOP_COMPLETED'
+    }
+
+    It 'Host 在 Guest 启动前中断后进入 Failed 并只回收 Host' {
+        $session=Join-Path $TestDrive 'failed-host-session';New-Item -ItemType Directory -Path $session -Force|Out-Null
+        Initialize-MmtlScenarioState -SessionPath $session -SessionId 'failed_host_session' -Plan (New-MmtlScenarioPlan -Mode IntegratedLAN -Players 2)|Out-Null
+        Set-MmtlScenarioState $session -NextState Building -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState SessionReady -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState HostStarting -EventCode TEST_STEP|Out-Null
+        Set-MmtlScenarioState $session -NextState Failed -EventCode HOST_INTERRUPTED|Out-Null
+        (Test-MmtlScenarioTransition -Current Failed -Next GuestsStarting) | Should -BeFalse
+        Set-MmtlScenarioState $session -NextState Stopping -EventCode SCENARIO_SAFE_STOP_STARTED|Out-Null
+        [IO.File]::WriteAllText((Join-Path $session 'pids.json'),(@([pscustomobject]@{PID=2;Role='Host';Username='MMTL_Host'})|ConvertTo-Json -Compress),[Text.UTF8Encoding]::new($false))
+        $script:failureStopOrder=@();$stop=Invoke-MmtlScenarioAction -SessionPath $session -Action STOP_ALL -StopProcess {param($path,$pidValue)$script:failureStopOrder+= $pidValue;$true}
+        $script:failureStopOrder | Should -Be @(2)
+        (Get-MmtlScenarioStatus $session).state | Should -Be 'Stopped'
+    }
+
+    It 'IntegratedLAN 端口绑定冲突时不得启动 Guest 且只回收 Host' {
+        $session=Join-Path $TestDrive 'port-conflict-session';New-Item -ItemType Directory -Path $session -Force|Out-Null
+        Initialize-MmtlScenarioState -SessionPath $session -SessionId 'port_conflict_session' -Plan (New-MmtlScenarioPlan -Mode IntegratedLAN -Players 2)|Out-Null
+        Set-MmtlScenarioState $session -NextState Building -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState SessionReady -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState HostStarting -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState HostReady -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState WorldReady -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState LanPublishing -EventCode TEST_STEP|Out-Null
+        (Test-MmtlScenarioTransition -Current LanPublishing -Next GuestsStarting) | Should -BeFalse
+        Set-MmtlScenarioState $session -NextState Failed -EventCode LAN_PORT_CONFLICT|Out-Null;Set-MmtlScenarioState $session -NextState Stopping -EventCode SCENARIO_SAFE_STOP_STARTED|Out-Null
+        [IO.File]::WriteAllText((Join-Path $session 'pids.json'),(@([pscustomobject]@{PID=15;Role='Host';Username='MMTL_Host'})|ConvertTo-Json -Compress),[Text.UTF8Encoding]::new($false))
+        $script:portConflictStops=@();$null=Invoke-MmtlScenarioAction -SessionPath $session -Action STOP_ALL -StopProcess {param($path,$pidValue)$script:portConflictStops+= $pidValue;$true}
+        $script:portConflictStops | Should -Be @(15)
+        (Get-MmtlScenarioStatus $session).state | Should -Be 'Stopped'
+    }
+
+    It 'Guest 中断后按 Guest 再 Host 安全停止并记录终态' {
+        $session=Join-Path $TestDrive 'failed-guest-session';New-Item -ItemType Directory -Path $session -Force|Out-Null
+        Initialize-MmtlScenarioState -SessionPath $session -SessionId 'failed_guest_session' -Plan (New-MmtlScenarioPlan -Mode IntegratedLAN -Players 2)|Out-Null
+        Set-MmtlScenarioState $session -NextState Building -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState SessionReady -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState HostStarting -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState HostReady -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState WorldReady -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState LanPublishing -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState LanReady -EventCode TEST_STEP|Out-Null;Set-MmtlScenarioState $session -NextState GuestsStarting -EventCode TEST_STEP|Out-Null
+        Set-MmtlScenarioState $session -NextState Failed -EventCode GUEST_INTERRUPTED|Out-Null;Set-MmtlScenarioState $session -NextState Stopping -EventCode SCENARIO_SAFE_STOP_STARTED|Out-Null
+        [IO.File]::WriteAllText((Join-Path $session 'pids.json'),(@([pscustomobject]@{PID=22;Role='Host';Username='MMTL_Host'},[pscustomobject]@{PID=21;Role='Client';Username='MMTL_G1'})|ConvertTo-Json -Compress),[Text.UTF8Encoding]::new($false))
+        $script:guestFailureStops=@();$null=Invoke-MmtlScenarioAction -SessionPath $session -Action STOP_ALL -StopProcess {param($path,$pidValue)$script:guestFailureStops+= $pidValue;$true}
+        $script:guestFailureStops | Should -Be @(21,22)
+        (Get-MmtlScenarioStatus $session).state | Should -Be 'Stopped'
     }
 
 }

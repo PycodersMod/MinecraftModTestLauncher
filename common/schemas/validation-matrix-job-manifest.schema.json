@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "manifestHash", "jobs", "jobsHash"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "manifestHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "jobsHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "jobs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["targetId", "projectPath", "project", "target", "cacheIdentity", "scenario"],
+        "properties": {
+          "targetId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._@+() -]{1,179}$" },
+          "projectPath": { "type": "string", "minLength": 1 },
+          "project": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["minecraftVersion", "loader", "loaderVersion", "wrapper"],
+            "properties": {
+              "minecraftVersion": { "type": "string", "minLength": 1 },
+              "loader": { "type": "string", "minLength": 1 },
+              "loaderVersion": { "type": "string", "minLength": 1 },
+              "wrapper": { "type": "string", "minLength": 1 },
+              "javaMajor": { "type": "integer", "minimum": 1, "maximum": 100 },
+              "toolchain": { "type": "string", "minLength": 1 },
+              "toolchainVersion": { "type": "string", "minLength": 1 },
+              "buildSystem": { "type": "string", "minLength": 1 },
+              "buildSystemVersion": { "type": "string", "minLength": 1 }
+            }
+          },
+          "target": {
+            "type": "object",
+            "required": ["targetId", "minecraftId", "loaderStack", "loaderVersion", "sourceFixture"],
+            "properties": {
+              "targetId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._@+() -]{1,179}$" },
+              "minecraftId": { "type": "string", "minLength": 1 },
+              "loaderVersion": { "type": "string", "minLength": 1 },
+              "loaderStack": {
+                "type": "object",
+                "required": ["primary"],
+                "properties": {
+                  "primary": {
+                    "type": "object",
+                    "required": ["id", "version"],
+                    "properties": {"id": {"type": "string", "minLength": 1}, "version": {"type": "string", "minLength": 1}}
+                  }
+                }
+              },
+              "sourceFixture": { "type": "object" },
+              "task": { "type": "string" }
+            }
+          },
+          "cacheIdentity": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["targetId", "universeHash", "sourceHash", "toolchainHash", "targetSpecHash", "agentHash"],
+            "properties": {
+              "targetId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._@+() -]{1,179}$" },
+              "universeHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              "sourceHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              "toolchainHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              "targetSpecHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              "agentHash": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" }
+            }
+          },
+          "scenario": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["clientCount", "identityKind", "transportPolicy", "requiredDimensions"],
+            "properties": {
+              "clientCount": { "const": 2 },
+              "identityKind": { "const": "Offline" },
+              "transportPolicy": { "const": "NativeIntegratedLANOrExplicitHistoricalDedicatedEquivalent" },
+              "requiredDimensions": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": { "enum": ["BuildExactPass", "RuntimeBindingPass", "ClientLaunchPass", "MultiWindowPass", "SingleAssertionPass", "MultiplayerJoinAndAssertionPass", "TargetReportPass", "SafeStopPass"] },
+                "minItems": 8,
+                "maxItems": 8
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

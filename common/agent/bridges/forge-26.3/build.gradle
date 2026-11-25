@@ -1,0 +1,144 @@
+// This is a minimal setup of a Forge mod workspace.
+// For complex examples (including AccessTransformers, Jar-in-Jar, and Mixin), see our examples repository.
+// https://github.com/MinecraftForge/MDKExamples
+
+plugins {
+    id 'java'
+    id 'idea'
+    id 'eclipse'
+    id 'net.minecraftforge.gradle' version '[7.0.17,8)'
+}
+
+version = '0.1.0'
+group = 'org.pycodersmod.mmtl'
+base { archivesName = 'mmtl-agent-forge-26.3' }
+def coreJarFile = rootProject.file("../../core/build/libs/mmtl-agent-core-${project.version}.jar")
+
+// Mojang ships Java 25 to end users in 26.1+, so your mod should target Java 25.
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+
+// Include generated resources
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+minecraft {
+    runs {
+        configureEach {
+            workingDir = layout.projectDirectory.dir('run')
+
+            systemProperty 'eventbus.api.strictRuntimeChecks', 'true'
+            systemProperty 'forge.enabledGameTestNamespaces', 'mmtl_agent'
+        }
+
+        register('client')
+
+        register('server') {
+            args '--nogui'
+        }
+
+        register('gameTestServer')
+
+        register('data') {
+            workingDir = layout.projectDirectory.dir('run-data')
+
+            args '--mod', 'mmtl_agent', '--all', '--output', layout.projectDirectory.dir('src/generated/resources'), '--existing', layout.projectDirectory.dir('src/main/resources')
+        }
+    }
+}
+
+repositories {
+    minecraft.mavenizer(it) // In Kotlin, it = this
+    maven fg.forgeMaven
+    maven fg.minecraftLibsMaven
+    mavenCentral()
+}
+
+dependencies {
+    implementation minecraft.dependency('net.minecraftforge:forge:26.3-66.0.9')
+    implementation 'org.pycodersmod.mmtl:mmtl-agent-core:0.1.0'
+    annotationProcessor 'net.minecraftforge:eventbus-validator:7.0.6'
+    testImplementation 'junit:junit:4.13.2'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    // Use the UTF-8 charset for Java compilation
+    // This is done by default in Java 18+, but this ensures it no matter the Java or Gradle version
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+}
+dependencies {
+    compileOnly 'org.spongepowered:mixin:0.8.5'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+}
+sourceSets.main.java.srcDirs = ['src/main/java']
+sourceSets.main.resources.srcDirs = ['src/main/resources']
+def generatedRefmap = layout.buildDirectory.file('generated/mixin/mmtl-agent.refmap.json')
+def stagedProviderDirectory = rootProject.layout.projectDirectory.dir('../../providers/forge-26.3').asFile
+def agentVersion = project.version.toString()
+def stagedAgentJar = layout.buildDirectory.file("libs/mmtl-agent-forge-26.3-${agentVersion}.jar")
+sourceSets.main.resources.srcDir(layout.buildDirectory.dir('generated/mixin'))
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += ["-AoutRefMapFile=${generatedRefmap.get().asFile.absolutePath}"]
+    doFirst { generatedRefmap.get().asFile.parentFile.mkdirs() }
+}
+tasks.named('processResources') { dependsOn tasks.named('compileJava') }
+
+jar {
+    dependsOn gradle.includedBuild('core').task(':jar')
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { zipTree(coreJarFile) }
+    manifest.attributes(['FMLModType':'MOD', 'MixinConfigs':'mmtl-agent.mixins.json'])
+}
+
+tasks.named('test') {
+    useJUnit()
+    dependsOn gradle.includedBuild('core').task(':test')
+}
+
+def verifyMmtlAgentJarTask = tasks.register('verifyMmtlAgentJar') {
+    dependsOn 'jar'
+    doLast {
+        File agentJarFile = stagedAgentJar.get().asFile
+        java.util.zip.ZipFile archive = new java.util.zip.ZipFile(agentJarFile)
+        try {
+            ['MmtlForgeAgent.class', 'MmtlForgeClientBootstrap.class', 'MmtlForgeClientEvents.class',
+             'AgentHandshake.class', 'AgentHandshake$Context.class', 'AgentEventSink.class'].each { className ->
+                if (!archive.getEntry("org/pycodersmod/mmtl/agent/${className}")) throw new GradleException("Forge 26.3 Agent JAR is missing ${className}")
+            }
+            ['META-INF/mods.toml', 'mmtl-agent.mixins.json', 'mmtl-agent.refmap.json'].each { entry ->
+                if (!archive.getEntry(entry)) throw new GradleException("Forge 26.3 Agent JAR is missing ${entry}")
+            }
+            byte[] coreHandshake = archive.getInputStream(archive.getEntry('org/pycodersmod/mmtl/agent/AgentHandshake.class')).bytes
+            int coreClassMajor = ((coreHandshake[6] & 0xff) << 8) | (coreHandshake[7] & 0xff)
+            if (coreClassMajor != 52) throw new GradleException("Forge 26.3 Agent Core must remain Java 8 bytecode (major=${coreClassMajor})")
+            def jarManifest = new java.util.jar.Manifest(archive.getInputStream(archive.getEntry('META-INF/MANIFEST.MF')))
+            if (jarManifest.mainAttributes.getValue('FMLModType') != 'MOD' || jarManifest.mainAttributes.getValue('MixinConfigs') != 'mmtl-agent.mixins.json') {
+                throw new GradleException('Forge 26.3 Agent JAR is missing its Forge/Mixin manifest attributes')
+            }
+            String metadata = archive.getInputStream(archive.getEntry('META-INF/mods.toml')).getText('UTF-8')
+            if (!metadata.contains('versionRange="[66,67)"') || !metadata.contains('versionRange="[26.3,26.4)"')) {
+                throw new GradleException('Forge 26.3 Agent JAR has incorrect Loader/Minecraft bounds')
+            }
+            String mixinConfig = archive.getInputStream(archive.getEntry('mmtl-agent.mixins.json')).getText('UTF-8')
+            ['IntegratedServerLoopbackMixin', 'LanServerPingerMixin', 'IntegratedServerInvoker', 'CreateWorldScreenInvoker'].each { name ->
+                if (!mixinConfig.contains(name)) throw new GradleException("Forge 26.3 Agent JAR is missing required client Mixin ${name}")
+            }
+        } finally { archive.close() }
+    }
+}
+
+tasks.register('stageMmtlAgent') {
+    dependsOn 'verifyMmtlAgentJar'
+    doLast {
+        File destinationDirectory = stagedProviderDirectory
+        destinationDirectory.mkdirs()
+        File sourceJar = stagedAgentJar.get().asFile
+        File destinationJar = new File(destinationDirectory, "mmtl-agent-forge-26.3-${agentVersion}.jar")
+        destinationJar.bytes = sourceJar.bytes
+        String digest = java.security.MessageDigest.getInstance('SHA-256').digest(destinationJar.bytes).encodeHex().toString()
+        def manifest = [schemaVersion:1,providerId:'forge-26.3',loaderId:'Forge',minecraftVersions:['26.3'],loaderVersions:['26.3-66.0.9'],agentVersion:agentVersion,artifact:'providers/forge-26.3/mmtl-agent-forge-26.3-0.1.0.jar',sha256:digest,minJavaMajor:25,roles:['Client','Host','Guest'],capabilities:['OfflineSessionHandshake','IntegratedServerEvents','GuestJoinObservation','OfflineIntegratedLanHost','LoopbackOnlyListener','LanDiscoverySuppressed','GuestLoopbackVerification','SignedSessionActionQueue','SessionScreenshot','ManagedClientCommand','SignedSharedBlockMarkerAssertion']]
+        new File(destinationDirectory, 'agent-manifest.json').text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(manifest)) + System.lineSeparator()
+    }
+}

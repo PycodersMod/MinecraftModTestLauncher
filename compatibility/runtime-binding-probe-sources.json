@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "currentSourcePath": "common/src/RuntimeBindingProbe.psm1",
+  "currentSourceSha256": "e4c4af8363bd75c59d159021df8e751b6c276717bc7b8f83c9d876e9c5d52353",
+  "historicalSources": [
+    {
+      "sha256": "39dc6f491d6d830f544d3b02bee3a60288bb0e3fece6fa5967cea490d6944804",
+      "rationale": "Previously current combined fingerprint retained after fixing empty dynamic-version pin resolution in the RuntimeBinding probe on 2026-10-18."
+    },
+    {
+      "sha256": "02d06bd7e763b97d19900b63c6c45faf09ddb8dd120a33f9c832b7ea7b8186a5",
+      "rationale": "Previously current fingerprint retained by hash-verified exact-target RuntimeBinding evidence indexed before the 2026-10-18 source update."
+    },
+    {
+      "sha256": "aa2f98e7e9b554dcb84945d6b10323d1e94ce7e1fda1ba0e2066ca4fe26df3ca",
+      "rationale": "Fingerprint used by archived RuntimeBinding evidence before synchronizing the dual-JVM source manifest file fingerprints on 2026-10-12."
+    },
+    {
+      "sha256": "74a7346127410427f38ea5905eed974f16e17a68bf50e325f29f6f84e3312b8f",
+      "rationale": "Fingerprint used by archived RuntimeBinding evidence before the dual-JVM runtime task launcher injection refactor on 2026-10-12."
+    },
+    {
+      "sha256": "c8c62577a8f2c6d932c2f7a917812b6d83b3002dec71706bed2c6488abde34fa",
+      "rationale": "Fingerprint used by the validated RuntimeBinding probe before adding bounded Gradle process-tree timeout handling on 2026-10-12."
+    },
+    {
+      "sha256": "208115e733a69e2db09f6c29966474d33d52e6c44b33e8ae35f6506871619ab6",
+      "rationale": "Fingerprint already recorded in previously validated RuntimeBinding evidence before the Gradle 2.0 CLI compatibility change."
+    },
+    {
+      "sha256": "88ffc5fcc2c91e5a672d6a2e42a16346f92bfecacbda691f568b88d29f5a62bb",
+      "rationale": "Fingerprint accepted before the NeoGradle lazy run-task probe and retryable-failure cache fix on 2026-10-14."
+    },
+    {
+      "sha256": "031aa68d14831c5dc7bf6d6c90618bf39c5c138c17f795b1a966a8bff4160e87",
+      "rationale": "Fingerprint used by previously validated RuntimeBinding evidence before fixing Gradle 4.9 dry-run task observation on 2026-10-14."
+    },
+    {
+      "sha256": "29dcde87f28db0b00941f9e14168688b181d45099e708d739fdc41d1e2f1db2f",
+      "rationale": "Fingerprint for previously recorded RuntimeBinding evidence before forwarding selected runtime JVM arguments into Gradle runClient/runServer JavaExec tasks on 2026-10-15."
+    },
+    {
+      "sha256": "03daeb4d46ed96e557cc198eabde086eab28d424bf4ee8bf483eb0d4715326d8",
+      "rationale": "Fingerprint used by existing validated RuntimeBinding evidence before the Gradle 2.7 configureEach compatibility fix on 2026-10-17."
+    },
+    {
+      "sha256": "f40fa383058a31843dae64a7900a603748964eb420f886fc0662e5c69b88433b",
+      "rationale": "Previously current RuntimeBinding probe fingerprint retained after the pinned local Forge Maven mirror and exact dynamic-resolution integration on 2026-10-18."
+    },
+    {
+      "sha256": "2a087428d971c9103351a6553105e9f67e00e3df421448f1258bcb50e7aa5327",
+      "rationale": "Previously current fingerprint before adding artifact metadata fallback for trusted local Maven mirrors on 2026-10-18."
+    }
+  ],
+  "currentSourceFiles": [
+    {
+      "path": "common/src/RunTaskJvmBinding.psm1",
+      "sha256": "53e2462122161a8d37ae0d77938f8c352170de91610266bd026777e4c9b3f01a"
+    },
+    {
+      "path": "common/src/RuntimeBindingProbe.psm1",
+      "sha256": "fe089c4846a583299ed5a2a8a693192f269ad0e0eb608094bf7af5f427758fb3"
+    }
+  ]
+}

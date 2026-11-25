@@ -145,8 +145,14 @@ function New-MmtlCompatibilityUniverse {
                 sourceClass = [string]$snapshot.sourceClass; trustClass = [string]$snapshot.trustClass
                 transportSecurity = [string]$snapshot.transportSecurity; maintenanceState = [string]$snapshot.maintenanceState
                 availability = 'Available'; buildToolchainCandidates = @()
-                runtimeJavaRequirement = [pscustomobject]@{ major = $null; source = 'Unknown'; confidence = 'Unknown' }
-                buildJavaRequirement = [pscustomobject]@{ major = $null; source = 'Unknown'; confidence = 'Unknown' }
+                runtimeJavaRequirement = [pscustomobject][ordered]@{
+                    major = $null; component = $null; source = 'Unknown'; confidence = 'Unknown'
+                    requirementKind = 'Unknown'; metadataStatus = 'Unknown'; provenance = $null
+                }
+                buildJavaRequirement = [pscustomobject][ordered]@{
+                    major = $null; component = $null; source = 'Unknown'; confidence = 'Unknown'
+                    requirementKind = 'Unknown'; metadataStatus = 'Unknown'; provenance = $null
+                }
                 agentRequirement = [pscustomobject]@{ status = 'Unknown'; source = 'Unknown' }
                 status = 'Unknown'
             })
@@ -178,8 +184,9 @@ function New-MmtlCompatibilityUniverse {
         }
     })
     $candidateJson = ConvertTo-Json -InputObject $candidateMaterial -Depth 30 -Compress
+    $auditStatus = if ($loaderIds.Count -gt 0 -and $issues.Count -eq 0) { 'FROZEN' } else { 'IN_PROGRESS' }
     [pscustomobject][ordered]@{
-        schemaVersion = 1; auditStatus = 'IN_PROGRESS'; generatedAt = $GeneratedAt.ToUniversalTime().ToString('o')
+        schemaVersion = 1; auditStatus = $auditStatus; generatedAt = $GeneratedAt.ToUniversalTime().ToString('o')
         catalogHash = Get-MmtlCompatibilitySha256 -Text $canonicalSourceMaterial
         candidateCatalogHash = Get-MmtlCompatibilitySha256 -Text $candidateJson
         minecraftReleaseCount = $releaseCount; loaderCount = $loaderIds.Count; strategyCount = $sortedManualStrategies.Count

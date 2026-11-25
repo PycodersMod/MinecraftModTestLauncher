@@ -18,17 +18,19 @@ function Assert-MmtlAgentNoReparsePath {
 
 function Get-MmtlAgentProviderStatus {
     [CmdletBinding()]
-    param([Parameter(Mandatory)][string]$AgentRoot,[Parameter(Mandatory)][string]$LoaderId,[Parameter(Mandatory)][string]$MinecraftVersion)
+    param([Parameter(Mandatory)][string]$AgentRoot,[Parameter(Mandatory)][string]$LoaderId,[Parameter(Mandatory)][string]$MinecraftVersion,[Parameter(Mandatory)][string]$LoaderVersion)
     $root=[IO.Path]::GetFullPath($AgentRoot)
     if(-not(Test-Path -LiteralPath $root -PathType Container)){return [pscustomobject]@{status='Unsupported';reason='AGENT_PROVIDER_NOT_FOUND';loaderId=$LoaderId;minecraftVersion=$MinecraftVersion}}
     Assert-MmtlAgentNoReparsePath -Path $root
     $manifests=@(Get-ChildItem -LiteralPath $root -Filter 'agent-manifest.json' -File -Recurse -ErrorAction SilentlyContinue)
+    $loaderVersionMismatch=$false
     foreach($file in $manifests){
         try{$manifest=Get-Content -LiteralPath $file.FullName -Raw|ConvertFrom-Json -ErrorAction Stop}catch{continue}
         if([string]$manifest.loaderId -cne $LoaderId){continue}
         if(@($manifest.minecraftVersions) -notcontains $MinecraftVersion){continue}
         $providerRoot=[IO.Path]::GetDirectoryName($file.FullName)
-        if([int]$manifest.schemaVersion -ne 1 -or -not $manifest.providerId -or -not $manifest.agentVersion -or -not $manifest.artifact -or [string]$manifest.sha256 -notmatch '^[A-Fa-f0-9]{64}$' -or [int]$manifest.minJavaMajor -lt 1 -or -not @($manifest.roles).Count){return [pscustomobject]@{status='Unsupported';reason='AGENT_MANIFEST_INVALID';loaderId=$LoaderId;minecraftVersion=$MinecraftVersion}}
+        if([int]$manifest.schemaVersion -ne 1 -or -not $manifest.providerId -or -not $manifest.agentVersion -or -not $manifest.artifact -or [string]$manifest.sha256 -notmatch '^[A-Fa-f0-9]{64}$' -or [int]$manifest.minJavaMajor -lt 1 -or -not @($manifest.roles).Count -or -not @($manifest.loaderVersions).Count){return [pscustomobject]@{status='Unsupported';reason='AGENT_MANIFEST_INVALID';loaderId=$LoaderId;minecraftVersion=$MinecraftVersion;loaderVersion=$LoaderVersion}}
+        if(@($manifest.loaderVersions) -cnotcontains $LoaderVersion){$loaderVersionMismatch=$true;continue}
         $relative=[string]$manifest.artifact
         if([IO.Path]::IsPathRooted($relative) -or $relative -match '(^|[\\/])\.\.([\\/]|$)'){return [pscustomobject]@{status='Unsupported';reason='AGENT_MANIFEST_INVALID';loaderId=$LoaderId;minecraftVersion=$MinecraftVersion}}
         $artifact=Join-Path $root $relative
@@ -37,11 +39,11 @@ function Get-MmtlAgentProviderStatus {
         try{Assert-MmtlAgentNoReparsePath -Path $artifact}catch{return [pscustomobject]@{status='Unsupported';reason='AGENT_MANIFEST_INVALID';loaderId=$LoaderId;minecraftVersion=$MinecraftVersion}}
         $actual=(Get-FileHash -LiteralPath $artifact -Algorithm SHA256).Hash.ToLowerInvariant()
         if($actual -cne ([string]$manifest.sha256).ToLowerInvariant()){return [pscustomobject]@{status='Unsupported';reason='AGENT_ARTIFACT_HASH_MISMATCH';loaderId=$LoaderId;minecraftVersion=$MinecraftVersion;providerId=[string]$manifest.providerId}}
-        return [pscustomobject][ordered]@{status='Supported';reason=$null;loaderId=$LoaderId;minecraftVersion=$MinecraftVersion;providerId=[string]$manifest.providerId;agentVersion=[string]$manifest.agentVersion;minJavaMajor=[int]$manifest.minJavaMajor;artifactPath=$artifact;agentRoot=$root;sha256=$actual;roles=@($manifest.roles|ForEach-Object{[string]$_});capabilities=@($manifest.capabilities|ForEach-Object{[string]$_})}
+        return [pscustomobject][ordered]@{status='Supported';reason=$null;loaderId=$LoaderId;minecraftVersion=$MinecraftVersion;loaderVersion=$LoaderVersion;providerId=[string]$manifest.providerId;agentVersion=[string]$manifest.agentVersion;minJavaMajor=[int]$manifest.minJavaMajor;artifactPath=$artifact;agentRoot=$root;sha256=$actual;roles=@($manifest.roles|ForEach-Object{[string]$_});capabilities=@($manifest.capabilities|ForEach-Object{[string]$_})}
     }
     $loaderManifest=@($manifests|ForEach-Object{try{Get-Content -LiteralPath $_.FullName -Raw|ConvertFrom-Json -ErrorAction Stop}catch{$null}}|Where-Object{[string]$_.loaderId -ceq $LoaderId})
-    $reason=if($loaderManifest.Count){'AGENT_VERSION_UNSUPPORTED'}else{'AGENT_PROVIDER_NOT_FOUND'}
-    return [pscustomobject]@{status='Unsupported';reason=$reason;loaderId=$LoaderId;minecraftVersion=$MinecraftVersion}
+    $reason=if($loaderVersionMismatch){'AGENT_LOADER_VERSION_UNSUPPORTED'}elseif($loaderManifest.Count){'AGENT_VERSION_UNSUPPORTED'}else{'AGENT_PROVIDER_NOT_FOUND'}
+    return [pscustomobject]@{status='Unsupported';reason=$reason;loaderId=$LoaderId;minecraftVersion=$MinecraftVersion;loaderVersion=$LoaderVersion}
 }
 
 function New-MmtlAgentLaunchBinding {
@@ -52,7 +54,8 @@ function New-MmtlAgentLaunchBinding {
     if($IntegratedLanPort -gt 0 -and $Role -cne 'Host'){throw 'AGENT_LAN_PUBLISH_HOST_ONLY'}
     if($ExpectedLoopbackPort -gt 0 -and $Role -cne 'Guest'){throw 'AGENT_LOOPBACK_EXPECTATION_GUEST_ONLY'}
     if($Role -ceq 'Guest' -and $ExpectedLoopbackPort -eq 0){throw 'AGENT_GUEST_LOOPBACK_PORT_REQUIRED'}
-    if($AutoCreateWorld -and $Role -cne 'Host'){throw 'AGENT_WORLD_CREATE_HOST_ONLY'}
+    if($AutoCreateWorld -and $Role -notin @('Host','Client')){throw 'AGENT_WORLD_CREATE_HOST_ONLY'}
+    if($AutoCreateWorld -and $Role -ceq 'Client' -and ($IntegratedLanPort -gt 0 -or $ExpectedLoopbackPort -gt 0)){throw 'AGENT_WORLD_CREATE_SINGLE_ONLY'}
     if($AutoCreateWorld -and ($WorldName -notmatch '^[A-Za-z0-9._ -]{1,64}$' -or $WorldName -in @('.','..'))){throw 'AGENT_WORLD_NAME_INVALID'}
     if($WorldSeed -and $WorldSeed -notmatch '^-?\d{1,20}$'){throw 'AGENT_WORLD_SEED_INVALID'}
     $session=[IO.Path]::GetFullPath($SessionPath)

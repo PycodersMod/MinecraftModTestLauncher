@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "fixtureId": "MMTLQuiltMarkerFixtureV1",
+  "targetId": "Quilt@1.20.4",
+  "sourceRepository": "https://github.com/QuiltMC/quilt-template-mod",
+  "sourceCommit": "9480b2e90b255309c21d19bcdd4646760c66dc2b",
+  "sourceArchiveSha256": "78ae90ef2873eea6b1a278bb34b2b89b0ba2c8ddfa3a6712e893c9c135b04005",
+  "sourceBuildGradleSha256": "8acd5bd96ade43e0fe72cfdf9e70ea8086d900f6e6973fbb6ccc7561143d29c8",
+  "sourceSettingsGradleSha256": "1ab41bad3fee879bd08b2a49076e77abe2be5ce886ecf9d5c5667876b57fd2cd",
+  "sourceGradlePropertiesSha256": "a1339a2597f0266c195889b5abe3698e6f10c933a86dff6b027a3759ddb266f2",
+  "sourceVersionsTomlSha256": "f308b48f191f26b71fa2a089df12bac2a527561fa70eb706ea250e634e98d70a",
+  "sourceWrapperPropertiesSha256": "05e7bec397ce5a52628d31dcc4c8b636cbdc55e28f8cef19d097c71b5c5fbb42",
+  "sourceWrapperJarSha256": "cb0da6751c2b753a16ac168bb354870ebb1e162e9083f116729cec9c781156b8",
+  "quiltLoomVersion": "1.6.5",
+  "loaderVersion": "0.25.0",
+  "gradleVersion": "8.8",
+  "buildJavaMajor": 17,
+  "runtimeJavaMajor": 17,
+  "overlaySha256": "c8be1e4af74ac781aa989474d99f8ce82db274f7d7de1b1fe4d164cfae3e69d0",
+  "overlayFiles": [
+    {
+      "path": "build.gradle",
+      "sha256": "48f5322e3728e114b35c33f9cf2daac33cb05ca61aaaa88558e5e5b3e01937e1"
+    },
+    {
+      "path": "settings.gradle",
+      "sha256": "154c60ec7ad8d1bf023178ef2291392e22c58cf50d07227c5bb736d9a3e4e95f"
+    },
+    {
+      "path": "gradle.properties",
+      "sha256": "64950075638d4763a8759310f2db076285500efd0a7a2b3e82abe41cb1547241"
+    },
+    {
+      "path": "gradle/wrapper/gradle-wrapper.properties",
+      "sha256": "0c65a973631f68d309b2fb2579f65bd45ecc8b4d7205c82b274f69620b33c299"
+    },
+    {
+      "path": "gradle/libs.versions.toml",
+      "sha256": "f308b48f191f26b71fa2a089df12bac2a527561fa70eb706ea250e634e98d70a"
+    },
+    {
+      "path": "src/main/java/org/pycodersmod/mmtlfixture/MmtlMarkerMod.java",
+      "sha256": "f148d4f4e7331b3434bba84145f0b3946649d800503e0c93ba348f9befd3a534"
+    },
+    {
+      "path": "src/main/resources/quilt.mod.json",
+      "sha256": "15e737b1803e898662e8ed5b0fa3ec360da3552216c019cee8d0fb0045f8e199"
+    }
+  ]
+}

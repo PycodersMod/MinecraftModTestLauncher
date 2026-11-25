@@ -1,0 +1,24 @@
+{
+    "schemaVersion": 1,
+    "providerId": "fabric-1.21.7",
+    "loaderId": "Fabric",
+    "minecraftVersions": [
+        "1.21.7"
+    ],
+    "loaderVersions": [
+        "0.19.5"
+    ],
+    "agentVersion": "0.1.0",
+    "artifact": "providers/fabric-1.21.7/mmtl-agent-fabric-1.21.7-0.1.0.jar",
+    "sha256": "15fca02658918c7b9a7121f1e5659364e66ae852933cdc817ed9645942075c8d",
+    "minJavaMajor": 21,
+    "roles": [
+        "Client",
+        "Host",
+        "Guest"
+    ],
+    "capabilities": [
+        "OfflineSessionHandshake",
+        "SessionEventTelemetry"
+    ]
+}

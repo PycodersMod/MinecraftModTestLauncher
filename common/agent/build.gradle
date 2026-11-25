@@ -38,7 +38,8 @@ minecraft {
 
 repositories { mavenCentral() }
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.20.1-47.2.0'
+    minecraft 'net.minecraftforge:forge:1.20.1-47.4.5'
+    implementation project(':core')
     testImplementation 'junit:junit:4.13.2'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
@@ -54,8 +55,14 @@ processResources {
 }
 
 jar {
+    dependsOn ':core:jar'
+    from({ zipTree(project(':core').tasks.named('jar').get().archiveFile.get().asFile) }) {
+        exclude 'META-INF/**'
+    }
     manifest.attributes(['Specification-Title':'mmtl_agent','Specification-Vendor':'PycodersMod','Specification-Version':'1','Implementation-Title':project.name,'Implementation-Version':project.version,'FMLModType':'MOD','MixinConfigs':'mmtl-agent.mixins.json'])
 }
+
+tasks.named('test') { dependsOn ':core:test' }
 
 tasks.register('verifyMmtlAgentJar') {
     dependsOn tasks.named('jar')
@@ -67,6 +74,13 @@ tasks.register('verifyMmtlAgentJar') {
             def configEntry = archive.getEntry('mmtl-agent.mixins.json')
             def refmapEntry = archive.getEntry('mmtl-agent.refmap.json')
             if (!manifestEntry || !configEntry || !refmapEntry) throw new GradleException('MMTL Agent JAR is missing the Mixin manifest/config/refmap')
+            ['AgentHandshake.class', 'AgentHandshake$Context.class', 'AgentEventSink.class', 'ManagedAgentActionPolicy.class', 'LanPublishPolicy.class', 'ManagedHostActionGate.class'].each { coreClass ->
+                def coreEntry = archive.getEntry("org/pycodersmod/mmtl/agent/${coreClass}")
+                if (!coreEntry) throw new GradleException("MMTL Agent JAR is missing Core class ${coreClass}")
+                byte[] coreBytes = archive.getInputStream(coreEntry).bytes
+                int classMajor = ((coreBytes[6] & 0xff) << 8) | (coreBytes[7] & 0xff)
+                if (classMajor != 52) throw new GradleException("MMTL Agent Core class ${coreClass} is not Java 8 bytecode (major=${classMajor})")
+            }
             def manifest = new java.util.jar.Manifest(archive.getInputStream(manifestEntry))
             if (manifest.mainAttributes.getValue('MixinConfigs') != 'mmtl-agent.mixins.json') throw new GradleException('MMTL Agent JAR has an invalid MixinConfigs manifest entry')
             def mixinConfig = new groovy.json.JsonSlurper().parse(archive.getInputStream(configEntry))
@@ -84,7 +98,7 @@ tasks.register('stageMmtlAgent') {
         File destinationJar = new File(destinationDirectory, 'mmtl-agent-forge-1.20.1-0.1.0.jar')
         destinationJar.bytes = sourceJar.bytes
         String digest = java.security.MessageDigest.getInstance('SHA-256').digest(destinationJar.bytes).encodeHex().toString()
-        def manifest = [schemaVersion:1,providerId:'forge-1.20.1',loaderId:'Forge',minecraftVersions:['1.20.1'],agentVersion:project.version.toString(),artifact:'providers/forge-1.20.1/mmtl-agent-forge-1.20.1-0.1.0.jar',sha256:digest,minJavaMajor:17,roles:['Client','Host','Guest'],capabilities:['OfflineSessionHandshake','IntegratedServerEvents','GuestJoinObservation','OfflineIntegratedLanHost','LoopbackOnlyListener','LanDiscoverySuppressed','GuestLoopbackVerification','SignedSessionActionQueue','SessionScreenshot','ManagedClientCommand']]
+        def manifest = [schemaVersion:1,providerId:'forge-1.20.1',loaderId:'Forge',minecraftVersions:['1.20.1'],loaderVersions:['1.20.1-47.4.5'],agentVersion:project.version.toString(),artifact:'providers/forge-1.20.1/mmtl-agent-forge-1.20.1-0.1.0.jar',sha256:digest,minJavaMajor:17,roles:['Client','Host','Guest'],capabilities:['OfflineSessionHandshake','IntegratedServerEvents','GuestJoinObservation','OfflineIntegratedLanHost','LoopbackOnlyListener','LanDiscoverySuppressed','GuestLoopbackVerification','SignedSessionActionQueue','SessionScreenshot','ManagedClientCommand','SignedSharedBlockMarkerAssertion']]
         new File(destinationDirectory, 'agent-manifest.json').text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(manifest)) + System.lineSeparator()
     }
 }

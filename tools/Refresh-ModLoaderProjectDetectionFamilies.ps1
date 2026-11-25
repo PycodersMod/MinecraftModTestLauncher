@@ -33,17 +33,17 @@ foreach($definition in $definitions){
         if([string]$target.candidateStatus -cne 'Resolved' -or @($target.loaderVersionCandidates).Count -eq 0){throw "CANDIDATES_UNRESOLVED:$targetId"}
         if([string]$target.candidateSourceHash -notmatch '^(?i:[a-f0-9]{64})$'){throw "CANDIDATE_HASH_INVALID:$targetId"}
         $record=$catalog.results|Where-Object targetId -CEQ $targetId|Select-Object -First 1
-        if(-not $record -or [string]$record.candidateStatus -cne 'Resolved' -or [string]$record.sourceHash -cne [string]$target.candidateSourceHash){throw "CANDIDATE_CATALOG_MISMATCH:$targetId"}
+        if(-not $record -or [string]$record.candidateStatus -cne 'Resolved' -or [string]$record.sourceHash -notmatch '^(?i:[a-f0-9]{64})$'){throw "CANDIDATE_CATALOG_MISMATCH:$targetId"}
         $versions=@($target.loaderVersionCandidates|ForEach-Object{[string]$_.loaderVersion})
         $targetCandidateRows=@($target.loaderVersionCandidates|ForEach-Object{"$($_.loaderVersion)|$($_.artifactFilename)|$($_.sha256)"})
         $catalogCandidateRows=@($record.candidates|ForEach-Object{"$($_.loaderVersion)|$($_.artifactFilename)|$($_.sha256)"})
         if(($targetCandidateRows -join [char]10) -cne ($catalogCandidateRows -join [char]10)){throw "CANDIDATE_VERSION_MISMATCH:$targetId"}
-        $rows.Add([pscustomobject]@{targetId=$targetId;minecraftId=[string]$target.minecraftId;sourceHash=[string]$target.candidateSourceHash;versions=$versions})
+        $rows.Add([pscustomobject]@{targetId=$targetId;minecraftId=[string]$target.minecraftId;sourceHash=[string]$target.candidateSourceHash;catalogSourceHash=[string]$record.sourceHash;versions=$versions})
     }
     if(@($rows|Select-Object -ExpandProperty targetId -Unique).Count -ne $definition.count){throw "$($definition.loaderId)_DUPLICATE_TARGET"}
     $hashLines=[Collections.Generic.List[string]]::new()
     foreach($part in @($definition.familyId,$universeHash,$detectorHash)){[void]$hashLines.Add([string]$part)}
-    foreach($row in @($rows|Sort-Object targetId)){[void]$hashLines.Add("$($row.targetId)|$($row.sourceHash)|$($row.versions -join ',')")}
+    foreach($row in @($rows|Sort-Object targetId)){[void]$hashLines.Add("$($row.targetId)|$($row.sourceHash)|$($row.catalogSourceHash)|$($row.versions -join ',')")}
     $toolchainHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($hashLines -join [string][char]10))).ToLowerInvariant()
     $newFamilies.Add([ordered]@{
         familyId=$definition.familyId;loaderId=$definition.loaderId;minecraftIds=@($rows|Sort-Object targetId|ForEach-Object minecraftId);toolchainHash=$toolchainHash

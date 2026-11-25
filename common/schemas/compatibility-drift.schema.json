@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Frozen compatibility universe drift report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "generatedAt", "driftStatus", "frozenCatalogHash", "currentCatalogHash", "frozenTargetCount", "currentTargetCount", "addedTargets", "removedTargets", "changedTargets", "unresolvedIssues"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "driftStatus": { "enum": ["NO_DRIFT", "DRIFT_DETECTED", "INDETERMINATE"] },
+    "frozenCatalogHash": { "type": "string", "minLength": 1 },
+    "currentCatalogHash": { "type": "string", "minLength": 1 },
+    "frozenTargetCount": { "type": "integer", "minimum": 0 },
+    "currentTargetCount": { "type": "integer", "minimum": 0 },
+    "addedTargets": { "type": "array", "items": { "$ref": "#/definitions/driftTarget" } },
+    "removedTargets": { "type": "array", "items": { "$ref": "#/definitions/driftTarget" } },
+    "changedTargets": { "type": "array", "items": { "$ref": "#/definitions/driftTarget" } },
+    "unresolvedIssues": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["loaderId", "status", "reason"], "properties": { "loaderId": { "type": "string" }, "status": { "type": "string" }, "reason": { "type": "string" } } } }
+  },
+  "definitions": {
+    "driftTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["targetId", "loaderId", "minecraftId", "status", "reasonCode"],
+      "properties": {
+        "targetId": { "type": "string", "minLength": 1 },
+        "loaderId": { "type": "string", "minLength": 1 },
+        "minecraftId": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["NewUnverified", "RemovedFromSource", "ChangedInSource"] },
+        "reasonCode": { "enum": ["TARGET_NOT_IN_FROZEN_UNIVERSE", "TARGET_MISSING_FROM_CURRENT_UNIVERSE", "TARGET_SOURCE_CONTRACT_CHANGED"] },
+        "frozenFingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "currentFingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "changedFields": { "type": "array", "uniqueItems": true, "items": { "type": "string" } }
+      }
+    }
+  }
+}

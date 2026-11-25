@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ForgeGradle 6 build classpath artifact catalog",
+  "type": "object",
+  "required": ["schemaVersion", "targetId", "forgeVersion", "forgeGradleSpec", "forgeGradleResolvedVersion", "gradleVersion", "buildJavaMajor", "artifactStatus", "dependencies", "artifacts", "catalogHash"],
+  "properties": {
+    "schemaVersion": {"enum": [1, 2]},
+    "targetId": {"type": "string"},
+    "forgeVersion": {"type": "string"},
+    "forgeGradleSpec": {"const": "[6.0,6.2)"},
+    "forgeGradleResolvedVersion": {"const": "6.0.54"},
+    "gradleVersion": {"type": "string", "pattern": "^[0-9]+(\\.[0-9]+){1,2}$"},
+    "buildJavaMajor": {"type": "integer", "minimum": 8, "maximum": 25},
+    "artifactStatus": {"const": "HashesVerified"},
+    "dependencies": {"type": "array", "minItems": 2, "items": {"type": "object", "required": ["scope", "group", "artifact", "version"], "properties": {"scope": {"enum": ["project-plugin", "settings-plugin"]}, "group": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+$"}, "artifact": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+$"}, "version": {"type": "string", "pattern": "^[A-Za-z0-9_.+-]+$"}}}},
+    "artifacts": {"type": "array", "minItems": 2, "items": {"type": "object", "required": ["group", "artifact", "version", "file", "extension", "bytes", "sha256", "url"], "properties": {"group": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+$"}, "artifact": {"type": "string", "pattern": "^[A-Za-z0-9_.+-]+$"}, "version": {"type": "string", "pattern": "^[A-Za-z0-9_.+-]+$"}, "file": {"type": "string", "pattern": "^[A-Za-z0-9_.+-]+\\.(jar|pom)$"}, "extension": {"enum": ["jar", "pom"]}, "bytes": {"type": "integer", "minimum": 1}, "sha256": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"}, "url": {"type": "string", "format": "uri", "pattern": "^https://"}}}},
+    "catalogHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "mdkSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "gradleDistributionUrl": {"type": "string", "format": "uri", "pattern": "^https://services\\.gradle\\.org/distributions/gradle-(8\\.1\\.1|8\\.8)-bin\\.zip$"},
+    "gradleDistributionSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "foojayResolverVersion": {"enum": ["0.5.0", "0.7.0"]}
+  },
+  "allOf": [
+    {"if": {"properties": {"schemaVersion": {"const": 1}}}, "then": {"properties": {"targetId": {"type": "string", "pattern": "^Forge@[0-9]+(\\.[0-9]+){1,2}$"}, "forgeVersion": {"type": "string"}, "gradleVersion": {"type": "string"}, "buildJavaMajor": {"type": "integer"}, "dependencies": {"minItems": 33, "maxItems": 33}, "artifacts": {"minItems": 88, "maxItems": 88}}}},
+    {"if": {"properties": {"schemaVersion": {"const": 2}}}, "then": {"required": ["mdkSha256", "gradleDistributionUrl", "gradleDistributionSha256", "foojayResolverVersion"], "properties": {"targetId": {"enum": ["Forge@1.18.2", "Forge@1.19.2", "Forge@1.19.4", "Forge@1.20", "Forge@1.20.1"]}, "buildJavaMajor": {"const": 17}}}},
+    {"if": {"properties": {"targetId": {"const": "Forge@1.18.2"}}}, "then": {"properties": {"forgeVersion": {"const": "1.18.2-40.3.11"}, "gradleVersion": {"const": "8.8"}, "mdkSha256": {"const": "06dc30e30b148d33e36e1c24f47c985e46ae669556f2060d750a141264bcdc26"}, "gradleDistributionUrl": {"const": "https://services.gradle.org/distributions/gradle-8.8-bin.zip"}, "gradleDistributionSha256": {"const": "a4b4158601f8636cdeeab09bd76afb640030bb5b144aafe261a5e8af027dc612"}, "foojayResolverVersion": {"const": "0.7.0"}}}},
+    {"if": {"properties": {"targetId": {"const": "Forge@1.19.2"}}}, "then": {"properties": {"forgeVersion": {"const": "1.19.2-43.5.1"}, "gradleVersion": {"const": "8.8"}, "mdkSha256": {"const": "145514b3e54c78c05fb7e6d8bbc22c5ab63b1155a31415478b454e53baffd90e"}, "gradleDistributionUrl": {"const": "https://services.gradle.org/distributions/gradle-8.8-bin.zip"}, "gradleDistributionSha256": {"const": "a4b4158601f8636cdeeab09bd76afb640030bb5b144aafe261a5e8af027dc612"}, "foojayResolverVersion": {"const": "0.7.0"}}}},
+    {"if": {"properties": {"targetId": {"const": "Forge@1.19.4"}}}, "then": {"properties": {"forgeVersion": {"const": "1.19.4-45.4.1"}, "gradleVersion": {"const": "8.8"}, "mdkSha256": {"const": "9af67ea5ac56c0113dce53d879cbe4f38a0b1b45542e7488c8757b3509b963ae"}, "gradleDistributionUrl": {"const": "https://services.gradle.org/distributions/gradle-8.8-bin.zip"}, "gradleDistributionSha256": {"const": "a4b4158601f8636cdeeab09bd76afb640030bb5b144aafe261a5e8af027dc612"}, "foojayResolverVersion": {"const": "0.7.0"}}}},
+    {"if": {"properties": {"targetId": {"const": "Forge@1.20"}}}, "then": {"properties": {"forgeVersion": {"const": "1.20-46.0.14"}, "gradleVersion": {"const": "8.1.1"}, "mdkSha256": {"const": "a7a0cc82e28092fc069dfecb689212a6e36203a6ce9e1548c871b3f445e36d7f"}, "gradleDistributionUrl": {"const": "https://services.gradle.org/distributions/gradle-8.1.1-bin.zip"}, "gradleDistributionSha256": {"const": "e111cb9948407e26351227dabce49822fb88c37ee72f1d1582a69c68af2e702f"}, "foojayResolverVersion": {"const": "0.5.0"}}}},
+    {"if": {"properties": {"targetId": {"const": "Forge@1.20.1"}}}, "then": {"properties": {"forgeVersion": {"const": "1.20.1-47.4.5"}, "gradleVersion": {"const": "8.8"}, "mdkSha256": {"const": "3a55c4c6cb66420d69f5d99858da222272fea19592077cd60652143c188360fc"}, "gradleDistributionUrl": {"const": "https://services.gradle.org/distributions/gradle-8.8-bin.zip"}, "gradleDistributionSha256": {"const": "a4b4158601f8636cdeeab09bd76afb640030bb5b144aafe261a5e8af027dc612"}, "foojayResolverVersion": {"const": "0.7.0"}}}}
+  ]
+}

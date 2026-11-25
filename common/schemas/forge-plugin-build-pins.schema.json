@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pinned Forge Plugins DSL historical build inputs",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "status", "targets"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "status": {"enum": ["PARTIAL", "PASS"]},
+    "targets": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["targetId", "minecraftId", "forgeVersion", "sourceArchiveUrl", "sourceArchiveSha256", "buildGradleSha256", "gradleDistributionUrl", "gradleDistributionSha256", "buildJavaMajor", "pluginId", "pluginVersion", "pluginArtifactCatalogHash", "buildArtifactCatalogHash", "mcpVersions", "versionJson", "fernflowerArchive", "fernflowerJar", "mojangMetadataSnapshot", "client", "server", "status"],
+        "properties": {
+          "targetId": {"const": "Forge@1.8"},
+          "minecraftId": {"const": "1.8"},
+          "forgeVersion": {"const": "1.8-11.14.4.1577"},
+          "sourceArchiveUrl": {"const": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.8-11.14.4.1577/forge-1.8-11.14.4.1577-mdk.zip"},
+          "sourceArchiveSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "buildGradleSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "gradleDistributionUrl": {"const": "https://services.gradle.org/distributions/gradle-2.7-bin.zip"},
+          "gradleDistributionSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "buildJavaMajor": {"const": 8},
+          "pluginId": {"const": "net.minecraftforge.gradle.forge"},
+          "pluginVersion": {"const": "2.0.2"},
+          "pluginArtifactCatalogHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "buildArtifactCatalogHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "mcpVersions": {
+            "type": "object", "additionalProperties": false,
+            "required": ["url", "bytes", "sha256", "mapping"],
+            "properties": {
+              "url": {"const": "https://maven.minecraftforge.net/de/oceanlabs/mcp/versions.json"},
+              "bytes": {"type": "integer", "minimum": 1},
+              "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "mapping": {"const": "snapshot_20141130"}
+            }
+          },
+          "versionJson": {
+            "type": "object", "additionalProperties": false,
+            "required": ["url", "bytes", "sha1", "sha256"],
+            "properties": {
+              "url": {"const": "https://piston-meta.mojang.com/v1/packages/9eb165eef46294062d8698c8a78e8ac914949e7a/1.8.json"},
+              "bytes": {"const": 17224},
+              "sha1": {"const": "9eb165eef46294062d8698c8a78e8ac914949e7a"},
+              "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+            }
+          },
+          "fernflowerArchive": {
+            "type": "object", "additionalProperties": false,
+            "required": ["url", "bytes", "sha256"],
+            "properties": {
+              "url": {"const": "https://files.minecraftforge.net/fernflower-fix-1.0.zip"},
+              "bytes": {"const": 230445},
+              "sha256": {"const": "7b18843dec340463a7e00c49325d7a6a8621a1de6ae64a4a282d629b0263d0ac"}
+            }
+          },
+          "fernflowerJar": {
+            "type": "object", "additionalProperties": false,
+            "required": ["entry", "bytes", "sha256"],
+            "properties": {
+              "entry": {"const": "fernflower.jar"},
+              "bytes": {"const": 248683},
+              "sha256": {"const": "f857d0a5dc440e9576a099ffe2dcf0f57f62ec6a9a90cdd7e8a27d4573e0504b"}
+            }
+          },
+          "mojangMetadataSnapshot": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "client": {"$ref": "#/definitions/mojangDownload"},
+          "server": {"$ref": "#/definitions/mojangDownload"},
+          "status": {"enum": ["PinnedInputsVerified", "PendingVerification"]}
+        }
+      }
+    }
+  },
+  "definitions": {
+    "mojangDownload": {
+      "type": "object", "additionalProperties": false,
+      "required": ["url", "sha1", "sizeBytes"],
+      "properties": {
+        "url": {"type": "string", "format": "uri", "pattern": "^https://launcher\\.mojang\\.com/v1/objects/[a-f0-9]{40}/(client|server)\\.jar$"},
+        "sha1": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+        "sizeBytes": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

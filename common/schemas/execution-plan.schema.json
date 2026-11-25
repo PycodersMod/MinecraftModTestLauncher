@@ -4,43 +4,804 @@
   "title": "MMTL Execution Plan",
   "description": "版本化的构建与运行计划；本机解析信息只存在于本地 Plan 实例。",
   "type": "object",
-  "required": ["schemaVersion", "status", "planId", "semanticDigest", "createdAt", "platform", "repository", "project", "buildJava", "runtimeJava", "profile", "build", "runtime", "network", "session", "capabilityGates", "blockingReasons", "warnings", "provenance"],
+  "required": [
+    "schemaVersion",
+    "status",
+    "planId",
+    "semanticDigest",
+    "createdAt",
+    "platform",
+    "repository",
+    "project",
+    "buildJava",
+    "runtimeJava",
+    "profile",
+    "build",
+    "runtime",
+    "network",
+    "session",
+    "capabilityGates",
+    "blockingReasons",
+    "warnings",
+    "provenance"
+  ],
   "properties": {
-    "schemaVersion": {"const": 1},
-    "status": {"enum": ["Ready", "BuildReadyLaunchBlocked", "Blocked"]},
-    "planId": {"type": "string", "minLength": 1},
-    "semanticDigest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
-    "createdAt": {"type": "string", "format": "date-time"},
-    "platform": {"$ref": "#/$defs/platform"},
-    "repository": {"$ref": "#/$defs/repository"},
-    "project": {"$ref": "#/$defs/project"},
-    "buildJava": {"$ref": "#/$defs/javaTrack"},
-    "runtimeJava": {"$ref": "#/$defs/runtimeJava"},
-    "profile": {"$ref": "#/$defs/profile"},
-    "build": {"$ref": "#/$defs/build"},
-    "runtime": {"$ref": "#/$defs/runtime"},
-    "network": {"$ref": "#/$defs/network"},
-    "session": {"type": "object", "required": ["intendedMode"], "properties": {"intendedMode": {"type": "string"}}},
-    "capabilityGates": {"type": "object", "required": ["buildReady", "launchReady"], "properties": {"buildReady": {"type": "boolean"}, "launchReady": {"type": "boolean"}, "buildReasons": {"type": "array", "items": {"type": "string"}}, "launchReasons": {"type": "array", "items": {"type": "string"}}}},
-    "blockingReasons": {"type": "array", "items": {"$ref": "#/$defs/diagnostic"}},
-    "warnings": {"type": "array", "items": {"$ref": "#/$defs/diagnostic"}},
-    "launchBlockingReasons": {"type": "array", "items": {"$ref": "#/$defs/diagnostic"}},
-    "launchWarnings": {"type": "array", "items": {"$ref": "#/$defs/diagnostic"}},
-    "provenance": {"type": "object"}
+    "schemaVersion": {
+      "const": 1
+    },
+    "status": {
+      "enum": [
+        "Ready",
+        "BuildReadyLaunchBlocked",
+        "Blocked"
+      ]
+    },
+    "planId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "semanticDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "platform": {
+      "$ref": "#/$defs/platform"
+    },
+    "repository": {
+      "$ref": "#/$defs/repository"
+    },
+    "project": {
+      "$ref": "#/$defs/project"
+    },
+    "buildJava": {
+      "$ref": "#/$defs/javaTrack"
+    },
+    "runtimeJava": {
+      "$ref": "#/$defs/runtimeJava"
+    },
+    "profile": {
+      "$ref": "#/$defs/profile"
+    },
+    "build": {
+      "$ref": "#/$defs/build"
+    },
+    "runtime": {
+      "$ref": "#/$defs/runtime"
+    },
+    "network": {
+      "$ref": "#/$defs/network"
+    },
+    "session": {
+      "type": "object",
+      "required": [
+        "intendedMode"
+      ],
+      "properties": {
+        "intendedMode": {
+          "type": "string"
+        }
+      }
+    },
+    "capabilityGates": {
+      "type": "object",
+      "required": [
+        "buildReady",
+        "launchReady"
+      ],
+      "properties": {
+        "buildReady": {
+          "type": "boolean"
+        },
+        "launchReady": {
+          "type": "boolean"
+        },
+        "buildReasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "launchReasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "blockingReasons": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/diagnostic"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/diagnostic"
+      }
+    },
+    "launchBlockingReasons": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/diagnostic"
+      }
+    },
+    "launchWarnings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/diagnostic"
+      }
+    },
+    "provenance": {
+      "type": "object"
+    }
   },
   "$defs": {
-    "platform": {"type": "object", "required": ["os", "arch", "isWSL", "capabilities"], "properties": {"os": {"enum": ["Windows", "Linux", "MacOS"]}, "arch": {"enum": ["x64", "ARM64"]}, "isWSL": {"type": "boolean"}, "capabilities": {"type": "object"}}},
-    "repository": {"type": "object", "required": ["identity", "root"], "properties": {"identity": {"type": "string", "minLength": 1}, "root": {"type": "string", "minLength": 1}}},
-    "project": {"type": "object", "required": ["projectRoot", "locator", "minecraftId", "loader", "loaderStack", "toolchain", "buildSystem"], "properties": {"projectRoot": {"type": "string", "minLength": 1}, "locator": {"type": "string"}, "minecraftId": {"type": "string", "minLength": 1}, "loader": {"$ref": "#/$defs/identityVersion"}, "loaderStack": {"type": "array"}, "toolchain": {"$ref": "#/$defs/identityVersion"}, "buildSystem": {"$ref": "#/$defs/identityVersion"}, "modId": {"type": ["string", "null"]}}},
-    "identityVersion": {"type": "object", "required": ["id", "version"], "properties": {"id": {"type": "string", "minLength": 1}, "version": {"type": ["string", "null"]}}},
-    "javaRequirement": {"type": "object", "required": ["purpose", "major", "requirementKind", "source", "confidence"], "properties": {"purpose": {"enum": ["BuildJava", "RuntimeJava"]}, "major": {"type": ["integer", "null"], "minimum": 1}, "minimumMajor": {"type": ["integer", "null"], "minimum": 1}, "maximumMajor": {"type": ["integer", "null"], "minimum": 1}, "preferredMajor": {"type": ["integer", "null"], "minimum": 1}, "exactMajor": {"type": ["integer", "null"], "minimum": 1}, "requirementKind": {"type": "string"}, "source": {"type": "string", "minLength": 1}, "confidence": {"enum": ["High", "Medium", "Low", "Unknown"]}, "component": {"type": ["string", "null"]}, "provenance": {"type": ["array", "object", "string", "null"]}}},
-    "javaResolution": {"type": "object", "required": ["status", "javaPath", "home", "actualMajor", "exactVersion", "vendor", "os", "arch", "reasonCode"], "properties": {"status": {"enum": ["Resolved", "Unresolved"]}, "javaPath": {"type": ["string", "null"]}, "home": {"type": ["string", "null"]}, "actualMajor": {"type": ["integer", "null"], "minimum": 1}, "exactVersion": {"type": ["string", "null"]}, "vendor": {"type": ["string", "null"]}, "os": {"type": "string"}, "arch": {"type": ["string", "null"]}, "reasonCode": {"type": ["string", "null"]}, "source": {"type": ["string", "null"]}}},
-    "javaTrack": {"type": "object", "required": ["requirement", "resolution"], "properties": {"requirement": {"$ref": "#/$defs/javaRequirement"}, "resolution": {"$ref": "#/$defs/javaResolution"}}},
-    "runtimeJava": {"type": "object", "required": ["requirement", "resolution", "bindingMode"], "properties": {"requirement": {"$ref": "#/$defs/javaRequirement"}, "resolution": {"$ref": "#/$defs/javaResolution"}, "bindingMode": {"enum": ["Direct", "ToolchainManaged", "SameAsBuildJvm", "Unsupported", "Unknown"]}}},
-    "profile": {"type": "object", "required": ["name", "mode", "players"], "properties": {"name": {"type": "string"}, "mode": {"type": "string"}, "players": {"type": "integer"}, "jvmArgs": {"type": "array", "items": {"type": "string"}}, "gameArgs": {"type": "array", "items": {"type": "string"}}, "acceptEula": {"type": "boolean"}}},
-    "build": {"type": "object", "required": ["required", "clean", "task", "wrapper", "artifactExpectation"], "properties": {"required": {"type": "boolean"}, "clean": {"type": "boolean"}, "task": {"type": "string"}, "wrapper": {"type": "string"}, "artifactExpectation": {"type": "string"}}},
-    "runtime": {"type": "object", "required": ["roles", "runtimeDirectories", "memory", "jvmArgs", "gameArgs"], "properties": {"roles": {"type": "array", "items": {"type": "object", "required": ["role", "username"], "properties": {"role": {"type": "string"}, "username": {"type": "string"}, "launchReady": {"type": "boolean"}, "blockingReasons": {"type": "array", "items": {"type": "string"}}}}}, "runtimeDirectories": {"type": "array", "items": {"type": "object", "required": ["role", "path"], "properties": {"role": {"type": "string"}, "username": {"type": "string"}, "path": {"type": "string"}, "relativePath": {"type": "string"}}}}, "memory": {"type": "object"}, "jvmArgs": {"type": "array", "items": {"type": "string"}}, "gameArgs": {"type": "array", "items": {"type": "string"}}}},
-    "network": {"type": "object", "required": ["portPolicy", "bindPolicy"], "properties": {"portPolicy": {"type": "string"}, "fixedPort": {"type": ["integer", "null"], "minimum": 1, "maximum": 65535}, "bindPolicy": {"type": "string"}}},
-    "diagnostic": {"type": "object", "required": ["code", "action", "messageZh"], "properties": {"code": {"type": "string", "pattern": "^[A-Z0-9_]+$"}, "action": {"enum": ["Build", "Launch", "Plan"]}, "messageZh": {"type": "string"}, "source": {"type": ["string", "null"]}}}
+    "platform": {
+      "type": "object",
+      "required": [
+        "os",
+        "arch",
+        "isWSL",
+        "capabilities"
+      ],
+      "properties": {
+        "os": {
+          "enum": [
+            "Windows",
+            "Linux",
+            "MacOS"
+          ]
+        },
+        "arch": {
+          "enum": [
+            "x64",
+            "ARM64"
+          ]
+        },
+        "isWSL": {
+          "type": "boolean"
+        },
+        "capabilities": {
+          "type": "object"
+        }
+      }
+    },
+    "repository": {
+      "type": "object",
+      "required": [
+        "identity",
+        "root"
+      ],
+      "properties": {
+        "identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "root": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "project": {
+      "type": "object",
+      "required": [
+        "projectRoot",
+        "locator",
+        "minecraftId",
+        "loader",
+        "loaderStack",
+        "toolchain",
+        "buildSystem"
+      ],
+      "properties": {
+        "projectRoot": {
+          "type": "string",
+          "minLength": 1
+        },
+        "locator": {
+          "type": "string"
+        },
+        "minecraftId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "loader": {
+          "$ref": "#/$defs/identityVersion"
+        },
+        "loaderStack": {
+          "type": "array"
+        },
+        "toolchain": {
+          "$ref": "#/$defs/identityVersion"
+        },
+        "buildSystem": {
+          "$ref": "#/$defs/identityVersion"
+        },
+        "modId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "identityVersion": {
+      "type": "object",
+      "required": [
+        "id",
+        "version"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "javaRequirement": {
+      "type": "object",
+      "required": [
+        "purpose",
+        "major",
+        "requirementKind",
+        "source",
+        "confidence"
+      ],
+      "properties": {
+        "purpose": {
+          "enum": [
+            "BuildJava",
+            "RuntimeJava"
+          ]
+        },
+        "major": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "minimumMajor": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "maximumMajor": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "preferredMajor": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "exactMajor": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "requirementKind": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "confidence": {
+          "enum": [
+            "High",
+            "Medium",
+            "Low",
+            "Unknown"
+          ]
+        },
+        "component": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "provenance": {
+          "type": [
+            "array",
+            "object",
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "javaResolution": {
+      "type": "object",
+      "required": [
+        "status",
+        "javaPath",
+        "home",
+        "actualMajor",
+        "exactVersion",
+        "vendor",
+        "os",
+        "arch",
+        "reasonCode"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "Resolved",
+            "Unresolved"
+          ]
+        },
+        "javaPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "home": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "actualMajor": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "exactVersion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "vendor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "os": {
+          "type": "string"
+        },
+        "arch": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reasonCode": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "javaTrack": {
+      "type": "object",
+      "required": [
+        "requirement",
+        "resolution"
+      ],
+      "properties": {
+        "requirement": {
+          "$ref": "#/$defs/javaRequirement"
+        },
+        "resolution": {
+          "$ref": "#/$defs/javaResolution"
+        }
+      }
+    },
+    "runtimeJava": {
+      "type": "object",
+      "required": [
+        "requirement",
+        "resolution",
+        "bindingMode"
+      ],
+      "properties": {
+        "requirement": {
+          "$ref": "#/$defs/javaRequirement"
+        },
+        "resolution": {
+          "$ref": "#/$defs/javaResolution"
+        },
+        "bindingMode": {
+          "enum": [
+            "Direct",
+            "ToolchainManaged",
+            "SameAsBuildJvm",
+            "Unsupported",
+            "Unknown"
+          ]
+        }
+      }
+    },
+    "profile": {
+      "type": "object",
+      "required": [
+        "name",
+        "mode",
+        "players"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "mode": {
+          "type": "string"
+        },
+        "players": {
+          "type": "integer"
+        },
+        "clientCount": {"type": "integer", "minimum": 1},
+        "transport": {"enum": ["None", "IntegratedLAN", "Dedicated", "HistoricalDedicatedEquivalent"]},
+        "identity": {
+          "type": ["object", "null"],
+          "properties": {
+            "kind": {"const": "Offline"},
+            "hostName": {"type": "string"},
+            "guestNamePattern": {"type": "string"}
+          }
+        },
+        "scenarioConfiguration": {"type": ["object", "null"]},
+        "jvmArgs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "gameArgs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "acceptEula": {
+          "type": "boolean"
+        }
+      }
+    },
+    "build": {
+      "type": "object",
+      "required": [
+        "required",
+        "clean",
+        "task",
+        "wrapper",
+        "artifactExpectation"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "clean": {
+          "type": "boolean"
+        },
+        "task": {
+          "type": "string"
+        },
+        "wrapper": {
+          "type": "string"
+        },
+        "artifactExpectation": {
+          "type": "string"
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "required": [
+        "roles",
+        "runtimeDirectories",
+        "memory",
+        "jvmArgs",
+        "gameArgs"
+      ],
+      "properties": {
+        "roles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "role",
+              "username"
+            ],
+            "properties": {
+              "role": {
+                "type": "string"
+              },
+              "username": {
+                "type": "string"
+              },
+              "launchReady": {
+                "type": "boolean"
+              },
+              "blockingReasons": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "runtimeDirectories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "role",
+              "path"
+            ],
+            "properties": {
+              "role": {
+                "type": "string"
+              },
+              "username": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "relativePath": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "memory": {
+          "type": "object"
+        },
+        "jvmArgs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "gameArgs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "loaderLaunchPlan": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/loaderLaunchPlan"
+            }
+          ]
+        }
+      }
+    },
+    "network": {
+      "type": "object",
+      "required": [
+        "portPolicy",
+        "bindPolicy"
+      ],
+      "properties": {
+        "portPolicy": {
+          "type": "string"
+        },
+        "fixedPort": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "bindPolicy": {
+          "type": "string"
+        }
+      }
+    },
+    "diagnostic": {
+      "type": "object",
+      "required": [
+        "code",
+        "action",
+        "messageZh"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[A-Z0-9_]+$"
+        },
+        "action": {
+          "enum": [
+            "Build",
+            "Launch",
+            "Plan"
+          ]
+        },
+        "messageZh": {
+          "type": "string"
+        },
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "loaderLaunchPlan": {
+      "properties": {
+        "clientArtifact": {
+          "properties": {
+            "url": {"pattern": "^https://(launcher\\.mojang\\.com|piston-data\\.mojang\\.com)/v1/objects/[a-f0-9]{40}/client\\.jar$", "type": "string"},
+            "sha1": {"pattern": "^[a-f0-9]{40}$", "type": "string"},
+            "bytes": {"minimum": 1, "type": "integer"},
+            "metadataSnapshotSha256": {"pattern": "^[a-f0-9]{64}$", "type": "string"}
+          },
+          "type": "object",
+          "required": ["url", "sha1", "bytes", "metadataSnapshotSha256"]
+        },
+        "serverArtifact": {
+          "properties": {
+            "url": {"pattern": "^https://(launcher\\.mojang\\.com|piston-data\\.mojang\\.com)/v1/objects/[a-f0-9]{40}/server\\.jar$", "type": "string"},
+            "sha1": {"pattern": "^[a-f0-9]{40}$", "type": "string"},
+            "bytes": {"minimum": 1, "type": "integer"},
+            "metadataSnapshotSha256": {"pattern": "^[a-f0-9]{64}$", "type": "string"}
+          },
+          "type": "object",
+          "required": ["url", "sha1", "bytes", "metadataSnapshotSha256"]
+        },
+        "versionMetadata": {
+          "properties": {
+            "url": {"pattern": "^https://piston-meta\\.mojang\\.com/v1/packages/[a-f0-9]{40}/", "type": "string"},
+            "sha1": {"pattern": "^[a-f0-9]{40}$", "type": "string"},
+            "bytes": {"minimum": 1, "type": "integer"},
+            "sha256": {"pattern": "^[a-f0-9]{64}$", "type": "string"}
+          },
+          "type": "object",
+          "required": ["url", "sha1", "bytes", "sha256"]
+        },
+        "assetIndex": {
+          "properties": {
+            "url": {"pattern": "^https://launchermeta\\.mojang\\.com/v1/packages/[a-f0-9]{40}/", "type": "string"},
+            "sha1": {"pattern": "^[a-f0-9]{40}$", "type": "string"},
+            "bytes": {"minimum": 1, "type": "integer"},
+            "id": {"minLength": 1, "type": "string"}
+          },
+          "type": "object",
+          "required": ["url", "sha1", "bytes", "id"]
+        },
+        "loaderVersion": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "libraries": {
+          "items": {
+            "properties": {
+              "hashEvidence": {
+                "enum": [
+                  "MOJANG_SHA1_SIZE_PLUS_HTTPS_SHA256",
+                  "HTTPS_DOWNLOAD_OBSERVATION"
+                ]
+              },
+              "url": {
+                "pattern": "^https://libraries\\.minecraft\\.net/",
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "sha1": {
+                "pattern": "^[a-f0-9]{40}$",
+                "type": "string"
+              },
+              "sha256": {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              },
+              "bytes": {
+                "minimum": 1,
+                "type": "integer"
+              },
+              "dependencySourceUrl": {
+                "const": "https://www.liteloader.com/explore/docs/user:install:manual:1.7.10?do=export_raw"
+              },
+              "dependencySourceSha256": {
+                "const": "4bd57f6775688e83f41cb66d670a735eff365954517deb9c837e8bfc58a899ec"
+              }
+            },
+            "type": "object",
+            "required": [
+              "name",
+              "url",
+              "bytes",
+              "sha1",
+              "sha256",
+              "hashEvidence"
+            ]
+          },
+          "type": "array",
+          "minItems": 1
+        },
+        "tweakClass": {
+          "const": "com.mumfrey.liteloader.launch.LiteLoaderTweaker"
+        },
+        "targetId": {
+          "pattern": "^LiteLoader@.+$",
+          "type": "string"
+        },
+        "minecraftId": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "mainClass": {
+          "const": "net.minecraft.launchwrapper.Launch"
+        },
+        "loaderArtifactSha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        "loaderArtifactUrl": {
+          "pattern": "^https://(dl\\.liteloader\\.com|repo\\.mumfrey\\.com)/",
+          "type": "string"
+        },
+        "loaderArtifactBytes": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "loaderArtifactOfficialMd5": {
+          "pattern": "^[a-f0-9]{32}$",
+          "type": "string"
+        }
+      },
+      "type": "object",
+      "required": [
+        "clientArtifact",
+        "serverArtifact",
+        "versionMetadata",
+        "assetIndex",
+        "targetId",
+        "minecraftId",
+        "loaderVersion",
+        "loaderArtifactSha256",
+        "loaderArtifactUrl",
+        "loaderArtifactBytes",
+        "loaderArtifactOfficialMd5",
+        "mainClass",
+        "tweakClass",
+        "libraries"
+      ]
+    }
   }
 }

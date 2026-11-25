@@ -1,0 +1,21 @@
+pluginManagement {
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id in ['net.fabricmc.fabric-loom-remap', 'net.fabricmc.fabric-loom']) {
+                useModule("net.fabricmc:fabric-loom:${requested.version}")
+            }
+        }
+    }
+    repositories {
+        maven { url = 'https://maven.fabricmc.net/' }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = 'mmtl-agent-fabric-1.21.11'
+includeBuild('../../core') {
+    dependencySubstitution {
+        substitute(module('org.pycodersmod.mmtl:mmtl-agent-core')).using(project(':'))
+    }
+}

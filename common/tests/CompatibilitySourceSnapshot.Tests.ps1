@@ -31,4 +31,38 @@ Describe 'Compatibility source snapshot evidence' {
         $ids | Should -Contain 'b1.2_02'
         $ids | Should -Contain '1.2.3'
     }
+
+    It 'extracts the Rift Minecraft version from official repository API metadata' {
+        $json = '{"full_name":"DimensionalDevelopment/Rift","archived":true,"description":"A lightweight mod loader and API for Minecraft 1.13"}'
+
+        $ids = @(Get-MmtlRiftMinecraftIdsFromMetadata -JsonContent $json)
+
+        $ids | Should -HaveCount 1
+        $ids | Should -Be @('1.13')
+    }
+
+    It 'rejects Rift API metadata that does not state a supported Minecraft version' {
+        $json = '{"full_name":"DimensionalDevelopment/Rift","archived":true,"description":"A lightweight mod loader"}'
+
+        { Get-MmtlRiftMinecraftIdsFromMetadata -JsonContent $json } | Should -Throw '*RIFT_METADATA_VERSION_MISSING*'
+    }
+
+    It 'loads a cached source only when its path, byte length, and SHA-256 match the index record' {
+        $bytes = [Text.Encoding]::UTF8.GetBytes('pinned-official-source')
+        $directory = Join-Path $TestDrive 'cached-sources'
+        $evidence = Save-MmtlCompatibilitySourceSnapshot -ProviderId 'Rift' -SourceUrl 'https://github.com/DimensionalDevelopment/Rift' -Bytes $bytes -OutputDirectory $directory -RetrievedAt ([DateTimeOffset]'2026-10-07T00:00:00Z') -SourceClass 'HistoricalOfficial' -TrustClass 'TrustedOfficial'
+
+        $loaded = Get-MmtlCompatibilitySourceSnapshotBytes -SnapshotDirectory $directory -Record $evidence
+
+        [Text.Encoding]::UTF8.GetString($loaded) | Should -Be 'pinned-official-source'
+    }
+
+    It 'rejects a cached source whose bytes no longer match the recorded SHA-256' {
+        $bytes = [Text.Encoding]::UTF8.GetBytes('original')
+        $directory = Join-Path $TestDrive 'tampered-sources'
+        $evidence = Save-MmtlCompatibilitySourceSnapshot -ProviderId 'Rift' -SourceUrl 'https://github.com/DimensionalDevelopment/Rift' -Bytes $bytes -OutputDirectory $directory -RetrievedAt ([DateTimeOffset]'2026-10-07T00:00:00Z') -SourceClass 'HistoricalOfficial' -TrustClass 'TrustedOfficial'
+        [IO.File]::WriteAllText((Join-Path $directory $evidence.relativePath), 'tampered')
+
+        { Get-MmtlCompatibilitySourceSnapshotBytes -SnapshotDirectory $directory -Record $evidence } | Should -Throw '*HASH_MISMATCH*'
+    }
 }

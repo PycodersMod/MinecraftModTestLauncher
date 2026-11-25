@@ -8,12 +8,13 @@ Describe 'MMTL Agent Provider 与 Session 握手' {
     BeforeEach {
         $script:agentRoot = Join-Path $TestDrive 'agent-root'
         $script:providerRoot = Join-Path $script:agentRoot 'providers/forge-1.20.1'
+        $script:loaderVersion='1.20.1-47.4.5'
         New-Item -ItemType Directory -Path $script:providerRoot -Force | Out-Null
         $script:artifact = Join-Path $script:providerRoot 'mmtl-agent.jar'
         [IO.File]::WriteAllBytes($script:artifact,[byte[]](1,3,3,7,9))
         $script:sha = (Get-FileHash -LiteralPath $script:artifact -Algorithm SHA256).Hash.ToLowerInvariant()
         $manifest = [ordered]@{
-            schemaVersion = 1; providerId = 'forge-1.20.1'; loaderId = 'Forge'; minecraftVersions = @('1.20.1')
+            schemaVersion = 1; providerId = 'forge-1.20.1'; loaderId = 'Forge'; minecraftVersions = @('1.20.1'); loaderVersions=@($script:loaderVersion)
             agentVersion = '0.1.0'; artifact = 'providers/forge-1.20.1/mmtl-agent.jar'; sha256 = $script:sha
             minJavaMajor = 17; roles = @('Host','Guest','Client'); capabilities = @('IntegratedServerEvents','LanPublishObservation')
         }
@@ -26,7 +27,7 @@ Describe 'MMTL Agent Provider 与 Session 握手' {
     }
 
     It '按 Loader/Minecraft 版本匹配支持契约并验证工件 SHA-256' {
-        $provider = Get-MmtlAgentProviderStatus -AgentRoot $script:agentRoot -LoaderId Forge -MinecraftVersion '1.20.1'
+        $provider = Get-MmtlAgentProviderStatus -AgentRoot $script:agentRoot -LoaderId Forge -MinecraftVersion '1.20.1' -LoaderVersion $script:loaderVersion
         $provider.status | Should -BeExactly 'Supported'
         $provider.agentVersion | Should -BeExactly '0.1.0'
         $provider.sha256 | Should -BeExactly $script:sha
@@ -34,10 +35,19 @@ Describe 'MMTL Agent Provider 与 Session 握手' {
         Test-Json -Json (Get-Content -LiteralPath $script:manifestPath -Raw) -SchemaFile (Join-Path (Split-Path -Parent $PSScriptRoot) 'schemas/agent-manifest-v1.schema.json') | Should -BeTrue
     }
 
+    It '仅对 manifest 声明的精确 Loader 版本启用 Agent' {
+        $exact=Get-MmtlAgentProviderStatus -AgentRoot $script:agentRoot -LoaderId Forge -MinecraftVersion '1.20.1' -LoaderVersion $script:loaderVersion
+        $exact.status | Should -BeExactly 'Supported'
+        $exact.loaderVersion | Should -BeExactly $script:loaderVersion
+        $other=Get-MmtlAgentProviderStatus -AgentRoot $script:agentRoot -LoaderId Forge -MinecraftVersion '1.20.1' -LoaderVersion '1.20.1-47.2.0'
+        $other.status | Should -BeExactly 'Unsupported'
+        $other.reason | Should -BeExactly 'AGENT_LOADER_VERSION_UNSUPPORTED'
+    }
+
     It '不支持的版本和缺失工件 fail closed' {
-        (Get-MmtlAgentProviderStatus -AgentRoot $script:agentRoot -LoaderId Forge -MinecraftVersion '1.20.2').reason | Should -BeExactly 'AGENT_VERSION_UNSUPPORTED'
+        (Get-MmtlAgentProviderStatus -AgentRoot $script:agentRoot -LoaderId Forge -MinecraftVersion '1.20.2' -LoaderVersion $script:loaderVersion).reason | Should -BeExactly 'AGENT_VERSION_UNSUPPORTED'
         Remove-Item -LiteralPath $script:artifact -Force
-        (Get-MmtlAgentProviderStatus -AgentRoot $script:agentRoot -LoaderId Forge -MinecraftVersion '1.20.1').reason | Should -BeExactly 'AGENT_ARTIFACT_MISSING'
+        (Get-MmtlAgentProviderStatus -AgentRoot $script:agentRoot -LoaderId Forge -MinecraftVersion '1.20.1' -LoaderVersion $script:loaderVersion).reason | Should -BeExactly 'AGENT_ARTIFACT_MISSING'
     }
 
     It '拒绝 SHA 不匹配、越界工件路径和不支持角色' {
@@ -45,18 +55,18 @@ Describe 'MMTL Agent Provider 与 Session 握手' {
         $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
         $manifest.sha256 = '0' * 64
         $manifest | ConvertTo-Json -Depth 10 | Set-Content $manifestPath
-        (Get-MmtlAgentProviderStatus -AgentRoot $script:agentRoot -LoaderId Forge -MinecraftVersion '1.20.1').reason | Should -BeExactly 'AGENT_ARTIFACT_HASH_MISMATCH'
+        (Get-MmtlAgentProviderStatus -AgentRoot $script:agentRoot -LoaderId Forge -MinecraftVersion '1.20.1' -LoaderVersion $script:loaderVersion).reason | Should -BeExactly 'AGENT_ARTIFACT_HASH_MISMATCH'
         $manifest.sha256 = $script:sha; $manifest.artifact = '../../outside.jar'
         $manifest | ConvertTo-Json -Depth 10 | Set-Content $manifestPath
-        (Get-MmtlAgentProviderStatus -AgentRoot $script:agentRoot -LoaderId Forge -MinecraftVersion '1.20.1').reason | Should -BeExactly 'AGENT_MANIFEST_INVALID'
+        (Get-MmtlAgentProviderStatus -AgentRoot $script:agentRoot -LoaderId Forge -MinecraftVersion '1.20.1' -LoaderVersion $script:loaderVersion).reason | Should -BeExactly 'AGENT_MANIFEST_INVALID'
         $manifest.artifact = 'providers/forge-1.20.1/mmtl-agent.jar'; $manifest.roles = @('Server')
         $manifest | ConvertTo-Json -Depth 10 | Set-Content $manifestPath
-        $provider = Get-MmtlAgentProviderStatus -AgentRoot $script:agentRoot -LoaderId Forge -MinecraftVersion '1.20.1'
+        $provider = Get-MmtlAgentProviderStatus -AgentRoot $script:agentRoot -LoaderId Forge -MinecraftVersion '1.20.1' -LoaderVersion $script:loaderVersion
         { New-MmtlAgentLaunchBinding -Provider $provider -SessionPath $script:session -SessionId session_a -Role Guest -SessionToken $script:token } | Should -Throw '*AGENT_ROLE_UNSUPPORTED*'
     }
 
     It '将受支持工件复制到 Session 并将 Agent 与 event sink 绑定在 Session 内' {
-        $provider = Get-MmtlAgentProviderStatus -AgentRoot $script:agentRoot -LoaderId Forge -MinecraftVersion '1.20.1'
+        $provider = Get-MmtlAgentProviderStatus -AgentRoot $script:agentRoot -LoaderId Forge -MinecraftVersion '1.20.1' -LoaderVersion $script:loaderVersion
         { New-MmtlAgentLaunchBinding -Provider $provider -SessionPath $script:session -SessionId session_b -Role Host -SessionToken $script:token } | Should -Throw '*AGENT_SESSION_ID_MISMATCH*'
         $forgedProvider = $provider.PSObject.Copy();$forgedProvider.artifactPath = Join-Path $TestDrive 'outside.jar'
         { New-MmtlAgentLaunchBinding -Provider $forgedProvider -SessionPath $script:session -SessionId session_a -Role Host -SessionToken $script:token } | Should -Throw '*AGENT_ARTIFACT_OUTSIDE_PROVIDER_ROOT*'
@@ -87,6 +97,18 @@ Describe 'MMTL Agent Provider 与 Session 握手' {
         {New-MmtlAgentLaunchBinding -Provider $provider -SessionPath $script:session -SessionId session_a -Role Host -SessionToken $script:token -AutoCreateWorld -WorldName '../outside'} | Should -Throw '*AGENT_WORLD_NAME_INVALID*'
     }
 
+    It 'permits explicit world creation for a Single Client role without LAN bindings' {
+        $script:session=Join-Path $TestDrive ('single-runtime-session-'+[guid]::NewGuid().ToString('N'))
+        New-Item -ItemType Directory -Path $script:session -Force|Out-Null
+        @{sessionId='session_a'}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $script:session 'session.json')
+        $provider=Get-MmtlAgentProviderStatus -AgentRoot $script:agentRoot -LoaderId Forge -MinecraftVersion '1.20.1' -LoaderVersion $script:loaderVersion
+        $provider.status | Should -BeExactly 'Supported'
+        $singleBinding=New-MmtlAgentLaunchBinding -Provider $provider -SessionPath $script:session -SessionId session_a -Role Client -SessionToken $script:token -AutoCreateWorld -WorldName 'MMTL-Single' -WorldGameMode survival -WorldDifficulty normal
+        $singleBinding.jvmArgs | Should -Contain '-Dmmtl.agent.autoCreateWorld=true'
+        $singleBinding.jvmArgs | Should -Contain '-Dmmtl.agent.worldName=MMTL-Single'
+        {New-MmtlAgentLaunchBinding -Provider $provider -SessionPath $script:session -SessionId session_a -Role Guest -SessionToken $script:token -ExpectedLoopbackPort 25565 -AutoCreateWorld} | Should -Throw '*AGENT_WORLD_CREATE_HOST_ONLY*'
+    }
+
     It '验证 Agent Event nonce/session/role 并映射到 Runtime Event，Agent 错误归为基础设施' {
         $nonceHash = ([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($script:token)))).ToLowerInvariant()
         $line = [pscustomobject]@{schemaVersion=1;sessionId='session_a';role='Guest';eventId='evt-1';eventType='AGENT_ERROR';timestampUtc=[DateTimeOffset]::UtcNow.ToString('o');sessionNonceHash=$nonceHash;summary='agent hook failed';port=25565} | ConvertTo-Json -Compress
@@ -95,6 +117,7 @@ Describe 'MMTL Agent Provider 与 Session 握手' {
         $event.eventCode | Should -BeExactly 'AGENT_ERROR'
         $event.sourceType | Should -BeExactly 'Agent'
         $event.metadata.sourceCategory | Should -BeExactly 'MMTL_INFRASTRUCTURE'
+        $event.metadata.agentNonceVerified | Should -BeTrue
         $event.metadata.port | Should -Be 25565
         { ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId session_b -ExpectedRole Guest -ExpectedNonceHash $nonceHash -ProcessId 77 -ProcessIdentity 'start-77' } | Should -Throw '*AGENT_EVENT_SESSION_MISMATCH*'
         $lineObject = $line | ConvertFrom-Json; $lineObject.eventType = 'LAN_PUBLISH_FAILED'; $line = $lineObject | ConvertTo-Json -Compress
@@ -103,7 +126,93 @@ Describe 'MMTL Agent Provider 与 Session 握手' {
         $failedEvent.eventCode | Should -BeExactly 'LAN_PUBLISH_FAILED'
         $failedEvent.metadata.port | Should -Be 25565
         $expectedCodes=@{AGENT_STARTED='AGENT_STARTED';CLIENT_READY='AGENT_CLIENT_READY';WORLD_JOINED='AGENT_WORLD_JOINED';WORLD_CREATE_REQUESTED='WORLD_CREATE_REQUESTED';WORLD_CREATE_SUBMITTED='WORLD_CREATE_SUBMITTED';INTEGRATED_SERVER_READY='INTEGRATED_SERVER_READY';OFFLINE_AUTH_ENABLED='OFFLINE_AUTH_ENABLED';GUEST_CONNECTING='GUEST_CONNECTING';WORLD_JOIN_TIMEOUT='WORLD_JOIN_TIMEOUT';LAN_PUBLISH_TIMEOUT='LAN_PUBLISH_TIMEOUT';GUEST_JOIN_TIMEOUT='GUEST_JOIN_TIMEOUT'}
-        foreach($eventType in $expectedCodes.Keys){$lineObject.eventType=$eventType;$line=$lineObject|ConvertTo-Json -Compress;(ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId session_a -ExpectedRole Guest -ExpectedNonceHash $nonceHash -ProcessId 77 -ProcessIdentity 'start-77').eventCode | Should -BeExactly $expectedCodes[$eventType]}
+        foreach($eventType in $expectedCodes.Keys){$lineObject.eventType=$eventType;if($eventType -eq 'WORLD_JOINED'){$lineObject|Add-Member -NotePropertyName worldKey -NotePropertyValue 'session_a' -Force;$lineObject|Add-Member -NotePropertyName dimensionKey -NotePropertyValue 'minecraft:overworld' -Force;$lineObject|Add-Member -NotePropertyName playerIdentity -NotePropertyValue '123e4567-e89b-12d3-a456-426614174000' -Force};$line=$lineObject|ConvertTo-Json -Compress;(ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId session_a -ExpectedRole Guest -ExpectedNonceHash $nonceHash -ProcessId 77 -ProcessIdentity 'start-77').eventCode | Should -BeExactly $expectedCodes[$eventType]}
         $line | Should -Not -Match [regex]::Escape($script:token)
+    }
+
+    It '只接收 nonce 验证后的共享 marker 写入与独立观察事件' {
+        $nonceHash = ([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($script:token)))).ToLowerInvariant()
+        $actionId = 'a' * 32
+        $stateHash = 'b' * 64
+        $lineObject = [pscustomobject]@{
+            schemaVersion=1;sessionId='session_a';role='Client';eventId='evt-shared-write';eventType='SHARED_STATE_WRITTEN'
+            timestampUtc=[DateTimeOffset]::UtcNow.ToString('o');sessionNonceHash=$nonceHash;summary='marker write observed'
+            actionId=$actionId;worldKey='world-identity-1';dimensionKey='testmod:dimension/branch';playerIdentity='offline-player-a'
+            markerId='marker-01';stateSha256=$stateHash;protocolId='mmtl-block-marker-v1';operationCode='PLACE_BLOCK_MARKER';observed=$true
+        }
+        $line = $lineObject | ConvertTo-Json -Compress
+        Test-Json -Json $line -SchemaFile (Join-Path (Split-Path -Parent $PSScriptRoot) 'schemas/agent-event-v1.schema.json') | Should -BeTrue
+        $event = ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId session_a -ExpectedRole Client -ExpectedNonceHash $nonceHash -ProcessId 101 -ProcessIdentity 'actor-start-1'
+        $event.eventCode | Should -BeExactly 'AGENT_SHARED_STATE_WRITTEN'
+        $event.metadata.agentNonceVerified | Should -BeTrue
+        $event.metadata.worldKey | Should -BeExactly 'world-identity-1'
+        $event.metadata.dimensionKey | Should -BeExactly 'testmod:dimension/branch'
+        $event.metadata.stateSha256 | Should -BeExactly $stateHash
+
+        $lineObject.eventType='SHARED_STATE_OBSERVED';$lineObject.eventId='evt-shared-observe';$lineObject.PSObject.Properties.Remove('actionId');$lineObject.PSObject.Properties.Remove('operationCode')
+        $lineObject | Add-Member -NotePropertyName actorActionId -NotePropertyValue $actionId
+        $lineObject | Add-Member -NotePropertyName observationCode -NotePropertyValue 'OBSERVE_BLOCK_MARKER'
+        $line = $lineObject | ConvertTo-Json -Compress
+        Test-Json -Json $line -SchemaFile (Join-Path (Split-Path -Parent $PSScriptRoot) 'schemas/agent-event-v1.schema.json') | Should -BeTrue
+        (ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId session_a -ExpectedRole Client -ExpectedNonceHash $nonceHash -ProcessId 202 -ProcessIdentity 'guest-start-1').eventCode | Should -BeExactly 'AGENT_SHARED_STATE_OBSERVED'
+
+        $lineObject.observed=$false;$line = $lineObject | ConvertTo-Json -Compress
+        { ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId session_a -ExpectedRole Client -ExpectedNonceHash $nonceHash -ProcessId 202 -ProcessIdentity 'guest-start-1' } | Should -Throw '*AGENT_SHARED_STATE_EVENT_INVALID*'
+    }
+
+    It 'LAN_PUBLISHED schema 要求 Host 角色和精确发布时世界身份' {
+        $nonceHash=([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($script:token)))).ToLowerInvariant()
+        $record=[pscustomobject]@{schemaVersion=1;sessionId='session_a';role='Host';eventId='lan-published-1';eventType='LAN_PUBLISHED';timestampUtc=[DateTimeOffset]::UtcNow.ToString('o');sessionNonceHash=$nonceHash;summary='listener ready';port=25565;bindAddress='127.0.0.1';worldKey='session_a';dimensionKey='minecraft:overworld';playerIdentity='host-player'}
+        $schema=Join-Path (Split-Path -Parent $PSScriptRoot) 'schemas/agent-event-v1.schema.json'
+        Test-Json -Json ($record|ConvertTo-Json -Compress) -SchemaFile $schema | Should -BeTrue
+        $record.PSObject.Properties.Remove('worldKey')
+        Test-Json -Json ($record|ConvertTo-Json -Compress) -SchemaFile $schema | Should -BeFalse
+    }
+
+    It '只接受包含 Session 世界范围、精确维度和玩家 UUID 的世界加入事件' {
+        $nonceHash = ([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($script:token)))).ToLowerInvariant()
+        $lineObject = [pscustomobject]@{
+            schemaVersion=1;sessionId='session_a';role='Guest';eventId='evt-world-joined';eventType='WORLD_JOINED'
+            timestampUtc=[DateTimeOffset]::UtcNow.ToString('o');sessionNonceHash=$nonceHash;summary='joined managed world'
+            worldKey='session_a';dimensionKey='minecraft:overworld';playerIdentity='123e4567-e89b-12d3-a456-426614174000';port=25565
+        }
+        $line = $lineObject | ConvertTo-Json -Compress
+        Test-Json -Json $line -SchemaFile (Join-Path (Split-Path -Parent $PSScriptRoot) 'schemas/agent-event-v1.schema.json') | Should -BeTrue
+        $event = ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId session_a -ExpectedRole Guest -ExpectedNonceHash $nonceHash -ProcessId 77 -ProcessIdentity 'guest-start-1'
+        $event.eventCode | Should -BeExactly 'AGENT_WORLD_JOINED'
+        $event.metadata.worldKey | Should -BeExactly 'session_a'
+        $event.metadata.dimensionKey | Should -BeExactly 'minecraft:overworld'
+        $event.metadata.playerIdentity | Should -BeExactly '123e4567-e89b-12d3-a456-426614174000'
+
+        $lineObject.PSObject.Properties.Remove('playerIdentity')
+        $line = $lineObject | ConvertTo-Json -Compress
+        { ConvertFrom-MmtlAgentEventLine -Line $line -ExpectedSessionId session_a -ExpectedRole Guest -ExpectedNonceHash $nonceHash -ProcessId 77 -ProcessIdentity 'guest-start-1' } | Should -Throw '*AGENT_WORLD_JOINED_EVENT_INCOMPLETE*'
+    }
+}
+
+Describe 'Fabric 1.21.7 exact Provider Session injection' {
+    It 'copies the exact artifact into an MMTL Session and adds only that copy to runtime mods' {
+        $repoRoot = Split-Path -Parent $PSScriptRoot
+        $agentRoot = Join-Path $repoRoot 'agent'
+        $provider = Get-MmtlAgentProviderStatus -AgentRoot $agentRoot -LoaderId Fabric -MinecraftVersion '1.21.7' -LoaderVersion '0.19.5'
+        $provider.status | Should -BeExactly 'Supported'
+        $provider.sha256 | Should -BeExactly '15fca02658918c7b9a7121f1e5659364e66ae852933cdc817ed9645942075c8d'
+
+        $session = Join-Path $TestDrive 'fabric-1.21.7-session'
+        New-Item -ItemType Directory -Path $session -Force | Out-Null
+        $sessionId = 'fabric_1217_agent'
+        [IO.File]::WriteAllText((Join-Path $session 'session.json'), (@{ sessionId = $sessionId } | ConvertTo-Json), [Text.UTF8Encoding]::new($false))
+        $token = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
+
+        $binding = New-MmtlAgentLaunchBinding -Provider $provider -SessionPath $session -SessionId $sessionId -Role Client -SessionToken $token
+        $runtimeJars = @(Get-MmtlAgentRuntimeModJars -Binding $binding)
+
+        $runtimeJars | Should -HaveCount 1
+        $runtimeJars[0] | Should -BeExactly $binding.artifactPath
+        $binding.artifactPath | Should -Match ([regex]::Escape((Join-Path $session 'agent')))
+        (Get-FileHash -LiteralPath $binding.artifactPath -Algorithm SHA256).Hash.ToLowerInvariant() | Should -BeExactly $provider.sha256
+        $binding.jvmArgs | Should -Contain "-Dmmtl.agent.sessionId=$sessionId"
+        $binding.jvmArgs | Should -Contain '-Dmmtl.agent.role=Client'
+        ($binding.jvmArgs -join ' ') | Should -Not -Match ([regex]::Escape($token))
     }
 }

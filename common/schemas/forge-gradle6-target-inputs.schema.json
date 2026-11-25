@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pinned ForgeGradle 6 target inputs",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "targetId", "forgeVersion", "forgeGradleSpec", "forgeGradleResolvedVersion", "resolver", "artifactStatus", "artifacts", "mcpConfig", "userdev", "mojangVersion", "catalogHash"],
+  "properties": {
+    "schemaVersion": {"enum": [1, 2]},
+    "targetId": {"type": "string", "pattern": "^Forge@[0-9]+(\\.[0-9]+){1,2}$"},
+    "forgeVersion": {"type": "string", "pattern": "^[0-9]+(\\.[0-9]+){1,2}-[0-9][A-Za-z0-9.-]*$"},
+    "forgeGradleSpec": {"const": "[6.0,6.2)"},
+    "forgeGradleResolvedVersion": {"type": "string", "pattern": "^[0-9]+(\\.[0-9]+){2}$"},
+    "resolver": {"type": "string", "pattern": "^ForgeGradle [0-9]+(\\.[0-9]+){2} official MDK Gradle [0-9]+(\\.[0-9]+){1,2} cache capture$"},
+    "artifactStatus": {"const": "HashesVerified"},
+    "artifacts": {
+      "type": "array", "minItems": 7, "maxItems": 128,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["kind", "group", "artifact", "version", "file", "bytes", "sha256", "url"],
+        "properties": {
+          "kind": {"enum": ["mdk", "userdev", "forgeSources", "forgeUniversal", "launcher", "mcpConfig", "mcinjector", "accesstransformers", "binarypatcher", "specialSource", "forgeflower", "mergetool", "renamer", "mcpTool"]},
+          "group": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+$"},
+          "artifact": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+$"},
+          "version": {"type": "string", "pattern": "^[A-Za-z0-9_.+-]+$"},
+          "file": {"type": "string", "pattern": "^[A-Za-z0-9_.+-]+\\.(jar|zip)$"},
+          "bytes": {"type": "integer", "minimum": 1},
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "url": {"type": "string", "format": "uri", "pattern": "^https://maven\\.minecraftforge\\.net/[A-Za-z0-9_./+-]+\\.(jar|zip)$"}
+        }
+      }
+    },
+    "mcpConfig": {
+      "type": "object", "additionalProperties": false,
+      "required": ["coordinate", "configEntry", "configBytes", "configSha256", "mappingsEntry", "mappingsBytes", "mappingsSha256"],
+      "properties": {
+        "coordinate": {"type": "string", "pattern": "^de\\.oceanlabs\\.mcp:mcp_config:[A-Za-z0-9_.+-]+@zip$"},
+        "configEntry": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*$"}, "configBytes": {"type": "integer", "minimum": 1}, "configSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "mappingsEntry": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*$"}, "mappingsBytes": {"type": "integer", "minimum": 1}, "mappingsSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "mcpTools": {
+      "type": "array", "minItems": 1, "maxItems": 64,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["functionName", "coordinate"],
+        "properties": {
+          "functionName": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"},
+          "coordinate": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.+-]+(?::[A-Za-z0-9_.-]+)?$"}
+        }
+      }
+    },
+    "userdev": {
+      "type": "object", "additionalProperties": false,
+      "required": ["configEntry", "configBytes", "configSha256", "mcpCoordinate", "libraries", "binarypatcher"],
+      "properties": {
+        "configEntry": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*$"}, "configBytes": {"type": "integer", "minimum": 1}, "configSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "mcpCoordinate": {"type": "string", "pattern": "^de\\.oceanlabs\\.mcp:mcp_config:[A-Za-z0-9_.+-]+@zip$"},
+        "libraries": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.+-]+(?::[A-Za-z0-9_.-]+)?$"}},
+        "binarypatcher": {"type": "string", "pattern": "^net\\.minecraftforge:binarypatcher:[A-Za-z0-9_.+-]+:fatjar$"}
+      }
+    },
+    "mojangVersion": {
+      "type": "object", "additionalProperties": false,
+      "required": ["url", "sha1", "bytes", "sha256"],
+      "properties": {
+        "url": {"type": "string", "format": "uri", "pattern": "^https://piston-meta\\.mojang\\.com/v1/packages/[a-f0-9]{40}/[0-9]+(\\.[0-9]+){1,2}\\.json$"},
+        "sha1": {"type": "string", "pattern": "^[a-f0-9]{40}$"}, "bytes": {"type": "integer", "minimum": 1}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "catalogHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"schemaVersion": {"const": 1}}, "required": ["schemaVersion"]},
+      "then": {"properties": {"artifacts": {"minItems": 13, "maxItems": 13}, "userdev": {"properties": {"libraries": {"uniqueItems": true}}}}}
+    },
+    {
+      "if": {"properties": {"schemaVersion": {"const": 2}}, "required": ["schemaVersion"]},
+      "then": {"required": ["mcpTools"]}
+    }
+  ]
+}

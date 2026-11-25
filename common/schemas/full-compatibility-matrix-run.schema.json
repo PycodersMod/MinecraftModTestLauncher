@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MMTL 全量兼容性矩阵运行汇总",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "runId", "status", "universeHash", "manifestHash", "targetCount", "shardCount", "maxParallelShards", "statusCounts", "shards", "generatedAt"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "runId": {"type": "string", "pattern": "^[A-Za-z0-9._-]{1,80}$"},
+    "status": {"enum": ["PASSED", "PARTIAL", "INCOMPLETE"]},
+    "universeHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "manifestHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "targetCount": {"type": "integer", "minimum": 1},
+    "shardCount": {"type": "integer", "minimum": 1},
+    "maxParallelShards": {"type": "integer", "minimum": 1, "maximum": 16},
+    "statusCounts": {"$ref": "#/definitions/statusCounts"},
+    "shards": {"type": "array", "items": {"$ref": "#/definitions/shard"}},
+    "generatedAt": {"type": "string", "format": "date-time"}
+  },
+  "definitions": {
+    "statusCounts": {
+      "type": "object", "additionalProperties": false,
+      "required": ["passed", "partial", "incomplete", "failed"],
+      "properties": {"passed": {"type": "integer", "minimum": 0}, "partial": {"type": "integer", "minimum": 0}, "incomplete": {"type": "integer", "minimum": 0}, "failed": {"type": "integer", "minimum": 0}}
+    },
+    "matrixShardStatusCounts": {
+      "type": "object", "additionalProperties": false,
+      "required": ["Pending", "Running", "Passed", "Failed", "Blocked"],
+      "properties": {"Pending": {"type": "integer", "minimum": 0}, "Running": {"type": "integer", "minimum": 0}, "Passed": {"type": "integer", "minimum": 0}, "Failed": {"type": "integer", "minimum": 0}, "Blocked": {"type": "integer", "minimum": 0}}
+    },
+    "shard": {
+      "type": "object", "additionalProperties": false,
+      "required": ["shardIndex", "status", "exitCode", "processId", "targetCount", "statusCounts", "statePath", "summaryPath", "stdoutPath", "stdoutSha256", "stderrPath", "stderrSha256", "error"],
+      "properties": {
+        "shardIndex": {"type": "integer", "minimum": 0},
+        "status": {"enum": ["PASSED", "PARTIAL", "INCOMPLETE", "FAILED"]},
+        "exitCode": {"type": "integer"},
+        "processId": {"type": ["integer", "null"], "minimum": 1},
+        "targetCount": {"type": "integer", "minimum": 0},
+        "statusCounts": {"oneOf": [{"$ref": "#/definitions/matrixShardStatusCounts"}, {"type": "null"}]},
+        "statePath": {"type": ["string", "null"]},
+        "summaryPath": {"type": "string", "minLength": 1},
+        "stdoutPath": {"type": "string", "minLength": 1},
+        "stdoutSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "stderrPath": {"type": "string", "minLength": 1},
+        "stderrSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "error": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

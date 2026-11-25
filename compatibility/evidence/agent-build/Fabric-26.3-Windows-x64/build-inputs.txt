@@ -1,0 +1,11 @@
+targetId=Fabric@26.3
+loaderVersion=0.19.5
+loomPluginId=net.fabricmc.fabric-loom
+mappingStrategy=none
+agentMinimumJava=25
+gradleVersion=9.7.1
+gradleWrapperSha256=7a9ce74cff467ca1bf60a4fcd9f05185acceda4d0f382434d393e17864262c5d
+fabricBuildPinsSha256=6b67342121539416f145be6dd891d97a940dd85bdf91cd693b123c0fa6783875
+gradleVerificationMetadataSha256=5853855c0efecaf2241836f5bef67840738b986224e918ba0cd01c1816c6e4d0
+buildJdk=Oracle JDK 25.0.1 x64
+execution=ProcessStartInfo CreateNoWindow=true; strict offline; test verifyMmtlAgentJar stageMmtlAgent

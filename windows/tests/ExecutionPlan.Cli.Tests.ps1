@@ -23,6 +23,37 @@ BeforeAll {
 }
 
 Describe 'Execution Plan CLI' {
+    It '--scenario-plan 接受 N 客户端覆盖并记录 CLI 来源，不创建 Session' {
+        $output=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --profile fixture --scenario-plan --client-count 3 --host-name 'MatrixHost' --guest-name-pattern 'Matrix_{index}' --world 'goal-world' --json 2>&1|Out-String
+        $LASTEXITCODE | Should -Be 0 -Because $output
+        $result=$output|ConvertFrom-Json -ErrorAction Stop
+        $result.plan.mode | Should -BeExactly 'IntegratedLAN'
+        $result.plan.players | Should -Be 3
+        $result.plan.roles.Count | Should -Be 3
+        $result.scenarioConfiguration.valueSources.clientCount | Should -BeExactly 'CommandLine'
+        $result.scenarioConfiguration.effective.identity.hostName | Should -BeExactly 'MatrixHost'
+        Test-Path -LiteralPath $script:runtimeRoot | Should -BeFalse
+    }
+
+    It '--plan 将 CLI 场景覆盖与来源写入 Plan 语义' {
+        $output=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --profile fixture --plan --client-count 2 --host-name 'PlanHost' --json 2>&1|Out-String
+        $LASTEXITCODE | Should -Be 0 -Because $output
+        $plan=$output|ConvertFrom-Json -ErrorAction Stop
+        $plan.profile.mode | Should -BeExactly 'IntegratedLAN'
+        $plan.profile.clientCount | Should -Be 2
+        $plan.profile.scenarioConfiguration.valueSources.clientCount | Should -BeExactly 'CommandLine'
+        $plan.profile.scenarioConfiguration.effective.identity.hostName | Should -BeExactly 'PlanHost'
+    }
+
+    It '拒绝重复数量参数和互斥多人传输覆盖' {
+        $duplicate=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --scenario-plan --client-count 2 --client-count 3 --json 2>&1|Out-String
+        $LASTEXITCODE | Should -Not -Be 0
+        $duplicate | Should -Match 'CLI_ARGUMENT_DUPLICATE'
+        $conflict=& $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --scenario-plan --client-count 2 --multiplayer none --json 2>&1|Out-String
+        $LASTEXITCODE | Should -Not -Be 0
+        $conflict | Should -Match 'CONFIG_SCENARIO_CLIENT_COUNT_CONFLICT'
+    }
+
     It '--plan --json 仅输出可解析 JSON 且不创建 Runtime/Session' {
         $output = & $script:pwsh -NoProfile -File $script:launcher --config-file $script:configPath --plan --json 2>&1 | Out-String
 
@@ -103,6 +134,24 @@ Describe 'Execution Plan CLI' {
         $LASTEXITCODE | Should -Be 2
         $output | Should -Match 'RUNTIME_BINDING_PROJECT_NOT_TRUSTED'
         Test-Path -LiteralPath $marker | Should -BeFalse
+    }
+
+    It '--runtime-binding --probe --online 允许 Gradle 解析缺失的运行依赖' {
+        $argsMarker=Join-Path $TestDrive 'runtime-binding-gradle-args.txt'
+        @('@echo off',"echo %* > `"$argsMarker`"",'echo MMTL_RUNTIME_BINDING_JSON:{"tasks":[]}','exit /b 0') | Set-Content -LiteralPath (Join-Path $script:projectRoot 'gradlew.bat')
+        $config=Get-Content -LiteralPath $script:configPath -Raw | ConvertFrom-Json
+        $config | Add-Member -NotePropertyName trustedProjectRoots -NotePropertyValue @($script:projectRoot) -Force
+        $onlineConfig=Join-Path $TestDrive 'runtime-binding-online-config.json';$config | ConvertTo-Json -Depth 30 | Set-Content $onlineConfig
+
+        try {
+            $output=& $script:pwsh -NoProfile -File $script:launcher --config-file $onlineConfig --runtime-binding --probe --online --json 2>&1 | Out-String
+
+            $LASTEXITCODE | Should -Be 0 -Because $output
+            Test-Path -LiteralPath $argsMarker | Should -BeTrue
+            (Get-Content -LiteralPath $argsMarker -Raw) | Should -Not -Match '--offline'
+        } finally {
+            if(Test-Path -LiteralPath $script:runtimeRoot){Remove-Item -LiteralPath $script:runtimeRoot -Recurse -Force}
+        }
     }
 
     It '--capabilities --json 无配置依赖并输出平台能力' {
@@ -225,4 +274,5 @@ Describe 'Execution Plan CLI' {
         $resolved=Join-Path $session $result.outputPath;Test-Path $resolved|Should -BeTrue
         (Test-MmtlSessionV2 -SessionPath $session).valid|Should -BeTrue
     }
+
 }

@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MMTL 精确兼容性证据缓存索引",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "cacheKey", "identity", "evidenceRelativePath", "evidenceSha256"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "cacheKey": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["targetId", "universeHash", "sourceHash", "toolchainHash", "targetSpecHash", "agentHash"],
+      "properties": {
+        "targetId": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._@+() -]{1,179}$"},
+        "universeHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "sourceHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "toolchainHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "targetSpecHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "agentHash": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "evidenceRelativePath": {"type": "string", "minLength": 1, "pattern": "^(?![A-Za-z]:|/|\\\\)(?!.*(?:^|[\\\\/])\\.\\.(?:[\\\\/]|$))"},
+    "evidenceSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

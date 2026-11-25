@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fabric exact-target diagnostic build inputs",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "status", "targets"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "status": { "const": "PARTIAL" },
+    "targets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["targetId", "minecraftVersion", "loaderVersion", "fabricApiVersion", "loomPluginId", "loomVersion", "gradleVersion", "gradleDistributionUrl", "gradleDistributionSha256", "buildJavaMajor", "runtimeJavaMajor", "sourceRepository", "sourceCommit", "sourceArchiveUrl", "sourceArchiveSha256", "sourceLicense", "sourceBuildGradleSha256", "sourceSettingsGradleSha256", "sourceWrapperPropertiesSha256", "sourceWrapperJarSha256", "verificationMetadataSha256", "verificationComponentCount", "verificationArtifactCount", "trustedArtifactCount", "trustedArtifactFiles", "verificationStatus"],
+        "properties": {
+          "targetId": { "type": "string", "pattern": "^Fabric@.+$" },
+          "minecraftVersion": { "type": "string", "minLength": 1 },
+          "loaderVersion": { "type": "string", "minLength": 1 },
+          "fabricApiVersion": { "type": "string", "minLength": 1 },
+          "loomPluginId": { "enum": ["net.fabricmc.fabric-loom-remap", "net.fabricmc.fabric-loom"] },
+          "loomVersion": { "type": "string", "pattern": "^[0-9]+(?:\\.[0-9]+){1,3}$" },
+          "gradleVersion": { "type": "string", "pattern": "^[0-9]+(?:\\.[0-9]+){1,2}$" },
+          "gradleDistributionUrl": { "type": "string", "format": "uri", "pattern": "^https://services\\.gradle\\.org/distributions/gradle-[0-9.]+-bin\\.zip$" },
+          "gradleDistributionSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "buildJavaMajor": { "type": "integer", "minimum": 8, "maximum": 25 },
+          "runtimeJavaMajor": { "type": "integer", "minimum": 8, "maximum": 25 },
+          "sourceRepository": { "const": "https://github.com/FabricMC/fabric-example-mod" },
+          "sourceCommit": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+          "sourceArchiveUrl": { "type": "string", "format": "uri", "pattern": "^https://codeload\\.githubusercontent\\.com/FabricMC/fabric-example-mod/zip/[a-f0-9]{40}$|^https://codeload\\.github\\.com/FabricMC/fabric-example-mod/zip/[a-f0-9]{40}$" },
+          "sourceArchiveSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "sourceLicense": { "const": "CC0-1.0" },
+          "sourceBuildGradleSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "sourceSettingsGradleSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "sourceWrapperPropertiesSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "sourceWrapperJarSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "verificationMetadataSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "verificationComponentCount": { "type": "integer", "minimum": 0 },
+          "verificationArtifactCount": { "type": "integer", "minimum": 0 },
+          "trustedArtifactCount": { "type": "integer", "minimum": 0 },
+          "trustedArtifactFiles": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "verificationStatus": { "enum": ["DiagnosticOnly", "PinnedInputsVerified"] }
+        }
+      }
+    }
+  }
+}

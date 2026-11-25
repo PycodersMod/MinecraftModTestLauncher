@@ -16,7 +16,7 @@
       "type": "object", "additionalProperties": false,
       "required": ["targetId", "tier", "minecraftId", "loaderStack", "loaderVersion", "toolchain", "toolchainVersion", "buildSystem", "platform", "java", "sourceFixture", "validation", "evidence", "notes"],
       "properties": {
-        "targetId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{2,127}$"},
+        "targetId": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._@+() -]{1,179}$"},
         "tier": {"enum": ["Tier0", "Tier1", "Tier2", "Tier3"]},
         "resolved": {"type": "boolean"},
         "minecraftId": {"type": "string", "minLength": 1},

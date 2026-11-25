@@ -1,0 +1,519 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pinned ForgeGradle 6 Windows x64 runtime artifact resolution snapshot by exact target",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "targetId",
+    "forgeVersion",
+    "resolver",
+    "platform",
+    "artifactStatus",
+    "resolvedConfigurationCount",
+    "resolvedArtifactObservations",
+    "configurations",
+    "mavenArtifacts",
+    "supportPoms",
+    "moduleMetadata",
+    "dynamicMetadata",
+    "dynamicCandidates",
+    "mojangArtifacts",
+    "generatedArtifacts",
+    "catalogHash"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "targetId": {
+      "type": "string",
+      "pattern": "^Forge@[0-9]+(\\.[0-9]+){1,2}$"
+    },
+    "forgeVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+){1,2}-[0-9][A-Za-z0-9.-]*$"
+    },
+    "resolver": {
+      "type": "string",
+      "pattern": "^Gradle [0-9]+(\\.[0-9]+){1,2} official MDK offline resolved configuration capture$"
+    },
+    "platform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "os",
+        "architecture"
+      ],
+      "properties": {
+        "os": {
+          "const": "Windows"
+        },
+        "architecture": {
+          "const": "x64"
+        }
+      }
+    },
+    "artifactStatus": {
+      "const": "HashesVerified"
+    },
+    "resolvedConfigurationCount": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "resolvedArtifactObservations": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "configurations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "project",
+          "name",
+          "artifactCount"
+        ],
+        "properties": {
+          "project": {
+            "const": ":"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "artifactCount": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "mavenArtifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "group",
+          "artifact",
+          "version",
+          "file",
+          "bytes",
+          "sha256",
+          "sha1",
+          "url",
+          "repository",
+          "pom",
+          "configurations"
+        ],
+        "properties": {
+          "group": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "artifact": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.+-]+$"
+          },
+          "file": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.+-]+\\.jar$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "sha1": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://(maven\\.minecraftforge\\.net|repo\\.maven\\.apache\\.org/maven2)/[A-Za-z0-9_./+-]+\\.jar$"
+          },
+          "repository": {
+            "enum": [
+              "mavenCentral",
+              "forgeMaven"
+            ]
+          },
+          "pom": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "file",
+              "bytes",
+              "sha256",
+              "url"
+            ],
+            "properties": {
+              "file": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.+-]+\\.pom$"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^https://(maven\\.minecraftforge\\.net|repo\\.maven\\.apache\\.org/maven2)/[A-Za-z0-9_./+-]+\\.pom$"
+              }
+            }
+          },
+          "configurations": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "supportPoms": {
+      "type": "array",
+      "minItems": 0,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "group",
+          "artifact",
+          "version",
+          "file",
+          "bytes",
+          "sha256",
+          "url"
+        ],
+        "properties": {
+          "group": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "artifact": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.+-]+$"
+          },
+          "file": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.+-]+\\.pom$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://(maven\\.minecraftforge\\.net|repo\\.maven\\.apache\\.org/maven2)/[A-Za-z0-9_./+-]+\\.pom$"
+          }
+        }
+      }
+    },
+    "moduleMetadata": {
+      "type": "array",
+      "minItems": 0,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "group",
+          "artifact",
+          "version",
+          "file",
+          "bytes",
+          "sha256",
+          "url"
+        ],
+        "properties": {
+          "group": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "artifact": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.+-]+$"
+          },
+          "file": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.+-]+\\.module$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://maven\\.minecraftforge\\.net/[A-Za-z0-9_./+-]+\\.module$"
+          }
+        }
+      }
+    },
+    "dynamicMetadata": {
+      "type": "array",
+      "minItems": 0,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "group",
+          "artifact",
+          "file",
+          "bytes",
+          "sha256",
+          "url",
+          "requiredSelectors",
+          "resolutions"
+        ],
+        "properties": {
+          "group": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "artifact": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "file": {
+            "const": "maven-metadata.xml"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://(maven\\.minecraftforge\\.net|repo\\.maven\\.apache\\.org/maven2)/[A-Za-z0-9_./+-]+/maven-metadata\\.xml$"
+          },
+          "requiredSelectors": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^[0-9]+(\\.[0-9]+)*\\.\\+$"
+            }
+          },
+          "resolutions": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "selector",
+                "version"
+              ],
+              "properties": {
+                "selector": {
+                  "type": "string",
+                  "pattern": "^[0-9]+(\\.[0-9]+)*\\.\\+$"
+                },
+                "version": {
+                  "type": "string",
+                  "pattern": "^[0-9]+(\\.[0-9]+)*(?:[-+][A-Za-z0-9_.+-]+)?$"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "dynamicCandidates": {
+      "type": "array",
+      "minItems": 0,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "group",
+          "artifact",
+          "version",
+          "file",
+          "bytes",
+          "sha256",
+          "url"
+        ],
+        "properties": {
+          "group": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "artifact": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.+-]+$"
+          },
+          "file": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.+-]+\\.(pom|module)$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://(maven\\.minecraftforge\\.net|repo\\.maven\\.apache\\.org/maven2)/[A-Za-z0-9_./+-]+\\.(pom|module)$"
+          }
+        }
+      }
+    },
+    "mojangArtifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "library",
+          "classifier",
+          "url",
+          "file",
+          "bytes",
+          "sha1",
+          "sha256",
+          "configurations"
+        ],
+        "properties": {
+          "library": {
+            "type": "string",
+            "minLength": 3
+          },
+          "classifier": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://libraries\\.minecraft\\.net/[A-Za-z0-9_./+-]+\\.jar$"
+          },
+          "file": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.+-]+\\.jar$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha1": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "configurations": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "generatedArtifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "component",
+          "file",
+          "bytes",
+          "sha256",
+          "kind",
+          "configurations"
+        ],
+        "properties": {
+          "component": {
+            "type": "string",
+            "minLength": 3
+          },
+          "file": {
+            "type": "string",
+            "minLength": 1
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "kind": {
+            "type": "string",
+            "minLength": 1
+          },
+          "configurations": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "catalogHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

@@ -58,7 +58,7 @@ try{
         $artifact=Join-Path $stageRoot $artifactRelative
         if(-not(Test-Path -LiteralPath $artifact -PathType Leaf)){throw "ALPHA_AGENT_ARTIFACT_MISSING: $($manifest.providerId)"}
         if((Get-FileHash -LiteralPath $artifact -Algorithm SHA256).Hash -ine [string]$manifest.sha256 -or (Get-FileHash -LiteralPath $artifactSource -Algorithm SHA256).Hash -ine [string]$manifest.sha256){throw "ALPHA_AGENT_HASH_MISMATCH: $($manifest.providerId)"}
-        $declaration=@($capabilities.agentProviders|Where-Object{[string]$_.providerId -ceq [string]$manifest.providerId -and [string]$_.status -ceq 'Supported' -and [string]$_.loader -ceq [string]$manifest.loaderId -and [string]$_.minecraft -in @($manifest.minecraftVersions)})
+        $declaration=@($capabilities.agentProviders|Where-Object{[string]$_.providerId -ceq [string]$manifest.providerId -and [string]$_.status -ceq 'Supported' -and [string]$_.loader -ceq [string]$manifest.loaderId -and [string]$_.minecraft -in @($manifest.minecraftVersions) -and [string]$_.loaderVersion -in @($manifest.loaderVersions)})
         if($declaration.Count -ne 1){throw "ALPHA_AGENT_CAPABILITY_MISMATCH: $($manifest.providerId)"}
     }
     foreach($declaration in @($capabilities.agentProviders|Where-Object status -ceq 'Supported')){if(@($providerManifests|Where-Object{[string](Get-Content -LiteralPath $_.FullName -Raw|ConvertFrom-Json).providerId -ceq [string]$declaration.providerId}).Count -ne 1){throw "ALPHA_AGENT_CAPABILITY_UNBACKED: $($declaration.providerId)"}}

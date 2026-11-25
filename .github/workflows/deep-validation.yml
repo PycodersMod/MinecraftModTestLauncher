@@ -27,11 +27,12 @@ jobs:
             os: ubuntu-24.04
             fixture: Fabric 26.3
             repository: FabricMC/fabric-example-mod
-            revision: 44465cb0eb83932c72ece5934d32ddfc758802ed
+            revision: 1685ed178a113092f8aa002c4f7d78181643d75b
             java: '25'
             loader: Fabric
             loaderVersion: 0.19.5
-            toolchainVersion: 1.18-SNAPSHOT
+            toolchainVersion: 1.18.4
+            gradleDistributionSha256: acd53f1edaf02f1a8ff99879f8a34b302661a057d9b063ae9e35b552f804d20a
             license: CC0-1.0
             minecraft: '26.3'
           - scope: P0
@@ -49,11 +50,12 @@ jobs:
             os: macos-26
             fixture: Fabric 26.3
             repository: FabricMC/fabric-example-mod
-            revision: 44465cb0eb83932c72ece5934d32ddfc758802ed
+            revision: 1685ed178a113092f8aa002c4f7d78181643d75b
             java: '25'
             loader: Fabric
             loaderVersion: 0.19.5
-            toolchainVersion: 1.18-SNAPSHOT
+            toolchainVersion: 1.18.4
+            gradleDistributionSha256: acd53f1edaf02f1a8ff99879f8a34b302661a057d9b063ae9e35b552f804d20a
             license: CC0-1.0
             minecraft: '26.3'
           - scope: P0
@@ -71,22 +73,24 @@ jobs:
             os: macos-26-intel
             fixture: Fabric 26.3
             repository: FabricMC/fabric-example-mod
-            revision: 44465cb0eb83932c72ece5934d32ddfc758802ed
+            revision: 1685ed178a113092f8aa002c4f7d78181643d75b
             java: '25'
             loader: Fabric
             loaderVersion: 0.19.5
-            toolchainVersion: 1.18-SNAPSHOT
+            toolchainVersion: 1.18.4
+            gradleDistributionSha256: acd53f1edaf02f1a8ff99879f8a34b302661a057d9b063ae9e35b552f804d20a
             license: CC0-1.0
             minecraft: '26.3'
           - scope: P0
             os: windows-2025
             fixture: Fabric 26.3
             repository: FabricMC/fabric-example-mod
-            revision: 44465cb0eb83932c72ece5934d32ddfc758802ed
+            revision: 1685ed178a113092f8aa002c4f7d78181643d75b
             java: '25'
             loader: Fabric
             loaderVersion: 0.19.5
-            toolchainVersion: 1.18-SNAPSHOT
+            toolchainVersion: 1.18.4
+            gradleDistributionSha256: acd53f1edaf02f1a8ff99879f8a34b302661a057d9b063ae9e35b552f804d20a
             license: CC0-1.0
             minecraft: '26.3'
     steps:
@@ -115,6 +119,30 @@ jobs:
           $distributionUrl = ($distributionLine -replace '^distributionUrl=', '') -replace '\\:', ':'
           if ($distributionUrl -notmatch '^https://') { Add-Content ./fixture/build.log 'Fixture Gradle distribution must use HTTPS.'; throw 'Fixture Gradle distribution must use HTTPS.' }
           if ($distributionUrl -match '(?i)^https?://[^/\s:]+:[^/@\s]+@') { Add-Content ./fixture/build.log 'Credentials are forbidden in fixture wrapper URLs.'; throw 'Credentials are forbidden in fixture wrapper URLs.' }
+          if ('${{ matrix.loader }}' -eq 'Fabric') {
+            $pinManifest = Get-Content ./compatibility/fabric-build-pins.json -Raw | ConvertFrom-Json
+            $targetId = 'Fabric@${{ matrix.minecraft }}'
+            $pin = @($pinManifest.targets | Where-Object targetId -CEQ $targetId)
+            if ($pin.Count -ne 1) { throw "FABRIC_CI_PIN_MISSING:$targetId" }
+            $pin = $pin[0]
+            if ('${{ matrix.revision }}' -cne [string]$pin.sourceCommit -or $distributionUrl -cne [string]$pin.gradleDistributionUrl -or '${{ matrix.gradleDistributionSha256 }}' -cne [string]$pin.gradleDistributionSha256) { throw "FABRIC_CI_PIN_MISMATCH:$targetId" }
+            foreach ($filePin in @(
+              @{ path='build.gradle'; hash=[string]$pin.sourceBuildGradleSha256 },
+              @{ path='settings.gradle'; hash=[string]$pin.sourceSettingsGradleSha256 },
+              @{ path='gradle/wrapper/gradle-wrapper.properties'; hash=[string]$pin.sourceWrapperPropertiesSha256 },
+              @{ path='gradle/wrapper/gradle-wrapper.jar'; hash=[string]$pin.sourceWrapperJarSha256 }
+            )) {
+              if ((Get-FileHash -LiteralPath (Join-Path ./fixture $filePin.path) -Algorithm SHA256).Hash.ToLowerInvariant() -cne $filePin.hash) { throw "FABRIC_CI_SOURCE_HASH_MISMATCH:$($targetId):$($filePin.path)" }
+            }
+            $wrapperText = [IO.File]::ReadAllText('./fixture/gradle/wrapper/gradle-wrapper.properties')
+            $checksumLine = 'distributionSha256Sum=' + [string]$pin.gradleDistributionSha256
+            if ([regex]::IsMatch($wrapperText, '(?m)^distributionSha256Sum=')) {
+              if (-not [regex]::IsMatch($wrapperText, ('(?m)^' + [regex]::Escape($checksumLine) + '\r?$'))) { throw "FABRIC_CI_WRAPPER_CHECKSUM_MISMATCH:$targetId" }
+            } else {
+              $wrapperText = $wrapperText.TrimEnd() + "`n" + $checksumLine + "`n"
+              [IO.File]::WriteAllText('./fixture/gradle/wrapper/gradle-wrapper.properties', $wrapperText, [Text.UTF8Encoding]::new($false))
+            }
+          }
       - name: 清理并构建 Fixture
         id: fixture-build-windows
         if: (github.event_name != 'workflow_dispatch' || inputs.scope == matrix.scope) && runner.os == 'Windows'

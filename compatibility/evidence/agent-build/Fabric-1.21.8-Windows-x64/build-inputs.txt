@@ -1,0 +1,21 @@
+targetId=Fabric@1.21.8
+loaderVersion=0.19.5
+loomPluginId=net.fabricmc.fabric-loom-remap
+mappingStrategy=officialMojang
+agentMinimumJava=21
+gradleVersion=9.7.1
+gradleWrapperSha256=7a9ce74cff467ca1bf60a4fcd9f05185acceda4d0f382434d393e17864262c5d
+fabricBuildPinsSha256=6b67342121539416f145be6dd891d97a940dd85bdf91cd693b123c0fa6783875
+targetPinnedVerificationMetadataSha256=99a722a8918f14096081fa810df05149c27aa6a72e69db48a9e3c6df215c2115
+buildJdk=Oracle JDK 25.0.1 x64
+targetId=Fabric@1.21.8
+loaderVersion=0.19.5
+loomPluginId=net.fabricmc.fabric-loom-remap
+mappingStrategy=officialMojang
+agentMinimumJava=21
+gradleVersion=9.7.1
+gradleVerificationMetadataSha256=928f84e2dc02b9368e336fe22b5758b77499d2f904e4ca7f7a5f650075cc335f
+loomGeneratedArtifactsSha256=b9ba131149b53b08e0af6fd26332ae44f7b34c1bcfa0e5868b3cf2615e1a5061
+buildJdk=Oracle JDK 25.0.1 x64
+execution=Gradle --no-daemon test verifyMmtlAgentJar stageMmtlAgent; exit 0; D drive Gradle home; strict metadata plus exact canonical-content gates
+arguments=-Pminecraft_version=1.21.8 -Ploader_version=0.19.5 -Pagent_min_java=21 -Ploom_plugin_id=net.fabricmc.fabric-loom-remap -Pmapping_strategy=officialMojang

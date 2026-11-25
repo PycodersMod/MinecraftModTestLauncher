@@ -25,14 +25,16 @@ foreach($target in $targets){
 }
 $detectorPath=Join-Path $RepositoryRoot 'common/src/ProjectDetector.psm1'
 $adapterPath=Join-Path $RepositoryRoot 'common/src/Adapters/NeoForge.psm1'
+$buildJavaResolverPath=Join-Path $RepositoryRoot 'common/src/BuildJavaResolver.psm1'
 $testPath=Join-Path $RepositoryRoot 'common/tests/ProjectDetectorV2.Tests.ps1'
-foreach($requiredPath in @($detectorPath,$adapterPath,$testPath)){if(-not(Test-Path -LiteralPath $requiredPath -PathType Leaf)){throw "NEOFORGE_ADAPTER_EVIDENCE_FILE_MISSING:$requiredPath"}}
+foreach($requiredPath in @($detectorPath,$adapterPath,$buildJavaResolverPath,$testPath)){if(-not(Test-Path -LiteralPath $requiredPath -PathType Leaf)){throw "NEOFORGE_ADAPTER_EVIDENCE_FILE_MISSING:$requiredPath"}}
 $detectorHash=(Get-FileHash -LiteralPath $detectorPath -Algorithm SHA256).Hash.ToLowerInvariant()
 $adapterHash=(Get-FileHash -LiteralPath $adapterPath -Algorithm SHA256).Hash.ToLowerInvariant()
+$buildJavaResolverHash=(Get-FileHash -LiteralPath $buildJavaResolverPath -Algorithm SHA256).Hash.ToLowerInvariant()
 $universeHash=[string]$universe.catalogHash
 if($universeHash -notmatch '^(?i:[a-f0-9]{64})$'){throw 'UNIVERSE_HASH_INVALID'}
 $familyId='neoforge-gradle-build-launch-plan-v1'
-$basis="$familyId`n$universeHash`n$detectorHash`n$adapterHash`n$($orderedIds -join "`n")"
+$basis="$familyId`n$universeHash`n$detectorHash`n$adapterHash`n$buildJavaResolverHash`n$($orderedIds -join "`n")"
 $basisBytes=[Text.Encoding]::UTF8.GetBytes($basis)
 $toolchainHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($basisBytes)).ToLowerInvariant()
 $family=[ordered]@{
@@ -55,9 +57,11 @@ $family=[ordered]@{
         "universe-sha256:$universeHash",
         "project-detector-sha256:$detectorHash",
         "neoforge-adapter-sha256:$adapterHash",
+        "build-java-resolver-sha256:$buildJavaResolverHash",
         'test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-neoforge-targets'
     )
     capabilities=[ordered]@{
+        BuildJava=[ordered]@{status='PartiallySupported';evidenceRefs=@("build-java-resolver-sha256:$buildJavaResolverHash","project-detector-sha256:$detectorHash",'test:JavaEvidence.Tests.ps1:wrapper-minimum-and-compiler-target')}
         ProjectDetection=[ordered]@{status='Supported';evidenceRefs=@("project-detector-sha256:$detectorHash",'test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-neoforge-targets')}
         BuildPlan=[ordered]@{status='Supported';evidenceRefs=@('https://github.com/neoforged/Documentation/blob/main/docs/gettingstarted/index.md',"neoforge-adapter-sha256:$adapterHash",'test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-neoforge-targets')}
         LaunchPlan=[ordered]@{status='Supported';evidenceRefs=@('https://github.com/neoforged/Documentation/blob/main/docs/gettingstarted/index.md',"neoforge-adapter-sha256:$adapterHash",'test:ProjectDetectorV2.Tests.ps1:detect-bind-and-plan-all-exact-neoforge-targets')}

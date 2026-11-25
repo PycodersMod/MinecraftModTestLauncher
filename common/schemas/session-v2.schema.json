@@ -13,7 +13,9 @@
     "planFile": {"const": "execution-plan.json"},
     "planDigest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
     "planSha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
-    "artifacts": {"type": "array", "items": {"type": "object", "required": ["path", "sha256", "kind"], "properties": {"path": {"type": "string"}, "sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}, "kind": {"type": "string"}}}}
+    "artifacts": {"type": "array", "items": {"type": "object", "required": ["path", "sha256", "kind"], "properties": {"path": {"type": "string"}, "sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}, "kind": {"type": "string"}}}},
+    "identityBindingRequired": {"type": "boolean"},
+    "identityBindings": {"type": "array", "items": {"type": "object", "required": ["identityId", "instanceId", "role", "gameDir", "offline"], "properties": {"identityId": {"type": "string", "minLength": 1}, "instanceId": {"type": "string", "minLength": 1}, "role": {"enum": ["Client", "Host", "Guest", "Server"]}, "username": {"type": ["string", "null"], "pattern": "^[A-Za-z0-9_]{1,16}$"}, "gameDir": {"type": "string", "minLength": 1}, "runtimeJavaMajor": {"type": ["integer", "null"], "minimum": 1}, "runtimeJavaPath": {"type": ["string", "null"]}, "minecraftVersion": {"type": ["string", "null"], "maxLength": 64}, "offline": {"const": true}}}}
   },
   "x-state-transitions": {
     "Created": ["Preparing", "Building", "Launching", "Failed", "Abandoned"],
