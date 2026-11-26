@@ -54,5 +54,17 @@
     "Gradle/Minecraft caches"
   ],
   "compatibilityStatus": "PARTIAL",
-  "interpretation": "Historical mixed attempts; do not treat counts as unique target coverage or full compatibility PASS"
+  "interpretation": "Historical mixed attempts; do not treat counts as unique target coverage or full compatibility PASS",
+  "finalCleanup": {
+    "verifiedDate": "2026-11-26",
+    "allTargetDirectoriesAbsent": true,
+    "targets": [
+      "mmtl-temp",
+      "mmtl-cleanup-staging",
+      "mmtl-forge-control-runtime",
+      "mmtl-gradle-home"
+    ],
+    "rawEvidence": "retained in local private checksum-verified archive; not uploaded",
+    "compatibilityStatus": "PARTIAL"
+  }
 }
