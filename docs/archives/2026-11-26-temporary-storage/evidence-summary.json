@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "archiveDate": "2026-11-26",
+  "scope": "Sanitized aggregate of local MMTL temporary/test reports before cleanup; attempts are not deduplicated",
+  "temporaryExperiments": {
+    "sessionJson": 72,
+    "reportJson": 64,
+    "eventJsonl": 106,
+    "logs": 889,
+    "statusCounts": {
+      "PASS": 59,
+      "FAIL": 4,
+      "PARTIAL": 1
+    },
+    "failureCategories": {
+      "AGENT_CLIENT_PROCESS_EXITED": 2,
+      "AGENT_CLIENT_READY_TIMEOUT": 1,
+      "GUEST_LOGIN_DISCONNECTED": 1
+    }
+  },
+  "forgeControlRuntime": {
+    "sessionDirectories": 122,
+    "reportJson": 115,
+    "syntheticWorldDirectories": 117,
+    "statusCounts": {
+      "PASS": 89,
+      "FAIL": 17,
+      "PARTIAL": 2,
+      "UNCLASSIFIED": 7
+    },
+    "failureStageCounts": {
+      "waitingGuestReady": 8,
+      "waitingGuestWorld": 7,
+      "notRecorded": 2
+    },
+    "failureCategories": {
+      "GUEST_LOGIN_DISCONNECTED": 9,
+      "AGENT_CLIENT_READY_TIMEOUT": 5,
+      "AGENT_HOST_PLAYER_JOIN_TIMEOUT": 1,
+      "AGENT_WORLD_JOIN_TIMEOUT": 1,
+      "JSONL_FILE_SHARING_CONFLICT": 1
+    }
+  },
+  "postFirstCleanupSizeSnapshotGiB": {
+    "temporaryExperiments": 34.301,
+    "forgeControlRuntime": 2.795,
+    "cleanupStaging": 0.79,
+    "dedicatedGradleHome": 0
+  },
+  "notUploaded": [
+    "raw logs/session JSON with local paths or player/process metadata",
+    "Minecraft worlds",
+    "third-party JAR/DLL/OGG and downloaded assets",
+    "Gradle/Minecraft caches"
+  ],
+  "compatibilityStatus": "PARTIAL",
+  "interpretation": "Historical mixed attempts; do not treat counts as unique target coverage or full compatibility PASS"
+}

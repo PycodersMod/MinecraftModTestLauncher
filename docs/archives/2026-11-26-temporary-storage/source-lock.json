@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "auditedLocal": "2026-11-26",
+  "repositories": [
+    {
+      "ref": "codex/full-loader-version-compatibility",
+      "status": "PARTIAL",
+      "repo": "PycodersMod/MinecraftModTestLauncher",
+      "sha": "8a910ec9c6b8a24f490de0dfce5a895e41f9e046"
+    },
+    {
+      "ref": "codex/long-term-freeze-archive-20261023",
+      "status": "historical archive",
+      "repo": "PycodersMod/MinecraftModTestLauncher",
+      "sha": "3ee4b1fd3bfd99e1a4feae4f703581423a4d660a"
+    },
+    {
+      "ref": "main",
+      "status": "separate project source",
+      "repo": "PycodersMod/TaCZinTetra",
+      "sha": "3e48445063e03b1e477a6874331c04201e67cf00"
+    },
+    {
+      "ref": "main",
+      "status": "separate project source",
+      "repo": "PycodersMod/CreateTetraHandcraft",
+      "sha": "16abcecb60ed7e2b66f2bb415e3f74a171bc0189"
+    }
+  ]
+}
